@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TH3SIS · GOOGL — Alphabet Inc. Investment Thesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #06080d; }
+  * { box-sizing: border-box; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
+  @keyframes drawIn { from { stroke-dashoffset: 2000; } to { stroke-dashoffset: 0; } }
+  @keyframes pop { 0%{opacity:0; transform:scale(0.4);} 70%{transform:scale(1.15);} 100%{opacity:1; transform:scale(1);} }
+  @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  .hist-line { stroke-dasharray: 1400; animation: drawIn 1.6s ease forwards; }
+  .track-line { stroke-dasharray: 2000; animation: drawIn 1.8s ease .2s forwards; }
+  .fan-mid { stroke-dasharray: 6 5; animation: fadeUp .8s ease .4s both; }
+  .fan-band { animation: fadeUp .9s ease .3s both; }
+  .diamond { animation: pop .5s cubic-bezier(.2,1.4,.4,1) both; }
+  .panel { animation: fadeUp .6s ease both; }
+  .seg-btn { transition: all .18s ease; cursor: pointer; }
+  .seg-btn:hover { filter: brightness(1.25); }
+  .dot-track { animation: pulse 2.2s ease-in-out infinite; }
+  .tip-target { cursor: help; }
+  .tip-target:hover { filter: brightness(1.18); }
+  #tip-box {
+    position: fixed; z-index: 9999; max-width: 300px; pointer-events: none;
+    background: linear-gradient(160deg,#141a26,#0d1119);
+    border: 1px solid #2a3344; border-radius: 10px; padding: 12px 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.7); opacity: 0; transition: opacity .14s ease;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #tip-box.on { opacity: 1; }
+  #tip-box .tt { font-size: 11px; font-weight: 700; letter-spacing: .08em; margin-bottom: 5px; }
+  #tip-box .tb { font-size: 11.5px; line-height: 1.55; color: #c4cdde; }
+  #tip-box .tn { font-size: 10px; color:#6b7689; margin-top: 7px; font-style: italic; }
+  .grain::before { content:""; position:absolute; inset:0; pointer-events:none; opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const FONT_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+const FONT_DISPLAY = "'Spectral', Georgia, serif";
+
+// ── Tooltip engine ──────────────────────────────────────────────────────────
+let tipEl = null;
+function ensureTip() {
+  if (!tipEl) { tipEl = document.createElement("div"); tipEl.id = "tip-box"; document.body.appendChild(tipEl); }
+  return tipEl;
+}
+function showTip(e, title, body, note, color) {
+  const el = ensureTip();
+  el.innerHTML =
+    `<div class="tt" style="color:${color || '#9fb4ff'}">${title}</div>` +
+    `<div class="tb">${body}</div>` +
+    (note ? `<div class="tn">${note}</div>` : "");
+  el.classList.add("on"); moveTip(e);
+}
+function moveTip(e) {
+  const el = ensureTip();
+  const pad = 16; let x = e.clientX + pad, y = e.clientY + pad;
+  const r = el.getBoundingClientRect();
+  if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+  if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+  el.style.left = x + "px"; el.style.top = y + "px";
+}
+function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
+
+const SIGNAL_HELP = {
+  "Google Cloud Revenue Growth": "How fast Google Cloud (Alphabet's cloud business) is growing year-over-year. Cloud grew +63% in Q1 2026 — its fastest rate on record — driven by enterprise AI and data-analytics workloads. It now runs at a $80B annual revenue rate with a $462B backlog. Cloud is the single number that re-rated Alphabet from 'disrupted search monopoly' to 'AI infrastructure winner' — and the single number that would break that re-rating if it decelerates sharply.",
+  "Q2 Revenue vs ~$108B Estimate": "Analysts expect Alphabet to report about $108 billion in Q2 2026 sales. This checks whether the growth momentum from Q1 (22% revenue growth) is holding. A beat signals Cloud and Search are compounding together. A miss raises the question of whether AI competition is finally biting or whether cloud bookings are just timing shifts.",
+  "Search Revenue Growth (YoY %)": "How fast Google Search advertising revenue is growing. Search grew +19% to $60.4B in Q1 2026 — queries are at all-time highs and AI Overviews are monetizing at rates comparable to traditional search (ads appear in 25.5% of AI Overview responses, up from 5% a year ago). The existential question: can AI Overviews remain as monetizable as blue links, or will advertisers find click-through conversion falls as users get answers without clicking?",
+  "Operating Margin (ex. gains)": "Alphabet's true operating profitability after stripping out the large one-time investment gains that inflated Q1 2026 reported EPS ($2.35/share came from equity securities). With $180–190B in 2026 capex, the key question is whether the underlying operating margin is expanding (Cloud leverage + Search stability) or compressing (infrastructure cost) from the prior baseline.",
+  "Cloud Operating Margin": "Google Cloud's operating profit margin — how much of each dollar of cloud revenue becomes operating income. Cloud's margin reached 32.9% in Q1 2026, up sharply from near zero two years ago. Higher margin = the cloud investment is delivering returns. If the massive capex ramp compresses this, it raises questions about the unit economics of AI infrastructure.",
+  "DOJ Structural Remedy Risk": "Alphabet is fighting two antitrust cases simultaneously. (1) Search monopoly: DOJ + 35 states are appealing for structural remedies including forced Chrome or Android divestiture — these distribution channels deliver ~40% of Google's search queries. (2) AdTech: DOJ is pushing for forced AdX divestiture. Behavioral remedies (share data, end exclusive deals) would adjust margins but not break the flywheel. Structural remedies would be transformative. Court timelines extend into late 2026 and 2027.",
+};
+const TAG_HELP = {
+  BEAT:  "doing better than expected — a good sign.",
+  MATCH: "roughly in line with expectations — steady, no surprises.",
+  MISS:  "falling short of expectations — a worry.",
+  WATCH: "not decided yet — keep an eye on it.",
+};
+
+function tip(title, body, note, color) {
+  return {
+    className: "tip-target",
+    onMouseEnter: (e) => showTip(e, title, body, note, color),
+    onMouseMove:  (e) => moveTip(e),
+    onMouseLeave: hideTip,
+  };
+}
+function tipSvg(title, body, note, color, extraClass) {
+  return {
+    className: (extraClass ? extraClass + " " : "") + "tip-target",
+    onMouseEnter: (e) => showTip(e, title, body, note, color),
+    onMouseMove:  (e) => moveTip(e),
+    onMouseLeave: hideTip,
+  };
+}
+
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║                                                                          ║
+   ║   ███  EDIT EVERYTHING IN THIS BLOCK EACH QUARTER  ███                   ║
+   ║                                                                          ║
+   ║   This is the ONLY section you need to touch. Everything below draws     ║
+   ║   itself from these numbers. Follow GOOGL-QUARTERLY-CHECKLIST.md.        ║
+   ║                                                                          ║
+   ║   Quick map after each earnings report:                                  ║
+   ║     1. AS_OF_DATE  ......  today's date                                  ║
+   ║     2. NOW_PRICE   ......  current share price                           ║
+   ║     3. HISTORY     ......  add the just-finished quarter's price         ║
+   ║     4. FUTURE_Q    ......  roll the 4 forward quarter labels             ║
+   ║     5. CASES       ......  ⚠ re-read each narrative — still true?        ║
+   ║     6. PROJ_END + target12 .. bear/base/bull price targets              ║
+   ║     7. SIGNALS / MARGIN ...  update tags + positions                    ║
+   ║     8. KPI_HIST / KPI_PROJ .. Cloud growth projections                  ║
+   ║     9. TRACK       ......  add the new quarter (oldest auto-drops)       ║
+   ║    10. DISLOCATION_DATE ...  only if a new shock happened               ║
+   ║                                                                          ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+// 1 ── Date shown top-right
+const AS_OF_DATE = "2026-05-30";
+
+// 10 ── Summer 2025 dislocation: AI-disruption fears sent stock to 52-week low
+const DISLOCATION_DATE       = "2025-07-15";  // approx. peak-fear trough
+const REVERSION_TROUGH       = 162;           // 52-week low hit during AI-fear selloff
+const REVERSION_BASEFLOOR    = 350;           // bottom of current BASE band
+const REVERSION_PRECEDENT_DAYS = 270;         // ~9 months from trough to base recovery
+
+const CASES = {
+  bear: {
+    key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
+    target12: "$220 — $265",
+    op: "Two antitrust fronts reach worst-case outcomes: a DOJ appellate court imposes structural remedies severing Chrome or Android distribution (removing ~40% of Google's default search placement), and forced AdX divestiture breaks the publisher ad-server flywheel that generates premium CPMs. Simultaneously, AI Overviews plateau in ad monetization — advertisers find conversion lower than traditional links as users get answers without clicking — and query volume starts migrating to ChatGPT and Perplexity for higher-value informational research. Cloud decelerates to 30–35% as the initial AI land-rush passes and AWS/Azure reassert supply advantages. Multiple compresses to 22× on a regulatory-discount + earnings-miss combination.",
+    breaks: "DOJ loses the structural remedies appeal in both cases, AND Cloud sustains >50% growth for two more quarters — both together remove the core bear premise.",
+    requires01: "Cloud decelerates to sub-40%; search growth falls below 12% on competitive losses",
+    requires02: "Operating margin compresses as capex spends without proportionate revenue; DOJ structural remedy imposed",
+  },
+  base: {
+    key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
+    target12: "$395 — $435",
+    op: "Search proves it can grow alongside AI: queries at all-time highs, AI Overviews monetizing at near-parity with traditional search (ads in 25.5% of responses and growing), and no competitor yet demonstrating the ability to capture share of commercial-intent queries at scale. Cloud sustains 50%+ growth — decelerating from 63% but the $462B backlog (nearly doubled sequentially) provides 2–3 years of demand visibility. DOJ remedies land as behavioral: end exclusive distribution deals, share some search index data — adjusts cost structure but doesn't break the data flywheel. Capex is tolerated as 'investment' because Cloud's 32.9% margin already demonstrates the return.",
+    breaks: "Cloud decelerates below 40% for two consecutive quarters (bear shift), or Cloud sustains above 60% AND Search re-accelerates above 22% (bull shift). The base lane is narrower than it looks.",
+    requires01: "Cloud sustains 50%+; Q2 revenue beats guide midpoint; search holds above 15%",
+    requires02: "Cloud margin holds above 31%; capex cycle shows operating leverage emergence in guidance",
+  },
+  bull: {
+    key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
+    target12: "$540 — $610",
+    op: "Google Cloud becomes the enterprise AI platform of choice: Gemini models running on Google's own TPU infrastructure deliver lower latency and cost than NVIDIA GPU-rented competitors, and the $462B backlog is the start of a decade-long enterprise AI migration. Search re-accelerates above 22% as AI Mode shopping ads prove measurably more effective than static links — the closed-loop data advantage across Search, YouTube, Maps, and Shopping (Alphabet knows what you bought after seeing the ad) gives targeting precision no standalone model can match. DOJ appellate courts reject structural remedies; Apple continues paying $15–20B annually for default search. The market re-rates Alphabet from 'legacy search monopoly at 29×' to 'dual-compounder AI platform at 36×.'",
+    breaks: "Google Cloud loses market share to AWS/Azure despite growing — i.e., the AI cloud market grows faster than Alphabet's share, proving the 63% gain was catch-up not a structural win. Also: Apple drops Google as default search (observable now in court proceedings).",
+    requires01: "Cloud holds 60%+ for Q2; backlog approaches $500B; Search re-accelerates to 22%+",
+    requires02: "Cloud margin expands above 35% as TPU silicon scales and inference unit economics improve",
+  },
+};
+
+const NOW_PRICE = 380;
+const HISTORY = [
+  { q: "Q4 24", p: 202 },
+  { q: "Q1 25", p: 177 },
+  { q: "Q2 25", p: 168 },
+  { q: "Q3 25", p: 196 },
+  { q: "Q4 25", p: 258 },
+  { q: "Q1 26", p: 375 },
+  { q: "NOW",   p: NOW_PRICE },
+];
+const PROJ_END = { bear: 220, base: 405, bull: 578 };
+const FUTURE_Q = ["Q2 26", "Q3 26", "Q4 26", "Q1 27"];
+
+const SIGNALS = {
+  bear: [
+    { name: "Google Cloud Revenue Growth",    unit: "% YoY", tag: "MISS",  next: "Q2 2026 (Jul 22)", val: "BEAR <40%",         guide: "Q1 +63%",         pos: 0.20 },
+    { name: "Q2 Revenue vs ~$108B Estimate",  unit: "$B",    tag: "MISS",  next: "Q2 2026 (Jul 22)", val: "BEAR <$106B",       guide: "EST. ~$108B",     pos: 0.18 },
+    { name: "Search Revenue Growth (YoY %)",  unit: "% YoY", tag: "MISS",  next: "Q2 2026 (Jul 22)", val: "BEAR <12%",         guide: "Q1 +19%",         pos: 0.22 },
+  ],
+  base: [
+    { name: "Google Cloud Revenue Growth",    unit: "% YoY", tag: "MATCH", next: "Q2 2026 (Jul 22)", val: "BASE 50–55%",       guide: "Q1 +63%",         pos: 0.60 },
+    { name: "Q2 Revenue vs ~$108B Estimate",  unit: "$B",    tag: "BEAT",  next: "Q2 2026 (Jul 22)", val: "BASE $107–110B",    guide: "EST. ~$108B",     pos: 0.64 },
+    { name: "Search Revenue Growth (YoY %)",  unit: "% YoY", tag: "MATCH", next: "Q2 2026 (Jul 22)", val: "BASE 14–18%",       guide: "Q1 +19%",         pos: 0.58 },
+  ],
+  bull: [
+    { name: "Google Cloud Revenue Growth",    unit: "% YoY", tag: "BEAT",  next: "Q2 2026 (Jul 22)", val: "BULL ≥60%",         guide: "Q1 +63%",         pos: 0.86 },
+    { name: "Q2 Revenue vs ~$108B Estimate",  unit: "$B",    tag: "BEAT",  next: "Q2 2026 (Jul 22)", val: "BULL ≥$112B",       guide: "EST. ~$108B",     pos: 0.88 },
+    { name: "Search Revenue Growth (YoY %)",  unit: "% YoY", tag: "BEAT",  next: "Q2 2026 (Jul 22)", val: "BULL ≥22%",         guide: "Q1 +19%",         pos: 0.83 },
+  ],
+};
+const MARGIN = {
+  bear: [
+    { name: "Cloud Operating Margin",       unit: "%",    tag: "MISS",  next: "Q2 2026 (Jul 22)",    pos: 0.22 },
+    { name: "DOJ Structural Remedy Risk",   unit: "RISK", tag: "MISS",  next: "Open 2026–2027",      pos: 0.18 },
+  ],
+  base: [
+    { name: "Cloud Operating Margin",       unit: "%",    tag: "MATCH", next: "Q2 2026 (Jul 22)",    pos: 0.60 },
+    { name: "DOJ Structural Remedy Risk",   unit: "RISK", tag: "WATCH", next: "Open 2026–2027",      pos: 0.45 },
+  ],
+  bull: [
+    { name: "Cloud Operating Margin",       unit: "%",    tag: "BEAT",  next: "Q2 2026 (Jul 22)",    pos: 0.82 },
+    { name: "DOJ Structural Remedy Risk",   unit: "RISK", tag: "BEAT",  next: "Open 2026–2027",      pos: 0.78 },
+  ],
+};
+
+// Google Cloud Revenue Growth Rate (%) — current Q1 2026 actual, then projections
+const KPI_HIST = 63;
+const KPI_PROJ = {
+  bear: [50, 40, 35, 30],
+  base: [55, 50, 48, 45],
+  bull: [60, 62, 65, 68],
+};
+
+// 9 ── TRACK RECORD. Append newest quarter to the END each cycle. Oldest auto-drops.
+const TRACK_ALL = [
+  { q: "Q4 2024", date: "2025-02", post: 202, reaction: "+",  bear: [165, 200], base: [200, 252], bull: [252, 322], landed: "base",  conf: "med"  },
+  { q: "Q1 2025", date: "2025-04", post: 177, reaction: "−",  bear: [152, 198], base: [198, 248], bull: [248, 312], landed: "bear",  conf: "med"  },
+  { q: "Q2 2025", date: "2025-07", post: 168, reaction: "−",  bear: [148, 192], base: [192, 240], bull: [240, 305], landed: "bear",  conf: "med"  },
+  { q: "Q3 2025", date: "2025-10", post: 196, reaction: "++", bear: [155, 195], base: [195, 245], bull: [245, 310], landed: "base",  conf: "high" },
+  { q: "Q4 2025", date: "2026-02", post: 258, reaction: "++", bear: [200, 252], base: [252, 325], bull: [325, 418], landed: "base",  conf: "high" },
+  { q: "Q1 2026", date: "2026-04", post: 375, reaction: "++", bear: [210, 268], base: [268, 350], bull: [350, 445], landed: "bull",  conf: "high" },
+];
+const TRACK_WINDOW    = 6;
+const TRACK           = TRACK_ALL.slice(-TRACK_WINDOW);
+const TRACK_PRICE_MIN = 135, TRACK_PRICE_MAX = 460;
+
+// ── Chart geometry ──────────────────────────────────────────────────────────
+const PRICE_MIN = 150, PRICE_MAX = 640;
+const CH_W = 760, CH_H = 420, PAD_L = 8, PAD_R = 56, PAD_T = 18, PAD_B = 34;
+const plotW = CH_W - PAD_L - PAD_R, plotH = CH_H - PAD_T - PAD_B;
+const yOf = (p) => PAD_T + (1 - (p - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * plotH;
+
+// ── Components ──────────────────────────────────────────────────────────────
+
+function FanChart({ c }) {
+  const nHist = HISTORY.length;
+  const histPts = HISTORY.map((d, i) => [PAD_L + (i / (nHist + FUTURE_Q.length - 1)) * plotW, yOf(d.p)]);
+  const nowX = histPts[nHist - 1][0];
+  const nowY = histPts[nHist - 1][1];
+  const fwdN = FUTURE_Q.length;
+  const fwdX = (i) => nowX + ((i + 1) / fwdN) * (CH_W - PAD_R - nowX);
+  const end = PROJ_END[c.key];
+  const mid = FUTURE_Q.map((_, i) => {
+    const t = (i + 1) / fwdN;
+    return [fwdX(i), yOf(NOW_PRICE + (end - NOW_PRICE) * t)];
+  });
+  const spread = (i) => 28 + i * 26;
+  const upper    = mid.map(([x, y], i) => [x, y - spread(i)]);
+  const lower    = mid.map(([x, y], i) => [x, y + spread(i)]);
+  const bandPath = `M ${nowX} ${nowY} ` + upper.map(([x, y]) => `L ${x} ${y}`).join(" ") + " " +
+    lower.slice().reverse().map(([x, y]) => `L ${x} ${y}`).join(" ") + " Z";
+  const midPath  = `M ${nowX} ${nowY} ` + mid.map(([x, y]) => `L ${x} ${y}`).join(" ");
+  const histPath = "M " + histPts.map(([x, y]) => `${x} ${y}`).join(" L ");
+  const gridP    = [200, 300, 400, 500, 600];
+
+  return (
+    <svg viewBox={`0 0 ${CH_W} ${CH_H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+      <defs>
+        <linearGradient id={`fan-${c.key}`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor={c.accent} stopOpacity="0.05" />
+          <stop offset="100%" stopColor={c.accent} stopOpacity="0.28" />
+        </linearGradient>
+        <filter id="softglow"><feGaussianBlur stdDeviation="2.2" /></filter>
+      </defs>
+      {gridP.map((p) => (
+        <g key={p}>
+          <line x1={PAD_L} y1={yOf(p)} x2={CH_W - PAD_R} y2={yOf(p)} stroke="#1c2230" strokeWidth="1" strokeDasharray="1 5" />
+          <text x={CH_W - PAD_R + 8} y={yOf(p) + 3} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>${p}</text>
+        </g>
+      ))}
+      <line x1={nowX} y1={PAD_T} x2={nowX} y2={CH_H - PAD_B} stroke="#2f6dff" strokeWidth="1" strokeDasharray="3 4" opacity="0.7" />
+      <path d={bandPath} fill={`url(#fan-${c.key})`}
+        {...tipSvg("The forecast cone",
+          "This shaded fan shows the range of where the price could go in this scenario over the next year. It gets wider further out because the future is less certain. The dashed line through the middle is the most-likely path.",
+          "Wider = more uncertainty.", c.accent, "fan-band")} />
+      <path d={midPath} fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="6 5" className="fan-mid" style={{ filter: "url(#softglow)" }} />
+      <path d={histPath} fill="none" stroke="#cdd5e3" strokeWidth="2"
+        {...tipSvg("Price history",
+          "The solid white line is Alphabet's actual share price over the past year and a half. The big dip in early 2025 was markets pricing 'AI disrupts Google.' The dramatic rise from Q3 2025 onward was Google Cloud's acceleration from ~30% to 63% growth forcing a complete re-rating.",
+          "This part already happened — it is real, not a forecast.", "#cdd5e3", "hist-line")} />
+      {HISTORY.map((d, i) => (
+        <g key={i}>
+          <circle
+            cx={histPts[i][0]} cy={histPts[i][1]}
+            r={i === nHist - 1 ? 4.5 : 3}
+            fill={i === nHist - 1 ? "#2f6dff" : "#0a0d14"}
+            stroke={i === nHist - 1 ? "#fff" : "#8a93a6"}
+            strokeWidth="1.5"
+            {...tipSvg(
+              i === nHist - 1 ? "Where we are today" : d.q,
+              i === nHist - 1
+                ? `Alphabet (GOOGL) trades around $${NOW_PRICE} right now. The blue dot is today — everything left is history, everything right is forecast.`
+                : `Around the end of ${d.q}, Alphabet was trading near $${d.p}.`,
+              null, i === nHist - 1 ? "#9fb4ff" : "#cdd5e3"
+            )}
+          />
+          {i === nHist - 1 && (
+            <text x={histPts[i][0] - 6} y={histPts[i][1] - 12} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="end">NOW ${NOW_PRICE}</text>
+          )}
+        </g>
+      ))}
+      {mid.map(([x, y], i) => (
+        <g key={i} className="diamond" style={{ animationDelay: `${0.5 + i * 0.12}s` }}>
+          <rect x={x - 4} y={y - 4} width="8" height="8" transform={`rotate(45 ${x} ${y})`}
+            fill="#0a0d14" stroke={c.accent} strokeWidth="1.6"
+            {...tipSvg(`Forecast: ${FUTURE_Q[i]}`,
+              `A milestone on the most-likely price path in the ${c.label} scenario. Each diamond is roughly three months further into the future.`,
+              "Hover the shaded cone to see the uncertainty range.", c.accent)} />
+          <text x={x} y={y - 12} fill={c.accent} fontSize="10.5" fontFamily={FONT_MONO} textAnchor="middle">{FUTURE_Q[i]}</text>
+        </g>
+      ))}
+      {["2025", "2026", "2027"].map((yr, i) => (
+        <text key={yr} x={PAD_L + (i / 2) * plotW} y={CH_H - 10} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>{yr}</text>
+      ))}
+    </svg>
+  );
+}
+
+function SignalBar({ pos, accent, tipProps }) {
+  return (
+    <div {...(tipProps || {})} style={{ position: "relative", height: 22, borderRadius: 3, overflow: "hidden", display: "flex", border: "1px solid #1c2230" }}>
+      <div style={{ flex: 1, background: "rgba(241,86,75,0.22)" }} />
+      <div style={{ flex: 1, background: "rgba(224,168,59,0.18)" }} />
+      <div style={{ flex: 1, background: "rgba(63,208,122,0.22)" }} />
+      <div style={{ position: "absolute", top: -2, bottom: -2, left: `calc(${pos * 100}% - 1px)`, width: 2, background: accent, boxShadow: `0 0 8px ${accent}`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "50%", left: `${pos * 100}%`, width: 7, height: 7, borderRadius: "50%", background: accent, transform: "translate(-50%,-50%)", boxShadow: `0 0 10px ${accent}`, pointerEvents: "none" }} />
+    </div>
+  );
+}
+
+function tagColor(tag) {
+  if (tag === "BEAT")  return "#3fd07a";
+  if (tag === "MATCH") return "#e0a83b";
+  if (tag === "MISS")  return "#f1564b";
+  return "#7b86a0";
+}
+
+function Segmented({ active, setActive, small }) {
+  const explain = {
+    bear: ["The pessimistic scenario", "Click to see what GOOGL looks like if things go wrong — DOJ wins structural antitrust remedies breaking up Google's distribution, Cloud decelerates sharply, and Search monetization erodes as AI competitors capture query share. Price would likely fall to the $220–265 range."],
+    base: ["The most-likely scenario", "Click for the steady-as-she-goes view — Cloud sustains 50%+ growth on $462B backlog, Search monetization proves resilient alongside AI, and DOJ remedies stay behavioral rather than structural. Price drifts toward $395–435."],
+    bull: ["The optimistic scenario", "Click for the upside — Cloud becomes the enterprise AI platform of choice via TPU silicon advantages, Search re-accelerates via AI Mode ads, DOJ loses structural remedies appeal. The market re-rates Alphabet from 29× to 36×. Price runs to $540–610."],
+  };
+  return (
+    <div style={{ display: "flex", gap: 5 }}>
+      {Object.values(CASES).map((cc) => {
+        const on = active === cc.key;
+        return (
+          <div key={cc.key} onClick={() => setActive(cc.key)}
+            onMouseEnter={(e) => showTip(e, explain[cc.key][0], explain[cc.key][1], "Tip: click to switch the whole dashboard to this scenario.", cc.accent)}
+            onMouseMove={moveTip} onMouseLeave={hideTip}
+            style={{
+              padding: small ? "3px 12px" : "4px 14px", borderRadius: 4, fontSize: 11, fontWeight: 700,
+              letterSpacing: "0.08em", cursor: "pointer",
+              border: `1px solid ${on ? cc.accent : "#222a38"}`, color: on ? "#06080d" : cc.accent,
+              background: on ? cc.accent : "transparent", boxShadow: on ? `0 0 16px ${cc.glow}` : "none",
+              transition: "all .18s ease",
+            }}>{cc.label}</div>
+        );
+      })}
+    </div>
+  );
+}
+
+function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
+  // Scale: 20% → 0%, 75% → 100%
+  const h = Math.max(2, Math.min(96, ((val - 20) / 55) * 100));
+  const tp = baseline
+    ? tip("Starting point (Q1 2026 actual)",
+        `This is the most recent real number: Google Cloud grew at +${val}% year-over-year in Q1 2026 — the fastest growth rate on record. The grey dot marks where we are now.`,
+        "The bars to the right are forecasts of where Cloud growth goes next.", "#9aa4b8")
+    : tip(`Forecast: ${label}`,
+        `In this scenario, Google Cloud revenue is projected to grow at ${val}% year-over-year by ${label}. Taller bar = faster growth = more AI workloads choosing Google's cloud.`,
+        "Switch BEAR/BASE/BULL up top to see how the outlook changes.", accentColor);
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
+      <div style={{ fontSize: 11, color: accentColor, fontWeight: 700, marginBottom: 4 }}>{val}%</div>
+      {baseline
+        ? <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#3a4252", border: "1.5px solid #7b86a0", marginBottom: `${h}%` }} />
+        : <div style={{ width: "62%", height: `${h}%`, background: `linear-gradient(180deg, ${accentColor}, ${accentColor}44)`, border: `1px solid ${accentColor}`, borderRadius: 2, animation: `fadeUp .5s ease ${delay}s both`, boxShadow: `0 0 12px ${accentColor}55` }} />}
+      <div style={{ fontSize: 9.5, color: "#5a6477", marginTop: 6 }}>{label}</div>
+    </div>
+  );
+}
+
+function SignalGroup({ id, title, requires, accent, evidence, children }) {
+  return (
+    <div style={{ border: "1px solid #161c28", borderRadius: 8, padding: "10px 12px", marginBottom: 12, background: "#0a0e15" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: 12.5, color: "#e6eaf2", fontFamily: FONT_DISPLAY, fontWeight: 600 }}>
+          <span style={{ background: "#161c28", padding: "1px 6px", borderRadius: 3, fontSize: 10, fontFamily: FONT_MONO, color: "#9aa4b8", marginRight: 8, verticalAlign: "middle" }}>{id}</span>
+          <span dangerouslySetInnerHTML={{ __html: title }} />
+        </div>
+        <div style={{ fontSize: 10, color: "#5a6477" }}>EVIDENCE {evidence} ›</div>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#5a6477", margin: "4px 0 10px" }}>REQUIRES: <span style={{ color: accent }}>{requires}</span></div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>{children}</div>
+    </div>
+  );
+}
+
+function SignalRow({ s, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
+      <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }}
+        {...tip(s.name, SIGNAL_HELP[s.name] || "A measurable indicator checking whether this scenario is actually happening.",
+          `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
+        <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
+        <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>{s.unit} · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
+      </div>
+      <div>
+        <SignalBar pos={s.pos} accent={accent} tipProps={tip(
+          "Where this scenario sits",
+          "This bar runs from bad (red, left) to good (green, right). The glowing dot shows where THIS scenario expects the number to land.",
+          "It is a visual gauge, not an exact measurement.", accent)} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
+          <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
+          <span style={{ color: accent, fontWeight: 700 }}>{s.val}</span>
+          <span style={{ color: "#5a6477" }}>{s.guide}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MarginRow({ s, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
+      <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }}
+        {...tip(s.name, SIGNAL_HELP[s.name] || "A measure of how profitable and well-managed the business is.",
+          `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
+        <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
+        <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>{s.unit} · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
+      </div>
+      <div>
+        <SignalBar pos={s.pos} accent={accent} tipProps={tip(
+          "Where this scenario sits",
+          "Red (left) is bad, green (right) is good. The glowing dot marks where this scenario expects this measure to land.",
+          null, accent)} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
+          <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReversionClock() {
+  const dislocationDate = new Date(DISLOCATION_DATE);
+  const today = new Date();
+  const elapsed = Math.round((today - dislocationDate) / 86400000);
+  const pct    = Math.min(100, (elapsed / REVERSION_PRECEDENT_DAYS) * 100);
+  const recPct = Math.min(100, Math.max(0, ((NOW_PRICE - REVERSION_TROUGH) / (REVERSION_BASEFLOOR - REVERSION_TROUGH)) * 100));
+  const aheadOfPace = recPct >= pct;
+  return (
+    <div style={{ marginTop: 12, padding: "12px 14px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#5a6477" }}>RE-RATING CLOCK · vs JUL-2025 TROUGH</div>
+        <div style={{ fontSize: 11, color: "#9aa4b8" }}><span style={{ color: "#3fd07a", fontWeight: 700 }}>{elapsed}d</span> elapsed / ~{REVERSION_PRECEDENT_DAYS}d to base last time</div>
+      </div>
+      <div style={{ marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>TIME SINCE DISLOCATION (approx. {new Date(DISLOCATION_DATE).toLocaleDateString("en-US", { month: "short", year: "numeric" })} AI-fear trough)</div>
+      <div {...tip("How much time has passed",
+          `The AI-disruption selloff peaked around July 2025 when the stock hit its $162 52-week low. It took approximately 9 months for the stock to recover to the base floor at $350. This bar shows how far along that timeline we are.`,
+          "At >100%, the recovery is complete and the stock is trading above base floor.", "#e0a83b")}
+        style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${pct}%`, background: "linear-gradient(90deg,#f1564b,#e0a83b,#3fd07a)", borderRadius: 7 }} />
+        <div style={{ position: "absolute", left: "100%", top: -3, bottom: -3, width: 2, background: "#3fd07a", transform: "translateX(-1px)" }} />
+        <div style={{ position: "absolute", left: `${pct}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#fff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #fff", pointerEvents: "none" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
+        <span>day 0</span><span style={{ color: "#3fd07a" }}>base-recovery mark (~{REVERSION_PRECEDENT_DAYS}d) →</span>
+      </div>
+      <div style={{ marginTop: 12, marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>PRICE RECOVERY · ${REVERSION_TROUGH} trough → ${REVERSION_BASEFLOOR} base floor</div>
+      <div {...tip("How far the price has bounced back",
+          `The stock bottomed at $${REVERSION_TROUGH} during the AI-disruption fear selloff. The base floor is $${REVERSION_BASEFLOOR}. At $${NOW_PRICE}, the stock is already well above the base floor — recovery is complete.`,
+          "A full bar means the stock has cleared the base floor. It has.", "#9fb4ff")}
+        style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${recPct}%`, background: "linear-gradient(90deg,#f1564b,#3fd07a)", borderRadius: 7 }} />
+        <div style={{ position: "absolute", left: `${recPct}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#9fb4ff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #9fb4ff", pointerEvents: "none" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
+        <span>${REVERSION_TROUGH}</span>
+        <span style={{ color: "#9fb4ff" }}>${NOW_PRICE} now · {Math.round(recPct)}% of the way back</span>
+        <span>${REVERSION_BASEFLOOR}</span>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
+        The summer 2025 AI-disruption dislocation took approximately <span style={{ color: "#e0a83b" }}>9 months</span> to fully reverse. We are <span style={{ color: "#fff", fontWeight: 700 }}>{elapsed} days in</span> and the stock has <span style={{ color: aheadOfPace ? "#3fd07a" : "#e0a83b", fontWeight: 700 }}>{aheadOfPace ? "already cleared the base floor" : "not yet cleared the base floor"}</span> at ${REVERSION_BASEFLOOR}. Re-rating is complete — Google Cloud's four-quarter acceleration from ~30% to 63% forced the market to abandon the 'AI disrupts Google' thesis. The question now is whether the stock can sustain current multiples or press into bull territory on July 22.
+      </div>
+    </div>
+  );
+}
+
+function TrackRecord() {
+  const W = 1000, H = 300, pl = 44, pr = 70, pt = 20, pb = 40;
+  const pw = W - pl - pr, ph = H - pt - pb;
+  const y = (p) => pt + (1 - (p - TRACK_PRICE_MIN) / (TRACK_PRICE_MAX - TRACK_PRICE_MIN)) * ph;
+  const x = (i) => pl + (TRACK.length === 1 ? pw / 2 : (i / (TRACK.length - 1)) * pw);
+  const grid = [420, 360, 300, 240, 180];
+  const pathPts = TRACK.map((t, i) => [x(i), y(t.post)]);
+  const linePath = "M " + pathPts.map(([px, py]) => `${px} ${py}`).join(" L ");
+  const hits = TRACK.filter((t) => t.landed.includes("base") || t.landed.includes("bull")).length;
+  return (
+    <div style={{ background: "#080b11", padding: "16px 18px", borderTop: "1px solid #161c28" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+        <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
+          <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>TR · BACKTEST</span>
+          THESIS TRACK RECORD · RECONSTRUCTED BANDS vs ACTUAL PRICE
+        </div>
+        <div style={{ fontSize: 11, color: "#7b86a0" }}>BASE-OR-BETTER LANDINGS: <span style={{ color: "#3fd07a", fontWeight: 700 }}>{hits}/{TRACK.length}</span></div>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#5a6477", marginBottom: 10 }}>
+        Each column = one earnings date. Stacked zones are the bear / base / bull bands as they would have been drawn then. The line is where price actually traded after.
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+        {grid.map((p) => (
+          <g key={p}>
+            <line x1={pl} y1={y(p)} x2={W - pr} y2={y(p)} stroke="#161c28" strokeWidth="1" strokeDasharray="1 5" />
+            <text x={W - pr + 8} y={y(p) + 3} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>${p}</text>
+          </g>
+        ))}
+        {TRACK.map((t, i) => {
+          const cx = x(i), bw = 46;
+          const landWord  = t.landed.includes("bull") ? "the optimistic zone" : t.landed.includes("base") ? "the middle zone" : "the pessimistic zone";
+          const reactWord = t.reaction.includes("−") ? "the stock FELL after this report" : "the stock ROSE after this report";
+          const seg = (range, color) => (
+            <rect x={cx - bw / 2} y={y(range[1])} width={bw}
+              height={Math.max(2, y(range[0]) - y(range[1]))}
+              fill={color} opacity={t.conf === "med" ? 0.32 : 0.5} rx="2"
+              style={{ animation: `fadeUp .5s ease ${i * 0.08}s both` }}
+              {...tipSvg(`${t.q} earnings`,
+                `Back at this date, the range we would have predicted (red=low, yellow=middle, green=high). In reality, ${reactWord} and the price ended up in ${landWord} (~$${t.post}).`,
+                t.conf === "med" ? "Marked lower-confidence — older reconstructed data." : "Higher-confidence recent data.",
+                color.includes("63,208") ? "#3fd07a" : color.includes("224,168") ? "#e0a83b" : "#f1564b")} />
+          );
+          return (
+            <g key={t.q}>
+              {seg(t.bull, "rgba(63,208,122,0.55)")}
+              {seg(t.base, "rgba(224,168,59,0.5)")}
+              {seg(t.bear, "rgba(241,86,75,0.5)")}
+              <text x={cx} y={H - 24} fill="#9aa4b8" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle">{t.q}</text>
+              <text x={cx} y={H - 11} fill={t.conf === "med" ? "#5a6477" : "#3a4252"} fontSize="8.5" fontFamily={FONT_MONO} textAnchor="middle">
+                {t.conf === "med" ? "lower-conf" : t.reaction === "++" ? "↑ re-rate" : t.reaction.includes("−") ? "↓ dislocation" : ""}
+              </text>
+            </g>
+          );
+        })}
+        <path d={linePath} fill="none" stroke="#dde3ee" strokeWidth="2.2" className="track-line"
+          style={{ filter: "drop-shadow(0 0 4px rgba(221,227,238,0.4))" }} />
+        {TRACK.map((t, i) => {
+          const isLast = i === TRACK.length - 1;
+          return (
+            <g key={t.q} style={{ animation: `pop .4s cubic-bezier(.2,1.4,.4,1) ${0.3 + i * 0.08}s both` }}>
+              <circle cx={x(i)} cy={y(t.post)} r={isLast ? 6 : 4}
+                fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
+                {...tipSvg(isLast ? "Today" : `${t.q}: actual price`,
+                  isLast
+                    ? `Alphabet is at ~$${t.post} now — well above base floor, sitting in the bull zone vs. Q1 2026 bands.`
+                    : `After ${t.q} earnings, Alphabet actually traded around $${t.post}. Compare this dot to the colored bars to see if the prediction was right.`,
+                  null, isLast ? "#9fb4ff" : "#cdd5e3")} />
+              {isLast && (
+                <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">NOW ${t.post}</text>
+              )}
+            </g>
+          );
+        })}
+      </svg>
+      <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
+        <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
+          Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits in the
+          <span style={{ color: "#3fd07a", fontWeight: 700 }}> bull zone</span> vs. Q1 2026 bands, reflecting a complete reversal of the 2025 bear thesis.
+          The stock spent <span style={{ color: "#f1564b" }}>three quarters in the bear band</span> (Q1–Q3 2025) as markets priced "AI disrupts Google's search monopoly" as the base scenario.
+          Then Google Cloud's acceleration from ~30% to <span style={{ color: "#3fd07a", fontWeight: 700 }}>63% growth</span> over four consecutive quarters forced a
+          <span style={{ color: "#3fd07a", fontWeight: 700 }}> complete re-rating</span>. The pattern: fundamentals were always stronger than the price suggested; the dislocation was a sentiment discount, not a fundamental one.
+        </div>
+      </div>
+      <ReversionClock />
+      <div style={{ fontSize: 9.5, color: "#3d4555", marginTop: 8, lineHeight: 1.5 }}>
+        ⚠ Bands are reconstructed (anchored to each date's prevailing EPS × multiple regime), not archived in real time — treat older quarters as directional only. Re-rating pattern rests on one major dislocation cycle; n=1 is not a strategy, it is a case study. Pattern breaks if Cloud decelerates sharply in Q2 2026, which would re-test whether the current multiple is justified.
+      </div>
+    </div>
+  );
+}
+
+function AlphabetThesis() {
+  const [active, setActive] = useState("base");
+  const c = CASES[active];
+  const kpiVals = KPI_PROJ[active];
+  return (
+    <div style={{ background: "#06080d", minHeight: "100vh", padding: "20px 16px", fontFamily: FONT_MONO, color: "#cdd5e3" }}>
+      <div className="grain" style={{
+        maxWidth: 1280, margin: "0 auto", position: "relative",
+        border: "1px solid #161c28", borderRadius: 12,
+        background: "linear-gradient(160deg,#0a0d14,#070a10)",
+        boxShadow: "0 40px 120px rgba(0,0,0,0.6)", overflow: "hidden"
+      }}>
+        {/* ── Header ─────────────────────────────────────────────── */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 22px", borderBottom: "1px solid #161c28" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, letterSpacing: "0.35em", color: "#f3f5f9", fontWeight: 600 }}>
+              TH<span style={{ color: c.accent }}>3</span>SIS
+            </div>
+            <div {...tip("👋 New here?",
+                "Hover your mouse over anything on this page — charts, bars, dots, labels — and a plain-English explanation will pop up. No finance degree required.",
+                "This hint is one too.", "#3fd07a")}
+              style={{ fontSize: 10, color: "#5a6477", border: "1px solid #222a38", borderRadius: 20, padding: "3px 10px", cursor: "help" }}>
+              ⓘ hover anything to learn what it means
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 12.5, color: "#7b86a0" }}>
+            <span>{AS_OF_DATE}</span>
+            <span style={{ color: "#cdd5e3" }}>NASDAQ:GOOGL</span>
+            <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "#9aa4b8" }}>Alphabet Inc.</span>
+            <span {...tip("Today's share price",
+                `One share of Alphabet Class A stock costs about $${NOW_PRICE} right now. The whole dashboard is about figuring out whether that is cheap, fair, or expensive.`,
+                null, "#fff")}
+              style={{ color: "#fff", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}.00</span>
+          </div>
+        </div>
+
+        {/* ── Two-column body ─────────────────────────────────────── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 1, background: "#161c28" }}>
+
+          {/* LEFT: Fan chart + KPI */}
+          <div style={{ background: "#080b11", padding: "16px 18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>NOW</span>
+                GOOGL · PRICE &amp; RISK-REWARD
+              </div>
+              <Segmented active={active} setActive={setActive} />
+            </div>
+            <div className="panel" key={active + "-chart"}><FanChart c={c} /></div>
+            <div style={{ marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#5a6477" }}>
+              <span><span style={{ color: c.accent }}>━━</span> {c.label.toLowerCase()} mid &nbsp; <span style={{ color: "#2f6dff" }}>┊</span> now &nbsp; <span style={{ color: "#cdd5e3" }}>━</span> history</span>
+              <span>12M TARGET <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></span>
+            </div>
+
+            {/* KPI chart */}
+            <div style={{ marginTop: 18, borderTop: "1px solid #161c28", paddingTop: 14 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.16em", color: "#7b86a0", marginBottom: 4 }}
+                {...tip("The key metric to watch",
+                  "Google Cloud is now Alphabet's swing factor. When Cloud was growing at ~30%, the stock was stuck near lows. When it hit 63%, the stock nearly doubled from its lows. Watching where Cloud growth goes next is the most important thing to track in the entire Alphabet thesis.",
+                  "This is the single best 'is the re-rating justified?' gauge.", "#9fb4ff")}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>KPI · K01</span>
+                Google Cloud Revenue Growth Rate (YoY %)
+                <span style={{ color: "#5a6477", marginLeft: 8 }}>%  ·  HIGHER BETTER</span>
+              </div>
+              <div className="panel" key={active + "-kpi"} style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 120, padding: "12px 4px 0" }}>
+                <KpiCol label="Q1 26" val={KPI_HIST} baseline accentColor="#7b86a0" />
+                {kpiVals.map((v, i) => <KpiCol key={i} label={FUTURE_Q[i]} val={v} accentColor={c.accent} delay={i * 0.08} />)}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
+                <div>
+                  <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THIS MEASURES</div>
+                  <div style={{ color: "#9aa4b8" }}>Google Cloud year-over-year revenue growth. Q1 2026 printed +63% — the fastest on record. Cloud backlog stands at $462B, nearly doubling sequentially, giving 2–3 years of demand visibility.</div>
+                </div>
+                <div>
+                  <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THE <span style={{ color: c.accent }}>{c.label}</span> CASE REQUIRES</div>
+                  <div style={{ color: c.accent }}>
+                    {active === "bull"
+                      ? "Cloud holds near 60%+ as TPU infrastructure advantage attracts enterprise AI consolidation. Backlog approaches $500B by Q2."
+                      : active === "base"
+                      ? "Cloud decelerates naturally toward 50% as the base grows — still exceptional growth, still justifying the current multiple."
+                      : "Cloud falls to 30–40%, exposing 63% as a one-quarter surge rather than a structural trend. Multiple collapses as the growth story breaks."}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT: Signals */}
+          <div style={{ background: "#080b11", padding: "16px 18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>THESIS · ALL SIGNALS</div>
+              <div style={{ fontSize: 12, color: "#7b86a0" }}>{c.label.toLowerCase()} 12M <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></div>
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
+              <Segmented active={active} setActive={setActive} small />
+              <span className="dot-track" style={{ marginLeft: 6, fontSize: 10.5, color: c.accent }}>● TRACKING</span>
+            </div>
+            <div className="panel" key={active + "-op"} style={{ fontSize: 12.5, lineHeight: 1.6, color: "#bcc6d8", marginBottom: 16, minHeight: 64 }}>{c.op}</div>
+            <SignalGroup id="SN01" title="Cloud &amp; Revenue Trajectory" requires={c.requires01} accent={c.accent} evidence={4}>
+              {SIGNALS[active].map((s, i) => <SignalRow key={i} s={s} accent={c.accent} />)}
+            </SignalGroup>
+            <SignalGroup id="SN02" title="Margin &amp; Regulatory Exposure" requires={c.requires02} accent={c.accent} evidence={3}>
+              {MARGIN[active].map((s, i) => <MarginRow key={i} s={s} accent={c.accent} />)}
+            </SignalGroup>
+            <div style={{ marginTop: 14, borderTop: "1px solid #161c28", paddingTop: 10 }}>
+              <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 3 }}>
+                WHAT BREAKS THE <span style={{ color: c.accent }}>{c.label}</span> CASE
+              </div>
+              <div style={{ fontSize: 11.5, color: "#9aa4b8", lineHeight: 1.5 }}>{c.breaks}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Footer ──────────────────────────────────────────────── */}
+        <div style={{ padding: "10px 22px", borderTop: "1px solid #161c28", display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#4a5366" }}>
+          <span>OBSERVABLE NOW: Cloud backlog/contract announcements · DOJ appellate court filings · AI Overviews ad monetization rate · Apple search-default ruling updates</span>
+          <span>CONFIRMS JULY 22: Cloud growth rate · total revenue vs. ~$108B · Search growth · Cloud margin · operating margin excl. gains</span>
+        </div>
+
+        <TrackRecord />
+      </div>
+
+      <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "#3d4555", lineHeight: 1.5 }}>
+        Illustrative scenario framing built on current consensus estimates as of May 2026 — not a prediction and not financial advice. Price ranges are scenario mid-bands derived from forward EPS × multiple; bands are wide by design. Note: 2026 reported EPS is inflated by ~$2.35/share equity gains; thesis anchors to FY2027E operating EPS (~$13.27 consensus). Bear ~$10.50 × 21x. Base ~$13.50 × 30x. Bull ~$16.50 × 36x. All inputs will move with every data print between now and the July 22 2026 Q2 earnings release.
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<AlphabetThesis />);
+</script>
+</body>
+</html>

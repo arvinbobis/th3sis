@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TH3SIS · AMZN — Amazon.com Investment Thesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #06080d; }
+  * { box-sizing: border-box; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
+  @keyframes drawIn { from { stroke-dashoffset: 2000; } to { stroke-dashoffset: 0; } }
+  @keyframes pop { 0%{opacity:0; transform:scale(0.4);} 70%{transform:scale(1.15);} 100%{opacity:1; transform:scale(1);} }
+  @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  .hist-line { stroke-dasharray: 1400; animation: drawIn 1.6s ease forwards; }
+  .track-line { stroke-dasharray: 2000; animation: drawIn 1.8s ease .2s forwards; }
+  .fan-mid { stroke-dasharray: 6 5; animation: fadeUp .8s ease .4s both; }
+  .fan-band { animation: fadeUp .9s ease .3s both; }
+  .diamond { animation: pop .5s cubic-bezier(.2,1.4,.4,1) both; }
+  .panel { animation: fadeUp .6s ease both; }
+  .seg-btn { transition: all .18s ease; cursor: pointer; }
+  .seg-btn:hover { filter: brightness(1.25); }
+  .dot-track { animation: pulse 2.2s ease-in-out infinite; }
+  .tip-target { cursor: help; }
+  .tip-target:hover { filter: brightness(1.18); }
+  #tip-box {
+    position: fixed; z-index: 9999; max-width: 300px; pointer-events: none;
+    background: linear-gradient(160deg,#141a26,#0d1119);
+    border: 1px solid #2a3344; border-radius: 10px; padding: 12px 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.7); opacity: 0; transition: opacity .14s ease;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #tip-box.on { opacity: 1; }
+  #tip-box .tt { font-size: 11px; font-weight: 700; letter-spacing: .08em; margin-bottom: 5px; }
+  #tip-box .tb { font-size: 11.5px; line-height: 1.55; color: #c4cdde; }
+  #tip-box .tn { font-size: 10px; color:#6b7689; margin-top: 7px; font-style: italic; }
+  .grain::before { content:""; position:absolute; inset:0; pointer-events:none; opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const FONT_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+const FONT_DISPLAY = "'Spectral', Georgia, serif";
+
+// ── Tooltip engine ──────────────────────────────────────────────────────────
+let tipEl = null;
+function ensureTip() {
+  if (!tipEl) { tipEl = document.createElement("div"); tipEl.id = "tip-box"; document.body.appendChild(tipEl); }
+  return tipEl;
+}
+function showTip(e, title, body, note, color) {
+  const el = ensureTip();
+  el.innerHTML =
+    `<div class="tt" style="color:${color || '#9fb4ff'}">${title}</div>` +
+    `<div class="tb">${body}</div>` +
+    (note ? `<div class="tn">${note}</div>` : "");
+  el.classList.add("on"); moveTip(e);
+}
+function moveTip(e) {
+  const el = ensureTip();
+  const pad = 16; let x = e.clientX + pad, y = e.clientY + pad;
+  const r = el.getBoundingClientRect();
+  if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+  if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+  el.style.left = x + "px"; el.style.top = y + "px";
+}
+function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
+
+// Plain-language explanations for each signal
+const SIGNAL_HELP = {
+  "AWS Revenue Growth (YoY %)": "How fast Amazon Web Services — the cloud business — is growing compared to a year ago. AWS is Amazon's profit engine: it produces the vast majority of operating income on just ~21% of total revenue. Q1 2026 came in at +28%, the fastest in 15 quarters, driven by AI training and inference workloads. Higher growth = the $200B capex cycle is attracting real, paying customers.",
+  "Q2 Revenue vs $194–199B Guide": "Amazon told investors to expect $194–199 billion in Q2 2026 sales. This checks whether they deliver. A beat signals strong demand across cloud, advertising, and retail. A miss raises questions about tariff pass-through on third-party sellers and whether enterprise cloud commitments are slipping.",
+  "Advertising Revenue Growth": "Amazon's ads business — Sponsored Products, Prime Video ads, DSP — generated $17.2B in Q1 2026 (+24% year-over-year). Advertising is one of Amazon's highest-margin segments: almost pure profit. Sustained 20%+ growth confirms Amazon is a genuine ad platform competing with Google and Meta, not just a retail sidebar.",
+  "AWS Operating Margin": "Out of every dollar AWS earns in revenue, how much becomes operating profit. AWS ran at ~38–39% operating margin in Q1 2026 — very high. The key question with a $200B capex ramp: does margin compress (as in prior spending cycles) or does Amazon's custom Trainium silicon hold or improve margins as it scales?",
+  "Free Cash Flow vs Capex": "Free cash flow is cash generated after paying for investments. Amazon plans $200B in capex for 2026 — $43B in Q1 alone — which suppresses FCF sharply. Bear case: FCF stays near zero indefinitely. Base/bull case: capex is front-loaded, and by H2 2026 and 2027, depreciation cycles allow FCF to recover as AI infrastructure monetizes.",
+};
+const TAG_HELP = {
+  BEAT: "doing better than expected — a good sign.",
+  MATCH: "roughly in line with expectations — steady, no surprises.",
+  MISS: "falling short of expectations — a worry.",
+  WATCH: "not decided yet — keep an eye on it.",
+};
+
+function tip(title, body, note, color) {
+  return {
+    className: "tip-target",
+    onMouseEnter: (e) => showTip(e, title, body, note, color),
+    onMouseMove: (e) => moveTip(e),
+    onMouseLeave: hideTip,
+  };
+}
+function tipSvg(title, body, note, color, extraClass) {
+  return {
+    className: (extraClass ? extraClass + " " : "") + "tip-target",
+    onMouseEnter: (e) => showTip(e, title, body, note, color),
+    onMouseMove: (e) => moveTip(e),
+    onMouseLeave: hideTip,
+  };
+}
+
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║                                                                          ║
+   ║   ███  EDIT EVERYTHING IN THIS BLOCK EACH QUARTER  ███                   ║
+   ║                                                                          ║
+   ║   This is the ONLY section you need to touch. Everything below it        ║
+   ║   draws itself from these numbers. Follow AMZN-QUARTERLY-CHECKLIST.md   ║
+   ║   step by step.                                                          ║
+   ║                                                                          ║
+   ║   Quick map after each earnings report:                                  ║
+   ║     1. AS_OF_DATE  ......  today's date                                  ║
+   ║     2. NOW_PRICE   ......  current share price                           ║
+   ║     3. HISTORY     ......  add the just-finished quarter's price         ║
+   ║     4. FUTURE_Q    ......  roll the 4 forward quarter labels             ║
+   ║     5. CASES       ......  ⚠ re-read each narrative — still true?        ║
+   ║     6. PROJ_END + target12 .. bear/base/bull price targets              ║
+   ║     7. SIGNALS / MARGIN ...  update tags + positions                    ║
+   ║     8. KPI_HIST / KPI_PROJ .. AWS growth projections                    ║
+   ║     9. TRACK       ......  add the new quarter (oldest auto-drops)       ║
+   ║    10. DISLOCATION_DATE ...  only if a new shock happened               ║
+   ║                                                                          ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+// 1 ── Date shown top-right
+const AS_OF_DATE = "2026-05-30";
+
+// 10 ── Most recent price dislocation (April 2026 tariff selloff)
+const DISLOCATION_DATE = "2026-04-07";
+const REVERSION_TROUGH = 196;    // trough price hit during April tariff panic
+const REVERSION_BASEFLOOR = 262; // bottom of current BASE band
+const REVERSION_PRECEDENT_DAYS = 120; // prior April 2025 dislocation took ~4 months to base
+
+const CASES = {
+  bear: {
+    key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
+    target12: "$190 — $220",
+    op: "The $200B AI capex cycle fails to accelerate AWS growth beyond 22% as Google Cloud (+63% Q1 2026) and Azure (+31%) capture AI-native workloads. Tariffs of 30–40% on Chinese goods squeeze third-party seller economics, eroding retail margin. The FTC antitrust trial beginning October 2026 adds a structural overhang — a consent decree targeting Buy Box and self-preferencing would limit Amazon's core advantages. Free cash flow stays near zero, and the market reprices from 'AI compounder' to 'capex black hole.'",
+    breaks: "AWS re-accelerates above 28%, FCF trajectory improves in H2 2026, and advertising holds above 20% growth — any two of these together break the bear case.",
+    requires01: "AWS growth stalls below 22% on competitive losses to Azure and Google",
+    requires02: "FCF stays depressed; capex guidance raised again; no margin recovery signal",
+  },
+  base: {
+    key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
+    target12: "$290 — $325",
+    op: "AWS holds 25–28% growth as AI workloads — training runs, inference at scale, agent pipelines — become the second major cloud-migration wave. Trainium chips (sold out through Trainium4) and Bedrock/AgentCore traction give Amazon a credible moat against GPU price pressure. Advertising compounds at 18–22%, cushioning retail's thin economics. By H2 2026 the capex cycle begins to show operating leverage as depreciation absorbs prior investment, and FCF improves — the story shifts from 'cost' to 'investment with a visible return.'",
+    breaks: "AWS drops below 22% consistently (bear shift) or breaks above 32% with margin expansion (bull shift). The base band is narrower than it looks.",
+    requires01: "AWS sustains 25%+ growth; Q2 revenue beats guide midpoint ($196–198B)",
+    requires02: "AWS margin holds 36%+; H2 FCF inflection visible in guidance",
+  },
+  bull: {
+    key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
+    target12: "$410 — $470",
+    op: "Amazon's custom Trainium silicon creates a durable infrastructure moat: AI-native workloads running on AWS cost measurably less than renting NVIDIA GPUs elsewhere. Agent workloads — consuming 10–100x the compute of search queries — super-charge AWS to 33%+ growth by mid-2027. Prime Video's full-funnel data advantage (Amazon knows what you bought after the ad ran) makes advertising the most measurable TV buy available, driving budget rotation from linear TV. The market re-rates Amazon from '30x for a diversified retailer-with-cloud' to '38x for an AI infrastructure platform with an unmatched consumer data moat.'",
+    breaks: "Trainium fails to displace NVIDIA H200/B200 preference among AI labs; AWS Q2 growth prints below 28% despite massive supply investment, confirming the capex bet arrived too early.",
+    requires01: "AWS re-accelerates to 30%+; Trainium demand exceeds supply forecast in any public disclosure",
+    requires02: "AWS operating margin expands above 40% as custom silicon scales and inference unit economics improve",
+  },
+};
+
+const NOW_PRICE = 272;
+const HISTORY = [
+  { q: "Q4 24", p: 228 },
+  { q: "Q1 25", p: 192 },
+  { q: "Q2 25", p: 213 },
+  { q: "Q3 25", p: 225 },
+  { q: "Q4 25", p: 238 },
+  { q: "Q1 26", p: 210 },
+  { q: "NOW",   p: NOW_PRICE },
+];
+const PROJ_END  = { bear: 200, base: 305, bull: 450 };
+const FUTURE_Q  = ["Q2 26", "Q3 26", "Q4 26", "Q1 27"];
+
+const SIGNALS = {
+  bear: [
+    { name: "AWS Revenue Growth (YoY %)",      unit: "% YoY", tag: "MISS",  next: "Q2 2026 (Jul 30)", val: "BEAR <22%",        guide: "Q1 +28%",          pos: 0.22 },
+    { name: "Q2 Revenue vs $194–199B Guide",   unit: "$B",    tag: "MISS",  next: "Q2 2026 (Jul 30)", val: "BEAR <$194B",      guide: "GUIDE $194–199B",   pos: 0.18 },
+    { name: "Advertising Revenue Growth",      unit: "% YoY", tag: "MISS",  next: "Q2 2026 (Jul 30)", val: "BEAR <15%",        guide: "Q1 +24%",          pos: 0.25 },
+  ],
+  base: [
+    { name: "AWS Revenue Growth (YoY %)",      unit: "% YoY", tag: "MATCH", next: "Q2 2026 (Jul 30)", val: "BASE 25–28%",      guide: "Q1 +28%",          pos: 0.55 },
+    { name: "Q2 Revenue vs $194–199B Guide",   unit: "$B",    tag: "BEAT",  next: "Q2 2026 (Jul 30)", val: "BASE $196–198B",   guide: "GUIDE $194–199B",   pos: 0.62 },
+    { name: "Advertising Revenue Growth",      unit: "% YoY", tag: "MATCH", next: "Q2 2026 (Jul 30)", val: "BASE 18–22%",      guide: "Q1 +24%",          pos: 0.58 },
+  ],
+  bull: [
+    { name: "AWS Revenue Growth (YoY %)",      unit: "% YoY", tag: "BEAT",  next: "Q2 2026 (Jul 30)", val: "BULL ≥30%",        guide: "Q1 +28%",          pos: 0.85 },
+    { name: "Q2 Revenue vs $194–199B Guide",   unit: "$B",    tag: "BEAT",  next: "Q2 2026 (Jul 30)", val: "BULL ≥$199B",      guide: "GUIDE $194–199B",   pos: 0.88 },
+    { name: "Advertising Revenue Growth",      unit: "% YoY", tag: "BEAT",  next: "Q2 2026 (Jul 30)", val: "BULL ≥25%",        guide: "Q1 +24%",          pos: 0.82 },
+  ],
+};
+const MARGIN = {
+  bear: [
+    { name: "AWS Operating Margin",   tag: "MISS",  next: "Q2 2026 (Jul 30)", pos: 0.22 },
+    { name: "Free Cash Flow vs Capex", tag: "MISS",  next: "Q2 2026 (Jul 30)", pos: 0.15 },
+  ],
+  base: [
+    { name: "AWS Operating Margin",   tag: "MATCH", next: "Q2 2026 (Jul 30)", pos: 0.58 },
+    { name: "Free Cash Flow vs Capex", tag: "MATCH", next: "Q2 2026 (Jul 30)", pos: 0.52 },
+  ],
+  bull: [
+    { name: "AWS Operating Margin",   tag: "BEAT",  next: "Q2 2026 (Jul 30)", pos: 0.82 },
+    { name: "Free Cash Flow vs Capex", tag: "BEAT",  next: "Q2 2026 (Jul 30)", pos: 0.78 },
+  ],
+};
+
+// AWS Revenue Growth Rate (%) — current Q1 2026 actual, then projections
+const KPI_HIST = 28;
+const KPI_PROJ = {
+  bear: [25, 22, 20, 18],
+  base: [27, 27, 28, 29],
+  bull: [30, 33, 35, 37],
+};
+
+// 9 ── TRACK RECORD. Append newest quarter to the END each cycle. Oldest auto-drops.
+//       conf: "high" = recent/reliable, "med" = older/reconstructed.
+const TRACK_ALL = [
+  { q: "Q4 2024", date: "2025-02", post: 228, reaction: "+",  bear: [165, 200], base: [200, 248], bull: [248, 315], landed: "base",      conf: "med"  },
+  { q: "Q1 2025", date: "2025-04", post: 192, reaction: "−−", bear: [155, 198], base: [198, 238], bull: [238, 292], landed: "bear",      conf: "med"  },
+  { q: "Q2 2025", date: "2025-08", post: 213, reaction: "+",  bear: [162, 198], base: [198, 242], bull: [242, 298], landed: "base",      conf: "med"  },
+  { q: "Q3 2025", date: "2025-10", post: 225, reaction: "+",  bear: [165, 202], base: [202, 248], bull: [248, 306], landed: "base",      conf: "high" },
+  { q: "Q4 2025", date: "2026-02", post: 238, reaction: "+",  bear: [168, 206], base: [206, 256], bull: [256, 315], landed: "base→bull", conf: "high" },
+  { q: "Q1 2026", date: "2026-04", post: 272, reaction: "++", bear: [172, 212], base: [212, 268], bull: [268, 335], landed: "bull",      conf: "high" },
+];
+const TRACK_WINDOW = 6;
+const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
+const TRACK_PRICE_MIN = 140, TRACK_PRICE_MAX = 360;
+
+// ── Chart geometry ──────────────────────────────────────────────────────────
+const PRICE_MIN = 160, PRICE_MAX = 500;
+const CH_W = 760, CH_H = 420, PAD_L = 8, PAD_R = 56, PAD_T = 18, PAD_B = 34;
+const plotW = CH_W - PAD_L - PAD_R, plotH = CH_H - PAD_T - PAD_B;
+const yOf = (p) => PAD_T + (1 - (p - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * plotH;
+
+// ── Components ──────────────────────────────────────────────────────────────
+
+function FanChart({ c }) {
+  const nHist = HISTORY.length;
+  const histPts = HISTORY.map((d, i) => [PAD_L + (i / (nHist + FUTURE_Q.length - 1)) * plotW, yOf(d.p)]);
+  const nowX = histPts[nHist - 1][0];
+  const nowY = histPts[nHist - 1][1];
+  const fwdN = FUTURE_Q.length;
+  const fwdX = (i) => nowX + ((i + 1) / fwdN) * (CH_W - PAD_R - nowX);
+  const end = PROJ_END[c.key];
+  const mid = FUTURE_Q.map((_, i) => {
+    const t = (i + 1) / fwdN;
+    return [fwdX(i), yOf(NOW_PRICE + (end - NOW_PRICE) * t)];
+  });
+  const spread = (i) => 28 + i * 26;
+  const upper = mid.map(([x, y], i) => [x, y - spread(i)]);
+  const lower = mid.map(([x, y], i) => [x, y + spread(i)]);
+  const bandPath = `M ${nowX} ${nowY} ` + upper.map(([x, y]) => `L ${x} ${y}`).join(" ") + " " +
+    lower.slice().reverse().map(([x, y]) => `L ${x} ${y}`).join(" ") + " Z";
+  const midPath = `M ${nowX} ${nowY} ` + mid.map(([x, y]) => `L ${x} ${y}`).join(" ");
+  const histPath = "M " + histPts.map(([x, y]) => `${x} ${y}`).join(" L ");
+  const gridP = [200, 260, 320, 380, 440];
+
+  return (
+    <svg viewBox={`0 0 ${CH_W} ${CH_H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+      <defs>
+        <linearGradient id={`fan-${c.key}`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor={c.accent} stopOpacity="0.05" />
+          <stop offset="100%" stopColor={c.accent} stopOpacity="0.28" />
+        </linearGradient>
+        <filter id="softglow"><feGaussianBlur stdDeviation="2.2" /></filter>
+      </defs>
+      {gridP.map((p) => (
+        <g key={p}>
+          <line x1={PAD_L} y1={yOf(p)} x2={CH_W - PAD_R} y2={yOf(p)} stroke="#1c2230" strokeWidth="1" strokeDasharray="1 5" />
+          <text x={CH_W - PAD_R + 8} y={yOf(p) + 3} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>${p}</text>
+        </g>
+      ))}
+      <line x1={nowX} y1={PAD_T} x2={nowX} y2={CH_H - PAD_B} stroke="#2f6dff" strokeWidth="1" strokeDasharray="3 4" opacity="0.7" />
+      <path d={bandPath} fill={`url(#fan-${c.key})`}
+        {...tipSvg("The forecast cone",
+          "This shaded fan shows where the price could go in this scenario over the next year. It widens further out because the future is less certain. The dashed line through the middle is the most-likely path.",
+          "Wider = more uncertainty.", c.accent, "fan-band")} />
+      <path d={midPath} fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="6 5" className="fan-mid" style={{ filter: "url(#softglow)" }} />
+      <path d={histPath} fill="none" stroke="#cdd5e3" strokeWidth="2"
+        {...tipSvg("Price history",
+          "The solid white line is Amazon's actual share price over the past year and a half. The big drop in early 2026 was the market reacting to tariff fears and worries about Amazon's $200B AI spending plan. The sharp jump in May is the Q1 2026 earnings beat.",
+          "This part already happened — it is real, not a forecast.", "#cdd5e3", "hist-line")} />
+      {HISTORY.map((d, i) => (
+        <g key={i}>
+          <circle
+            cx={histPts[i][0]} cy={histPts[i][1]}
+            r={i === nHist - 1 ? 4.5 : 3}
+            fill={i === nHist - 1 ? "#2f6dff" : "#0a0d14"}
+            stroke={i === nHist - 1 ? "#fff" : "#8a93a6"}
+            strokeWidth="1.5"
+            {...tipSvg(
+              i === nHist - 1 ? "Where we are today" : d.q,
+              i === nHist - 1
+                ? `Amazon trades around $${NOW_PRICE} right now. The blue dot is today — everything left is history, everything right is forecast.`
+                : `Around the end of ${d.q}, Amazon was trading near $${d.p}.`,
+              null, i === nHist - 1 ? "#9fb4ff" : "#cdd5e3"
+            )}
+          />
+          {i === nHist - 1 && (
+            <text x={histPts[i][0] - 6} y={histPts[i][1] - 12} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="end">NOW ${NOW_PRICE}</text>
+          )}
+        </g>
+      ))}
+      {mid.map(([x, y], i) => (
+        <g key={i} className="diamond" style={{ animationDelay: `${0.5 + i * 0.12}s` }}>
+          <rect x={x - 4} y={y - 4} width="8" height="8" transform={`rotate(45 ${x} ${y})`}
+            fill="#0a0d14" stroke={c.accent} strokeWidth="1.6"
+            {...tipSvg(`Forecast: ${FUTURE_Q[i]}`,
+              `A milestone on the most-likely price path in the ${c.label} scenario. Each diamond is roughly three months further into the future.`,
+              "Hover the shaded cone to see the uncertainty range.", c.accent)} />
+          <text x={x} y={y - 12} fill={c.accent} fontSize="10.5" fontFamily={FONT_MONO} textAnchor="middle">{FUTURE_Q[i]}</text>
+        </g>
+      ))}
+      {["2025", "2026", "2027"].map((yr, i) => (
+        <text key={yr} x={PAD_L + (i / 2) * plotW} y={CH_H - 10} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>{yr}</text>
+      ))}
+    </svg>
+  );
+}
+
+function SignalBar({ pos, accent, tipProps }) {
+  return (
+    <div {...(tipProps || {})} style={{ position: "relative", height: 22, borderRadius: 3, overflow: "hidden", display: "flex", border: "1px solid #1c2230" }}>
+      <div style={{ flex: 1, background: "rgba(241,86,75,0.22)" }} />
+      <div style={{ flex: 1, background: "rgba(224,168,59,0.18)" }} />
+      <div style={{ flex: 1, background: "rgba(63,208,122,0.22)" }} />
+      <div style={{ position: "absolute", top: -2, bottom: -2, left: `calc(${pos * 100}% - 1px)`, width: 2, background: accent, boxShadow: `0 0 8px ${accent}`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "50%", left: `${pos * 100}%`, width: 7, height: 7, borderRadius: "50%", background: accent, transform: "translate(-50%,-50%)", boxShadow: `0 0 10px ${accent}`, pointerEvents: "none" }} />
+    </div>
+  );
+}
+
+function tagColor(tag) {
+  if (tag === "BEAT")  return "#3fd07a";
+  if (tag === "MATCH") return "#e0a83b";
+  if (tag === "MISS")  return "#f1564b";
+  return "#7b86a0";
+}
+
+function Segmented({ active, setActive, small }) {
+  const explain = {
+    bear: ["The pessimistic scenario", "Click to see what AMZN looks like if things go wrong — AWS growth stalls, the $200B AI capex doesn't translate to competitive advantage, retail margins get squeezed by tariffs, and the FTC trial spooks investors. Price would likely fall to the $190–220 range."],
+    base: ["The most-likely scenario", "Click for the steady-as-she-goes view — AWS holds 25–28% as AI workloads keep migrating to cloud, advertising compounds at ~20%, and the capex cycle begins to show return in H2 2026. Price drifts toward $290–325."],
+    bull: ["The optimistic scenario", "Click for the upside — Trainium chips create an infrastructure moat, AWS re-accelerates to 30%+, Prime Video advertising inflects, and the market re-rates Amazon as an AI platform. Price runs to $410–470."],
+  };
+  return (
+    <div style={{ display: "flex", gap: 5 }}>
+      {Object.values(CASES).map((cc) => {
+        const on = active === cc.key;
+        return (
+          <div key={cc.key} onClick={() => setActive(cc.key)}
+            onMouseEnter={(e) => showTip(e, explain[cc.key][0], explain[cc.key][1], "Tip: click to switch the whole dashboard to this scenario.", cc.accent)}
+            onMouseMove={moveTip} onMouseLeave={hideTip}
+            style={{
+              padding: small ? "3px 12px" : "4px 14px", borderRadius: 4, fontSize: 11, fontWeight: 700,
+              letterSpacing: "0.08em", cursor: "pointer",
+              border: `1px solid ${on ? cc.accent : "#222a38"}`, color: on ? "#06080d" : cc.accent,
+              background: on ? cc.accent : "transparent", boxShadow: on ? `0 0 16px ${cc.glow}` : "none",
+              transition: "all .18s ease",
+            }}>{cc.label}</div>
+        );
+      })}
+    </div>
+  );
+}
+
+function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
+  // Scale: 15% growth → 0% bar, 40% growth → 100% bar
+  const h = Math.max(2, Math.min(96, ((val - 15) / 25) * 100));
+  const tp = baseline
+    ? tip("Starting point (Q1 2026 actual)",
+        `This is the most recent real number: AWS grew at +${val}% year-over-year in Q1 2026 — the fastest in 15 quarters. The grey dot marks where we are now.`,
+        "The bars to the right are forecasts of where the growth rate goes next.", "#9aa4b8")
+    : tip(`Forecast: ${label}`,
+        `In this scenario, AWS revenue is projected to grow at ${val}% year-over-year by ${label}. Taller bar = faster growth = more AI workloads choosing Amazon's cloud.`,
+        "Switch BEAR/BASE/BULL up top to see how the outlook changes.", accentColor);
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
+      <div style={{ fontSize: 11, color: accentColor, fontWeight: 700, marginBottom: 4 }}>{val}%</div>
+      {baseline
+        ? <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#3a4252", border: "1.5px solid #7b86a0", marginBottom: `${h}%` }} />
+        : <div style={{ width: "62%", height: `${h}%`, background: `linear-gradient(180deg, ${accentColor}, ${accentColor}44)`, border: `1px solid ${accentColor}`, borderRadius: 2, animation: `fadeUp .5s ease ${delay}s both`, boxShadow: `0 0 12px ${accentColor}55` }} />}
+      <div style={{ fontSize: 9.5, color: "#5a6477", marginTop: 6 }}>{label}</div>
+    </div>
+  );
+}
+
+function SignalGroup({ id, title, requires, accent, evidence, children }) {
+  return (
+    <div style={{ border: "1px solid #161c28", borderRadius: 8, padding: "10px 12px", marginBottom: 12, background: "#0a0e15" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: 12.5, color: "#e6eaf2", fontFamily: FONT_DISPLAY, fontWeight: 600 }}>
+          <span style={{ background: "#161c28", padding: "1px 6px", borderRadius: 3, fontSize: 10, fontFamily: FONT_MONO, color: "#9aa4b8", marginRight: 8, verticalAlign: "middle" }}>{id}</span>
+          <span dangerouslySetInnerHTML={{ __html: title }} />
+        </div>
+        <div style={{ fontSize: 10, color: "#5a6477" }}>EVIDENCE {evidence} ›</div>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#5a6477", margin: "4px 0 10px" }}>REQUIRES: <span style={{ color: accent }}>{requires}</span></div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>{children}</div>
+    </div>
+  );
+}
+
+function SignalRow({ s, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
+      <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }}
+        {...tip(s.name, SIGNAL_HELP[s.name] || "A measurable indicator checking whether this scenario is actually happening.",
+          `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
+        <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
+        <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>{s.unit} · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
+      </div>
+      <div>
+        <SignalBar pos={s.pos} accent={accent} tipProps={tip(
+          "Where this scenario sits",
+          "This bar runs from bad (red, left) to good (green, right). The glowing dot shows where THIS scenario expects the number to land.",
+          "It is a visual gauge, not an exact measurement.", accent)} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
+          <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
+          <span style={{ color: accent, fontWeight: 700 }}>{s.val}</span>
+          <span style={{ color: "#5a6477" }}>{s.guide}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MarginRow({ s, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
+      <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }}
+        {...tip(s.name, SIGNAL_HELP[s.name] || "A measure of how profitable and capital-efficient the business is.",
+          `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
+        <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
+        <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>% · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
+      </div>
+      <div>
+        <SignalBar pos={s.pos} accent={accent} tipProps={tip(
+          "Where this scenario sits",
+          "Red (left) is bad, green (right) is good. The glowing dot marks where this scenario expects this measure to land.",
+          null, accent)} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
+          <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReversionClock() {
+  const dislocationDate = new Date(DISLOCATION_DATE);
+  const today = new Date();
+  const elapsed = Math.round((today - dislocationDate) / 86400000);
+  const pct = Math.min(100, (elapsed / REVERSION_PRECEDENT_DAYS) * 100);
+  const recPct = Math.min(100, Math.max(0, ((NOW_PRICE - REVERSION_TROUGH) / (REVERSION_BASEFLOOR - REVERSION_TROUGH)) * 100));
+  const aheadOfPace = recPct >= pct;
+  return (
+    <div style={{ marginTop: 12, padding: "12px 14px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#5a6477" }}>REVERSION CLOCK · vs APR-2025 PRECEDENT</div>
+        <div style={{ fontSize: 11, color: "#9aa4b8" }}><span style={{ color: "#3fd07a", fontWeight: 700 }}>{elapsed}d</span> elapsed / ~{REVERSION_PRECEDENT_DAYS}d to base last time</div>
+      </div>
+      <div style={{ marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>TIME SINCE DISLOCATION ({new Date(DISLOCATION_DATE).toLocaleDateString("en-US", { month: "short", day: "numeric" })} tariff selloff)</div>
+      <div {...tip("How much time has passed",
+          `Last time Amazon dislocated on fear (April 2025 weak Q1 results), it took about 4 months to recover to the middle price zone. This bar shows how far along we are this time. The green line is the 4-month mark.`,
+          "Filling up = getting closer to when recovery happened last time.", "#e0a83b")}
+        style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${pct}%`, background: "linear-gradient(90deg,#f1564b,#e0a83b)", borderRadius: 7 }} />
+        <div style={{ position: "absolute", left: "100%", top: -3, bottom: -3, width: 2, background: "#3fd07a", transform: "translateX(-1px)" }} />
+        <div style={{ position: "absolute", left: `${pct}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#fff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #fff", pointerEvents: "none" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
+        <span>day 0</span><span style={{ color: "#3fd07a" }}>base-reversion mark (~{REVERSION_PRECEDENT_DAYS}d) →</span>
+      </div>
+      <div style={{ marginTop: 12, marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>PRICE RECOVERY · ${REVERSION_TROUGH} trough → ${REVERSION_BASEFLOOR} base floor</div>
+      <div {...tip("How far the price has bounced back",
+          `The stock bottomed at $${REVERSION_TROUGH} and the 'base zone' floor is $${REVERSION_BASEFLOOR}. It is at $${NOW_PRICE} now — already above base floor. ${Math.round(recPct)}% of the trough-to-base gap has been recovered.`,
+          "If the recovery bar is fuller than the time bar, the bounce-back is running faster than the precedent. This one is.", "#9fb4ff")}
+        style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${recPct}%`, background: "linear-gradient(90deg,#f1564b,#3fd07a)", borderRadius: 7 }} />
+        <div style={{ position: "absolute", left: `${recPct}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#9fb4ff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #9fb4ff", pointerEvents: "none" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
+        <span>${REVERSION_TROUGH}</span>
+        <span style={{ color: "#9fb4ff" }}>${NOW_PRICE} now · {Math.round(recPct)}% of the way back</span>
+        <span>${REVERSION_BASEFLOOR}</span>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
+        The April 2026 tariff selloff took <span style={{ color: "#3fd07a" }}>approximately 7 weeks</span> to reverse — versus ~{REVERSION_PRECEDENT_DAYS} days in the prior precedent (April 2025 weak-Q1 dislocation). We are <span style={{ color: "#fff", fontWeight: 700 }}>{elapsed} days in</span> and the stock has already cleared the base floor at ${REVERSION_BASEFLOOR}, tracking <span style={{ color: aheadOfPace ? "#3fd07a" : "#e0a83b", fontWeight: 700 }}>{aheadOfPace ? "significantly ahead of" : "behind"}</span> the prior pace. The Q1 2026 AWS beat — 28% growth, 15-quarter high — catalyzed the snap-back. The next test is the Q2 print on July 30.
+      </div>
+    </div>
+  );
+}
+
+function TrackRecord() {
+  const W = 1000, H = 300, pl = 44, pr = 70, pt = 20, pb = 40;
+  const pw = W - pl - pr, ph = H - pt - pb;
+  const y = (p) => pt + (1 - (p - TRACK_PRICE_MIN) / (TRACK_PRICE_MAX - TRACK_PRICE_MIN)) * ph;
+  const x = (i) => pl + (TRACK.length === 1 ? pw / 2 : (i / (TRACK.length - 1)) * pw);
+  const grid = [340, 300, 260, 220, 180];
+  const pathPts = TRACK.map((t, i) => [x(i), y(t.post)]);
+  const linePath = "M " + pathPts.map(([px, py]) => `${px} ${py}`).join(" L ");
+  const hits = TRACK.filter((t) => t.landed.includes("base") || t.landed.includes("bull")).length;
+  return (
+    <div style={{ background: "#080b11", padding: "16px 18px", borderTop: "1px solid #161c28" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+        <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
+          <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>TR · BACKTEST</span>
+          THESIS TRACK RECORD · RECONSTRUCTED BANDS vs ACTUAL PRICE
+        </div>
+        <div style={{ fontSize: 11, color: "#7b86a0" }}>BASE-OR-BETTER LANDINGS: <span style={{ color: "#3fd07a", fontWeight: 700 }}>{hits}/{TRACK.length}</span></div>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#5a6477", marginBottom: 10 }}>
+        Each column = one earnings date. Stacked zones are the bear / base / bull bands as they would have been drawn then. The line is where price actually traded after.
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+        {grid.map((p) => (
+          <g key={p}>
+            <line x1={pl} y1={y(p)} x2={W - pr} y2={y(p)} stroke="#161c28" strokeWidth="1" strokeDasharray="1 5" />
+            <text x={W - pr + 8} y={y(p) + 3} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>${p}</text>
+          </g>
+        ))}
+        {TRACK.map((t, i) => {
+          const cx = x(i), bw = 46;
+          const landWord = t.landed.includes("bull") ? "the optimistic zone" : t.landed.includes("base") ? "the middle zone" : "the pessimistic zone";
+          const reactWord = t.reaction.includes("−") ? "the stock FELL after this report" : "the stock ROSE after this report";
+          const seg = (range, color) => (
+            <rect x={cx - bw / 2} y={y(range[1])} width={bw}
+              height={Math.max(2, y(range[0]) - y(range[1]))}
+              fill={color} opacity={t.conf === "med" ? 0.32 : 0.5} rx="2"
+              style={{ animation: `fadeUp .5s ease ${i * 0.08}s both` }}
+              {...tipSvg(`${t.q} earnings`,
+                `Back at this date, the range we would have predicted (red=low, yellow=middle, green=high). In reality, ${reactWord} and the price ended up in ${landWord} (~$${t.post}).`,
+                t.conf === "med" ? "Marked lower-confidence — older reconstructed data, treat loosely." : "Higher-confidence recent data.",
+                color.includes("63,208") ? "#3fd07a" : color.includes("224,168") ? "#e0a83b" : "#f1564b")} />
+          );
+          return (
+            <g key={t.q}>
+              {seg(t.bull, "rgba(63,208,122,0.55)")}
+              {seg(t.base, "rgba(224,168,59,0.5)")}
+              {seg(t.bear, "rgba(241,86,75,0.5)")}
+              <text x={cx} y={H - 24} fill="#9aa4b8" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle">{t.q}</text>
+              <text x={cx} y={H - 11} fill={t.conf === "med" ? "#5a6477" : "#3a4252"} fontSize="8.5" fontFamily={FONT_MONO} textAnchor="middle">
+                {t.conf === "med" ? "lower-conf" : t.reaction === "++" ? "↑ v-recovery" : t.reaction.includes("−") ? "↓ dislocation" : ""}
+              </text>
+            </g>
+          );
+        })}
+        <path d={linePath} fill="none" stroke="#dde3ee" strokeWidth="2.2" className="track-line"
+          style={{ filter: "drop-shadow(0 0 4px rgba(221,227,238,0.4))" }} />
+        {TRACK.map((t, i) => {
+          const isLast = i === TRACK.length - 1;
+          return (
+            <g key={t.q} style={{ animation: `pop .4s cubic-bezier(.2,1.4,.4,1) ${0.3 + i * 0.08}s both` }}>
+              <circle cx={x(i)} cy={y(t.post)} r={isLast ? 6 : 4}
+                fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
+                {...tipSvg(isLast ? "Today" : `${t.q}: actual price`,
+                  isLast
+                    ? `Amazon is at ~$${t.post} now — sitting in the base-to-bull zone, having snapped back from the April $196 trough.`
+                    : `After ${t.q} earnings, Amazon actually traded around $${t.post}. Compare this dot to the colored bars to see if the prediction was right.`,
+                  null, isLast ? "#9fb4ff" : "#cdd5e3")} />
+              {isLast && (
+                <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">NOW ${t.post}</text>
+              )}
+            </g>
+          );
+        })}
+      </svg>
+      <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
+        <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
+          Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> is in the
+          <span style={{ color: "#3fd07a", fontWeight: 700 }}> base-to-bull transition zone</span>, having staged a V-shaped recovery from the $196 April trough (+39% in ~7 weeks).
+          The Q1 2026 print — $181.5B revenue (+17%), AWS <span style={{ color: "#3fd07a", fontWeight: 700 }}>+28% (15-quarter high)</span>, advertising +24% — was a fundamental beat that removed the core "capex without results" uncertainty.
+          The two April dislocations (2025 and 2026) both saw the stock fall on macro fear despite operational beats —
+          and <span style={{ color: "#3fd07a", fontWeight: 700 }}>both recovered</span>. This one recovered faster.
+        </div>
+      </div>
+      <ReversionClock />
+      <div style={{ fontSize: 9.5, color: "#3d4555", marginTop: 8, lineHeight: 1.5 }}>
+        ⚠ Bands are reconstructed (anchored to each date's forward EPS × multiple regime), not archived in real time — treat levels as directional, especially lower-confidence quarters. Reversion pattern rests on n=2 dislocations; not a strategy, a tell. Pattern breaks if a future dislocation coincides with genuine AWS deceleration rather than macro fear.
+      </div>
+    </div>
+  );
+}
+
+function AmazonThesis() {
+  const [active, setActive] = useState("base");
+  const c = CASES[active];
+  const kpiVals = KPI_PROJ[active];
+  return (
+    <div style={{ background: "#06080d", minHeight: "100vh", padding: "20px 16px", fontFamily: FONT_MONO, color: "#cdd5e3" }}>
+      <div className="grain" style={{
+        maxWidth: 1280, margin: "0 auto", position: "relative",
+        border: "1px solid #161c28", borderRadius: 12,
+        background: "linear-gradient(160deg,#0a0d14,#070a10)",
+        boxShadow: "0 40px 120px rgba(0,0,0,0.6)", overflow: "hidden"
+      }}>
+        {/* ── Header ─────────────────────────────────────────────── */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 22px", borderBottom: "1px solid #161c28" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, letterSpacing: "0.35em", color: "#f3f5f9", fontWeight: 600 }}>
+              TH<span style={{ color: c.accent }}>3</span>SIS
+            </div>
+            <div {...tip("👋 New here?",
+                "Hover your mouse over anything on this page — charts, bars, dots, labels — and a plain-English explanation will pop up. No finance degree required.",
+                "This hint is one too.", "#3fd07a")}
+              style={{ fontSize: 10, color: "#5a6477", border: "1px solid #222a38", borderRadius: 20, padding: "3px 10px", cursor: "help" }}>
+              ⓘ hover anything to learn what it means
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 12.5, color: "#7b86a0" }}>
+            <span>{AS_OF_DATE}</span>
+            <span style={{ color: "#cdd5e3" }}>NASDAQ:AMZN</span>
+            <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "#9aa4b8" }}>Amazon.com</span>
+            <span {...tip("Today's share price",
+                `One share of Amazon stock costs about $${NOW_PRICE} right now. The whole dashboard is about figuring out whether that is cheap, fair, or expensive.`,
+                null, "#fff")}
+              style={{ color: "#fff", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}.00</span>
+          </div>
+        </div>
+
+        {/* ── Two-column body ─────────────────────────────────────── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 1, background: "#161c28" }}>
+
+          {/* LEFT: Fan chart + KPI */}
+          <div style={{ background: "#080b11", padding: "16px 18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>NOW</span>
+                AMZN · PRICE &amp; RISK-REWARD
+              </div>
+              <Segmented active={active} setActive={setActive} />
+            </div>
+            <div className="panel" key={active + "-chart"}><FanChart c={c} /></div>
+            <div style={{ marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#5a6477" }}>
+              <span><span style={{ color: c.accent }}>━━</span> {c.label.toLowerCase()} mid &nbsp; <span style={{ color: "#2f6dff" }}>┊</span> now &nbsp; <span style={{ color: "#cdd5e3" }}>━</span> history</span>
+              <span>12M TARGET <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></span>
+            </div>
+
+            {/* KPI chart */}
+            <div style={{ marginTop: 18, borderTop: "1px solid #161c28", paddingTop: 14 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.16em", color: "#7b86a0", marginBottom: 4 }}
+                {...tip("The key metric to watch",
+                  "AWS is Amazon's crown jewel — it is the business that turns the entire company profitable. The growth rate here is the most important single number in Amazon's story. Faster = the AI bet is working. Stalling = capex concerns are justified.",
+                  "This is the single best 'is the thesis on track?' gauge.", "#9fb4ff")}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>KPI · K01</span>
+                AWS Revenue Growth Rate (YoY %)
+                <span style={{ color: "#5a6477", marginLeft: 8 }}>%  ·  HIGHER BETTER</span>
+              </div>
+              <div className="panel" key={active + "-kpi"} style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 120, padding: "12px 4px 0" }}>
+                <KpiCol label="Q1 26" val={KPI_HIST} baseline accentColor="#7b86a0" />
+                {kpiVals.map((v, i) => <KpiCol key={i} label={FUTURE_Q[i]} val={v} accentColor={c.accent} delay={i * 0.08} />)}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
+                <div>
+                  <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THIS MEASURES</div>
+                  <div style={{ color: "#9aa4b8" }}>AWS year-over-year revenue growth. Q1 2026 printed +28% — the fastest in 15 quarters — driven by AI training, inference, and early agent workloads migrating to cloud.</div>
+                </div>
+                <div>
+                  <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THE <span style={{ color: c.accent }}>{c.label}</span> CASE REQUIRES</div>
+                  <div style={{ color: c.accent }}>
+                    {active === "bull"
+                      ? "Re-acceleration above 30% as AI-native agent workloads create a compute super-cycle. Trainium absorption narrows GPU cost gap."
+                      : active === "base"
+                      ? "AWS holds 25–28% through 2026 as enterprise AI migrations continue. Monetization is real; the market tolerates the capex."
+                      : "AWS stalls below 22% — Azure and Google Cloud capture disproportionate AI workload share. Capex fails to translate to competitive positioning."}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT: Signals */}
+          <div style={{ background: "#080b11", padding: "16px 18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>THESIS · ALL SIGNALS</div>
+              <div style={{ fontSize: 12, color: "#7b86a0" }}>{c.label.toLowerCase()} 12M <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></div>
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
+              <Segmented active={active} setActive={setActive} small />
+              <span className="dot-track" style={{ marginLeft: 6, fontSize: 10.5, color: c.accent }}>● TRACKING</span>
+            </div>
+            <div className="panel" key={active + "-op"} style={{ fontSize: 12.5, lineHeight: 1.6, color: "#bcc6d8", marginBottom: 16, minHeight: 64 }}>{c.op}</div>
+            <SignalGroup id="SN01" title="AWS &amp; Revenue Trajectory" requires={c.requires01} accent={c.accent} evidence={4}>
+              {SIGNALS[active].map((s, i) => <SignalRow key={i} s={s} accent={c.accent} />)}
+            </SignalGroup>
+            <SignalGroup id="SN02" title="Margin &amp; Capital Discipline" requires={c.requires02} accent={c.accent} evidence={3}>
+              {MARGIN[active].map((s, i) => <MarginRow key={i} s={s} accent={c.accent} />)}
+            </SignalGroup>
+            <div style={{ marginTop: 14, borderTop: "1px solid #161c28", paddingTop: 10 }}>
+              <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 3 }}>
+                WHAT BREAKS THE <span style={{ color: c.accent }}>{c.label}</span> CASE
+              </div>
+              <div style={{ fontSize: 11.5, color: "#9aa4b8", lineHeight: 1.5 }}>{c.breaks}</div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Footer: observable-now vs. requires-earnings ─────────── */}
+        <div style={{ padding: "10px 22px", borderTop: "1px solid #161c28", display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#4a5366" }}>
+          <span>OBSERVABLE NOW: Trainium reservation/supply news · third-party seller tariff surveys · advertising market indices · Prime Video ad inventory · FTC trial developments</span>
+          <span>CONFIRMS JULY 30: Q2 revenue vs guide · AWS growth rate · AWS margin · retail NA margin · FCF trajectory · capex guidance</span>
+        </div>
+
+        {/* ── Backtest panel ──────────────────────────────────────── */}
+        <TrackRecord />
+      </div>
+
+      <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "#3d4555", lineHeight: 1.5 }}>
+        Illustrative scenario framing built on current consensus estimates as of May 2026 — not a prediction and not financial advice. Price ranges are scenario mid-bands derived from forward EPS × multiple; bands are wide by design and should be held loosely. KPI markers are positional, not literal. All inputs will move with every data print between now and the July 30 2026 Q2 earnings release. Valuation ruler: forward P/E on FY2027E consensus GAAP EPS (~$9.69–$10.37). Bear ~$8.50 × 23x. Base ~$10.00 × 30x. Bull ~$12.50 × 36x.
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<AmazonThesis />);
+</script>
+</body>
+</html>
