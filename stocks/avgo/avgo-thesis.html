@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TH3SIS · AVGO Broadcom — Investment Thesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #06080d; }
+  * { box-sizing: border-box; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
+  @keyframes drawIn { from { stroke-dashoffset: 2000; } to { stroke-dashoffset: 0; } }
+  @keyframes pop { 0%{opacity:0; transform:scale(0.4);} 70%{transform:scale(1.15);} 100%{opacity:1; transform:scale(1);} }
+  @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  .hist-line { stroke-dasharray: 1400; animation: drawIn 1.6s ease forwards; }
+  .track-line { stroke-dasharray: 2000; animation: drawIn 1.8s ease .2s forwards; }
+  .fan-mid { stroke-dasharray: 6 5; animation: fadeUp .8s ease .4s both; }
+  .fan-band { animation: fadeUp .9s ease .3s both; }
+  .diamond { animation: pop .5s cubic-bezier(.2,1.4,.4,1) both; }
+  .panel { animation: fadeUp .6s ease both; }
+  .seg-btn { transition: all .18s ease; cursor: pointer; }
+  .seg-btn:hover { filter: brightness(1.25); }
+  .dot-track { animation: pulse 2.2s ease-in-out infinite; }
+  .tip-target { cursor: help; }
+  .tip-target:hover { filter: brightness(1.18); }
+  #tip-box {
+    position: fixed; z-index: 9999; max-width: 300px; pointer-events: none;
+    background: linear-gradient(160deg,#141a26,#0d1119);
+    border: 1px solid #2a3344; border-radius: 10px; padding: 12px 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.7); opacity: 0; transition: opacity .14s ease;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #tip-box.on { opacity: 1; }
+  #tip-box .tt { font-size: 11px; font-weight: 700; letter-spacing: .08em; margin-bottom: 5px; }
+  #tip-box .tb { font-size: 11.5px; line-height: 1.55; color: #c4cdde; }
+  #tip-box .tn { font-size: 10px; color:#6b7689; margin-top: 7px; font-style: italic; }
+  .grain::before { content:""; position:absolute; inset:0; pointer-events:none; opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const FONT_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+const FONT_DISPLAY = "'Spectral', Georgia, serif";
+
+// ── Tooltip engine ─────────────────────────────────────────────────────────
+let tipEl = null;
+function ensureTip() {
+  if (!tipEl) { tipEl = document.createElement("div"); tipEl.id = "tip-box"; document.body.appendChild(tipEl); }
+  return tipEl;
+}
+function showTip(e, title, body, note, color) {
+  const el = ensureTip();
+  el.innerHTML = `<div class="tt" style="color:${color||'#9fb4ff'}">${title}</div><div class="tb">${body}</div>${note?`<div class="tn">${note}</div>`:""}`;
+  el.classList.add("on"); moveTip(e);
+}
+function moveTip(e) {
+  const el = ensureTip(); const pad = 16;
+  let x = e.clientX + pad, y = e.clientY + pad;
+  const r = el.getBoundingClientRect();
+  if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+  if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+  el.style.left = x + "px"; el.style.top = y + "px";
+}
+function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
+
+const SIGNAL_HELP = {
+  "AI Revenue vs Q2 Guide": "Broadcom designs custom AI accelerator chips (called XPUs or ASICs) for Google, Meta, Anthropic, OpenAI, and two others. Last quarter it earned $8.4 billion from these chips — up 106% year-over-year. Management guided $10.7 billion for this quarter. A beat here is the single biggest positive signal for the whole thesis.",
+  "XPU Customer Count": "The number of major tech companies for which Broadcom designs custom AI accelerator chips. Currently 6 (Google, Meta, Anthropic, OpenAI + 2 unnamed hyperscalers). Each new customer means another multi-year contract worth billions and switching costs that are nearly impossible to unwind once a chip design is committed.",
+  "VMware ARR Growth": "VMware makes the software that most large enterprises use to run their server infrastructure. Broadcom bought VMware for $69 billion in 2023 and converted customers from one-time licenses to annual subscriptions. 'ARR' = the annual contract value. Growth here shows the subscription model is working and customers are staying despite price-increase complaints.",
+  "Non-GAAP EBITDA Margin": "Out of every dollar Broadcom brings in, how much is left as cash profit before interest and taxes. 'Non-GAAP' strips out amortization from the VMware acquisition — a financing cost, not an economic one. At ~68%, these margins are exceptional for a company this complex. If it drops, costs are rising faster than revenue.",
+  "AI Revenue Q3 Guidance": "What management says next quarter's AI chip revenue will be. Because XPU contracts are signed years in advance, management has unusually high visibility — when they guide '$12 billion,' they basically already have the TSMC wafer starts ordered. Forward guidance is a direct read on the health of hyperscaler AI spending.",
+};
+const TAG_HELP = {
+  BEAT: "doing better than expected — a good sign.",
+  MATCH: "roughly in line with expectations — steady, no surprises.",
+  MISS: "falling short of expectations — a worry.",
+  WATCH: "not decided yet — keep an eye on it.",
+};
+
+function tip(title, body, note, color) {
+  return { className:"tip-target", onMouseEnter:(e)=>showTip(e,title,body,note,color), onMouseMove:(e)=>moveTip(e), onMouseLeave:hideTip };
+}
+function tipSvg(title, body, note, color, extraClass) {
+  return { className:(extraClass?extraClass+" ":"")+"tip-target", onMouseEnter:(e)=>showTip(e,title,body,note,color), onMouseMove:(e)=>moveTip(e), onMouseLeave:hideTip };
+}
+
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║                                                                          ║
+   ║   ███  EDIT EVERYTHING IN THIS BLOCK EACH QUARTER  ███                   ║
+   ║                                                                          ║
+   ║   Quick map — after each earnings report:                                ║
+   ║     1. AS_OF_DATE  ......  today's date                                  ║
+   ║     2. NOW_PRICE   ......  current share price                           ║
+   ║     3. HISTORY     ......  add just-finished quarter, roll NOW forward   ║
+   ║     4. FUTURE_Q    ......  roll the 4 forward quarter labels             ║
+   ║     5. CASES       ......  re-read each narrative — still true?         ║
+   ║     6. PROJ_END + target12 .. bear/base/bull price targets              ║
+   ║     7. SIGNALS / MARGIN ...  update BEAT/MATCH/MISS + positions          ║
+   ║     8. KPI_HIST / KPI_PROJ .. AI revenue history + forward scenarios    ║
+   ║     9. TRACK_ALL   ......  append new quarter (oldest auto-drops)       ║
+   ║    10. DISLOCATION_DATE ...  only if a new shock happened               ║
+   ║                                                                          ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+// 1 ── DATE shown top-right
+const AS_OF_DATE = "2026-06-02";
+
+// 10 ── Most recent dislocation (competition-fear selloff April 2026)
+const DISLOCATION_DATE = "2026-04-20";
+const REVERSION_TROUGH = 388;
+const REVERSION_BASEFLOOR = 440;
+const REVERSION_PRECEDENT_DAYS = 50;
+
+const CASES = {
+  bear: {
+    key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
+    target12: "$200 — $265",
+    op: "Hyperscaler AI capex discipline returns as ROI scrutiny intensifies, causing at least one major XPU partner to pause or re-scope multi-year orders. VMware's forced subscription migration turns adversarial — enterprise churn accelerates to Nutanix and Azure VMware Service, stalling ARR growth. FY2027 EPS estimates get cut from ~$14 to ~$9–10, and the market re-prices AVGO from a software-adjacent premium to a hardware cyclical at 20–23x forward earnings.",
+    breaks: "AI revenue keeps hitting guidance, all six hyperscaler relationships stay active, and VMware ARR continues growing at double digits.",
+    requires01: "AI revenue misses $10.7B guide; no new XPU customers",
+    requires02: "EBITDA margin pressure from revenue mix shift",
+  },
+  base: {
+    key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
+    target12: "$420 — $490",
+    op: "AI semiconductor revenue hits Hock Tan's milestones — $10.7B in Q2, scaling toward ~$40–45B for full FY2026 and the $100B FY2027 target. VMware ARR grows steadily at 15–18% despite customer grumbling; switching costs keep churners a small minority. Broadcom compounds FCF at ~20% annually, funds buybacks, and the 34x NTM multiple holds as multi-year XPU contracts maintain forward visibility.",
+    breaks: "Hock Tan revises the $100B FY2027 AI chip target downward, or a hyperscaler announces it is moving XPU design fully in-house.",
+    requires01: "AI revenue meets $10.7B guide; VMware ARR holds 15–18%",
+    requires02: "EBITDA margin steady at 66–68%",
+  },
+  bull: {
+    key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
+    target12: "$580 — $700",
+    op: "Q2 AI revenue materially beats $10.7B guidance, printing $12B+, and a 7th hyperscaler XPU customer is announced — giving Broadcom a sweep of every US mega-cap AI spender. The market re-rates AVGO from 'premium cyclical' at 33x to 'durable platform' at 38–42x, recognizing that 3–5 year XPU design-win switching costs are the deepest moat in AI infrastructure. FY2027 AI revenue credibly exceeds $100B as Anthropic's $11B order ships ahead of schedule.",
+    breaks: "AI revenue growth decelerates to <40% YoY before the $100B target is achieved, or a hyperscaler publicly reduces its custom ASIC commitment.",
+    requires01: "AI revenue beats guide ($12B+); 7th customer disclosed",
+    requires02: "Margin expansion toward 70%+ as software mix compounds",
+  },
+};
+
+// 2 ── Current price
+const NOW_PRICE = 460;
+
+// 3 ── Historical price line (post-split; AVGO did 10:1 split July 2024)
+const HISTORY = [
+  { q: "Q4 FY24", p: 185 },
+  { q: "Q1 FY25", p: 228 },
+  { q: "Q2 FY25", p: 242 },
+  { q: "Q3 FY25", p: 298 },
+  { q: "Q4 FY25", p: 368 },
+  { q: "Q1 FY26", p: 372 },
+  { q: "NOW",     p: NOW_PRICE },
+];
+
+// 6 ── 12-month price targets (where each forecast line ends)
+const PROJ_END = { bear: 230, base: 465, bull: 645 };
+
+// 4 ── Forward quarter labels
+const FUTURE_Q = ["Q2 FY26", "Q3 FY26", "Q4 FY26", "Q1 FY27"];
+
+// 7 ── KPI signal bars (pos: 0=far bear, 1=far bull)
+const SIGNALS = {
+  bear: [
+    { name: "AI Revenue vs Q2 Guide", unit: "$B", tag: "MISS", next: "Jun 3 2026", val: "BEAR ≤ $9.5B", guide: "GUIDE $10.7B", pos: 0.20 },
+    { name: "XPU Customer Count",     unit: "customers", tag: "MATCH", next: "Jun 3 2026", val: "BEAR stays at 6", guide: "CURRENT 6", pos: 0.28 },
+    { name: "VMware ARR Growth",       unit: "% YoY", tag: "MISS", next: "Jun 3 2026", val: "BEAR <12%", guide: "Q1 +19%", pos: 0.22 },
+  ],
+  base: [
+    { name: "AI Revenue vs Q2 Guide", unit: "$B", tag: "BEAT", next: "Jun 3 2026", val: "BASE $10.7–11.5B", guide: "GUIDE $10.7B", pos: 0.58 },
+    { name: "XPU Customer Count",     unit: "customers", tag: "MATCH", next: "Jun 3 2026", val: "BASE 6, hints at 7th", guide: "CURRENT 6", pos: 0.60 },
+    { name: "VMware ARR Growth",       unit: "% YoY", tag: "MATCH", next: "Jun 3 2026", val: "BASE 15–18%", guide: "Q1 +19%", pos: 0.58 },
+  ],
+  bull: [
+    { name: "AI Revenue vs Q2 Guide", unit: "$B", tag: "BEAT", next: "Jun 3 2026", val: "BULL ≥ $12B", guide: "GUIDE $10.7B", pos: 0.85 },
+    { name: "XPU Customer Count",     unit: "customers", tag: "BEAT", next: "Jun 3 2026", val: "BULL 7th announced", guide: "CURRENT 6", pos: 0.88 },
+    { name: "VMware ARR Growth",       unit: "% YoY", tag: "BEAT", next: "Jun 3 2026", val: "BULL >20%", guide: "Q1 +19%", pos: 0.82 },
+  ],
+};
+const MARGIN = {
+  bear: [
+    { name: "Non-GAAP EBITDA Margin", tag: "MISS", next: "Jun 3 2026", pos: 0.22 },
+    { name: "AI Revenue Q3 Guidance", tag: "MISS", next: "Jun 3 2026", pos: 0.18 },
+  ],
+  base: [
+    { name: "Non-GAAP EBITDA Margin", tag: "MATCH", next: "Jun 3 2026", pos: 0.57 },
+    { name: "AI Revenue Q3 Guidance", tag: "MATCH", next: "Jun 3 2026", pos: 0.55 },
+  ],
+  bull: [
+    { name: "Non-GAAP EBITDA Margin", tag: "BEAT", next: "Jun 3 2026", pos: 0.82 },
+    { name: "AI Revenue Q3 Guidance", tag: "BEAT", next: "Jun 3 2026", pos: 0.85 },
+  ],
+};
+
+// 8 ── KPI chart: AI Semiconductor Revenue ($B, quarterly actuals → scenario projections)
+const KPI_HIST = 8.4;  // Q1 FY26 actual
+const KPI_PROJ = {
+  bear: [9.0, 9.5, 10.5, 11.0],
+  base: [10.7, 12.5, 14.5, 16.5],
+  bull: [12.5, 15.5, 19.0, 23.0],
+};
+
+// 9 ── TRACK RECORD. Append newest to end; dashboard keeps last 6.
+const TRACK_ALL = [
+  { q: "Q4 FY24", date: "2024-11", post: 185, reaction: "++", bear: [100,130], base: [155,195], bull: [210,260], landed: "bull",        conf: "med" },
+  { q: "Q1 FY25", date: "2025-02", post: 228, reaction: "+",  bear: [130,165], base: [195,240], bull: [255,310], landed: "base→bull",   conf: "med" },
+  { q: "Q2 FY25", date: "2025-05", post: 242, reaction: "-",  bear: [155,195], base: [220,270], bull: [285,345], landed: "bear",        conf: "high" },
+  { q: "Q3 FY25", date: "2025-08", post: 298, reaction: "++", bear: [175,215], base: [245,305], bull: [320,385], landed: "base→bull",   conf: "high" },
+  { q: "Q4 FY25", date: "2025-11", post: 368, reaction: "++", bear: [225,270], base: [300,365], bull: [385,460], landed: "bull",        conf: "high" },
+  { q: "Q1 FY26", date: "2026-02", post: 372, reaction: "+",  bear: [255,305], base: [340,405], bull: [430,510], landed: "base",        conf: "high" },
+];
+const TRACK_WINDOW = 6;
+const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
+const TRACK_PRICE_MIN = 80, TRACK_PRICE_MAX = 540;
+
+// Chart geometry
+const PRICE_MIN = 150, PRICE_MAX = 720;
+const CH_W = 760, CH_H = 420, PAD_L = 8, PAD_R = 56, PAD_T = 18, PAD_B = 34;
+const plotW = CH_W - PAD_L - PAD_R, plotH = CH_H - PAD_T - PAD_B;
+const yOf = (p) => PAD_T + (1 - (p - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * plotH;
+
+// ── Fan Chart ──────────────────────────────────────────────────────────────
+function FanChart({ c }) {
+  const nHist = HISTORY.length;
+  const histPts = HISTORY.map((d, i) => [PAD_L + (i / (nHist + FUTURE_Q.length - 1)) * plotW, yOf(d.p)]);
+  const nowX = histPts[histPts.length - 1][0];
+  const nowY = histPts[histPts.length - 1][1];
+  const fwdN = FUTURE_Q.length;
+  const fwdX = (i) => nowX + ((i + 1) / fwdN) * (CH_W - PAD_R - nowX);
+  const end = PROJ_END[c.key];
+  const mid = FUTURE_Q.map((_, i) => {
+    const t = (i + 1) / fwdN;
+    return [fwdX(i), yOf(NOW_PRICE + (end - NOW_PRICE) * t)];
+  });
+  const spread = (i) => 28 + i * 28;
+  const upper = mid.map(([x, y], i) => [x, y - spread(i)]);
+  const lower = mid.map(([x, y], i) => [x, y + spread(i)]);
+  const bandPath = `M ${nowX} ${nowY} ` + upper.map(([x, y]) => `L ${x} ${y}`).join(" ") + " " +
+    lower.slice().reverse().map(([x, y]) => `L ${x} ${y}`).join(" ") + " Z";
+  const midPath = `M ${nowX} ${nowY} ` + mid.map(([x, y]) => `L ${x} ${y}`).join(" ");
+  const histPath = "M " + histPts.map(([x, y]) => `${x} ${y}`).join(" L ");
+  const gridP = [650, 550, 450, 350, 250];
+
+  return (
+    <svg viewBox={`0 0 ${CH_W} ${CH_H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+      <defs>
+        <linearGradient id={`fan-${c.key}`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor={c.accent} stopOpacity="0.05" />
+          <stop offset="100%" stopColor={c.accent} stopOpacity="0.28" />
+        </linearGradient>
+        <filter id="softglow"><feGaussianBlur stdDeviation="2.2" /></filter>
+      </defs>
+      {gridP.map((p) => (
+        <g key={p}>
+          <line x1={PAD_L} y1={yOf(p)} x2={CH_W - PAD_R} y2={yOf(p)} stroke="#1c2230" strokeWidth="1" strokeDasharray="1 5" />
+          <text x={CH_W - PAD_R + 8} y={yOf(p) + 3} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>${p}</text>
+        </g>
+      ))}
+      <line x1={nowX} y1={PAD_T} x2={nowX} y2={CH_H - PAD_B} stroke="#2f6dff" strokeWidth="1" strokeDasharray="3 4" opacity="0.7" />
+      <path d={bandPath} fill={`url(#fan-${c.key})`} {...tipSvg(
+        "The forecast 'cone'", "This shaded fan shows the range of where the price could go in this scenario over the next year. It gets wider further out because the future is less certain. The dashed line through the middle is the most-likely path.",
+        "Wider = more uncertainty.", c.accent, "fan-band")} />
+      <path d={midPath} fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="6 5" className="fan-mid" style={{ filter: "url(#softglow)" }} />
+      <path d={histPath} fill="none" stroke="#cdd5e3" strokeWidth="2" {...tipSvg(
+        "Price history", "The solid white line is AVGO's actual share price since Q4 FY2024. Note: Broadcom did a 10-for-1 stock split in July 2024 — all prices here are post-split. The big run from ~$185 to $460+ was driven almost entirely by the AI custom chip story accelerating.",
+        "This part already happened — it's real, not a forecast.", "#cdd5e3", "hist-line")} />
+      {HISTORY.map((d, i) => (
+        <g key={i}>
+          <circle cx={histPts[i][0]} cy={histPts[i][1]} r={i === nHist - 1 ? 4.5 : 3}
+            fill={i === nHist - 1 ? "#2f6dff" : "#0a0d14"}
+            stroke={i === nHist - 1 ? "#fff" : "#8a93a6"} strokeWidth="1.5"
+            {...tipSvg(i === nHist - 1 ? "Where we are today" : d.q,
+              i === nHist - 1 ? `AVGO trades around $${NOW_PRICE} right now. Q2 FY2026 earnings are due June 3 (tomorrow). Everything left of this dot is history; everything right is forecast.`
+                : `At the end of ${d.q}, AVGO was around $${d.p}. All prices are post-split (10:1 in July 2024).`,
+              null, i === nHist - 1 ? "#9fb4ff" : "#cdd5e3")} />
+          {i === nHist - 1 && <text x={histPts[i][0] - 6} y={histPts[i][1] - 12} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="end">NOW ${NOW_PRICE}</text>}
+        </g>
+      ))}
+      {mid.map(([x, y], i) => (
+        <g key={i} className="diamond" style={{ animationDelay: `${0.5 + i * 0.12}s` }}>
+          <rect x={x - 4} y={y - 4} width="8" height="8" transform={`rotate(45 ${x} ${y})`}
+            fill="#0a0d14" stroke={c.accent} strokeWidth="1.6"
+            {...tipSvg(`Forecast: ${FUTURE_Q[i]}`,
+              `A milestone on the most-likely price path for the ${c.label} scenario. Each diamond is roughly one quarter further into the future.`,
+              "Hover the shaded cone around it to see the uncertainty range.", c.accent)} />
+          <text x={x} y={y - 12} fill={c.accent} fontSize="10.5" fontFamily={FONT_MONO} textAnchor="middle">{FUTURE_Q[i]}</text>
+        </g>
+      ))}
+      {["2025", "2026", "2027"].map((yr, i) => (
+        <text key={yr} x={PAD_L + (i / 2) * plotW} y={CH_H - 10} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>{yr}</text>
+      ))}
+    </svg>
+  );
+}
+
+// ── Signal Bar ─────────────────────────────────────────────────────────────
+function SignalBar({ pos, accent, tipProps }) {
+  return (
+    <div {...(tipProps || {})} style={{ position: "relative", height: 22, borderRadius: 3, overflow: "hidden", display: "flex", border: "1px solid #1c2230" }}>
+      <div style={{ flex: 1, background: "rgba(241,86,75,0.22)" }} />
+      <div style={{ flex: 1, background: "rgba(224,168,59,0.18)" }} />
+      <div style={{ flex: 1, background: "rgba(63,208,122,0.22)" }} />
+      <div style={{ position: "absolute", top: -2, bottom: -2, left: `calc(${pos * 100}% - 1px)`, width: 2, background: accent, boxShadow: `0 0 8px ${accent}`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "50%", left: `${pos * 100}%`, width: 7, height: 7, borderRadius: "50%", background: accent, transform: "translate(-50%,-50%)", boxShadow: `0 0 10px ${accent}`, pointerEvents: "none" }} />
+    </div>
+  );
+}
+function tagColor(tag) {
+  if (tag === "BEAT")  return "#3fd07a";
+  if (tag === "MATCH") return "#e0a83b";
+  if (tag === "MISS")  return "#f1564b";
+  return "#7b86a0";
+}
+
+// ── Segmented Control ──────────────────────────────────────────────────────
+function Segmented({ active, setActive, small }) {
+  const explain = {
+    bear: ["The pessimistic scenario", "Click to see what AVGO looks like if hyperscaler AI spending pulls back — XPU revenue misses guidance, VMware customers churn faster than expected, and the stock re-rates as a hardware cyclical. Price would likely fall to the $200–265 range."],
+    base: ["The most-likely scenario", "Click for the base view — AI chip revenue hits guidance, VMware ARR grows steadily at 15–18%, and Broadcom keeps compounding FCF at ~20% per year. Price stays in the $420–490 range near fair value."],
+    bull: ["The optimistic scenario", "Click to see the upside — Q2 AI revenue beats $10.7B guidance, a 7th hyperscaler XPU customer is announced, and the market re-rates AVGO from hardware cyclical to durable platform. Price could reach $580–700."],
+  };
+  return (
+    <div style={{ display: "flex", gap: 5 }}>
+      {Object.values(CASES).map((cc) => {
+        const on = active === cc.key;
+        return (
+          <div key={cc.key} onClick={() => setActive(cc.key)}
+            onMouseEnter={(e) => showTip(e, explain[cc.key][0], explain[cc.key][1], "Tip: click to switch the whole dashboard to this scenario.", cc.accent)}
+            onMouseMove={moveTip} onMouseLeave={hideTip}
+            style={{
+              padding: small ? "3px 12px" : "4px 14px", borderRadius: 4, fontSize: 11,
+              fontWeight: 700, letterSpacing: "0.08em", cursor: "pointer",
+              border: `1px solid ${on ? cc.accent : "#222a38"}`, color: on ? "#06080d" : cc.accent,
+              background: on ? cc.accent : "transparent", boxShadow: on ? `0 0 16px ${cc.glow}` : "none",
+              transition: "all .18s ease",
+            }}>{cc.label}</div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── KPI Column — AI Revenue $B ─────────────────────────────────────────────
+const KPI_MIN = 5, KPI_MAX = 26;
+function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
+  const h = Math.max(4, Math.min(92, ((val - KPI_MIN) / (KPI_MAX - KPI_MIN)) * 100));
+  const tp = baseline
+    ? tip("Starting point (Q1 FY26)", `This is the most recent real number: Broadcom earned $${val}B in AI chip revenue last quarter. The bars to the right are scenario forecasts for where it goes next.`, "The grey dot = 'where we are now'.", "#9aa4b8")
+    : tip(`Forecast: ${label}`, `In this scenario, quarterly AI semiconductor revenue reaches ~$${val}B by ${label}. CEO Hock Tan has guided to $100B+ AI chip revenue for all of FY2027 — about $25B/quarter. Taller bar = faster ramp.`, "Switch BEAR/BASE/BULL up top to see how the forecast changes.", accentColor);
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
+      <div style={{ fontSize: 11, color: accentColor, fontWeight: 700, marginBottom: 4 }}>${val}B</div>
+      {baseline
+        ? <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#3a4252", border: "1.5px solid #7b86a0", marginBottom: `${h}%` }} />
+        : <div style={{ width: "62%", height: `${h}%`, background: `linear-gradient(180deg, ${accentColor}, ${accentColor}44)`, border: `1px solid ${accentColor}`, borderRadius: 2, animation: `fadeUp .5s ease ${delay}s both`, boxShadow: `0 0 12px ${accentColor}55` }} />}
+      <div style={{ fontSize: 9.5, color: "#5a6477", marginTop: 6 }}>{label}</div>
+    </div>
+  );
+}
+
+// ── Signal Group + Row ─────────────────────────────────────────────────────
+function SignalGroup({ id, title, requires, accent, evidence, children }) {
+  return (
+    <div style={{ border: "1px solid #161c28", borderRadius: 8, padding: "10px 12px", marginBottom: 12, background: "#0a0e15" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: 12.5, color: "#e6eaf2", fontFamily: FONT_DISPLAY, fontWeight: 600 }}>
+          <span style={{ background: "#161c28", padding: "1px 6px", borderRadius: 3, fontSize: 10, fontFamily: FONT_MONO, color: "#9aa4b8", marginRight: 8, verticalAlign: "middle" }}>{id}</span>
+          <span dangerouslySetInnerHTML={{ __html: title }} />
+        </div>
+        <div style={{ fontSize: 10, color: "#5a6477" }}>EVIDENCE {evidence} ›</div>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#5a6477", margin: "4px 0 10px" }}>REQUIRES: <span style={{ color: accent }}>{requires}</span></div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>{children}</div>
+    </div>
+  );
+}
+function SignalRow({ s, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
+      <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }} {...tip(
+        s.name, SIGNAL_HELP[s.name] || "A measurable indicator used to check whether this scenario is actually happening.",
+        `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
+        <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
+        <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>{s.unit} · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
+      </div>
+      <div>
+        <SignalBar pos={s.pos} accent={accent} tipProps={tip(
+          "Where this scenario sits",
+          "This bar runs from bad (red, left) to good (green, right). The glowing dot shows where THIS scenario expects the number to land.",
+          "It's a visual gauge, not an exact measurement.", accent)} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
+          <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
+          <span style={{ color: accent, fontWeight: 700 }}>{s.val}</span>
+          <span style={{ color: "#5a6477" }}>{s.guide}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+function MarginRow({ s, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
+      <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }} {...tip(
+        s.name, SIGNAL_HELP[s.name] || "A measure of how profitable and well-run the business is.",
+        `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
+        <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
+        <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>% · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
+      </div>
+      <div>
+        <SignalBar pos={s.pos} accent={accent} tipProps={tip(
+          "Where this scenario sits",
+          "Red (left) is bad, green (right) is good. The glowing dot marks where this scenario expects this measure to land.", null, accent)} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
+          <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Reversion Clock ────────────────────────────────────────────────────────
+function ReversionClock() {
+  const dislocationDate = new Date(DISLOCATION_DATE);
+  const today = new Date();
+  const elapsed = Math.round((today - dislocationDate) / 86400000);
+  const pct = Math.min(100, (elapsed / REVERSION_PRECEDENT_DAYS) * 100);
+  const trough = REVERSION_TROUGH, baseFloor = REVERSION_BASEFLOOR, now = NOW_PRICE;
+  const recPct = Math.min(138, Math.max(0, ((now - trough) / (baseFloor - trough)) * 100));
+  return (
+    <div style={{ marginTop: 12, padding: "12px 14px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#5a6477" }}>REVERSION CLOCK · APR 2026 DISLOCATION</div>
+        <div style={{ fontSize: 11, color: "#9aa4b8" }}><span style={{ color: "#e0a83b", fontWeight: 700 }}>{elapsed}d</span> elapsed / ~{REVERSION_PRECEDENT_DAYS}d precedent</div>
+      </div>
+      <div style={{ marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>TIME SINCE DISLOCATION ({new Date(DISLOCATION_DATE).toLocaleDateString("en-US",{month:"short",day:"numeric"})})</div>
+      <div {...tip("How much time has passed",
+        "In April 2026, competition fears from Marvell briefly pushed AVGO below $400. This bar shows how far along we are in the recovery cycle vs. the prior Q2 FY2025 dislocation precedent (~50 days).",
+        "Filling up = getting closer to when recovery happened last time.", "#e0a83b")}
+        style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.min(100,pct)}%`, background: "linear-gradient(90deg,#f1564b,#e0a83b)", borderRadius: 7 }} />
+        <div style={{ position: "absolute", right: 0, top: -3, bottom: -3, width: 2, background: "#3fd07a" }} />
+        <div style={{ position: "absolute", left: `${Math.min(100,pct)}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#fff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #fff", pointerEvents: "none" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
+        <span>day 0</span><span style={{ color: "#3fd07a" }}>base-reversion mark (~50d) →</span>
+      </div>
+      <div style={{ marginTop: 12, marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>PRICE RECOVERY · ${REVERSION_TROUGH} trough → ${REVERSION_BASEFLOOR} base floor</div>
+      <div {...tip("How far the price has bounced back",
+        `Stock bottomed near $${REVERSION_TROUGH} after the April competition-fear selloff and needed to reach $${REVERSION_BASEFLOOR} to re-enter the base band. At $${now} it has now shot well past the base floor.`,
+        "When this bar is fuller than the time bar above, the bounce-back ran faster than the precedent. It did.", "#9fb4ff")}
+        style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.min(100, recPct / 1.38)}%`, background: "linear-gradient(90deg,#f1564b,#3fd07a)", borderRadius: 7 }} />
+        <div style={{ position: "absolute", left: `${Math.min(100, recPct / 1.38)}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#9fb4ff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #9fb4ff", pointerEvents: "none" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
+        <span>${REVERSION_TROUGH}</span>
+        <span style={{ color: "#9fb4ff" }}>${now} now · {Math.round(recPct)}% of the way back (base floor cleared)</span>
+        <span>${REVERSION_BASEFLOOR}</span>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
+        Competition-fear selloff in April 2026 (AVGO dipped below $400 on Marvell headlines) has <span style={{ color: "#3fd07a", fontWeight: 700 }}>fully reversed</span> — price at ${now} is well past the base floor of ${REVERSION_BASEFLOOR}. Recovery ran <span style={{ color: "#3fd07a", fontWeight: 700 }}>well ahead</span> of the ~50-day precedent pace. The next test is Q2 FY2026 earnings on <span style={{ color: "#e0a83b", fontWeight: 700 }}>June 3</span>.
+      </div>
+    </div>
+  );
+}
+
+// ── Track Record ───────────────────────────────────────────────────────────
+function TrackRecord() {
+  const W = 1000, H = 300, pl = 44, pr = 70, pt = 20, pb = 40;
+  const pw = W - pl - pr, ph = H - pt - pb;
+  const y = (p) => pt + (1 - (p - TRACK_PRICE_MIN) / (TRACK_PRICE_MAX - TRACK_PRICE_MIN)) * ph;
+  const x = (i) => pl + (TRACK.length === 1 ? pw / 2 : (i / (TRACK.length - 1)) * pw);
+  const grid = [500, 400, 300, 200, 100];
+  const pathPts = TRACK.map((t, i) => [x(i), y(t.post)]);
+  const linePath = "M " + pathPts.map(([px, py]) => `${px} ${py}`).join(" L ");
+  const hits = TRACK.filter((t) => t.landed.includes("base") || t.landed.includes("bull")).length;
+  return (
+    <div style={{ background: "#080b11", padding: "16px 18px", borderTop: "1px solid #161c28" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+        <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
+          <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>TR · BACKTEST</span>
+          THESIS TRACK RECORD · RECONSTRUCTED BANDS vs ACTUAL PRICE
+        </div>
+        <div style={{ fontSize: 11, color: "#7b86a0" }}>BASE-OR-BETTER LANDINGS: <span style={{ color: "#3fd07a", fontWeight: 700 }}>{hits}/{TRACK.length}</span></div>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#5a6477", marginBottom: 10 }}>
+        Each column = one earnings date. Stacked zones are the bear / base / bull bands as they would have been drawn at that time. The line is where price actually traded after. All prices post-split.
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+        {grid.map((p) => (
+          <g key={p}>
+            <line x1={pl} y1={y(p)} x2={W - pr} y2={y(p)} stroke="#161c28" strokeWidth="1" strokeDasharray="1 5" />
+            <text x={W - pr + 8} y={y(p) + 3} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>${p}</text>
+          </g>
+        ))}
+        {TRACK.map((t, i) => {
+          const cx = x(i), bw = 46;
+          const landWord = t.landed.includes("bull") ? "the optimistic zone" : t.landed.includes("base") ? "the middle zone" : "the pessimistic zone";
+          const reactWord = t.reaction.includes("−") || t.reaction.includes("-") ? "the stock FELL after this report" : "the stock ROSE after this report";
+          const seg = (range, color) => (
+            <rect x={cx - bw / 2} y={y(range[1])} width={bw} height={Math.max(2, y(range[0]) - y(range[1]))}
+              fill={color} opacity={t.conf === "med" ? 0.32 : 0.5} rx="2" style={{ animation: `fadeUp .5s ease ${i * 0.08}s both` }}
+              {...tipSvg(`${t.q} earnings`,
+                `At this earnings date, here's the scenario band (red=bear, yellow=base, green=bull). In reality, ${reactWord} and the price ended up in ${landWord} (~$${t.post}).`,
+                t.conf === "med" ? "Marked 'lower-confidence' — bands reconstructed in hindsight." : null,
+                color.includes("63,208") ? "#3fd07a" : color.includes("224,168") ? "#e0a83b" : "#f1564b")} />
+          );
+          return (
+            <g key={t.q}>
+              {seg(t.bull, "rgba(63,208,122,0.55)")}
+              {seg(t.base, "rgba(224,168,59,0.5)")}
+              {seg(t.bear, "rgba(241,86,75,0.5)")}
+              <text x={cx} y={H - 24} fill="#9aa4b8" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle">{t.q}</text>
+              <text x={cx} y={H - 11} fill={t.conf === "med" ? "#5a6477" : "#3a4252"} fontSize="8.5" fontFamily={FONT_MONO} textAnchor="middle">
+                {t.conf === "med" ? "lower-conf" : t.reaction.includes("-") ? "↓ dislocation" : ""}
+              </text>
+            </g>
+          );
+        })}
+        <path d={linePath} fill="none" stroke="#dde3ee" strokeWidth="2.2" className="track-line" style={{ filter: "drop-shadow(0 0 4px rgba(221,227,238,0.4))" }} />
+        {TRACK.map((t, i) => {
+          const isLast = i === TRACK.length - 1;
+          return (
+            <g key={t.q} style={{ animation: `pop .4s cubic-bezier(.2,1.4,.4,1) ${0.3 + i * 0.08}s both` }}>
+              <circle cx={x(i)} cy={y(t.post)} r={isLast ? 6 : 4} fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
+                {...tipSvg(isLast ? "Most recent quarter" : `${t.q}: actual price`,
+                  isLast ? `After Q1 FY2026 earnings (Feb 2026), AVGO traded around $${t.post}. Q2 FY2026 results arrive June 3 — that will be the next dot added.`
+                    : `After ${t.q} earnings, AVGO actually traded around $${t.post}. Compare this dot to the colored bars behind it to see if the predicted range was right.`,
+                  null, isLast ? "#9fb4ff" : "#cdd5e3")} />
+              {isLast && <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">Q1 FY26 ${t.post}</text>}
+            </g>
+          );
+        })}
+      </svg>
+      <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
+        <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
+          Price has tracked <span style={{ color: "#3fd07a", fontWeight: 700 }}>base-or-better in {hits} of {TRACK.length} quarters</span> since Q4 FY2024.
+          The only bear landing was Q2 FY2025 ($242), which coincided with the 52-week low — a macro / valuation pause, not a business miss.
+          The Q4 FY2025 catalyst was management's $100B FY2027 AI revenue target, which drove the stock into the bull band at $368.
+          Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits in the upper BASE band — the Q2 FY2026 print on June 3 is the next directional catalyst.
+        </div>
+      </div>
+      <ReversionClock />
+      <div style={{ fontSize: 9.5, color: "#3d4555", marginTop: 8, lineHeight: 1.5 }}>
+        ⚠ Bands are reconstructed now, anchored to each date's forward EPS &amp; multiple regime — not archived in real time. Treat levels as directional, especially "lower-conf" quarters. Post-split prices throughout (10:1 split July 2024). Customer concentration within the 6 XPU partners is undisclosed — treat AI revenue bands as wider than they appear.
+      </div>
+    </div>
+  );
+}
+
+// ── Main Component ─────────────────────────────────────────────────────────
+function AvgoThesis() {
+  const [active, setActive] = useState("base");
+  const c = CASES[active];
+  const kpiVals = KPI_PROJ[active];
+  return (
+    <div style={{ background: "#06080d", minHeight: "100vh", padding: "20px 16px", fontFamily: FONT_MONO, color: "#cdd5e3" }}>
+      <div className="grain" style={{ maxWidth: 1280, margin: "0 auto", position: "relative", border: "1px solid #161c28", borderRadius: 12, background: "linear-gradient(160deg,#0a0d14,#070a10)", boxShadow: "0 40px 120px rgba(0,0,0,0.6)", overflow: "hidden" }}>
+
+        {/* ── Header ── */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 22px", borderBottom: "1px solid #161c28" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, letterSpacing: "0.35em", color: "#f3f5f9", fontWeight: 600 }}>TH<span style={{ color: c.accent }}>3</span>SIS</div>
+            <div {...tip("👋 New here?", "Hover your mouse over anything on this page — charts, bars, dots, labels — and a plain-English explanation will pop up. No finance degree required.", "This little hint is one too.", "#3fd07a")}
+              style={{ fontSize: 10, color: "#5a6477", border: "1px solid #222a38", borderRadius: 20, padding: "3px 10px", cursor: "help" }}>
+              ⓘ hover anything to learn what it means
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 12.5, color: "#7b86a0" }}>
+            <span>{AS_OF_DATE}</span>
+            <span style={{ color: "#cdd5e3" }}>NASDAQ:AVGO</span>
+            <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "#9aa4b8" }}>Broadcom Inc.</span>
+            <span {...tip("Today's share price", `One share of AVGO costs about $${NOW_PRICE} right now (post 10:1 split). Q2 FY2026 earnings report tomorrow — June 3. The whole dashboard is about figuring out whether $${NOW_PRICE} is cheap, fair, or expensive relative to the AI revenue trajectory.`, null, "#fff")}
+              style={{ color: "#fff", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}.00</span>
+          </div>
+        </div>
+
+        {/* ── Two-column body ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 1, background: "#161c28" }}>
+
+          {/* Left — chart + KPI bars */}
+          <div style={{ background: "#080b11", padding: "16px 18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>NOW</span>
+                AVGO · PRICE &amp; RISK-REWARD
+              </div>
+              <Segmented active={active} setActive={setActive} />
+            </div>
+            <div className="panel" key={active + "-chart"}><FanChart c={c} /></div>
+            <div style={{ marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#5a6477" }}>
+              <span><span style={{ color: c.accent }}>━━</span> {c.label.toLowerCase()} mid &nbsp; <span style={{ color: "#2f6dff" }}>┊</span> now &nbsp; <span style={{ color: "#cdd5e3" }}>━</span> history</span>
+              <span>12M TARGET <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></span>
+            </div>
+
+            {/* KPI chart */}
+            <div style={{ marginTop: 18, borderTop: "1px solid #161c28", paddingTop: 14 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.16em", color: "#7b86a0", marginBottom: 4 }}
+                {...tip("The single most important number",
+                  "Broadcom's AI semiconductor revenue is the quarterly dollar amount it earns from designing custom XPU/ASIC chips for hyperscalers. CEO Hock Tan has guided to $100B+ for all of FY2027 — roughly $25B/quarter. Whether this ramps as promised is what separates every scenario.",
+                  "This is the number to watch at every earnings report.", "#9fb4ff")}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>KPI · K01</span>
+                AI Semiconductor Revenue
+                <span style={{ color: "#5a6477", marginLeft: 8 }}>$B quarterly  ·  HIGHER BETTER</span>
+              </div>
+              <div className="panel" key={active + "-kpi"} style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 120, padding: "12px 4px 0" }}>
+                <KpiCol label="Q1 FY26" val={KPI_HIST} baseline accentColor="#7b86a0" />
+                {kpiVals.map((v, i) => <KpiCol key={i} label={FUTURE_Q[i]} val={v} accentColor={c.accent} delay={i * 0.08} />)}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
+                <div>
+                  <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THIS MEASURES</div>
+                  <div style={{ color: "#9aa4b8" }}>Quarterly AI chip revenue from XPU/ASIC design wins at Google, Meta, Anthropic, OpenAI, and two unnamed hyperscalers. $100B+ FY2027 target = ~$25B/quarter run rate.</div>
+                </div>
+                <div>
+                  <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THE <span style={{ color: c.accent }}>{c.label}</span> CASE REQUIRES</div>
+                  <div style={{ color: c.accent }}>
+                    {active === "bull" ? "AI revenue beats the $10.7B Q2 guide and keeps accelerating toward $23B+ quarterly by FY2027 — confirming the 7-customer platform re-rating."
+                      : active === "base" ? "Revenue hits guidance each quarter and scales smoothly toward $16–17B by Q1 FY2027, keeping the $100B annual target credible."
+                      : "AI revenue misses the $10.7B guide and plateaus below $11B for multiple quarters, signaling hyperscaler capex discipline has arrived."}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right — thesis + signals */}
+          <div style={{ background: "#080b11", padding: "16px 18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>THESIS · ALL SIGNALS</div>
+              <div style={{ fontSize: 12, color: "#7b86a0" }}>{c.label.toLowerCase()} 12M <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></div>
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
+              <Segmented active={active} setActive={setActive} small />
+              <span className="dot-track" style={{ marginLeft: 6, fontSize: 10.5, color: c.accent }}>● TRACKING</span>
+            </div>
+            <div className="panel" key={active + "-op"} style={{ fontSize: 12.5, lineHeight: 1.6, color: "#bcc6d8", marginBottom: 16, minHeight: 72 }}>{c.op}</div>
+
+            <SignalGroup id="SN01" title="AI Revenue &amp; Customer Momentum" requires={c.requires01} accent={c.accent} evidence={3}>
+              {SIGNALS[active].map((s, i) => <SignalRow key={i} s={s} accent={c.accent} />)}
+            </SignalGroup>
+
+            <SignalGroup id="SN02" title="Margin &amp; Forward Guidance Quality" requires={c.requires02} accent={c.accent} evidence={3}>
+              {MARGIN[active].map((s, i) => <MarginRow key={i} s={s} accent={c.accent} />)}
+            </SignalGroup>
+
+            <div style={{ marginTop: 14, borderTop: "1px solid #161c28", paddingTop: 10 }}>
+              <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 3 }}>WHAT BREAKS THE <span style={{ color: c.accent }}>{c.label}</span> CASE</div>
+              <div style={{ fontSize: 11.5, color: "#9aa4b8", lineHeight: 1.5 }}>{c.breaks}</div>
+            </div>
+
+            {/* Valuation ruler note */}
+            <div style={{ marginTop: 14, padding: "10px 12px", background: "#0a0d14", border: "1px solid #161c28", borderRadius: 6 }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 4 }}>VALUATION RULER</div>
+              <div {...tip("How we price this stock",
+                "AVGO's GAAP earnings are depressed by ~$8B/year of amortization from the $69B VMware acquisition — a financing cost, not an economic one. The market uses non-GAAP adjusted EPS. We multiply that by a P/E multiple that reflects how excited or scared the market is about the AI revenue trajectory.",
+                "Price = forward non-GAAP EPS × P/E multiple. Bear = 22x (cyclical discount). Base = 33x (premium AI compounder). Bull = 40x (platform re-rating).", "#9aa4b8")}
+                style={{ fontSize: 11, color: "#9aa4b8", lineHeight: 1.5 }}>
+                Forward non-GAAP EPS × P/E. Bear: ~$9.50 × 23x = $218. Base: ~$13.50 × 33x = $445. Bull: ~$16.50 × 40x = $660. Bands are wide — the multiple is a mood indicator.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Footer bar ── */}
+        <div style={{ padding: "10px 22px", borderTop: "1px solid #161c28", display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#4a5366" }}>
+          <span>OBSERVABLE NOW: TSMC capacity news · hyperscaler CapEx announcements · Marvell/Intel custom chip progress · enterprise VMware churn data</span>
+          <span>CONFIRMS JUN 3: AI rev vs $10.7B guide · VMware ARR · EBITDA margin · Q3 AI guidance</span>
+        </div>
+
+        <TrackRecord />
+      </div>
+
+      <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "#3d4555", lineHeight: 1.5 }}>
+        Illustrative scenario framing built on public consensus &amp; estimates as of June 2026 — not a prediction and not financial advice. Price ranges are scenario mid-bands; KPI markers are positional, not literal. Valuation ruler: forward non-GAAP EPS × P/E multiple (strips VMware amortization). Data inputs will move with every print. Q2 FY2026 earnings: June 3, 2026.
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<AvgoThesis />);
+</script>
+</body>
+</html>
