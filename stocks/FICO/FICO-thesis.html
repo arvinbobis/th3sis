@@ -650,6 +650,41 @@ function FICOThesis() {
               <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 3 }}>WHAT BREAKS THE <span style={{ color: c.accent }}>{c.label}</span> CASE</div>
               <div style={{ fontSize: 11.5, color: "#9aa4b8", lineHeight: 1.5 }}>{c.breaks}</div>
             </div>
+
+            {/* Risk / Reward */}
+            <div style={{ marginTop: 10, padding: "10px 12px", background: "#0a0d14", border: "1px solid #2a1a1a", borderRadius: 6 }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 8 }}>RISK / REWARD AT ${NOW_PRICE}</div>
+              {[
+                { label: "BEAR", color: "#f1564b", lo: 450,  hi: 750  },
+                { label: "BASE", color: "#e0a83b", lo: 1100, hi: 1700 },
+                { label: "BULL", color: "#3fd07a", lo: 1900, hi: 2600 },
+              ].map(({ label, color, lo, hi }) => {
+                const mid = Math.round((lo + hi) / 2);
+                const pct = Math.round(((mid - NOW_PRICE) / NOW_PRICE) * 100);
+                const sign = pct >= 0 ? "+" : "";
+                const barW = Math.max(4, Math.min(96, ((pct + 60) / 130) * 100));
+                return (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}
+                    {...tip(`${label} scenario return`,
+                      `If the ${label.toLowerCase()} case plays out over 12 months, price would land in the $${lo}–$${hi} range — roughly ${sign}${pct}% from today's $${NOW_PRICE}.`,
+                      "Midpoint of range used. These are estimates, not targets.", color)}>
+                    <div style={{ fontSize: 9.5, color, fontWeight: 700, width: 34 }}>{label}</div>
+                    <div style={{ flex: 1, position: "relative", height: 8, background: "#0d1018", borderRadius: 4, border: "1px solid #1c2230" }}>
+                      <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: `${barW}%`, background: color, opacity: 0.45, borderRadius: 4 }} />
+                      <div style={{ position: "absolute", top: "50%", left: `${barW}%`, transform: "translate(-50%,-50%)", width: 6, height: 6, borderRadius: "50%", background: color, boxShadow: `0 0 6px ${color}` }} />
+                    </div>
+                    <div style={{ fontSize: 10.5, color, fontWeight: 700, width: 44, textAlign: "right" }}>{sign}{pct}%</div>
+                    <div style={{ fontSize: 9, color: "#4a5366", width: 80 }}>${lo}–${hi}</div>
+                  </div>
+                );
+              })}
+              <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #161c28", fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55 }}
+                {...tip("What this asymmetry means",
+                  `At $${NOW_PRICE}, FICO is down 46% from ATH despite earnings growing 60–70% YoY — the entire decline is multiple compression on VantageScore fear. The base case offers modest upside; the bull case (fear overblown, multiple recovers) is large; the bear (fear is right) means another ~−53%.`,
+                  "Midpoints of ranges used. Always hold loosely.", "#9aa4b8")}>
+                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−53%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>+10%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+76%</span> — VantageScore tail is large; the <span style={{ color: "#3fd07a" }}>bull case offers real optionality</span> if the competitive threat proves overblown.
+              </div>
+            </div>
           </div>
         </div>
 

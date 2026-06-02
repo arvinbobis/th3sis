@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TH3SIS · Taiwan Semiconductor — Investment Thesis</title>
+<title>TH3SIS · META Platforms — Investment Thesis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
 <script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
@@ -45,15 +45,20 @@
 <body>
 <div id="root"></div>
 <script type="text/babel">
-const { useState } = React;
+const { useState, useEffect } = React;
 
 const FONT_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
 const FONT_DISPLAY = "'Spectral', Georgia, serif";
 
-// ── Tooltip engine ────────────────────────────────────────────────────────────
+// ── Plain-language tooltip engine ────────────────────────────────────────────
+// One floating box, moved to the cursor. Works for both <div> and SVG elements.
 let tipEl = null;
 function ensureTip() {
-  if (!tipEl) { tipEl = document.createElement("div"); tipEl.id = "tip-box"; document.body.appendChild(tipEl); }
+  if (!tipEl) {
+    tipEl = document.createElement("div");
+    tipEl.id = "tip-box";
+    document.body.appendChild(tipEl);
+  }
   return tipEl;
 }
 function showTip(e, title, body, note, color) {
@@ -62,25 +67,30 @@ function showTip(e, title, body, note, color) {
     `<div class="tt" style="color:${color || '#9fb4ff'}">${title}</div>` +
     `<div class="tb">${body}</div>` +
     (note ? `<div class="tn">${note}</div>` : "");
-  el.classList.add("on"); moveTip(e);
+  el.classList.add("on");
+  moveTip(e);
 }
 function moveTip(e) {
-  const el = ensureTip(); const pad = 16;
+  const el = ensureTip();
+  const pad = 16;
   let x = e.clientX + pad, y = e.clientY + pad;
   const r = el.getBoundingClientRect();
   if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
   if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
-  el.style.left = x + "px"; el.style.top = y + "px";
+  el.style.left = x + "px";
+  el.style.top = y + "px";
 }
 function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
 
+// Plain-language explanations for each KPI / signal name
 const SIGNAL_HELP = {
-  "AI/HPC Revenue Share": "The percentage of TSMC's chip sales going to AI and high-performance computing customers — NVIDIA, AMD, Apple's custom silicon, and hyperscaler AI chips. It hit 61% in Q1 2026, up from ~50% a year earlier. If this keeps rising, TSMC grows faster than the underlying chip market. If it stalls, the premium valuation is hard to justify.",
-  "Revenue vs. Q2 Guide ($39–40.2B)": "TSMC told investors to expect $39–40.2 billion in sales next quarter (Q2 2026), up ~10% from Q1's $35.9B. This checks whether they actually hit that target. A beat signals AI demand is even stronger than expected; a miss is the first evidence of cracks forming in the AI spending cycle.",
-  "Cross-Strait Risk Level": "The single biggest non-earnings variable for TSMC: the relationship between China and Taiwan. When tensions are calm (as now, with the US-Taiwan chip deal signed April 2026), investors pay 27x earnings. When tensions spike — as in May 2025's tariff panic — the stock can lose 20–30% in weeks on unchanged fundamentals. The deal lowers the risk; it doesn't eliminate it.",
-  "2nm (N2) Node Ramp News": "TSMC's next-generation chip process (N2 / 2nm) is the next major earnings driver. It produces faster chips than today's 3nm — and TSMC charges a premium per wafer. Apple is expected to be the first big customer. News on customer qualifications, yields, or volume ramp dates directly affects how much margin expansion investors can price in for 2027.",
-  "Gross Margin %": "Out of every dollar of chip sales, how much is left after manufacturing costs. TSMC runs at 66.2% — exceptional for any manufacturer. The risk: Arizona fabs cost ~50% more to build and run than equivalent Taiwan fabs. As TSMC scales overseas production under the US-Taiwan deal, this number faces downward pressure. Holding above 65% is the base case; slipping below 63% is a warning sign.",
-  "CoWoS Capacity Utilization": "CoWoS (Chip-on-Wafer-on-Substrate) is TSMC's advanced packaging technology that physically connects memory to the AI compute die in NVIDIA's H100/H200/Blackwell chips. TSMC is scaling from 35,000 to 130,000 wafers per month by year-end 2026. If that ramp is clean and utilization stays full, AI chip supply flows unconstrained. Yield problems or delays create bottlenecks that directly hit NVIDIA and hyperscaler AI buildouts.",
+  "Ad Price-per-Ad Trend": "How much advertisers pay for each ad, compared to a year ago. If it keeps rising, it means businesses find Meta's ads valuable — a sign the core money-machine is healthy. Right now it's growing about +12% a year.",
+  "Revenue vs $58–61B Guide": "Meta told investors to expect $58–61 billion in sales next quarter. This checks whether they actually hit that target. Beating it = strong demand; missing it = warning sign.",
+  "EU DMA Compliance Risk": "Europe has a strict digital law (the DMA). Meta already lost the big fight — it was fined €200m in 2025 and changed its ad model in January 2026. The live risk now: if the EU decides that new model STILL doesn't comply, Meta faces fines of up to 5% of daily global sales. There's no fixed ruling date — it's an open review running through 2026. Europe is about a quarter of Meta's ad money, so it matters.",
+  "Operating Margin": "Out of every dollar of sales, how much is left as profit after running costs. Meta's is about 41% — very high. If it drops, it means costs (like AI spending) are eating into profits.",
+  "Subscription Revenue Disclosure": "Meta recently started charging for ad-free apps and a paid AI assistant. This watches whether they reveal real money coming in from subscriptions — a brand-new income stream beyond ads.",
+  "Adjusted Operating Margin": "Same idea as profit margin — how much of each sales dollar becomes profit — adjusted to strip out one-off items. Higher is healthier.",
+  "Capex Guidance Trajectory": "'Capex' = how much Meta plans to spend building AI data centers. The number keeps climbing ($125–145 billion for 2026). Investors get nervous when it rises without obvious payoff.",
 };
 const TAG_HELP = {
   BEAT: "doing better than expected — a good sign.",
@@ -88,140 +98,144 @@ const TAG_HELP = {
   MISS: "falling short of expectations — a worry.",
   WATCH: "not decided yet — keep an eye on it.",
 };
+
+// helper: spread these props onto any element to give it a tooltip
 function tip(title, body, note, color) {
-  return { className: "tip-target", onMouseEnter: (e) => showTip(e, title, body, note, color), onMouseMove: (e) => moveTip(e), onMouseLeave: hideTip };
+  return {
+    className: "tip-target",
+    onMouseEnter: (e) => showTip(e, title, body, note, color),
+    onMouseMove: (e) => moveTip(e),
+    onMouseLeave: hideTip,
+  };
 }
+// SVG version (adds class without clobbering existing ones)
 function tipSvg(title, body, note, color, extraClass) {
-  return { className: (extraClass ? extraClass + " " : "") + "tip-target", onMouseEnter: (e) => showTip(e, title, body, note, color), onMouseMove: (e) => moveTip(e), onMouseLeave: hideTip };
+  return {
+    className: (extraClass ? extraClass + " " : "") + "tip-target",
+    onMouseEnter: (e) => showTip(e, title, body, note, color),
+    onMouseMove: (e) => moveTip(e),
+    onMouseLeave: hideTip,
+  };
 }
 
 /* ╔══════════════════════════════════════════════════════════════════════════╗
    ║                                                                          ║
-   ║   ███  EDIT EVERYTHING IN THIS BLOCK EACH QUARTER  ███                   ║
+   ║   ███  EDIT EVERYTHING IN THIS BLOCK EACH QUARTER  ███                    ║
    ║                                                                          ║
-   ║   This is the ONLY section you need to touch. Everything below it is     ║
-   ║   machinery that draws itself from these numbers. Follow the companion   ║
-   ║   file "TSM-QUARTERLY-CHECKLIST.md" step by step.                        ║
+   ║   This is the ONLY section you need to touch. Everything below it is      ║
+   ║   machinery that draws itself from these numbers. Follow the companion    ║
+   ║   file "QUARTERLY-UPDATE-CHECKLIST.md" step by step.                      ║
    ║                                                                          ║
    ║   Quick map of what to change after each earnings report:                ║
-   ║     1. AS_OF_DATE  ......  today's date (top-right of dashboard)         ║
-   ║     2. NOW_PRICE   ......  current share price                           ║
-   ║     3. HISTORY     ......  add the just-finished quarter's price         ║
-   ║     4. FUTURE_Q    ......  roll the 4 forward quarter labels             ║
-   ║     5. CASES       ......  ⚠ RE-READ each narrative — is it still true?  ║
+   ║     1. AS_OF_DATE  ......  today's date (top-right of dashboard)          ║
+   ║     2. NOW_PRICE   ......  current share price                            ║
+   ║     3. HISTORY     ......  add the just-finished quarter's price          ║
+   ║     4. FUTURE_Q    ......  roll the 4 forward quarter labels              ║
+   ║     5. CASES       ......  ⚠ RE-READ each narrative — is it still true?   ║
    ║     6. PROJ_END + target12 .. the bear/base/bull price targets           ║
-   ║     7. SIGNALS / MARGIN ...  update tags (BEAT/MATCH/MISS) + positions   ║
-   ║     8. KPI_HIST / KPI_PROJ .. the AI/HPC revenue share numbers           ║
-   ║     9. TRACK_ALL   ......  add the new quarter (oldest auto-drops)       ║
-   ║    10. DISLOCATION_DATE ...  only if a new shock happened                ║
+   ║     7. SIGNALS / MARGIN ...  update tags (BEAT/MATCH/MISS) + positions    ║
+   ║     8. KPI_HIST / KPI_PROJ .. the AI-monetization numbers                 ║
+   ║     9. TRACK       ......  add the new quarter (oldest auto-drops)        ║
+   ║    10. DISLOCATION_DATE ...  only if a new crash happened                 ║
    ║                                                                          ║
    ╚══════════════════════════════════════════════════════════════════════════╝ */
 
 // 1 ── DATE shown top-right of the dashboard
-const AS_OF_DATE = "2026-05-29";
+const AS_OF_DATE = "2026-05-28";
 
-// 10 ── Most recent geopolitical/earnings "shock" date (drives the Reversion Clock).
+// 10 ── Most recent capex/earnings "shock" date (drives the Reversion Clock).
 //        Only change this if a NEW dislocation happens.
-const DISLOCATION_DATE = "2025-05-23";   // tariff-panic low: TSM hit $190.56
-const REVERSION_TROUGH = 190;            // the low the stock hit
-const REVERSION_BASEFLOOR = 338;         // Q1 2026 closing price — bottom of current base band
-const REVERSION_PRECEDENT_DAYS = 315;    // days from trough to base-floor reversion last time (~10 months)
+const DISLOCATION_DATE = "2026-04-29";
+const REVERSION_TROUGH = 520;   // the low the stock hit after that shock
+const REVERSION_BASEFLOOR = 700; // bottom of your current BASE band
+const REVERSION_PRECEDENT_DAYS = 91; // how long the last recovery took
 
 const CASES = {
   bear: {
     key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
-    target12: "$180 — $250",
-    op: "Operational state: China-Taiwan tensions spike materially — PLA exercises or a blockade scenario — forcing institutional investors to slash TSM exposure regardless of fundamentals, compressing the multiple to 13–18x. Simultaneously, the AI spending cycle shows its first real cracks as hyperscalers pause orders, H2 2026 revenue disappoints, and Arizona fab cost overruns drag gross margins toward 62–63%. Earnings slow just as the geopolitical discount returns: a double compression.",
-    breaks: "AI demand stays insatiable through all hyperscaler earnings commentary; gross margin holds above 65% despite Arizona ramp; no material cross-strait incident materializes in the next 12 months; multiple stays above 22x through any market stress.",
-    requires01: "cross-strait escalation or hyperscaler capex cut signal",
-    requires02: "revenue miss vs. Q2 guide + gross margin guide below 63%",
+    target12: "$480 — $560",
+    op: "Operational state: ad growth decelerates, the capex bill keeps climbing without proven ROI, a regulatory hit lands in the EU, and Reality Labs losses start to look structural rather than strategic.",
+    breaks: "Demand proves durable, the ad engine keeps accelerating, the DMA compliance review stays benign, and capex ROI shows up in the numbers.",
+    requires01: "ad / guide quality deteriorates",
+    requires02: "earnings quality pressured by capex + RL drag",
   },
   base: {
     key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
-    target12: "$380 — $500",
-    op: "Operational state: TSMC executes its AI cycle script — revenue grows 35–38% in 2026, gross margins hold in the 65–67% range, AI/HPC stays 61–65% of revenue, and the US-Taiwan deal provides enough geopolitical breathing room to sustain 24–28x forward P/E. CoWoS ramps to 130K wafers/month messily but delivers. Arizona Phase 1 hits milestones without a major margin hit. At $425 current price, the stock is already pricing in base execution — upside from here requires a bull outcome.",
-    breaks: "Either demand disappoints and margins compress (bear lane), or gross margins expand above 68% while AI revenue re-accelerates and N2 ramps early — that forces a bull upgrade.",
-    requires01: "Arizona Phase 1 milestones track roughly on schedule",
-    requires02: "Q2 revenue $39.5–41B with gross margin 65–67%",
+    target12: "$700 — $800",
+    op: "Operational state: the Family of Apps stays a cash machine, AI ad tools do real work on conversion, margins hold near 41%, and the market tolerates the capex as long as ad ROI keeps showing up.",
+    breaks: "Either demand quality degrades into a true bear lane, or AI monetization breaks out and forces a re-rating higher.",
+    requires01: "solid delivery against guide with intact margins",
+    requires02: "margin durability holds despite capex ramp",
   },
   bull: {
     key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
-    target12: "$490 — $640",
-    op: "Operational state: AI inference and training demand exceeds all forecasts — NVIDIA Blackwell Ultra, custom silicon from Google/Amazon/Microsoft, all running at full TSMC N3/N2 capacity. TSMC successfully raises prices on leading-edge nodes, pushing gross margins above 68%. The 2nm (N2) node ramps ahead of schedule. Geopolitical risk premium nearly evaporates as Arizona fab Phases 1–2 demonstrate technology portability. Market re-rates TSMC to 30–35x as the world's indispensable AI infrastructure.",
-    breaks: "AI monetization stalls — from regulatory caps on AI, energy constraints, or demand saturation — or a China military action around Taiwan resets all multiples regardless of earnings.",
-    requires01: "N2 volume ramp / customer qualification news confirmed",
-    requires02: "gross margin ≥68% + full-year guidance raised above 35%",
+    target12: "$900 — $1015",
+    op: "Operational state: AI shifts from cost center to monetization engine, the new subscription stack scales, business-messaging revenue inflects, and the market reframes capex as proof of a durable ad-ranking moat.",
+    breaks: "AI monetization stalls, subscriptions fail to scale, ad pricing rolls over, or another capex raise resets sentiment.",
+    requires01: "clean ad reacceleration + monetization proof",
+    requires02: "margin expansion as AI leverage compounds",
   },
 };
 
-const NOW_PRICE = 425;
+const NOW_PRICE = 612;
 const HISTORY = [
-  { q: "Q1 25", p: 210 }, { q: "Q2 25", p: 225 },
-  { q: "Q3 25", p: 285 }, { q: "Q4 25", p: 335 },
-  { q: "Q1 26", p: 338 }, { q: "NOW",   p: NOW_PRICE },
+  { q: "Q1 25", p: 615 }, { q: "Q2 25", p: 720 }, { q: "Q3 25", p: 760 },
+  { q: "Q4 25", p: 700 }, { q: "Q1 26", p: 520 }, { q: "NOW", p: NOW_PRICE },
 ];
-// Note: Q1-Q4 2025 prices are estimates; Q1 2026 close $337.95 confirmed.
-// May 2025 intra-quarter low was $190.56 (tariff panic), not shown in quarterly closes.
-
-const PROJ_END = { bear: 215, base: 465, bull: 570 };
+const PROJ_END = { bear: 520, base: 750, bull: 957 };
 const FUTURE_Q = ["Q2 26", "Q3 26", "Q4 26", "Q1 27"];
 
 const SIGNALS = {
   bear: [
-    { name: "AI/HPC Revenue Share",             unit: "% of Rev", tag: "MISS",  next: "Q2 2026",    val: "BEAR <58%",        guide: "Q1: 61%",          pos: 0.20 },
-    { name: "Revenue vs. Q2 Guide ($39–40.2B)", unit: "$B",       tag: "MISS",  next: "Q2 2026",    val: "BEAR ≤$38.5B",     guide: "GUIDE $39–40.2B",  pos: 0.17 },
-    { name: "Cross-Strait Risk Level",           unit: "EVENT",    tag: "WATCH", next: "Ongoing",    val: "BEAR escalation",  guide: "US-TW deal live",  pos: 0.22 },
+    { name: "Ad Price-per-Ad Trend", unit: "% YoY", tag: "MISS", next: "Q2 2026", val: "BEAR +4% to +7%", guide: "Q1 +12%", pos: 0.22 },
+    { name: "Revenue vs $58–61B Guide", unit: "$B", tag: "MISS", next: "Q2 2026", val: "BEAR ≤ $58B", guide: "GUIDE $58–61B", pos: 0.18 },
+    { name: "EU DMA Compliance Risk", unit: "REV", tag: "WATCH", next: "Open 2026", val: "BEAR −EU rev impact", guide: "~25% ad rev", pos: 0.3 },
   ],
   base: [
-    { name: "AI/HPC Revenue Share",             unit: "% of Rev", tag: "MATCH", next: "Q2 2026",    val: "BASE 61–65%",       guide: "Q1: 61%",          pos: 0.58 },
-    { name: "Revenue vs. Q2 Guide ($39–40.2B)", unit: "$B",       tag: "BEAT",  next: "Q2 2026",    val: "BASE $39.5–41B",    guide: "GUIDE $39–40.2B",  pos: 0.62 },
-    { name: "Cross-Strait Risk Level",           unit: "EVENT",    tag: "WATCH", next: "Ongoing",    val: "BASE calm / deal",  guide: "US-TW deal live",  pos: 0.55 },
+    { name: "Ad Price-per-Ad Trend", unit: "% YoY", tag: "MATCH", next: "Q2 2026", val: "BASE +9% to +12%", guide: "Q1 +12%", pos: 0.55 },
+    { name: "Revenue vs $58–61B Guide", unit: "$B", tag: "BEAT", next: "Q2 2026", val: "BASE $59–60B", guide: "GUIDE $58–61B", pos: 0.6 },
+    { name: "Operating Margin", unit: "%", tag: "MATCH", next: "Q2 2026", val: "BASE ≈ 41%", guide: "Q1 41%", pos: 0.58 },
   ],
   bull: [
-    { name: "AI/HPC Revenue Share",             unit: "% of Rev", tag: "BEAT",  next: "Q2 2026",    val: "BULL 66%+",          guide: "Q1: 61%",          pos: 0.84 },
-    { name: "Revenue vs. Q2 Guide ($39–40.2B)", unit: "$B",       tag: "BEAT",  next: "Q2 2026",    val: "BULL ≥$41B",         guide: "GUIDE $39–40.2B",  pos: 0.88 },
-    { name: "2nm (N2) Node Ramp News",           unit: "PROD",     tag: "BEAT",  next: "Press rls.", val: "BULL volume ramp",   guide: "Apple/NVDA qualed",pos: 0.82 },
+    { name: "Ad Price-per-Ad Trend", unit: "% YoY", tag: "BEAT", next: "Q2 2026", val: "BULL +13%+", guide: "Q1 +12%", pos: 0.82 },
+    { name: "Revenue vs $58–61B Guide", unit: "$B", tag: "BEAT", next: "Q2 2026", val: "BULL ≥ $61B", guide: "GUIDE $58–61B", pos: 0.86 },
+    { name: "Subscription Revenue Disclosure", unit: "NEW", tag: "BEAT", next: "Q2 2026", val: "BULL explicit ramp", guide: "new in Q2", pos: 0.8 },
   ],
 };
 const MARGIN = {
   bear: [
-    { name: "Gross Margin %",          tag: "MISS",  next: "Q2 2026", pos: 0.18 },
-    { name: "CoWoS Capacity Utilization", tag: "MISS",  next: "Q2 2026", pos: 0.20 },
+    { name: "Adjusted Operating Margin", tag: "MISS", next: "Q2 2026", pos: 0.2 },
+    { name: "Capex Guidance Trajectory", tag: "MISS", next: "Q2 2026", pos: 0.15 },
   ],
   base: [
-    { name: "Gross Margin %",          tag: "MATCH", next: "Q2 2026", pos: 0.57 },
-    { name: "CoWoS Capacity Utilization", tag: "MATCH", next: "Q2 2026", pos: 0.55 },
+    { name: "Adjusted Operating Margin", tag: "MATCH", next: "Q2 2026", pos: 0.55 },
+    { name: "Capex Guidance Trajectory", tag: "MATCH", next: "Q2 2026", pos: 0.52 },
   ],
   bull: [
-    { name: "Gross Margin %",          tag: "BEAT",  next: "Q2 2026", pos: 0.83 },
-    { name: "CoWoS Capacity Utilization", tag: "BEAT",  next: "Q2 2026", pos: 0.81 },
+    { name: "Adjusted Operating Margin", tag: "BEAT", next: "Q2 2026", pos: 0.8 },
+    { name: "Capex Guidance Trajectory", tag: "BEAT", next: "Q2 2026", pos: 0.78 },
   ],
 };
+const KPI_HIST = 38;
+const KPI_PROJ = { bear: [38, 37, 37, 38], base: [42, 45, 48, 51], bull: [48, 55, 62, 68] };
 
-// 8 ── AI/HPC share of revenue: actual Q1 2026, then 4-quarter projections per case
-const KPI_HIST = 61;
-const KPI_PROJ = {
-  bear: [59, 57, 56, 55],
-  base: [63, 65, 66, 67],
-  bull: [66, 69, 72, 74],
-};
-
-// 9 ── TRACK RECORD. Append ONE new entry each cycle. Oldest auto-drops via TRACK_WINDOW.
-//      conf: "high" for recent/reliable quarters; "med" for older/estimated ones.
+// 9 ── TRACK RECORD. Add the newest quarter to the END of this list each cycle.
+//       The dashboard automatically keeps only the most recent 6 (fixed window),
+//       so you can keep appending — the oldest simply stops showing.
+//       conf: "high" for recent/reliable quarters, "med" for older/fuzzier ones.
 const TRACK_ALL = [
-  { q: "Q4 2024", date: "2025-01", post: 205, reaction: "+",  bear: [145,185], base: [195,235], bull: [255,305], landed: "base",      conf: "med"  },
-  { q: "Q1 2025", date: "2025-04", post: 195, reaction: "-",  bear: [140,175], base: [185,225], bull: [250,295], landed: "bear",      conf: "med"  },
-  { q: "Q2 2025", date: "2025-07", post: 245, reaction: "++", bear: [165,200], base: [215,265], bull: [285,345], landed: "bull",      conf: "high" },
-  { q: "Q3 2025", date: "2025-10", post: 285, reaction: "+",  bear: [195,235], base: [255,315], bull: [335,405], landed: "base",      conf: "high" },
-  { q: "Q4 2025", date: "2026-01", post: 340, reaction: "+",  bear: [215,260], base: [295,360], bull: [385,465], landed: "base",      conf: "high" },
-  { q: "Q1 2026", date: "2026-04", post: 425, reaction: "++", bear: [225,275], base: [340,430], bull: [460,590], landed: "base→bull", conf: "high" },
+  { q: "Q4 2024", date: "2025-01", post: 690, reaction: "+", bear: [480, 540], base: [600, 700], bull: [760, 860], landed: "base", conf: "med" },
+  { q: "Q1 2025", date: "2025-04", post: 600, reaction: "+", bear: [470, 530], base: [580, 680], bull: [720, 820], landed: "bear→base", conf: "med" },
+  { q: "Q2 2025", date: "2025-07", post: 775, reaction: "++", bear: [560, 640], base: [700, 800], bull: [860, 960], landed: "bull", conf: "high" },
+  { q: "Q3 2025", date: "2025-10", post: 635, reaction: "−−", bear: [560, 640], base: [720, 820], bull: [880, 980], landed: "bear", conf: "high" },
+  { q: "Q4 2025", date: "2026-01", post: 715, reaction: "+", bear: [560, 630], base: [700, 800], bull: [880, 980], landed: "base", conf: "high" },
+  { q: "Q1 2026", date: "2026-04", post: 612, reaction: "−", bear: [510, 560], base: [700, 800], bull: [900, 1015], landed: "bear", conf: "high" },
 ];
-const TRACK_WINDOW = 6;
+const TRACK_WINDOW = 6; // fixed window — always show this many most-recent quarters
 const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
-const TRACK_PRICE_MIN = 120, TRACK_PRICE_MAX = 640;
+const TRACK_PRICE_MIN = 440, TRACK_PRICE_MAX = 1040;
 
-// ── Chart constants ────────────────────────────────────────────────────────────
-const PRICE_MIN = 120, PRICE_MAX = 700;
+const PRICE_MIN = 440, PRICE_MAX = 1040;
 const CH_W = 760, CH_H = 420, PAD_L = 8, PAD_R = 56, PAD_T = 18, PAD_B = 34;
 const plotW = CH_W - PAD_L - PAD_R, plotH = CH_H - PAD_T - PAD_B;
 const yOf = (p) => PAD_T + (1 - (p - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * plotH;
@@ -238,14 +252,15 @@ function FanChart({ c }) {
     const t = (i + 1) / fwdN;
     return [fwdX(i), yOf(NOW_PRICE + (end - NOW_PRICE) * t)];
   });
-  const spread = (i) => 30 + i * 28;
+  const spread = (i) => 28 + i * 26;
   const upper = mid.map(([x, y], i) => [x, y - spread(i)]);
   const lower = mid.map(([x, y], i) => [x, y + spread(i)]);
   const bandPath = `M ${nowX} ${nowY} ` + upper.map(([x, y]) => `L ${x} ${y}`).join(" ") + " " +
     lower.slice().reverse().map(([x, y]) => `L ${x} ${y}`).join(" ") + " Z";
   const midPath = `M ${nowX} ${nowY} ` + mid.map(([x, y]) => `L ${x} ${y}`).join(" ");
   const histPath = "M " + histPts.map(([x, y]) => `${x} ${y}`).join(" L ");
-  const gridP = [600, 500, 400, 300, 200];
+  const gridP = [1000, 900, 800, 700, 600, 500];
+
   return (
     <svg viewBox={`0 0 ${CH_W} ${CH_H}`} style={{ width: "100%", height: "auto", display: "block" }}>
       <defs>
@@ -263,34 +278,26 @@ function FanChart({ c }) {
       ))}
       <line x1={nowX} y1={PAD_T} x2={nowX} y2={CH_H - PAD_B} stroke="#2f6dff" strokeWidth="1" strokeDasharray="3 4" opacity="0.7" />
       <path d={bandPath} fill={`url(#fan-${c.key})`} {...tipSvg(
-        "The forecast cone",
-        "This shaded fan shows the range of where TSM could trade in this scenario over the next year. It gets wider further out because the future is less certain. The dashed line is the most-likely path.",
+        "The forecast 'cone'", "This shaded fan shows the range of where the price could go in this scenario over the next year. It gets wider further out because the future is less certain. The dashed line through the middle is the most-likely path.",
         "Wider = more uncertainty.", c.accent, "fan-band")} />
       <path d={midPath} fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="6 5" className="fan-mid" style={{ filter: "url(#softglow)" }} />
       <path d={histPath} fill="none" stroke="#cdd5e3" strokeWidth="2" {...tipSvg(
-        "Price history",
-        "The solid line is TSM's actual ADR price over the past ~5 quarters. The sharp rise in April–May 2026 was the market reacting to TSMC's Q1 2026 earnings: +58% profit growth, +40% revenue growth, driven by AI chip demand.",
+        "Price history", "The solid white line is META's actual share price over the past year and a bit. You can see the big drop in early 2026 — that was the market reacting to Meta announcing it would spend even more on AI.",
         "This part already happened — it's real, not a forecast.", "#cdd5e3", "hist-line")} />
       {HISTORY.map((d, i) => (
         <g key={i}>
-          <circle cx={histPts[i][0]} cy={histPts[i][1]} r={i === nHist - 1 ? 4.5 : 3}
-            fill={i === nHist - 1 ? "#2f6dff" : "#0a0d14"}
-            stroke={i === nHist - 1 ? "#fff" : "#8a93a6"} strokeWidth="1.5"
+          <circle cx={histPts[i][0]} cy={histPts[i][1]} r={i === nHist - 1 ? 4.5 : 3} fill={i === nHist - 1 ? "#2f6dff" : "#0a0d14"} stroke={i === nHist - 1 ? "#fff" : "#8a93a6"} strokeWidth="1.5"
             {...tipSvg(i === nHist - 1 ? "Where we are today" : d.q,
-              i === nHist - 1
-                ? `TSM ADR trades around $${NOW_PRICE} right now — near an all-time high after a 112% run in 12 months. Blue dot = today; left of it is history, right is forecast.`
-                : `At the end of ${d.q}, TSM traded around $${d.p}. ${i <= 1 ? "(Estimated — exact quarterly closes not confirmed.)" : ""}`,
+              i === nHist - 1 ? `META trades around $${NOW_PRICE} right now. This blue dot is 'today' — everything left of it is history, everything right is forecast.` : `At the end of ${d.q}, META was around $${d.p}.`,
               null, i === nHist - 1 ? "#9fb4ff" : "#cdd5e3")} />
           {i === nHist - 1 && <text x={histPts[i][0] - 6} y={histPts[i][1] - 12} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="end">NOW ${NOW_PRICE}</text>}
         </g>
       ))}
       {mid.map(([x, y], i) => (
         <g key={i} className="diamond" style={{ animationDelay: `${0.5 + i * 0.12}s` }}>
-          <rect x={x - 4} y={y - 4} width="8" height="8" transform={`rotate(45 ${x} ${y})`}
-            fill="#0a0d14" stroke={c.accent} strokeWidth="1.6"
-            {...tipSvg(`Forecast: ${FUTURE_Q[i]}`,
-              `A milestone on the most-likely price path for the ${c.label} scenario. Each diamond is roughly three months further into the future.`,
-              "Hover the shaded cone to see the uncertainty range.", c.accent)} />
+          <rect x={x - 4} y={y - 4} width="8" height="8" transform={`rotate(45 ${x} ${y})`} fill="#0a0d14" stroke={c.accent} strokeWidth="1.6"
+            {...tipSvg(`Forecast: ${FUTURE_Q[i]}`, `A milestone on the most-likely price path for the ${c.label} scenario. Each diamond is roughly three months further into the future.`,
+              "Hover the shaded cone around it to see the uncertainty range.", c.accent)} />
           <text x={x} y={y - 12} fill={c.accent} fontSize="10.5" fontFamily={FONT_MONO} textAnchor="middle">{FUTURE_Q[i]}</text>
         </g>
       ))}
@@ -321,9 +328,9 @@ function tagColor(tag) {
 
 function Segmented({ active, setActive, small }) {
   const explain = {
-    bear: ["The pessimistic scenario", "Click to see what TSMC looks like if things go wrong — geopolitical tension spikes, AI demand cracks, and Arizona fab costs hit margins. Price would likely fall to the $180–250 range."],
-    base: ["The most-likely scenario", "Click for the steady-delivery view — AI demand holds strong, margins stay 65–67%, and the US-Taiwan deal contains geopolitical risk. Price drifts toward $380–500. Note: the stock is already at the top of this range."],
-    bull: ["The optimistic scenario", "Click to see the upside — AI demand exceeds all forecasts, N2 ramps early, margins expand above 68%, and the market re-rates TSMC as indispensable AI infrastructure. Price could run to $490–640."],
+    bear: ["The pessimistic scenario", "Click to see what META looks like if things go wrong — ad sales slow down, the huge AI spending doesn't pay off, and regulators in Europe take a bite. The price would likely fall to the $480–560 range."],
+    base: ["The most-likely scenario", "Click for the 'steady as she goes' view — the business keeps growing at a healthy pace, spending stays under control, and AI slowly proves its worth. Price drifts up toward $700–800."],
+    bull: ["The optimistic scenario", "Click to see the upside — AI massively boosts ad prices, new subscriptions take off, and the market falls in love with the stock again. Price could run to $900–1,015."],
   };
   return (
     <div style={{ display: "flex", gap: 5 }}>
@@ -346,16 +353,16 @@ function Segmented({ active, setActive, small }) {
 }
 
 function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
-  const h = ((val - 40) / 40) * 100;
+  const h = ((val - 30) / 45) * 100;
   const tp = baseline
-    ? tip("Starting point (Q1 2026)", "This is the most recent real number: 61% of TSMC's revenue came from AI and high-performance computing chips in Q1 2026. The bars to the right are forecasts of where that share goes next.", "The grey dot = 'where we are now'.", "#9aa4b8")
-    : tip(`Forecast: ${label}`, `In this scenario, AI/HPC chips are projected to make up about ${val}% of TSMC's revenue by ${label}. Taller bar = AI is a bigger share of the business.`, "Switch BEAR/BASE/BULL up top to see how the forecast changes.", accentColor);
+    ? tip("Starting point (Q1 2026)", "This is the most recent real number: about 38% of Meta's new ad revenue is helped by its AI tools. The bars to the right are forecasts of where it goes next.", "The grey dot = 'where we are now'.", "#9aa4b8")
+    : tip(`Forecast: ${label}`, `In this scenario, AI-assisted ads are projected to make up about ${val}% of new ad revenue by ${label}. Taller bar = AI is contributing more, which is good for Meta.`, "Switch BEAR/BASE/BULL up top to see how the forecast changes.", accentColor);
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
       <div style={{ fontSize: 11, color: accentColor, fontWeight: 700, marginBottom: 4 }}>{val}%</div>
       {baseline
-        ? <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#3a4252", border: "1.5px solid #7b86a0", marginBottom: `${Math.max(0, h)}%` }} />
-        : <div style={{ width: "62%", height: `${Math.max(4, h)}%`, background: `linear-gradient(180deg, ${accentColor}, ${accentColor}44)`, border: `1px solid ${accentColor}`, borderRadius: 2, animation: `fadeUp .5s ease ${delay}s both`, boxShadow: `0 0 12px ${accentColor}55` }} />}
+        ? <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#3a4252", border: "1.5px solid #7b86a0", marginBottom: `${h}%` }} />
+        : <div style={{ width: "62%", height: `${h}%`, background: `linear-gradient(180deg, ${accentColor}, ${accentColor}44)`, border: `1px solid ${accentColor}`, borderRadius: 2, animation: `fadeUp .5s ease ${delay}s both`, boxShadow: `0 0 12px ${accentColor}55` }} />}
       <div style={{ fontSize: 9.5, color: "#5a6477", marginTop: 6 }}>{label}</div>
     </div>
   );
@@ -389,7 +396,7 @@ function SignalRow({ s, accent }) {
       <div>
         <SignalBar pos={s.pos} accent={accent} tipProps={tip(
           "Where this scenario sits",
-          "This bar runs from bad (red, left) to good (green, right). The glowing dot shows where THIS scenario expects the number to land.",
+          "This bar runs from bad (red, left) to good (green, right). The glowing dot shows where THIS scenario expects the number to land. Left dot = bearish outcome, right dot = bullish outcome.",
           "It's a visual gauge, not an exact measurement.", accent)} />
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
           <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
@@ -400,12 +407,11 @@ function SignalRow({ s, accent }) {
     </div>
   );
 }
-
 function MarginRow({ s, accent }) {
   return (
     <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
       <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }} {...tip(
-        s.name, SIGNAL_HELP[s.name] || "A measure of how profitable and well-run the manufacturing operation is.",
+        s.name, SIGNAL_HELP[s.name] || "A measure of how profitable and well-run the business is.",
         `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
         <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
         <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>% · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
@@ -424,45 +430,40 @@ function MarginRow({ s, accent }) {
 }
 
 function ReversionClock() {
+  const PRECEDENT_DAYS = REVERSION_PRECEDENT_DAYS;
   const dislocationDate = new Date(DISLOCATION_DATE);
   const today = new Date();
   const elapsed = Math.round((today - dislocationDate) / 86400000);
-  const pct = Math.min(100, (elapsed / REVERSION_PRECEDENT_DAYS) * 100);
+  const pct = Math.min(100, (elapsed / PRECEDENT_DAYS) * 100);
   const trough = REVERSION_TROUGH, baseFloor = REVERSION_BASEFLOOR, now = NOW_PRICE;
-  const rawRecPct = ((now - trough) / (baseFloor - trough)) * 100;
-  const recPct = Math.min(100, Math.max(0, rawRecPct));
-  const aboveBase = rawRecPct > 100;
+  const recPct = Math.min(100, Math.max(0, ((now - trough) / (baseFloor - trough)) * 100));
   return (
     <div style={{ marginTop: 12, padding: "12px 14px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#5a6477" }}>REVERSION CLOCK · MAY-2025 TARIFF DISLOCATION</div>
-        <div style={{ fontSize: 11, color: "#9aa4b8" }}><span style={{ color: "#e0a83b", fontWeight: 700 }}>{elapsed}d</span> elapsed / ~{REVERSION_PRECEDENT_DAYS}d to base last time</div>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#5a6477" }}>REVERSION CLOCK · vs Q3-2025 PRECEDENT</div>
+        <div style={{ fontSize: 11, color: "#9aa4b8" }}><span style={{ color: "#e0a83b", fontWeight: 700 }}>{elapsed}d</span> elapsed / ~{PRECEDENT_DAYS}d to base last time</div>
       </div>
-      <div style={{ marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>TIME SINCE DISLOCATION ({new Date(DISLOCATION_DATE).toLocaleDateString("en-US", { month: "short", day: "numeric" })})</div>
-      <div {...tip("How much time has passed", "In May 2025, a tariff-driven geopolitical panic sent TSM from ~$210 to $190 in weeks. It took ~10 months to recover to the base floor ($338). This bar shows how far along we are in that timeline.", "Filling past 100% = recovery is already complete.", "#e0a83b")}
+      <div style={{ marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>TIME SINCE DISLOCATION ({new Date(DISLOCATION_DATE).toLocaleDateString("en-US",{month:"short",day:"numeric"})})</div>
+      <div {...tip("How much time has passed", "Last time the stock crashed on spending fears (Oct 2025), it took about 3 months to recover to the 'middle' price zone. This bar shows how far along we are this time. The green line is the 3-month mark.", "Filling up = getting closer to when recovery happened last time.", "#e0a83b")}
         style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
         <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${pct}%`, background: "linear-gradient(90deg,#f1564b,#e0a83b)", borderRadius: 7 }} />
-        <div style={{ position: "absolute", right: 0, top: -3, bottom: -3, width: 2, background: "#3fd07a" }} />
+        <div style={{ position: "absolute", left: "100%", top: -3, bottom: -3, width: 2, background: "#3fd07a", transform: "translateX(-1px)" }} />
         <div style={{ position: "absolute", left: `${pct}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#fff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #fff", pointerEvents: "none" }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
-        <span>day 0</span><span style={{ color: "#3fd07a" }}>base-reversion mark (~315d) →</span>
+        <span>day 0</span><span style={{ color: "#3fd07a" }}>base-reversion mark (~91d) →</span>
       </div>
       <div style={{ marginTop: 12, marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>PRICE RECOVERY · ${REVERSION_TROUGH} trough → ${REVERSION_BASEFLOOR} base floor</div>
-      <div {...tip("How far the price has bounced back", `The stock bottomed at $${REVERSION_TROUGH} and needed to reach $${REVERSION_BASEFLOOR} to re-enter the base zone. It's at $${NOW_PRICE} now — ${aboveBase ? "well past the base floor." : `about ${Math.round(recPct)}% of the way there.`}`, aboveBase ? "Full bar = recovery complete. Price is now in base-to-bull territory." : "If this bar is fuller than the time bar above, the bounce is running faster than last time.", "#9fb4ff")}
+      <div {...tip("How far the price has bounced back", `The stock bottomed at $${REVERSION_TROUGH} and needs to reach $${REVERSION_BASEFLOOR} to be back in the 'middle' zone. It's at $${NOW_PRICE} now — about ${Math.round(recPct)}% of the way there.`, "If this bar is fuller than the time bar above, the bounce-back is running faster than last time. Good sign.", "#9fb4ff")}
         style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
         <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${recPct}%`, background: "linear-gradient(90deg,#f1564b,#3fd07a)", borderRadius: 7 }} />
         <div style={{ position: "absolute", left: `${recPct}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#9fb4ff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #9fb4ff", pointerEvents: "none" }} />
       </div>
       <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
-        <span>${REVERSION_TROUGH}</span>
-        <span style={{ color: "#9fb4ff" }}>${NOW_PRICE} now · {aboveBase ? "past base floor ✓" : `${Math.round(recPct)}% of the way back`}</span>
-        <span>${REVERSION_BASEFLOOR}</span>
+        <span>${REVERSION_TROUGH}</span><span style={{ color: "#9fb4ff" }}>${NOW_PRICE} now · {Math.round(recPct)}% of the way back</span><span>${REVERSION_BASEFLOOR}</span>
       </div>
       <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
-        {aboveBase
-          ? <span>Recovery from the May 2025 tariff dislocation is <span style={{ color: "#3fd07a", fontWeight: 700 }}>complete</span>. Price ($<span style={{ color: "#9fb4ff", fontWeight: 700 }}>{NOW_PRICE}</span>) has surpassed the base floor (${REVERSION_BASEFLOOR}) and now sits in the <span style={{ color: "#e0a83b", fontWeight: 700 }}>base-to-bull zone</span>. The dislocation narrative has closed. The new watch: whether <span style={{ color: "#fff", fontWeight: 700 }}>~27x forward P/E</span> can hold when H2 2026 guidance lands on <span style={{ color: "#e0a83b", fontWeight: 700 }}>July 16</span>.</span>
-          : <span>The May 2025 tariff dislocation took <span style={{ color: "#e0a83b" }}>~10 months</span> trough-to-base. We're <span style={{ color: "#fff", fontWeight: 700 }}>{elapsed} days in</span> and price has retraced <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{Math.round(recPct)}%</span> of the trough-to-base gap — <span style={{ color: recPct >= pct ? "#3fd07a" : "#e0a83b", fontWeight: 700 }}>{recPct >= pct ? "tracking ahead of" : "tracking behind"}</span> the precedent pace.</span>}
+        Last dislocation took <span style={{ color: "#e0a83b" }}>~3 months</span> report-to-base-reversion. We're <span style={{ color: "#fff", fontWeight: 700 }}>{elapsed} days in</span> and price has retraced <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{Math.round(recPct)}%</span> of the trough-to-base gap — <span style={{ color: recPct >= pct ? "#3fd07a" : "#e0a83b", fontWeight: 700 }}>{recPct >= pct ? "tracking ahead of" : "tracking behind"}</span> the Q3-2025 pace. The reversion window into the July 29 print is the watch zone.
       </div>
     </div>
   );
@@ -473,10 +474,10 @@ function TrackRecord() {
   const pw = W - pl - pr, ph = H - pt - pb;
   const y = (p) => pt + (1 - (p - TRACK_PRICE_MIN) / (TRACK_PRICE_MAX - TRACK_PRICE_MIN)) * ph;
   const x = (i) => pl + (TRACK.length === 1 ? pw / 2 : (i / (TRACK.length - 1)) * pw);
-  const grid = [600, 500, 400, 300, 200];
+  const grid = [1000, 900, 800, 700, 600, 500];
   const pathPts = TRACK.map((t, i) => [x(i), y(t.post)]);
   const linePath = "M " + pathPts.map(([px, py]) => `${px} ${py}`).join(" L ");
-  const hits = TRACK.filter((t) => t.landed.includes("base") || t.landed.includes("bull")).length;
+  const hits = TRACK.filter((t) => t.landed.includes("base") || t.landed === "bull").length;
   return (
     <div style={{ background: "#080b11", padding: "16px 18px", borderTop: "1px solid #161c28" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
@@ -499,14 +500,13 @@ function TrackRecord() {
         {TRACK.map((t, i) => {
           const cx = x(i), bw = 46;
           const landWord = t.landed.includes("bull") ? "the optimistic zone" : t.landed.includes("base") ? "the middle zone" : "the pessimistic zone";
-          const reactWord = t.reaction.includes("−") || t.reaction === "-" ? "the stock FELL after this report" : "the stock ROSE after this report";
+          const reactWord = t.reaction.includes("−") ? "the stock FELL after this report" : "the stock ROSE after this report";
           const seg = (range, color) => (
             <rect x={cx - bw / 2} y={y(range[1])} width={bw} height={Math.max(2, y(range[0]) - y(range[1]))}
-              fill={color} opacity={t.conf === "med" ? 0.32 : 0.5} rx="2"
-              style={{ animation: `fadeUp .5s ease ${i * 0.08}s both` }}
+              fill={color} opacity={t.conf === "med" ? 0.32 : 0.5} rx="2" style={{ animation: `fadeUp .5s ease ${i * 0.08}s both` }}
               {...tipSvg(`${t.q} earnings`,
                 `Back at this earnings date, here's the range we'd have predicted (red=low, yellow=middle, green=high). In reality, ${reactWord} and the price ended up in ${landWord} (~$${t.post}).`,
-                t.conf === "med" ? "Marked 'lower-confidence' — estimated data, treat loosely." : "Hover the white line to see the actual price path.",
+                t.conf === "med" ? "Marked 'lower-confidence' — older data, so treat loosely." : "Hover the white line to see the actual price path.",
                 color.includes("63,208") ? "#3fd07a" : color.includes("224,168") ? "#e0a83b" : "#f1564b")} />
           );
           return (
@@ -516,7 +516,7 @@ function TrackRecord() {
               {seg(t.bear, "rgba(241,86,75,0.5)")}
               <text x={cx} y={H - 24} fill="#9aa4b8" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle">{t.q}</text>
               <text x={cx} y={H - 11} fill={t.conf === "med" ? "#5a6477" : "#3a4252"} fontSize="8.5" fontFamily={FONT_MONO} textAnchor="middle">
-                {t.conf === "med" ? "est. data" : t.reaction === "-" ? "↓ tariff shock" : t.reaction === "--" ? "↓↓ shock" : ""}
+                {t.conf === "med" ? "lower-conf" : t.reaction.includes("−") ? "↓ dislocation" : ""}
               </text>
             </g>
           );
@@ -526,12 +526,9 @@ function TrackRecord() {
           const isLast = i === TRACK.length - 1;
           return (
             <g key={t.q} style={{ animation: `pop .4s cubic-bezier(.2,1.4,.4,1) ${0.3 + i * 0.08}s both` }}>
-              <circle cx={x(i)} cy={y(t.post)} r={isLast ? 6 : 4}
-                fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
+              <circle cx={x(i)} cy={y(t.post)} r={isLast ? 6 : 4} fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
                 {...tipSvg(isLast ? "Today" : `${t.q}: actual price`,
-                  isLast
-                    ? `TSM is at ~$${t.post} now — the post-Q1 2026 earnings rally pushed it from $338 to $425. The stock is at the top of the base band, needing bull-case execution for further upside.`
-                    : `After ${t.q} earnings, TSM actually traded around $${t.post}. Compare this dot to the colored bars to see if the prediction was right.`,
+                  isLast ? `META is at ~$${t.post} now — sitting in the pessimistic (red) zone even though the business is doing well. That gap is the whole point of this dashboard.` : `After ${t.q} earnings, the price actually traded around $${t.post}. Compare this dot to the colored bars behind it to see if the prediction was right.`,
                   null, isLast ? "#9fb4ff" : "#cdd5e3")} />
               {isLast && <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">NOW ${t.post}</text>}
             </g>
@@ -541,25 +538,27 @@ function TrackRecord() {
       <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
         <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
         <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
-          Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits <span style={{ color: "#e0a83b", fontWeight: 700 }}>at the upper edge of the BASE band</span> — the Q1 2026 earnings blast (+58% profit growth, +40.6% revenue YoY) drove an ~$87 rally from the $338 Q1 close. The May 2025 geopolitical dislocation ($190 low) has <span style={{ color: "#3fd07a", fontWeight: 700 }}>fully resolved</span>. The stock has now priced in clean AI-cycle execution. <span style={{ color: "#e0a83b", fontWeight: 700 }}>Incremental upside requires bull-case delivery</span>: H2 2026 guidance hold and gross margin sustaining above 65% on July 16.
+          Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits <span style={{ color: "#f1564b", fontWeight: 700 }}>in the upper BEAR band</span>, while the Q1 2026 business printed
+          <span style={{ color: "#e0a83b", fontWeight: 700 }}> base-to-bull</span> fundamentals (33% rev growth, ad price +12%, margin 41%).
+          The two prior capex-driven <span style={{ color: "#f1564b" }}>dislocations</span> (Q3 2025, Q1 2026) both saw price fall into the bear band on revenue beats — and the Q3 one
+          <span style={{ color: "#3fd07a", fontWeight: 700 }}> reverted to base within one quarter</span>. Same configuration now: base business, near-bear price.
         </div>
       </div>
       <ReversionClock />
       <div style={{ fontSize: 9.5, color: "#3d4555", marginTop: 8, lineHeight: 1.5 }}>
-        ⚠ Bands are reconstructed retrospectively (anchored to each date's forward EPS &amp; multiple regime), not archived in real time — Q4 2024 and Q1 2025 bands are estimated; treat as directional only. Price history Q1–Q4 2025 is estimated from earnings data; Q1 2026 close ($337.95) is confirmed. Geopolitical re-rating is not rule-based — it can move faster or slower than any precedent.
+        ⚠ Bands are reconstructed now (anchored to each date's forward EPS &amp; multiple regime), not archived in real time — treat levels as directional, especially "lower-conf" quarters. Reversion pattern rests on n=2 dislocations; not a strategy, a tell. Pattern breaks if a future dislocation coincides with genuine ad deceleration rather than capex fear.
       </div>
     </div>
   );
 }
 
-function TSMThesis() {
+function MetaThesis() {
   const [active, setActive] = useState("base");
   const c = CASES[active];
   const kpiVals = KPI_PROJ[active];
   return (
     <div style={{ background: "#06080d", minHeight: "100vh", padding: "20px 16px", fontFamily: FONT_MONO, color: "#cdd5e3" }}>
       <div className="grain" style={{ maxWidth: 1280, margin: "0 auto", position: "relative", border: "1px solid #161c28", borderRadius: 12, background: "linear-gradient(160deg,#0a0d14,#070a10)", boxShadow: "0 40px 120px rgba(0,0,0,0.6)", overflow: "hidden" }}>
-        {/* Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 22px", borderBottom: "1px solid #161c28" }}>
           <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
             <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, letterSpacing: "0.35em", color: "#f3f5f9", fontWeight: 600 }}>TH<span style={{ color: c.accent }}>3</span>SIS</div>
@@ -570,38 +569,33 @@ function TSMThesis() {
           </div>
           <div style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 12.5, color: "#7b86a0" }}>
             <span>{AS_OF_DATE}</span>
-            <span style={{ color: "#cdd5e3" }}>NYSE:TSM</span>
-            <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "#9aa4b8" }}>Taiwan Semiconductor</span>
-            <span {...tip("Today's ADR price", `One TSM ADR (= 5 ordinary TSMC shares) costs about $${NOW_PRICE} right now. Up 112% in the past 12 months, driven by AI chip demand. The whole dashboard is about whether that's cheap, fair, or expensive from here.`, null, "#fff")}
+            <span style={{ color: "#cdd5e3" }}>NASDAQ:META</span>
+            <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "#9aa4b8" }}>Meta Platforms</span>
+            <span {...tip("Today's share price", `One share of Meta stock costs about $${NOW_PRICE} right now. The whole dashboard is about figuring out whether that's cheap, fair, or expensive.`, null, "#fff")}
               style={{ color: "#fff", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}.00</span>
           </div>
         </div>
-
-        {/* Main grid */}
         <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 1, background: "#161c28" }}>
-          {/* Left: chart + KPI */}
           <div style={{ background: "#080b11", padding: "16px 18px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
               <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
                 <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>NOW</span>
-                TSM · PRICE &amp; RISK-REWARD
+                META · PRICE &amp; RISK-REWARD
               </div>
               <Segmented active={active} setActive={setActive} />
             </div>
             <div className="panel" key={active + "-chart"}><FanChart c={c} /></div>
             <div style={{ marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#5a6477" }}>
-              <span><span style={{ color: c.accent }}>━━</span> {c.label.toLowerCase()} mid &nbsp;<span style={{ color: "#2f6dff" }}>┊</span> now &nbsp;<span style={{ color: "#cdd5e3" }}>━</span> history</span>
+              <span><span style={{ color: c.accent }}>━━</span> {c.label.toLowerCase()} mid &nbsp; <span style={{ color: "#2f6dff" }}>┊</span> now &nbsp; <span style={{ color: "#cdd5e3" }}>━</span> history</span>
               <span>12M TARGET <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></span>
             </div>
-
-            {/* KPI bar chart */}
             <div style={{ marginTop: 18, borderTop: "1px solid #161c28", paddingTop: 14 }}>
               <div style={{ fontSize: 11.5, letterSpacing: "0.16em", color: "#7b86a0", marginBottom: 4 }} {...tip(
-                "The single most important gauge",
-                "TSMC's AI/HPC revenue share is the number that justifies the premium valuation. At 61% and rising, it means most of TSMC's business is now tied to the AI infrastructure buildout — not commodity phones or PCs. If this keeps climbing, the bull case is building. If it stalls, the 27x P/E is hard to defend.",
-                "This is TSMC's version of 'is the bet paying off?'", "#9fb4ff")}>
-                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>KPI · CORE</span>
-                AI / HPC Share of Total Revenue
+                "The key thing to watch",
+                "Meta is spending a fortune on AI. The big question: is that AI actually making money? This chart tracks how much of Meta's NEW ad revenue comes from AI doing a better job of matching ads to people. Rising = the spending is paying off.",
+                "This is the single most important 'is the bet working?' gauge.", "#9fb4ff")}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>KPI · K08</span>
+                AI-Monetized Share of Incremental Ad Revenue
                 <span style={{ color: "#5a6477", marginLeft: 8 }}>%  ·  HIGHER BETTER</span>
               </div>
               <div className="panel" key={active + "-kpi"} style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 120, padding: "12px 4px 0" }}>
@@ -611,23 +605,15 @@ function TSMThesis() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
                 <div>
                   <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THIS MEASURES</div>
-                  <div style={{ color: "#9aa4b8" }}>Share of TSMC total revenue from AI accelerators, HPC chips, and custom silicon — the primary driver of TSMC's premium valuation and the key test of AI demand durability.</div>
+                  <div style={{ color: "#9aa4b8" }}>The share of new ad revenue attributable to AI ranking &amp; conversion lift (Lattice / GEM / Advantage+).</div>
                 </div>
                 <div>
                   <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THE <span style={{ color: c.accent }}>{c.label}</span> CASE REQUIRES</div>
-                  <div style={{ color: c.accent }}>
-                    {active === "bull"
-                      ? "AI/HPC share accelerates toward 70%+, N2 ramp adds a new margin tier, hyperscaler demand proves structurally durable beyond 2026."
-                      : active === "base"
-                        ? "Steady climb into the mid-60s, gross margins hold above 65%, no geopolitical shock compresses the ~27x multiple."
-                        : "AI/HPC share stalls or slides back toward 55–58% as hyperscaler capex pauses, validating cyclicality fears."}
-                  </div>
+                  <div style={{ color: c.accent }}>{active === "bull" ? "AI contribution scales toward the high-60s with subscription proof." : active === "base" ? "Steady climb into the low-50s, margins intact." : "AI lift stalls near 38%, ROI stays unproven."}</div>
                 </div>
               </div>
             </div>
           </div>
-
-          {/* Right: signals */}
           <div style={{ background: "#080b11", padding: "16px 18px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
               <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>THESIS · ALL SIGNALS</div>
@@ -638,14 +624,12 @@ function TSMThesis() {
               <span className="dot-track" style={{ marginLeft: 6, fontSize: 10.5, color: c.accent }}>● TRACKING</span>
             </div>
             <div className="panel" key={active + "-op"} style={{ fontSize: 12.5, lineHeight: 1.6, color: "#bcc6d8", marginBottom: 16, minHeight: 64 }}>{c.op}</div>
-
-            <SignalGroup id="SN01" title="Demand Trajectory &amp; Guide Quality" requires={c.requires01} accent={c.accent} evidence={3}>
+            <SignalGroup id="SN01" title="Demand Trajectory &amp; Guide Quality" requires={c.requires01} accent={c.accent} evidence={4}>
               {SIGNALS[active].map((s, i) => <SignalRow key={i} s={s} accent={c.accent} />)}
             </SignalGroup>
-            <SignalGroup id="SN02" title="Margin &amp; Node Ramp Progress" requires={c.requires02} accent={c.accent} evidence={2}>
+            <SignalGroup id="SN02" title="Margin &amp; Earnings Quality" requires={c.requires02} accent={c.accent} evidence={3}>
               {MARGIN[active].map((s, i) => <MarginRow key={i} s={s} accent={c.accent} />)}
             </SignalGroup>
-
             <div style={{ marginTop: 14, borderTop: "1px solid #161c28", paddingTop: 10 }}>
               <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 3 }}>WHAT BREAKS THE <span style={{ color: c.accent }}>{c.label}</span> CASE</div>
               <div style={{ fontSize: 11.5, color: "#9aa4b8", lineHeight: 1.5 }}>{c.breaks}</div>
@@ -655,9 +639,9 @@ function TSMThesis() {
             <div style={{ marginTop: 10, padding: "10px 12px", background: "#0a0d14", border: "1px solid #2a1a1a", borderRadius: 6 }}>
               <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 8 }}>RISK / REWARD AT ${NOW_PRICE}</div>
               {[
-                { label: "BEAR", color: "#f1564b", lo: 180, hi: 250 },
-                { label: "BASE", color: "#e0a83b", lo: 380, hi: 500 },
-                { label: "BULL", color: "#3fd07a", lo: 490, hi: 640 },
+                { label: "BEAR", color: "#f1564b", lo: 480, hi: 560  },
+                { label: "BASE", color: "#e0a83b", lo: 700, hi: 800  },
+                { label: "BULL", color: "#3fd07a", lo: 900, hi: 1015 },
               ].map(({ label, color, lo, hi }) => {
                 const mid = Math.round((lo + hi) / 2);
                 const pct = Math.round(((mid - NOW_PRICE) / NOW_PRICE) * 100);
@@ -680,31 +664,27 @@ function TSMThesis() {
               })}
               <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #161c28", fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55 }}
                 {...tip("What this asymmetry means",
-                  `At $${NOW_PRICE}, base is roughly flat — the geopolitical risk premium means you're paying fair value even in the optimistic scenario. A large bear-case tail (~−49%) reflects Taiwan strait risk that no earnings growth can hedge. Only the bull case offers meaningful upside.`,
+                  `At $${NOW_PRICE}, META sits in the bear band despite printing base/bull fundamentals — a classic dislocation setup. The bear is limited (~−15%), the base is real upside (+23%), and the bull adds further. Favorable risk/reward vs. most names in this set.`,
                   "Midpoints of ranges used. Always hold loosely.", "#9aa4b8")}>
-                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−49%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>+4%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+33%</span> — geopolitical tail is large; base is roughly flat. Incremental upside requires bull-case H2 delivery on July 16.
+                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−15%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>+23%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+57%</span> — <span style={{ color: "#3fd07a" }}>favorable asymmetry</span>: limited downside, decent base upside. Current price in bear band despite base/bull fundamentals.
               </div>
             </div>
           </div>
         </div>
-
-        {/* Observable vs. requires-earnings bar */}
         <div style={{ padding: "10px 22px", borderTop: "1px solid #161c28", display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#4a5366" }}>
-          <span>OBSERVABLE NOW: cross-strait tension · Arizona Phase 1 milestone news · N2 qualification announcements · NVDA/AMD supply-chain commentary</span>
-          <span>CONFIRMS JULY 16: Q2 revenue vs. $39–40.2B guide · gross margin · AI/HPC revenue mix · full-year 2026 guidance revision</span>
+          <span>OBSERVABLE NOW: ad-pricing indices · app-store / engagement data · EU DMA compliance review · subscription adoption</span>
+          <span>CONFIRMS JULY 29: revenue vs guide · margin · capex trajectory · AI ad-perf %</span>
         </div>
-
         <TrackRecord />
       </div>
-
       <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "#3d4555", lineHeight: 1.5 }}>
-        Illustrative scenario framing built on current consensus &amp; estimates as of May 2026 — not a prediction and not financial advice. Price ranges are scenario mid-bands; KPI positions are directional, not literal. Q1 2026 actual: revenue $35.9B (+40.6% YoY), EPS $3.49/ADR (+58.3%), GM 66.2%. Consensus 2026E EPS ~$15.64/ADR (NT$98.52). Next earnings: July 16, 2026. Valuation ruler: forward P/E on ADR EPS (~27x at $425 on 2026E). Bear/bull gap is primarily multiple-driven — 14–18x fear vs. 29–35x re-rate — with real earnings as the foundation. All price estimates for Q1–Q4 2025 history are reconstructed, not archived.
+        Illustrative scenario framing built on current consensus &amp; estimates as of May 2026 — not a prediction and not financial advice. Price ranges are scenario mid-bands; KPI markers are positional, not literal. Data inputs will move with every print between now and the July 29 2026 earnings release.
       </div>
     </div>
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<TSMThesis />);
+ReactDOM.createRoot(document.getElementById("root")).render(<MetaThesis />);
 </script>
 </body>
 </html>
