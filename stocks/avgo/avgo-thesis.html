@@ -661,9 +661,44 @@ function AvgoThesis() {
               <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 4 }}>VALUATION RULER</div>
               <div {...tip("How we price this stock",
                 "AVGO's GAAP earnings are depressed by ~$8B/year of amortization from the $69B VMware acquisition — a financing cost, not an economic one. The market uses non-GAAP adjusted EPS. We multiply that by a P/E multiple that reflects how excited or scared the market is about the AI revenue trajectory.",
-                "Price = forward non-GAAP EPS × P/E multiple. Bear = 22x (cyclical discount). Base = 33x (premium AI compounder). Bull = 40x (platform re-rating).", "#9aa4b8")}
+                "Price = forward non-GAAP EPS × P/E multiple. Bear = 23x (cyclical discount). Base = 33x (premium AI compounder). Bull = 40x (platform re-rating).", "#9aa4b8")}
                 style={{ fontSize: 11, color: "#9aa4b8", lineHeight: 1.5 }}>
                 Forward non-GAAP EPS × P/E. Bear: ~$9.50 × 23x = $218. Base: ~$13.50 × 33x = $445. Bull: ~$16.50 × 40x = $660. Bands are wide — the multiple is a mood indicator.
+              </div>
+            </div>
+
+            {/* Risk / Reward panel */}
+            <div style={{ marginTop: 10, padding: "10px 12px", background: "#0a0d14", border: "1px solid #2a1a1a", borderRadius: 6 }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 8 }}>RISK / REWARD AT ${NOW_PRICE}</div>
+              {[
+                { label: "BEAR", color: "#f1564b", lo: 200, hi: 265 },
+                { label: "BASE", color: "#e0a83b", lo: 420, hi: 490 },
+                { label: "BULL", color: "#3fd07a", lo: 580, hi: 700 },
+              ].map(({ label, color, lo, hi }) => {
+                const mid = Math.round((lo + hi) / 2);
+                const pct = Math.round(((mid - NOW_PRICE) / NOW_PRICE) * 100);
+                const sign = pct >= 0 ? "+" : "";
+                const barW = Math.min(100, Math.max(4, ((mid - 150) / (720 - 150)) * 100));
+                return (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}
+                    {...tip(`${label} scenario return`,
+                      `If the ${label.toLowerCase()} case plays out over 12 months, price would land in the $${lo}–$${hi} range — roughly ${sign}${pct}% from today's $${NOW_PRICE}. The base case is nearly flat; significant upside only arrives if the bull case fully materialises.`,
+                      "Midpoint of range used. These are estimates, not targets.", color)}>
+                    <div style={{ fontSize: 9.5, color, fontWeight: 700, width: 34 }}>{label}</div>
+                    <div style={{ flex: 1, position: "relative", height: 8, background: "#0d1018", borderRadius: 4, border: "1px solid #1c2230" }}>
+                      <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: `${barW}%`, background: color, opacity: 0.45, borderRadius: 4 }} />
+                      <div style={{ position: "absolute", top: "50%", left: `${barW}%`, transform: "translate(-50%,-50%)", width: 6, height: 6, borderRadius: "50%", background: color, boxShadow: `0 0 6px ${color}` }} />
+                    </div>
+                    <div style={{ fontSize: 10.5, color, fontWeight: 700, width: 44, textAlign: "right" }}>{sign}{pct}%</div>
+                    <div style={{ fontSize: 9, color: "#4a5366", width: 72 }}>${lo}–${hi}</div>
+                  </div>
+                );
+              })}
+              <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #161c28", fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55 }}
+                {...tip("What this asymmetry means",
+                  `At $${NOW_PRICE}, the stock already trades near the bottom of the bull-case band. The base case is roughly flat; the bull case requires multiple execution proof points to clear. The bear case — hyperscaler AI capex discipline or VMware churn — represents ~50% downside. You are paying for execution, not buying a margin of safety.`,
+                  "Wide asymmetric risk: large loss if wrong, modest gain if merely right. Only justified if conviction in the bull case is high.", "#f1564b")}>
+                At <span style={{ color: "#fff", fontWeight: 700 }}>${NOW_PRICE}</span>, base ≈ flat and bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−50%</span>. The market already prices in bull-case execution. <span style={{ color: "#f1564b", fontWeight: 700 }}>No margin of safety</span> at current levels — only enter with high conviction in the AI revenue ramp.
               </div>
             </div>
           </div>
