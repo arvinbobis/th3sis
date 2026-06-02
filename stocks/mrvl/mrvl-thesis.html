@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TH3SIS · MRVL Marvell Technology — Investment Thesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #06080d; }
+  * { box-sizing: border-box; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
+  @keyframes drawIn { from { stroke-dashoffset: 2000; } to { stroke-dashoffset: 0; } }
+  @keyframes pop { 0%{opacity:0; transform:scale(0.4);} 70%{transform:scale(1.15);} 100%{opacity:1; transform:scale(1);} }
+  @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  .hist-line { stroke-dasharray: 1400; animation: drawIn 1.6s ease forwards; }
+  .track-line { stroke-dasharray: 2000; animation: drawIn 1.8s ease .2s forwards; }
+  .fan-mid { stroke-dasharray: 6 5; animation: fadeUp .8s ease .4s both; }
+  .fan-band { animation: fadeUp .9s ease .3s both; }
+  .diamond { animation: pop .5s cubic-bezier(.2,1.4,.4,1) both; }
+  .panel { animation: fadeUp .6s ease both; }
+  .seg-btn { transition: all .18s ease; cursor: pointer; }
+  .seg-btn:hover { filter: brightness(1.25); }
+  .dot-track { animation: pulse 2.2s ease-in-out infinite; }
+  .tip-target { cursor: help; }
+  .tip-target:hover { filter: brightness(1.18); }
+  #tip-box {
+    position: fixed; z-index: 9999; max-width: 300px; pointer-events: none;
+    background: linear-gradient(160deg,#141a26,#0d1119);
+    border: 1px solid #2a3344; border-radius: 10px; padding: 12px 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.7); opacity: 0; transition: opacity .14s ease;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #tip-box.on { opacity: 1; }
+  #tip-box .tt { font-size: 11px; font-weight: 700; letter-spacing: .08em; margin-bottom: 5px; }
+  #tip-box .tb { font-size: 11.5px; line-height: 1.55; color: #c4cdde; }
+  #tip-box .tn { font-size: 10px; color:#6b7689; margin-top: 7px; font-style: italic; }
+  .grain::before { content:""; position:absolute; inset:0; pointer-events:none; opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const FONT_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+const FONT_DISPLAY = "'Spectral', Georgia, serif";
+
+// ── Tooltip engine ─────────────────────────────────────────────────────────
+let tipEl = null;
+function ensureTip() {
+  if (!tipEl) { tipEl = document.createElement("div"); tipEl.id = "tip-box"; document.body.appendChild(tipEl); }
+  return tipEl;
+}
+function showTip(e, title, body, note, color) {
+  const el = ensureTip();
+  el.innerHTML = `<div class="tt" style="color:${color||'#9fb4ff'}">${title}</div><div class="tb">${body}</div>${note?`<div class="tn">${note}</div>`:""}`;
+  el.classList.add("on"); moveTip(e);
+}
+function moveTip(e) {
+  const el = ensureTip(); const pad = 16;
+  let x = e.clientX + pad, y = e.clientY + pad;
+  const r = el.getBoundingClientRect();
+  if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+  if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+  el.style.left = x + "px"; el.style.top = y + "px";
+}
+function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
+
+const SIGNAL_HELP = {
+  "Data Center Revenue vs Guide": "Marvell earns ~76% of its revenue from data centers — custom AI chips for Amazon, Google, Microsoft, Meta, and networking silicon. Q1 FY2027 was $1.833B; the Q2 total guide of $2.7B implies data center around $2.05B. This checks whether that critical segment is hitting its implied target or running ahead or behind.",
+  "FY2028 $16.5B Target": "On May 27, 2026, management guided $11.5B in FY2027 revenue and $16.5B in FY2028. Getting there from $8.2B in FY2026 requires the 18 custom chip design wins to ramp into full production. This signal tracks whether management continues to stand behind that target each quarter or begins to soften it.",
+  "XPU Design Win Ramp": "Marvell has 18 signed agreements to design custom AI accelerator chips for hyperscalers — 'design wins.' A win means the customer chose Marvell. Volume ramp means production chips are shipping. The gap between 18 wins and how many are actually shipping at scale is the most important uncertainty in the thesis.",
+  "Non-GAAP Gross Margin": "Out of every dollar of revenue, how much is left after chip manufacturing costs. At 58.9%, Marvell's margins are strong. If this expands toward 60%+, it means the higher-margin custom ASIC mix is growing — a bull sign. If it slips below 57%, lower-margin networking products are dominating — a warning that the mix isn't shifting as expected.",
+  "NVLink Fusion Revenue": "NVIDIA invested $2 billion in Marvell and they're co-developing products where Marvell's custom chips integrate with NVIDIA's NVLink interconnect architecture. These products start shipping in H2 FY2027. Until Marvell quantifies revenue, this is a 'watch' — it's either a transformative new product category or a headline that adds complexity without proportional revenue.",
+};
+const TAG_HELP = {
+  BEAT: "doing better than expected — a good sign.",
+  MATCH: "roughly in line with expectations — steady, no surprises.",
+  MISS: "falling short of expectations — a worry.",
+  WATCH: "not decided yet — keep an eye on it.",
+};
+
+function tip(title, body, note, color) {
+  return { className:"tip-target", onMouseEnter:(e)=>showTip(e,title,body,note,color), onMouseMove:(e)=>moveTip(e), onMouseLeave:hideTip };
+}
+function tipSvg(title, body, note, color, extraClass) {
+  return { className:(extraClass?extraClass+" ":"")+"tip-target", onMouseEnter:(e)=>showTip(e,title,body,note,color), onMouseMove:(e)=>moveTip(e), onMouseLeave:hideTip };
+}
+
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║                                                                          ║
+   ║   ███  EDIT EVERYTHING IN THIS BLOCK EACH QUARTER  ███                   ║
+   ║                                                                          ║
+   ║   Marvell fiscal year ends late January (Q1 = Feb–Apr, etc.)             ║
+   ║   Quick map — after each earnings report:                                ║
+   ║     1. AS_OF_DATE  ......  today's date                                  ║
+   ║     2. NOW_PRICE   ......  current share price                           ║
+   ║     3. HISTORY     ......  add just-finished quarter, roll NOW           ║
+   ║     4. FUTURE_Q    ......  roll the 4 forward quarter labels             ║
+   ║     5. CASES       ......  re-read each narrative — still true?         ║
+   ║     6. PROJ_END + target12 .. bear/base/bull price targets              ║
+   ║     7. SIGNALS / MARGIN ...  update BEAT/MATCH/MISS + positions          ║
+   ║     8. KPI_HIST / KPI_PROJ .. DC revenue history + forward scenarios    ║
+   ║     9. TRACK_ALL   ......  append new quarter (oldest auto-drops)       ║
+   ║    10. DISLOCATION_DATE ...  only if a new shock happened               ║
+   ║                                                                          ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+// 1 ── DATE
+const AS_OF_DATE = "2026-06-02";
+
+// 10 ── May 2025 macro/tariff panic dislocation (52-wk low $59.53)
+const DISLOCATION_DATE = "2025-05-30";
+const REVERSION_TROUGH = 60;
+const REVERSION_BASEFLOOR = 140;
+const REVERSION_PRECEDENT_DAYS = 270;
+
+const CASES = {
+  bear: {
+    key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
+    target12: "$90 — $135",
+    op: "Multiple custom XPU design wins among the 18-program pipeline face 6–12 month production delays as hyperscalers iterate on chip specs. The $16.5B FY2028 target gets revised to ~$12–13B, slashing EPS estimates by 20–30%. Broadcom closes the optical DSP gap at 1.6T speeds, pressuring both market share and pricing. At 56× FY2027 EPS, even a modest guidance cut triggers multiple compression back toward 22–25×, and the stock re-rates toward hardware-cyclical levels.",
+    breaks: "FY2027 revenue tracking at $11.5B+ with gross margin holding above 58% through Q3 FY2027. If both hold, the design win ramp thesis is intact and the bear case isn't materializing.",
+    requires01: "DC revenue misses $2.05B implied guide; FY2028 target qualified",
+    requires02: "Gross margin compression below 57%",
+  },
+  base: {
+    key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
+    target12: "$195 — $255",
+    op: "Q2 FY2027 data center revenue steps up to ~$2.05B (implied by $2.7B total guide), FY2027 $11.5B tracks on plan, and management reaffirms the $16.5B FY2028 target. A handful of the 18 XPU design wins begin production ramps in H2 FY2027. NVIDIA NVLink Fusion products begin shipping but contribute modestly. Optical DSP market share holds at 65%+ as Marvell transitions from 800G to 1.6T. The market holds 32–34× FY2028 EPS as the target looks credible.",
+    breaks: "FY2028 target revised below $15B, or two consecutive data center revenue quarters come in below the implied trajectory.",
+    requires01: "DC revenue ≥ $2.05B implied; FY2027 on track; FY2028 reaffirmed",
+    requires02: "Gross margin stability 58–60%",
+  },
+  bull: {
+    key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
+    target12: "$265 — $335",
+    op: "FY2028 $16.5B is achieved and management raises guidance at Analyst Day. NVIDIA NVLink Fusion products generate measurable revenue in H1 FY2028, creating a second growth vector. Google's new inference chip design and Amazon Trainium4 both enter production simultaneously, compressing the XPU ramp timeline. The market re-rates MRVL from 'AI infrastructure supplier' (~33×) to 'AI ecosystem platform' (~40×), recognizing the stickiness and scale of 18 custom design relationships.",
+    breaks: "Competitors win competing designs at 3+ of the 18 current XPU sockets before production ramp, or NVLink Fusion revenue fails to materialize by Q4 FY2027.",
+    requires01: "DC revenue beats $2.2B+; NVLink Fusion or new XPU win disclosed",
+    requires02: "Gross margin expansion toward 60%+ as custom ASIC mix grows",
+  },
+};
+
+// 2 ── Current price
+const NOW_PRICE = 219;
+
+// 3 ── Historical price line (quarterly close, approximate)
+const HISTORY = [
+  { q: "Q4 FY25", p: 70  },
+  { q: "Q1 FY26", p: 62  },
+  { q: "Q2 FY26", p: 82  },
+  { q: "Q3 FY26", p: 105 },
+  { q: "Q4 FY26", p: 122 },
+  { q: "Q1 FY27", p: 205 },
+  { q: "NOW",     p: NOW_PRICE },
+];
+
+// 6 ── Price targets
+const PROJ_END = { bear: 112, base: 225, bull: 300 };
+
+// 4 ── Forward quarter labels
+const FUTURE_Q = ["Q2 FY27", "Q3 FY27", "Q4 FY27", "Q1 FY28"];
+
+// 7 ── KPI signal bars (pos: 0=far bear, 1=far bull)
+const SIGNALS = {
+  bear: [
+    { name: "Data Center Revenue vs Guide", unit: "$B",      tag: "MISS",  next: "Aug 2026", val: "BEAR ≤ $1.9B",       guide: "IMPLIED $2.05B", pos: 0.20 },
+    { name: "FY2028 $16.5B Target",         unit: "guidance", tag: "WATCH", next: "Aug 2026", val: "BEAR revised lower", guide: "GUIDE $16.5B",    pos: 0.18 },
+    { name: "XPU Design Win Ramp",           unit: "programs", tag: "MISS",  next: "Aug 2026", val: "BEAR <3 in prod",    guide: "18 wins total",  pos: 0.22 },
+  ],
+  base: [
+    { name: "Data Center Revenue vs Guide", unit: "$B",      tag: "MATCH", next: "Aug 2026", val: "BASE ~$2.05B",       guide: "IMPLIED $2.05B", pos: 0.58 },
+    { name: "FY2028 $16.5B Target",         unit: "guidance", tag: "MATCH", next: "Aug 2026", val: "BASE reaffirmed",   guide: "GUIDE $16.5B",    pos: 0.60 },
+    { name: "XPU Design Win Ramp",           unit: "programs", tag: "MATCH", next: "Aug 2026", val: "BASE 4–5 ramping",  guide: "18 wins total",  pos: 0.57 },
+  ],
+  bull: [
+    { name: "Data Center Revenue vs Guide", unit: "$B",      tag: "BEAT",  next: "Aug 2026", val: "BULL ≥ $2.2B",       guide: "IMPLIED $2.05B", pos: 0.86 },
+    { name: "FY2028 $16.5B Target",         unit: "guidance", tag: "BEAT",  next: "Aug 2026", val: "BULL raised higher", guide: "GUIDE $16.5B",    pos: 0.88 },
+    { name: "XPU Design Win Ramp",           unit: "programs", tag: "BEAT",  next: "Aug 2026", val: "BULL 7+ in prod",   guide: "18 wins total",  pos: 0.85 },
+  ],
+};
+const MARGIN = {
+  bear: [
+    { name: "Non-GAAP Gross Margin", tag: "MISS",  next: "Aug 2026", pos: 0.22 },
+    { name: "NVLink Fusion Revenue", tag: "WATCH", next: "Aug 2026", pos: 0.20 },
+  ],
+  base: [
+    { name: "Non-GAAP Gross Margin", tag: "MATCH", next: "Aug 2026", pos: 0.58 },
+    { name: "NVLink Fusion Revenue", tag: "WATCH", next: "Aug 2026", pos: 0.52 },
+  ],
+  bull: [
+    { name: "Non-GAAP Gross Margin", tag: "BEAT",  next: "Aug 2026", pos: 0.83 },
+    { name: "NVLink Fusion Revenue", tag: "BEAT",  next: "Aug 2026", pos: 0.86 },
+  ],
+};
+
+// 8 ── KPI chart: Data Center Revenue ($B, quarterly actuals → scenario projections)
+const KPI_HIST = 1.833;  // Q1 FY2027 actual
+const KPI_PROJ = {
+  bear: [1.90, 2.00, 2.10, 2.20],
+  base: [2.05, 2.40, 2.85, 3.50],
+  bull: [2.20, 2.70, 3.40, 4.20],
+};
+
+// 9 ── TRACK RECORD. Append newest to end; dashboard keeps last 6.
+const TRACK_ALL = [
+  { q: "Q4 FY25", date: "2025-02", post: 70,  reaction: "-",  bear: [42,55],   base: [62,82],   bull: [88,110],  landed: "bear→base", conf: "med"  },
+  { q: "Q1 FY26", date: "2025-05", post: 62,  reaction: "--", bear: [35,50],   base: [58,78],   bull: [85,108],  landed: "bear",      conf: "high" },
+  { q: "Q2 FY26", date: "2025-08", post: 82,  reaction: "++", bear: [42,58],   base: [72,95],   bull: [105,135], landed: "base→bull", conf: "high" },
+  { q: "Q3 FY26", date: "2025-11", post: 105, reaction: "+",  bear: [52,72],   base: [88,118],  bull: [130,165], landed: "base",      conf: "high" },
+  { q: "Q4 FY26", date: "2026-02", post: 122, reaction: "++", bear: [65,88],   base: [105,142], bull: [158,202], landed: "base",      conf: "high" },
+  { q: "Q1 FY27", date: "2026-05", post: 219, reaction: "++", bear: [90,125],  base: [155,210], bull: [218,285], landed: "bull",      conf: "high" },
+];
+const TRACK_WINDOW = 6;
+const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
+const TRACK_PRICE_MIN = 25, TRACK_PRICE_MAX = 310;
+
+// Chart geometry
+const PRICE_MIN = 40, PRICE_MAX = 380;
+const CH_W = 760, CH_H = 420, PAD_L = 8, PAD_R = 56, PAD_T = 18, PAD_B = 34;
+const plotW = CH_W - PAD_L - PAD_R, plotH = CH_H - PAD_T - PAD_B;
+const yOf = (p) => PAD_T + (1 - (p - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * plotH;
+
+// ── Fan Chart ──────────────────────────────────────────────────────────────
+function FanChart({ c }) {
+  const nHist = HISTORY.length;
+  const histPts = HISTORY.map((d, i) => [PAD_L + (i / (nHist + FUTURE_Q.length - 1)) * plotW, yOf(d.p)]);
+  const nowX = histPts[histPts.length - 1][0];
+  const nowY = histPts[histPts.length - 1][1];
+  const fwdN = FUTURE_Q.length;
+  const fwdX = (i) => nowX + ((i + 1) / fwdN) * (CH_W - PAD_R - nowX);
+  const end = PROJ_END[c.key];
+  const mid = FUTURE_Q.map((_, i) => {
+    const t = (i + 1) / fwdN;
+    return [fwdX(i), yOf(NOW_PRICE + (end - NOW_PRICE) * t)];
+  });
+  const spread = (i) => 26 + i * 28;
+  const upper = mid.map(([x, y], i) => [x, y - spread(i)]);
+  const lower = mid.map(([x, y], i) => [x, y + spread(i)]);
+  const bandPath = `M ${nowX} ${nowY} ` + upper.map(([x, y]) => `L ${x} ${y}`).join(" ") + " " +
+    lower.slice().reverse().map(([x, y]) => `L ${x} ${y}`).join(" ") + " Z";
+  const midPath = `M ${nowX} ${nowY} ` + mid.map(([x, y]) => `L ${x} ${y}`).join(" ");
+  const histPath = "M " + histPts.map(([x, y]) => `${x} ${y}`).join(" L ");
+  const gridP = [300, 250, 200, 150, 100, 50];
+
+  return (
+    <svg viewBox={`0 0 ${CH_W} ${CH_H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+      <defs>
+        <linearGradient id={`fan-${c.key}`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor={c.accent} stopOpacity="0.05" />
+          <stop offset="100%" stopColor={c.accent} stopOpacity="0.28" />
+        </linearGradient>
+        <filter id="softglow"><feGaussianBlur stdDeviation="2.2" /></filter>
+      </defs>
+      {gridP.map((p) => (
+        <g key={p}>
+          <line x1={PAD_L} y1={yOf(p)} x2={CH_W - PAD_R} y2={yOf(p)} stroke="#1c2230" strokeWidth="1" strokeDasharray="1 5" />
+          <text x={CH_W - PAD_R + 8} y={yOf(p) + 3} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>${p}</text>
+        </g>
+      ))}
+      <line x1={nowX} y1={PAD_T} x2={nowX} y2={CH_H - PAD_B} stroke="#2f6dff" strokeWidth="1" strokeDasharray="3 4" opacity="0.7" />
+      <path d={bandPath} fill={`url(#fan-${c.key})`} {...tipSvg(
+        "The forecast 'cone'", "This shaded fan shows where the price could go in this scenario over the next year. Wider = more uncertainty further out. The dashed line is the most-likely path.",
+        "Bear case cone points sharply downward — that's the re-rating risk at 56× FY2027 EPS.", c.accent, "fan-band")} />
+      <path d={midPath} fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="6 5" className="fan-mid" style={{ filter: "url(#softglow)" }} />
+      <path d={histPath} fill="none" stroke="#cdd5e3" strokeWidth="2" {...tipSvg(
+        "Price history", "MRVL's actual share price since Q4 FY2025 (Feb 2025). The stock hit a 52-week low of ~$60 in May 2025 during the tariff/macro panic — a sentiment crisis, not a business miss. Since then it has nearly quadrupled on the AI custom chip story, the NVIDIA partnership, and consecutive earnings beats.",
+        "This part already happened — it's real, not a forecast.", "#cdd5e3", "hist-line")} />
+      {HISTORY.map((d, i) => (
+        <g key={i}>
+          <circle cx={histPts[i][0]} cy={histPts[i][1]} r={i === nHist - 1 ? 4.5 : 3}
+            fill={i === nHist - 1 ? "#2f6dff" : "#0a0d14"}
+            stroke={i === nHist - 1 ? "#fff" : "#8a93a6"} strokeWidth="1.5"
+            {...tipSvg(i === nHist - 1 ? "Where we are today" : d.q,
+              i === nHist - 1
+                ? `MRVL trades around $${NOW_PRICE} — an all-time high. Q1 FY2027 was just reported May 27 (non-GAAP EPS $0.80, beat). Q2 FY2027 earnings due late August. Everything right of this dot is forecast.`
+                : `At the end of ${d.q}, MRVL was around $${d.p}. ${d.q === "Q1 FY26" ? "This was near the 52-week low ($59.53) — the May 2025 macro/tariff panic." : ""}`,
+              null, i === nHist - 1 ? "#9fb4ff" : "#cdd5e3")} />
+          {i === nHist - 1 && <text x={histPts[i][0] - 6} y={histPts[i][1] - 12} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="end">NOW ${NOW_PRICE}</text>}
+        </g>
+      ))}
+      {mid.map(([x, y], i) => (
+        <g key={i} className="diamond" style={{ animationDelay: `${0.5 + i * 0.12}s` }}>
+          <rect x={x - 4} y={y - 4} width="8" height="8" transform={`rotate(45 ${x} ${y})`}
+            fill="#0a0d14" stroke={c.accent} strokeWidth="1.6"
+            {...tipSvg(`Forecast: ${FUTURE_Q[i]}`,
+              `A milestone on the most-likely price path for the ${c.label} scenario. Each diamond is roughly one quarter further into the future.`,
+              "Hover the shaded cone around it to see the uncertainty range.", c.accent)} />
+          <text x={x} y={y - 12} fill={c.accent} fontSize="10.5" fontFamily={FONT_MONO} textAnchor="middle">{FUTURE_Q[i]}</text>
+        </g>
+      ))}
+      {["2025", "2026", "2027"].map((yr, i) => (
+        <text key={yr} x={PAD_L + (i / 2) * plotW} y={CH_H - 10} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>{yr}</text>
+      ))}
+    </svg>
+  );
+}
+
+// ── Signal Bar ─────────────────────────────────────────────────────────────
+function SignalBar({ pos, accent, tipProps }) {
+  return (
+    <div {...(tipProps || {})} style={{ position: "relative", height: 22, borderRadius: 3, overflow: "hidden", display: "flex", border: "1px solid #1c2230" }}>
+      <div style={{ flex: 1, background: "rgba(241,86,75,0.22)" }} />
+      <div style={{ flex: 1, background: "rgba(224,168,59,0.18)" }} />
+      <div style={{ flex: 1, background: "rgba(63,208,122,0.22)" }} />
+      <div style={{ position: "absolute", top: -2, bottom: -2, left: `calc(${pos * 100}% - 1px)`, width: 2, background: accent, boxShadow: `0 0 8px ${accent}`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "50%", left: `${pos * 100}%`, width: 7, height: 7, borderRadius: "50%", background: accent, transform: "translate(-50%,-50%)", boxShadow: `0 0 10px ${accent}`, pointerEvents: "none" }} />
+    </div>
+  );
+}
+function tagColor(tag) {
+  if (tag === "BEAT")  return "#3fd07a";
+  if (tag === "MATCH") return "#e0a83b";
+  if (tag === "MISS")  return "#f1564b";
+  return "#7b86a0";
+}
+
+// ── Segmented Control ──────────────────────────────────────────────────────
+function Segmented({ active, setActive, small }) {
+  const explain = {
+    bear: ["The pessimistic scenario", "Click to see MRVL if design wins take longer to ramp than expected — the $16.5B FY2028 target gets revised, Broadcom takes optical DSP share, and the stock re-rates from 56× FY2027 back toward hardware-cyclical multiples. Price would fall to the $90–135 range."],
+    base: ["The most-likely scenario", "Click for the base view — $11.5B FY2027 on track, $16.5B FY2028 credible, and a handful of the 18 XPU design wins begin production. Stock holds 33× FY2028 EPS. Price roughly flat at $195–255."],
+    bull: ["The optimistic scenario", "Click to see the upside — FY2028 target beaten, NVIDIA NVLink Fusion generates real revenue, and the market re-rates MRVL from infrastructure supplier to AI platform at 40×. Price could reach $265–335."],
+  };
+  return (
+    <div style={{ display: "flex", gap: 5 }}>
+      {Object.values(CASES).map((cc) => {
+        const on = active === cc.key;
+        return (
+          <div key={cc.key} onClick={() => setActive(cc.key)}
+            onMouseEnter={(e) => showTip(e, explain[cc.key][0], explain[cc.key][1], "Tip: click to switch the whole dashboard to this scenario.", cc.accent)}
+            onMouseMove={moveTip} onMouseLeave={hideTip}
+            style={{
+              padding: small ? "3px 12px" : "4px 14px", borderRadius: 4, fontSize: 11,
+              fontWeight: 700, letterSpacing: "0.08em", cursor: "pointer",
+              border: `1px solid ${on ? cc.accent : "#222a38"}`, color: on ? "#06080d" : cc.accent,
+              background: on ? cc.accent : "transparent", boxShadow: on ? `0 0 16px ${cc.glow}` : "none",
+              transition: "all .18s ease",
+            }}>{cc.label}</div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── KPI Column — Data Center Revenue $B ───────────────────────────────────
+const KPI_MIN = 1.0, KPI_MAX = 4.8;
+function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
+  const h = Math.max(4, Math.min(92, ((val - KPI_MIN) / (KPI_MAX - KPI_MIN)) * 100));
+  const tp = baseline
+    ? tip("Starting point (Q1 FY27)", `This is the most recent real number: Marvell earned $${val}B from data centers last quarter. The bars to the right are scenario forecasts for where it goes next.`, "The grey dot = 'where we are now'.", "#9aa4b8")
+    : tip(`Forecast: ${label}`, `In this scenario, quarterly data center revenue reaches ~$${val}B by ${label}. Management's FY2027 total revenue target of $11.5B implies DC averaging $2.1–2.2B per quarter. FY2028's $16.5B target requires $3.1–3.2B per quarter. Taller bar = faster ramp.`, "Switch BEAR/BASE/BULL up top to see how the forecast changes.", accentColor);
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
+      <div style={{ fontSize: 11, color: accentColor, fontWeight: 700, marginBottom: 4 }}>${val}B</div>
+      {baseline
+        ? <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#3a4252", border: "1.5px solid #7b86a0", marginBottom: `${h}%` }} />
+        : <div style={{ width: "62%", height: `${h}%`, background: `linear-gradient(180deg, ${accentColor}, ${accentColor}44)`, border: `1px solid ${accentColor}`, borderRadius: 2, animation: `fadeUp .5s ease ${delay}s both`, boxShadow: `0 0 12px ${accentColor}55` }} />}
+      <div style={{ fontSize: 9.5, color: "#5a6477", marginTop: 6 }}>{label}</div>
+    </div>
+  );
+}
+
+// ── Signal / Margin Groups ─────────────────────────────────────────────────
+function SignalGroup({ id, title, requires, accent, evidence, children }) {
+  return (
+    <div style={{ border: "1px solid #161c28", borderRadius: 8, padding: "10px 12px", marginBottom: 12, background: "#0a0e15" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: 12.5, color: "#e6eaf2", fontFamily: FONT_DISPLAY, fontWeight: 600 }}>
+          <span style={{ background: "#161c28", padding: "1px 6px", borderRadius: 3, fontSize: 10, fontFamily: FONT_MONO, color: "#9aa4b8", marginRight: 8, verticalAlign: "middle" }}>{id}</span>
+          <span dangerouslySetInnerHTML={{ __html: title }} />
+        </div>
+        <div style={{ fontSize: 10, color: "#5a6477" }}>EVIDENCE {evidence} ›</div>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#5a6477", margin: "4px 0 10px" }}>REQUIRES: <span style={{ color: accent }}>{requires}</span></div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>{children}</div>
+    </div>
+  );
+}
+function SignalRow({ s, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
+      <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }} {...tip(
+        s.name, SIGNAL_HELP[s.name] || "A measurable indicator used to check whether this scenario is actually happening.",
+        `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
+        <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
+        <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>{s.unit} · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
+      </div>
+      <div>
+        <SignalBar pos={s.pos} accent={accent} tipProps={tip(
+          "Where this scenario sits",
+          "Red (left) is bad, green (right) is good. The glowing dot shows where THIS scenario expects the number to land.",
+          "It's a visual gauge, not an exact measurement.", accent)} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
+          <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
+          <span style={{ color: accent, fontWeight: 700 }}>{s.val}</span>
+          <span style={{ color: "#5a6477" }}>{s.guide}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+function MarginRow({ s, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
+      <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }} {...tip(
+        s.name, SIGNAL_HELP[s.name] || "A measure of how profitable and well-run the business is.",
+        `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
+        <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
+        <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>% · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
+      </div>
+      <div>
+        <SignalBar pos={s.pos} accent={accent} tipProps={tip(
+          "Where this scenario sits",
+          "Red (left) is bad, green (right) is good. The glowing dot marks where this scenario expects this measure to land.", null, accent)} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
+          <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Reversion Clock ────────────────────────────────────────────────────────
+function ReversionClock() {
+  const dislocationDate = new Date(DISLOCATION_DATE);
+  const today = new Date();
+  const elapsed = Math.round((today - dislocationDate) / 86400000);
+  const pct = Math.min(100, (elapsed / REVERSION_PRECEDENT_DAYS) * 100);
+  const trough = REVERSION_TROUGH, baseFloor = REVERSION_BASEFLOOR, now = NOW_PRICE;
+  const recRaw = ((now - trough) / (baseFloor - trough)) * 100;
+  const recPct = Math.round(Math.min(220, recRaw));
+  const barFill = Math.min(100, (recRaw / 220) * 100);
+  return (
+    <div style={{ marginTop: 12, padding: "12px 14px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#5a6477" }}>DISLOCATION CLOCK · MAY 2025 MACRO PANIC</div>
+        <div style={{ fontSize: 11, color: "#9aa4b8" }}><span style={{ color: "#e0a83b", fontWeight: 700 }}>{elapsed}d</span> elapsed / ~{REVERSION_PRECEDENT_DAYS}d precedent</div>
+      </div>
+      <div style={{ marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>TIME SINCE DISLOCATION (May 30, 2025 — 52-week low ${trough})</div>
+      <div {...tip("How much time has passed since the panic low",
+        "In May 2025, the stock hit a 52-week low of $60 during a tariff/macro panic. This bar shows how many days have elapsed vs. the ~270-day window it took to recover to the 'base zone' ($140). The bar is already maxed — we're well past the recovery window.",
+        "Fully elapsed = the dislocation narrative has long closed.", "#e0a83b")}
+        style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "100%", background: "linear-gradient(90deg,#f1564b,#3fd07a)", borderRadius: 7 }} />
+        <div style={{ position: "absolute", right: 0, top: -3, bottom: -3, width: 2, background: "#3fd07a" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
+        <span>day 0</span><span style={{ color: "#3fd07a" }}>base-reversion mark (~270d) — fully elapsed ✓</span>
+      </div>
+      <div style={{ marginTop: 12, marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>PRICE RECOVERY · ${trough} trough → ${baseFloor} base floor → ${now} ATH</div>
+      <div {...tip("How far the price has bounced back",
+        `Stock bottomed near $${trough} in May 2025. The 'base floor' was $${baseFloor}. At $${now}, the stock has recovered ${recPct}% of the trough-to-base-floor gap — it blew well past the base floor and is now at all-time highs. The dislocation narrative is closed.`,
+        "The new question is not 'will it recover?' but 'is ATH justified by the $16.5B FY2028 target?'", "#9fb4ff")}
+        style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${barFill}%`, background: "linear-gradient(90deg,#f1564b,#3fd07a)", borderRadius: 7 }} />
+        <div style={{ position: "absolute", left: `${barFill}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#9fb4ff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #9fb4ff", pointerEvents: "none" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
+        <span>${trough}</span>
+        <span style={{ color: "#9fb4ff" }}>${now} now · {recPct}% of trough-to-base gap (ATH)</span>
+        <span>${baseFloor}</span>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
+        The May 2025 dislocation has <span style={{ color: "#3fd07a", fontWeight: 700 }}>completely resolved</span> — price at ${now} is <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{recPct}%</span> of the way from trough to base floor, well past it and at <span style={{ color: "#fff", fontWeight: 700 }}>all-time highs</span>. The recovery thesis was validated. The <span style={{ color: "#e0a83b", fontWeight: 700 }}>open question now</span>: does the $16.5B FY2028 target justify 56× FY2027 EPS? Watch the <span style={{ color: "#e0a83b", fontWeight: 700 }}>late August</span> Q2 FY2027 print.
+      </div>
+    </div>
+  );
+}
+
+// ── Track Record ───────────────────────────────────────────────────────────
+function TrackRecord() {
+  const W = 1000, H = 300, pl = 44, pr = 70, pt = 20, pb = 40;
+  const pw = W - pl - pr, ph = H - pt - pb;
+  const y = (p) => pt + (1 - (p - TRACK_PRICE_MIN) / (TRACK_PRICE_MAX - TRACK_PRICE_MIN)) * ph;
+  const x = (i) => pl + (TRACK.length === 1 ? pw / 2 : (i / (TRACK.length - 1)) * pw);
+  const grid = [250, 200, 150, 100, 50];
+  const pathPts = TRACK.map((t, i) => [x(i), y(t.post)]);
+  const linePath = "M " + pathPts.map(([px, py]) => `${px} ${py}`).join(" L ");
+  const hits = TRACK.filter((t) => t.landed.includes("base") || t.landed.includes("bull")).length;
+  return (
+    <div style={{ background: "#080b11", padding: "16px 18px", borderTop: "1px solid #161c28" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+        <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
+          <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>TR · BACKTEST</span>
+          THESIS TRACK RECORD · RECONSTRUCTED BANDS vs ACTUAL PRICE
+        </div>
+        <div style={{ fontSize: 11, color: "#7b86a0" }}>BASE-OR-BETTER LANDINGS: <span style={{ color: "#3fd07a", fontWeight: 700 }}>{hits}/{TRACK.length}</span></div>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#5a6477", marginBottom: 10 }}>
+        Each column = one earnings date. Stacked zones are the bear / base / bull bands as they would have been drawn at that time. The line is where price actually traded after.
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+        {grid.map((p) => (
+          <g key={p}>
+            <line x1={pl} y1={y(p)} x2={W - pr} y2={y(p)} stroke="#161c28" strokeWidth="1" strokeDasharray="1 5" />
+            <text x={W - pr + 8} y={y(p) + 3} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>${p}</text>
+          </g>
+        ))}
+        {TRACK.map((t, i) => {
+          const cx = x(i), bw = 46;
+          const landWord = t.landed.includes("bull") ? "the optimistic zone" : t.landed.includes("base") ? "the middle zone" : "the pessimistic zone";
+          const reactWord = (t.reaction.includes("−") || t.reaction.startsWith("-")) ? "the stock FELL after this report" : "the stock ROSE after this report";
+          const seg = (range, color) => (
+            <rect x={cx - bw / 2} y={y(range[1])} width={bw} height={Math.max(2, y(range[0]) - y(range[1]))}
+              fill={color} opacity={t.conf === "med" ? 0.32 : 0.5} rx="2"
+              style={{ animation: `fadeUp .5s ease ${i * 0.08}s both` }}
+              {...tipSvg(`${t.q} earnings`,
+                `At this earnings date, the scenario band would have been: red=bear, yellow=base, green=bull. In reality, ${reactWord} and the price ended up in ${landWord} (~$${t.post}).`,
+                t.conf === "med" ? "Marked 'lower-confidence' — bands reconstructed in hindsight." : null,
+                color.includes("63,208") ? "#3fd07a" : color.includes("224,168") ? "#e0a83b" : "#f1564b")} />
+          );
+          return (
+            <g key={t.q}>
+              {seg(t.bull, "rgba(63,208,122,0.55)")}
+              {seg(t.base, "rgba(224,168,59,0.5)")}
+              {seg(t.bear, "rgba(241,86,75,0.5)")}
+              <text x={cx} y={H - 24} fill="#9aa4b8" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle">{t.q}</text>
+              <text x={cx} y={H - 11} fill={t.conf === "med" ? "#5a6477" : "#3a4252"} fontSize="8.5" fontFamily={FONT_MONO} textAnchor="middle">
+                {t.conf === "med" ? "lower-conf" : t.reaction.includes("--") || t.reaction.includes("−−") ? "↓ dislocation" : ""}
+              </text>
+            </g>
+          );
+        })}
+        <path d={linePath} fill="none" stroke="#dde3ee" strokeWidth="2.2" className="track-line" style={{ filter: "drop-shadow(0 0 4px rgba(221,227,238,0.4))" }} />
+        {TRACK.map((t, i) => {
+          const isLast = i === TRACK.length - 1;
+          return (
+            <g key={t.q} style={{ animation: `pop .4s cubic-bezier(.2,1.4,.4,1) ${0.3 + i * 0.08}s both` }}>
+              <circle cx={x(i)} cy={y(t.post)} r={isLast ? 6 : 4} fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
+                {...tipSvg(isLast ? "Today (ATH)" : `${t.q}: actual price`,
+                  isLast ? `MRVL is at ~$${t.post} — an all-time high. Q1 FY2027 beat consensus EPS ($0.80 vs $0.75). The stock surged ~23% in the two trading days after the May 27 report.`
+                    : `After ${t.q} earnings, MRVL actually traded around $${t.post}. Compare this dot to the colored bars behind it to see if the predicted range was right.`,
+                  null, isLast ? "#9fb4ff" : "#cdd5e3")} />
+              {isLast && <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">NOW ${t.post}</text>}
+            </g>
+          );
+        })}
+      </svg>
+      <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
+        <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
+          Price has tracked <span style={{ color: "#3fd07a", fontWeight: 700 }}>base-or-better in {hits} of {TRACK.length} quarters</span> since Q4 FY2025. The only sustained bear period was the May 2025 macro/tariff dislocation (Q1 FY26, ~$62) — a sentiment crisis, not a business miss. Since then every print has beaten estimates. The Q1 FY2027 bull landing ($219) came from back-to-back catalysts: the NVIDIA $2B partnership (March 2026) and a Q1 beat + FY2027/2028 guidance raise (May 27). Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits in the <span style={{ color: "#3fd07a", fontWeight: 700 }}>BULL band</span> — the Q2 FY2027 print in <span style={{ color: "#e0a83b", fontWeight: 700 }}>late August</span> is the next confirmation gate for the $11.5B FY2027 target.
+        </div>
+      </div>
+      <ReversionClock />
+      <div style={{ fontSize: 9.5, color: "#3d4555", marginTop: 8, lineHeight: 1.5 }}>
+        ⚠ Bands are reconstructed now, anchored to each date's forward EPS and multiple regime — not archived in real time. Treat levels as directional, especially "lower-conf" quarters. The Q1 FY26 bear landing was macro-driven (tariff panic), not a business miss — the thesis was intact. Fiscal year ends late January; quarters labeled by Marvell's fiscal convention.
+      </div>
+    </div>
+  );
+}
+
+// ── Main Component ─────────────────────────────────────────────────────────
+function MrvlThesis() {
+  const [active, setActive] = useState("base");
+  const c = CASES[active];
+  const kpiVals = KPI_PROJ[active];
+  return (
+    <div style={{ background: "#06080d", minHeight: "100vh", padding: "20px 16px", fontFamily: FONT_MONO, color: "#cdd5e3" }}>
+      <div className="grain" style={{ maxWidth: 1280, margin: "0 auto", position: "relative", border: "1px solid #161c28", borderRadius: 12, background: "linear-gradient(160deg,#0a0d14,#070a10)", boxShadow: "0 40px 120px rgba(0,0,0,0.6)", overflow: "hidden" }}>
+
+        {/* ── Header ── */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 22px", borderBottom: "1px solid #161c28" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, letterSpacing: "0.35em", color: "#f3f5f9", fontWeight: 600 }}>TH<span style={{ color: c.accent }}>3</span>SIS</div>
+            <div {...tip("👋 New here?", "Hover your mouse over anything on this page — charts, bars, dots, labels — and a plain-English explanation will pop up. No finance degree required.", "This little hint is one too.", "#3fd07a")}
+              style={{ fontSize: 10, color: "#5a6477", border: "1px solid #222a38", borderRadius: 20, padding: "3px 10px", cursor: "help" }}>
+              ⓘ hover anything to learn what it means
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 12.5, color: "#7b86a0" }}>
+            <span>{AS_OF_DATE}</span>
+            <span style={{ color: "#cdd5e3" }}>NASDAQ:MRVL</span>
+            <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "#9aa4b8" }}>Marvell Technology</span>
+            <span {...tip("Today's share price",
+              `One share of MRVL costs about $${NOW_PRICE} — an all-time high, up 158% YTD. The stock has nearly quadrupled from the $60 May 2025 low. Q1 FY2027 just beat estimates. Q2 FY2027 earnings due late August 2026.`,
+              null, "#fff")}
+              style={{ color: "#fff", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}.00</span>
+          </div>
+        </div>
+
+        {/* ── Two-column body ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 1, background: "#161c28" }}>
+
+          {/* Left — chart + KPI */}
+          <div style={{ background: "#080b11", padding: "16px 18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>NOW</span>
+                MRVL · PRICE &amp; RISK-REWARD
+              </div>
+              <Segmented active={active} setActive={setActive} />
+            </div>
+            <div className="panel" key={active + "-chart"}><FanChart c={c} /></div>
+            <div style={{ marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#5a6477" }}>
+              <span><span style={{ color: c.accent }}>━━</span> {c.label.toLowerCase()} mid &nbsp; <span style={{ color: "#2f6dff" }}>┊</span> now &nbsp; <span style={{ color: "#cdd5e3" }}>━</span> history</span>
+              <span>12M TARGET <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></span>
+            </div>
+
+            {/* KPI chart */}
+            <div style={{ marginTop: 18, borderTop: "1px solid #161c28", paddingTop: 14 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.16em", color: "#7b86a0", marginBottom: 4 }}
+                {...tip("The single most important number",
+                  "Marvell's data center revenue is the quarterly amount it earns from AI custom chips (for Amazon, Google, Microsoft, Meta) plus networking silicon. It's 76% of total revenue and essentially the entire thesis. Management's FY2028 $16.5B revenue target requires this line to scale from $1.8B in Q1 FY2027 to ~$3.1–3.2B per quarter — almost doubling in 18 months.",
+                  "This is the one number to watch at every earnings call.", "#9fb4ff")}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>KPI · K01</span>
+                Data Center Revenue
+                <span style={{ color: "#5a6477", marginLeft: 8 }}>$B quarterly  ·  HIGHER BETTER</span>
+              </div>
+              <div className="panel" key={active + "-kpi"} style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 120, padding: "12px 4px 0" }}>
+                <KpiCol label="Q1 FY27" val={KPI_HIST} baseline accentColor="#7b86a0" />
+                {kpiVals.map((v, i) => <KpiCol key={i} label={FUTURE_Q[i]} val={v} accentColor={c.accent} delay={i * 0.08} />)}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
+                <div>
+                  <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THIS MEASURES</div>
+                  <div style={{ color: "#9aa4b8" }}>Quarterly data center revenue from custom AI chips (18 XPU design wins) + optical DSP networking + Ethernet switching. FY2028 $16.5B total target implies DC at ~$3.1B/quarter.</div>
+                </div>
+                <div>
+                  <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THE <span style={{ color: c.accent }}>{c.label}</span> CASE REQUIRES</div>
+                  <div style={{ color: c.accent }}>
+                    {active === "bull"
+                      ? "DC revenue beats $2.2B in Q2 and accelerates toward $4.2B by Q1 FY2028 — requiring fast simultaneous ramp of multiple XPU design wins plus meaningful NVLink Fusion contribution."
+                      : active === "base"
+                      ? "DC revenue tracks ~$2.05B in Q2, scaling smoothly to ~$3.5B by Q1 FY2028, confirming the $16.5B FY2028 target is on plan."
+                      : "DC revenue stalls below $2.0B for multiple quarters, signaling XPU design win ramp delays and forcing downward revision of the $16.5B FY2028 target."}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right — thesis + signals */}
+          <div style={{ background: "#080b11", padding: "16px 18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>THESIS · ALL SIGNALS</div>
+              <div style={{ fontSize: 12, color: "#7b86a0" }}>{c.label.toLowerCase()} 12M <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></div>
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
+              <Segmented active={active} setActive={setActive} small />
+              <span className="dot-track" style={{ marginLeft: 6, fontSize: 10.5, color: c.accent }}>● TRACKING</span>
+            </div>
+            <div className="panel" key={active + "-op"} style={{ fontSize: 12.5, lineHeight: 1.6, color: "#bcc6d8", marginBottom: 16, minHeight: 72 }}>{c.op}</div>
+
+            <SignalGroup id="SN01" title="XPU Ramp &amp; Revenue Trajectory" requires={c.requires01} accent={c.accent} evidence={3}>
+              {SIGNALS[active].map((s, i) => <SignalRow key={i} s={s} accent={c.accent} />)}
+            </SignalGroup>
+
+            <SignalGroup id="SN02" title="Margin &amp; Forward Guidance Quality" requires={c.requires02} accent={c.accent} evidence={3}>
+              {MARGIN[active].map((s, i) => <MarginRow key={i} s={s} accent={c.accent} />)}
+            </SignalGroup>
+
+            <div style={{ marginTop: 14, borderTop: "1px solid #161c28", paddingTop: 10 }}>
+              <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 3 }}>WHAT BREAKS THE <span style={{ color: c.accent }}>{c.label}</span> CASE</div>
+              <div style={{ fontSize: 11.5, color: "#9aa4b8", lineHeight: 1.5 }}>{c.breaks}</div>
+            </div>
+
+            {/* Valuation ruler */}
+            <div style={{ marginTop: 14, padding: "10px 12px", background: "#0a0d14", border: "1px solid #161c28", borderRadius: 6 }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 4 }}>VALUATION RULER</div>
+              <div {...tip("How we price this stock",
+                "MRVL's GAAP earnings are depressed by acquisition amortization (Cavium, InPhi, Innovium, Celestial AI). The market uses non-GAAP adjusted EPS. At $219 and $3.92 FY2027E: 56× FY2027. On FY2028 if targets deliver (~$6.50): 34× — reasonable for 45% revenue growth IF the $16.5B happens.",
+                "Price = forward non-GAAP EPS × P/E. Bear: ~$3.00 × 23× = $69 (realistic: $90–135). Base: ~$6.50 × 33× = $215. Bull: ~$7.80 × 40× = $312.", "#9aa4b8")}
+                style={{ fontSize: 11, color: "#9aa4b8", lineHeight: 1.5 }}>
+                Forward non-GAAP EPS × P/E. Bear: ~$3.00 × 23× ≈ $69 (floor $90–135). Base: ~$6.50 × 33× ≈ $215. Bull: ~$7.80 × 40× ≈ $312. At $219: 56× FY2027, 34× FY2028 — you're paying for $16.5B to deliver.
+              </div>
+            </div>
+
+            {/* Risk / Reward */}
+            <div style={{ marginTop: 10, padding: "10px 12px", background: "#0a0d14", border: "1px solid #2a1a1a", borderRadius: 6 }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 8 }}>RISK / REWARD AT ${NOW_PRICE}</div>
+              {[
+                { label: "BEAR", color: "#f1564b", lo: 90,  hi: 135 },
+                { label: "BASE", color: "#e0a83b", lo: 195, hi: 255 },
+                { label: "BULL", color: "#3fd07a", lo: 265, hi: 335 },
+              ].map(({ label, color, lo, hi }) => {
+                const mid = Math.round((lo + hi) / 2);
+                const pct = Math.round(((mid - NOW_PRICE) / NOW_PRICE) * 100);
+                const sign = pct >= 0 ? "+" : "";
+                const barW = Math.max(4, Math.min(96, ((pct + 60) / 130) * 100));
+                return (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}
+                    {...tip(`${label} scenario return`,
+                      `If the ${label.toLowerCase()} case plays out over 12 months, price would land in the $${lo}–$${hi} range — roughly ${sign}${pct}% from today's $${NOW_PRICE}.`,
+                      "Midpoint of range used. These are estimates, not targets.", color)}>
+                    <div style={{ fontSize: 9.5, color, fontWeight: 700, width: 34 }}>{label}</div>
+                    <div style={{ flex: 1, position: "relative", height: 8, background: "#0d1018", borderRadius: 4, border: "1px solid #1c2230" }}>
+                      <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: `${barW}%`, background: color, opacity: 0.45, borderRadius: 4 }} />
+                      <div style={{ position: "absolute", top: "50%", left: `${barW}%`, transform: "translate(-50%,-50%)", width: 6, height: 6, borderRadius: "50%", background: color, boxShadow: `0 0 6px ${color}` }} />
+                    </div>
+                    <div style={{ fontSize: 10.5, color, fontWeight: 700, width: 44, textAlign: "right" }}>{sign}{pct}%</div>
+                    <div style={{ fontSize: 9, color: "#4a5366", width: 72 }}>${lo}–${hi}</div>
+                  </div>
+                );
+              })}
+              <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #161c28", fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55 }}
+                {...tip("What this asymmetry means",
+                  `At $${NOW_PRICE}, the stock is priced for the FY2028 $16.5B target to be delivered in full. The base is roughly flat; the bear is severe (~−49%). The stock has already tripled YTD — the good news is in the price. Enter only with high conviction that the 18 design wins ramp on schedule.`,
+                  "Midpoints of ranges used. Always hold loosely.", "#9aa4b8")}>
+                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−49%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>+3%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+37%</span> — stock already tripled YTD; <span style={{ color: "#f1564b" }}>no margin of safety.</span> The $16.5B FY2028 target is everything.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Footer ── */}
+        <div style={{ padding: "10px 22px", borderTop: "1px solid #161c28", display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#4a5366" }}>
+          <span>OBSERVABLE NOW: hyperscaler CapEx announcements · NVIDIA NVLink Fusion product releases · Broadcom optical DSP wins · new XPU design win press releases</span>
+          <span>CONFIRMS AUG 2026: DC revenue vs implied $2.05B · FY2028 target reaffirm · gross margin · Q3 guidance</span>
+        </div>
+
+        <TrackRecord />
+      </div>
+
+      <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "#3d4555", lineHeight: 1.5 }}>
+        Illustrative scenario framing built on public consensus &amp; estimates as of June 2026 — not a prediction and not financial advice. Valuation ruler: forward non-GAAP EPS × P/E (strips acquisition amortization). "18 design wins" means contracts signed, not programs at full production volume — ramp timing is the key uncertainty. Data inputs move with every print. Q2 FY2027 earnings: late August 2026.
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<MrvlThesis />);
+</script>
+</body>
+</html>
