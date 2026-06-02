@@ -214,7 +214,7 @@ const TRACK_ALL = [
   { q: "Q2 FY25", date: "2025-05", post: 242, reaction: "-",  bear: [155,195], base: [220,270], bull: [285,345], landed: "bear",        conf: "high" },
   { q: "Q3 FY25", date: "2025-08", post: 298, reaction: "++", bear: [175,215], base: [245,305], bull: [320,385], landed: "base→bull",   conf: "high" },
   { q: "Q4 FY25", date: "2025-11", post: 368, reaction: "++", bear: [225,270], base: [300,365], bull: [385,460], landed: "bull",        conf: "high" },
-  { q: "Q1 FY26", date: "2026-02", post: 372, reaction: "+",  bear: [255,305], base: [340,405], bull: [430,510], landed: "base",        conf: "high" },
+  { q: "Q1 FY26", date: "2026-02", post: 460, reaction: "+",  bear: [255,305], base: [340,405], bull: [430,510], landed: "bull",        conf: "high" },
 ];
 const TRACK_WINDOW = 6;
 const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
@@ -534,7 +534,7 @@ function TrackRecord() {
                   isLast ? `After Q1 FY2026 earnings (Feb 2026), AVGO traded around $${t.post}. Q2 FY2026 results arrive June 3 — that will be the next dot added.`
                     : `After ${t.q} earnings, AVGO actually traded around $${t.post}. Compare this dot to the colored bars behind it to see if the predicted range was right.`,
                   null, isLast ? "#9fb4ff" : "#cdd5e3")} />
-              {isLast && <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">Q1 FY26 ${t.post}</text>}
+              {isLast && <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">NOW ${t.post}</text>}
             </g>
           );
         })}
@@ -544,8 +544,7 @@ function TrackRecord() {
         <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
           Price has tracked <span style={{ color: "#3fd07a", fontWeight: 700 }}>base-or-better in {hits} of {TRACK.length} quarters</span> since Q4 FY2024.
           The only bear landing was Q2 FY2025 ($242), which coincided with the 52-week low — a macro / valuation pause, not a business miss.
-          The Q4 FY2025 catalyst was management's $100B FY2027 AI revenue target, which drove the stock into the bull band at $368.
-          Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits in the upper BASE band — the Q2 FY2026 print on June 3 is the next directional catalyst.
+          The Q4 FY2025 catalyst was management's $100B FY2027 AI revenue target. Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits in the <span style={{ color: "#3fd07a", fontWeight: 700 }}>BULL band</span> of the Q1 FY2026 scenario ($430–510 range) — the Q2 FY2026 print on June 3 is the next directional catalyst.
         </div>
       </div>
       <ReversionClock />
