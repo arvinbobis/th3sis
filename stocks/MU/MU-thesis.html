@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TH3SIS · MU Micron Technology — Investment Thesis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #06080d; }
+  * { box-sizing: border-box; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
+  @keyframes drawIn { from { stroke-dashoffset: 2000; } to { stroke-dashoffset: 0; } }
+  @keyframes pop { 0%{opacity:0; transform:scale(0.4);} 70%{transform:scale(1.15);} 100%{opacity:1; transform:scale(1);} }
+  @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+  .hist-line { stroke-dasharray: 1400; animation: drawIn 1.6s ease forwards; }
+  .track-line { stroke-dasharray: 2000; animation: drawIn 1.8s ease .2s forwards; }
+  .fan-mid { stroke-dasharray: 6 5; animation: fadeUp .8s ease .4s both; }
+  .fan-band { animation: fadeUp .9s ease .3s both; }
+  .diamond { animation: pop .5s cubic-bezier(.2,1.4,.4,1) both; }
+  .panel { animation: fadeUp .6s ease both; }
+  .dot-track { animation: pulse 2.2s ease-in-out infinite; }
+  .blink { animation: blink 1.4s ease-in-out infinite; }
+  .tip-target { cursor: help; }
+  .tip-target:hover { filter: brightness(1.18); }
+  #tip-box {
+    position: fixed; z-index: 9999; max-width: 300px; pointer-events: none;
+    background: linear-gradient(160deg,#141a26,#0d1119);
+    border: 1px solid #2a3344; border-radius: 10px; padding: 12px 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.7); opacity: 0; transition: opacity .14s ease;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #tip-box.on { opacity: 1; }
+  #tip-box .tt { font-size: 11px; font-weight: 700; letter-spacing: .08em; margin-bottom: 5px; }
+  #tip-box .tb { font-size: 11.5px; line-height: 1.55; color: #c4cdde; }
+  #tip-box .tn { font-size: 10px; color:#6b7689; margin-top: 7px; font-style: italic; }
+  .grain::before { content:""; position:absolute; inset:0; pointer-events:none; opacity:.025;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const FONT_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+const FONT_DISPLAY = "'Spectral', Georgia, serif";
+
+// ── Tooltip engine ─────────────────────────────────────────────────────────
+let tipEl = null;
+function ensureTip() {
+  if (!tipEl) { tipEl = document.createElement("div"); tipEl.id = "tip-box"; document.body.appendChild(tipEl); }
+  return tipEl;
+}
+function showTip(e, title, body, note, color) {
+  const el = ensureTip();
+  el.innerHTML = `<div class="tt" style="color:${color||'#9fb4ff'}">${title}</div><div class="tb">${body}</div>${note?`<div class="tn">${note}</div>`:""}`;
+  el.classList.add("on"); moveTip(e);
+}
+function moveTip(e) {
+  const el = ensureTip(); const pad = 16;
+  let x = e.clientX + pad, y = e.clientY + pad;
+  const r = el.getBoundingClientRect();
+  if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - pad;
+  if (y + r.height > window.innerHeight - 8) y = e.clientY - r.height - pad;
+  el.style.left = x + "px"; el.style.top = y + "px";
+}
+function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
+
+const SIGNAL_HELP = {
+  "Q3 Revenue vs $33.5B Guide": "Micron guided Q3 FY2026 (March–May 2026) revenue at $33.5B ±$750M — a 40% jump from Q2's record $23.9B, driven by HBM demand from AI training clusters. This is the single most watched semiconductor number on June 24. A beat confirms the cycle; a miss at $1,059 stock price would be severe. Note: the stock is largely pricing in a Q3 meet-or-beat already.",
+  "Q4 FY2026 Revenue Guidance": "What management says on June 24 about the June–August quarter. This is arguably MORE important than Q3 itself — the stock already prices $33.5B for Q3. Where the NEXT quarter is headed is what the $1,059 stock is actually debating. A Q4 guide above $35B = incrementally bullish; below $30B = major re-rating trigger regardless of how well Q3 printed.",
+  "Gross Margin vs 81% Guide": "Out of every dollar of revenue, how much Micron keeps after manufacturing costs. Q2 was 74.4%; Q3 is guided at 81%. If achieved, it confirms HBM pricing power is still intact. Memory gross margins historically averaged 30–40% in normal cycles — 81% implies structural pricing, not just cycle volume. The direction from Q3 to Q4 guidance tells you whether the peak has arrived.",
+  "HBM Mix % of Revenue": "The fraction of total revenue from High Bandwidth Memory — the AI training chip Micron sells to NVIDIA, AMD, and cloud providers. Higher HBM % = more revenue from the premium-priced, supply-constrained product and less from commodity DRAM and NAND. This is the structural health indicator: a rising HBM mix is the 'this cycle is different' argument made visible.",
+  "NAND Gross Margin Recovery": "NAND flash memory (SSDs, phones, enterprise storage) is Micron's second major business, and it's been in a prolonged oversupply cycle that depresses overall margins. If NAND gross margins recover to positive, it adds a second tailwind on top of HBM. If NAND stays weak, it limits total-company margin expansion even if HBM pricing holds.",
+};
+const TAG_HELP = {
+  BEAT: "doing better than expected — a good sign.",
+  MATCH: "roughly in line with expectations — steady, no surprises.",
+  MISS: "falling short of expectations — a worry.",
+  WATCH: "not decided yet — keep an eye on it.",
+};
+
+function tip(title, body, note, color) {
+  return { className:"tip-target", onMouseEnter:(e)=>showTip(e,title,body,note,color), onMouseMove:(e)=>moveTip(e), onMouseLeave:hideTip };
+}
+function tipSvg(title, body, note, color, extraClass) {
+  return { className:(extraClass?extraClass+" ":"")+"tip-target", onMouseEnter:(e)=>showTip(e,title,body,note,color), onMouseMove:(e)=>moveTip(e), onMouseLeave:hideTip };
+}
+
+/* ╔══════════════════════════════════════════════════════════════════════════╗
+   ║                                                                          ║
+   ║   ███  EDIT EVERYTHING IN THIS BLOCK EACH QUARTER  ███                   ║
+   ║                                                                          ║
+   ║   Micron fiscal year ends Aug 31 (Q1=Sep–Nov, Q2=Dec–Feb, etc.)          ║
+   ║   Quick map — after each earnings report:                                ║
+   ║     1. AS_OF_DATE  ......  today's date                                  ║
+   ║     2. NOW_PRICE   ......  current share price                           ║
+   ║     3. HISTORY     ......  add just-finished quarter, roll NOW           ║
+   ║     4. FUTURE_Q    ......  roll the 4 forward quarter labels             ║
+   ║     5. CASES       ......  re-read each narrative — still true?         ║
+   ║     6. PROJ_END + target12 .. bear/base/bull price targets              ║
+   ║     7. SIGNALS / MARGIN ...  update BEAT/MATCH/MISS + positions          ║
+   ║     8. KPI_HIST / KPI_PROJ .. revenue history + forward scenarios       ║
+   ║     9. TRACK_ALL   ......  append new quarter (oldest auto-drops)       ║
+   ║    10. DISLOCATION_DATE ...  only if a new shock happened               ║
+   ║                                                                          ║
+   ╚══════════════════════════════════════════════════════════════════════════╝ */
+
+// 1 ── DATE
+const AS_OF_DATE = "2026-06-03";
+
+// 10 ── Jun 2025 memory down-cycle / tariff panic (52-wk low ~$102)
+const DISLOCATION_DATE = "2025-06-01";
+const REVERSION_TROUGH = 102;
+const REVERSION_BASEFLOOR = 310;
+const REVERSION_PRECEDENT_DAYS = 180;
+
+const CASES = {
+  bear: {
+    key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
+    target12: "$320 — $520",
+    op: "HBM demand peaks as NVIDIA Blackwell deployments complete and Samsung resolves HBM3E qualification with major customers. Q4 FY2026 guidance (given June 24) comes in below $30B, signaling the cycle has peaked. Gross margins guide lower, NAND remains oversupplied, and the market applies a cyclical trough multiple. Every prior memory cycle has seen 50–70% peak-to-trough stock declines — the bear case argues AI HBM is not immune to the economics of semiconductor oversupply.",
+    breaks: "Q3 meets $33.5B AND Q4 is guided at $34B+ on June 24, proving the cycle has at minimum two more strong quarters ahead.",
+    requires01: "Q3 misses $33.5B guide OR Q4 guided below $30B",
+    requires02: "Gross margin fails to hold above 75% for Q4",
+  },
+  base: {
+    key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
+    target12: "$900 — $1,100",
+    op: "Q3 FY2026 meets $33.5B with 81% gross margins. Q4 is guided at $34–37B as HBM4 volumes begin ramping alongside HBM3E production. NAND margins gradually recover. The cycle extends through FY2027 at still-elevated margins of 60–70%, and the market continues to pay 13–15× on exceptionally high earnings. HBM manufacturing complexity (3× wafer consumption vs. DDR5) keeps supply disciplined for another year. Stock trades sideways around current levels with high volatility into each print.",
+    breaks: "Q4 FY2026 guided below $30B on June 24 — that single data point collapses the base case entirely.",
+    requires01: "Q3 meets $33.5B; Q4 guided ≥$34B; cycle extending",
+    requires02: "Gross margin ≥78% in Q3; Q4 guided similarly",
+  },
+  bull: {
+    key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
+    target12: "$1,200 — $1,500",
+    op: "Q3 materially beats ($35B+ on $33.5B guide), Q4 is guided above $38B, and management raises full-year FY2027 outlook. HBM4 ramping 'twice as fast as HBM3E' becomes a competitive wedge against SK Hynix as NVIDIA diversifies HBM sourcing. The market begins re-rating MU from 'cyclical memory company' toward 'AI infrastructure critical supplier' as it did for AVGO — moving from 13× toward 17–18× FY2027 earnings. FY2027 EPS estimates rise to $85–90+.",
+    breaks: "Q3 gross margins fail to hit 81% guidance — that single miss would break the pricing-power narrative the bull case rests on.",
+    requires01: "Q3 beats $35B+; Q4 guided ≥$38B",
+    requires02: "GM 82%+ in Q3; HBM4 share gains vs SK Hynix confirmed",
+  },
+};
+
+// 2 ── Current price
+const NOW_PRICE = 1059;
+
+// 3 ── Historical price line (approximate quarter-end close)
+const HISTORY = [
+  { q: "Q3 FY25", p: 101  },
+  { q: "Q4 FY25", p: 135  },
+  { q: "Q1 FY26", p: 310  },
+  { q: "Q2 FY26", p: 620  },
+  { q: "NOW",     p: NOW_PRICE },
+];
+
+// 6 ── Price targets
+const PROJ_END = { bear: 420, base: 1000, bull: 1350 };
+
+// 4 ── Forward quarter labels  (Q3 FY26 reports Jun 24)
+const FUTURE_Q = ["Q3 FY26*", "Q4 FY26", "Q1 FY27", "Q2 FY27"];
+
+// 7 ── Signal bars (pos: 0=far bear, 1=far bull). All WATCH until Jun 24.
+const SIGNALS = {
+  bear: [
+    { name: "Q3 Revenue vs $33.5B Guide", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BEAR ≤ $31B",       guide: "GUIDE $33.5B ±$750M", pos: 0.18 },
+    { name: "Q4 FY2026 Revenue Guidance", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BEAR ≤ $28B guided", guide: "implied $34B+",         pos: 0.15 },
+    { name: "Gross Margin vs 81% Guide",  unit: "%",   tag: "WATCH", next: "Jun 24 2026", val: "BEAR <75%",          guide: "GUIDE ~81%",              pos: 0.20 },
+  ],
+  base: [
+    { name: "Q3 Revenue vs $33.5B Guide", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BASE $33–35B",        guide: "GUIDE $33.5B ±$750M", pos: 0.58 },
+    { name: "Q4 FY2026 Revenue Guidance", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BASE $34–37B guided",  guide: "implied $34B+",         pos: 0.58 },
+    { name: "Gross Margin vs 81% Guide",  unit: "%",   tag: "WATCH", next: "Jun 24 2026", val: "BASE ~78–82%",         guide: "GUIDE ~81%",              pos: 0.57 },
+  ],
+  bull: [
+    { name: "Q3 Revenue vs $33.5B Guide", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BULL ≥ $35B beat",    guide: "GUIDE $33.5B ±$750M", pos: 0.86 },
+    { name: "Q4 FY2026 Revenue Guidance", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BULL ≥ $38B guided",  guide: "implied $34B+",         pos: 0.88 },
+    { name: "Gross Margin vs 81% Guide",  unit: "%",   tag: "WATCH", next: "Jun 24 2026", val: "BULL 82%+ confirmed", guide: "GUIDE ~81%",              pos: 0.85 },
+  ],
+};
+const MARGIN = {
+  bear: [
+    { name: "HBM Mix % of Revenue",     tag: "WATCH", next: "Jun 24 2026", pos: 0.22 },
+    { name: "NAND Gross Margin Recovery", tag: "WATCH", next: "Jun 24 2026", pos: 0.18 },
+  ],
+  base: [
+    { name: "HBM Mix % of Revenue",     tag: "WATCH", next: "Jun 24 2026", pos: 0.57 },
+    { name: "NAND Gross Margin Recovery", tag: "WATCH", next: "Jun 24 2026", pos: 0.52 },
+  ],
+  bull: [
+    { name: "HBM Mix % of Revenue",     tag: "WATCH", next: "Jun 24 2026", pos: 0.85 },
+    { name: "NAND Gross Margin Recovery", tag: "WATCH", next: "Jun 24 2026", pos: 0.80 },
+  ],
+};
+
+// 8 ── KPI chart: Quarterly Revenue ($B)
+const KPI_HIST = 23.9;   // Q2 FY2026 actual
+const KPI_PROJ = {
+  bear: [30.0, 24.0, 19.0, 15.0],
+  base: [33.5, 35.0, 33.0, 34.5],
+  bull: [36.5, 41.0, 46.0, 50.5],
+};
+
+// 9 ── TRACK RECORD. Append newest to end; dashboard keeps last 6.
+const TRACK_ALL = [
+  { q: "Q1 FY25", date: "2024-12", post: 105, reaction: "+",  bear: [50,68],   base: [80,108],  bull: [118,152], landed: "base",      conf: "med"  },
+  { q: "Q2 FY25", date: "2025-03", post: 108, reaction: "+",  bear: [55,72],   base: [85,115],  bull: [126,165], landed: "base",      conf: "med"  },
+  { q: "Q3 FY25", date: "2025-06", post: 112, reaction: "+",  bear: [60,82],   base: [90,122],  bull: [136,175], landed: "base",      conf: "high" },
+  { q: "Q4 FY25", date: "2025-09", post: 148, reaction: "++", bear: [78,106],  base: [118,158], bull: [172,222], landed: "base→bull", conf: "high" },
+  { q: "Q1 FY26", date: "2025-12", post: 340, reaction: "++", bear: [95,130],  base: [155,208], bull: [232,298], landed: "bull",      conf: "high" },
+  { q: "Q2 FY26", date: "2026-03", post: 620, reaction: "++", bear: [242,322], base: [382,502], bull: [545,682], landed: "bull",      conf: "high" },
+];
+const TRACK_WINDOW = 6;
+const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
+const TRACK_PRICE_MIN = 40, TRACK_PRICE_MAX = 730;
+
+// Chart geometry
+const PRICE_MIN = 50, PRICE_MAX = 1600;
+const CH_W = 760, CH_H = 420, PAD_L = 8, PAD_R = 62, PAD_T = 18, PAD_B = 34;
+const plotW = CH_W - PAD_L - PAD_R, plotH = CH_H - PAD_T - PAD_B;
+const yOf = (p) => PAD_T + (1 - (p - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * plotH;
+
+// ── Fan Chart ──────────────────────────────────────────────────────────────
+function FanChart({ c }) {
+  const nHist = HISTORY.length;
+  const histPts = HISTORY.map((d, i) => [PAD_L + (i / (nHist + FUTURE_Q.length - 1)) * plotW, yOf(d.p)]);
+  const nowX = histPts[histPts.length - 1][0];
+  const nowY = histPts[histPts.length - 1][1];
+  const fwdN = FUTURE_Q.length;
+  const fwdX = (i) => nowX + ((i + 1) / fwdN) * (CH_W - PAD_R - nowX);
+  const end = PROJ_END[c.key];
+  const mid = FUTURE_Q.map((_, i) => {
+    const t = (i + 1) / fwdN;
+    return [fwdX(i), yOf(NOW_PRICE + (end - NOW_PRICE) * t)];
+  });
+  const spread = (i) => 40 + i * 50;
+  const upper = mid.map(([x, y], i) => [x, y - spread(i)]);
+  const lower = mid.map(([x, y], i) => [x, y + spread(i)]);
+  const bandPath = `M ${nowX} ${nowY} ` + upper.map(([x, y]) => `L ${x} ${y}`).join(" ") + " " +
+    lower.slice().reverse().map(([x, y]) => `L ${x} ${y}`).join(" ") + " Z";
+  const midPath = `M ${nowX} ${nowY} ` + mid.map(([x, y]) => `L ${x} ${y}`).join(" ");
+  const histPath = "M " + histPts.map(([x, y]) => `${x} ${y}`).join(" L ");
+  const gridP = [1400, 1200, 1000, 800, 600, 400, 200];
+
+  return (
+    <svg viewBox={`0 0 ${CH_W} ${CH_H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+      <defs>
+        <linearGradient id={`fan-${c.key}`} x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0%" stopColor={c.accent} stopOpacity="0.05" />
+          <stop offset="100%" stopColor={c.accent} stopOpacity="0.28" />
+        </linearGradient>
+        <filter id="softglow"><feGaussianBlur stdDeviation="2.2" /></filter>
+      </defs>
+      {gridP.map((p) => (
+        <g key={p}>
+          <line x1={PAD_L} y1={yOf(p)} x2={CH_W - PAD_R} y2={yOf(p)} stroke="#1c2230" strokeWidth="1" strokeDasharray="1 5" />
+          <text x={CH_W - PAD_R + 8} y={yOf(p) + 3} fill="#5a6477" fontSize="10" fontFamily={FONT_MONO}>${p}</text>
+        </g>
+      ))}
+      <line x1={nowX} y1={PAD_T} x2={nowX} y2={CH_H - PAD_B} stroke="#2f6dff" strokeWidth="1" strokeDasharray="3 4" opacity="0.7" />
+      <path d={bandPath} fill={`url(#fan-${c.key})`} {...tipSvg(
+        "The forecast 'cone'", "This shaded fan shows where the price could go in this scenario. The bear cone drops sharply — that's what a memory cycle reversal from 81% gross margins looks like. The bull cone climbs modestly — the stock is already near full value even in the bull case.",
+        "Wider = more uncertainty. The bear drop is steep because memory cycle reversals are fast.", c.accent, "fan-band")} />
+      <path d={midPath} fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="6 5" className="fan-mid" style={{ filter: "url(#softglow)" }} />
+      <path d={histPath} fill="none" stroke="#cdd5e3" strokeWidth="2" {...tipSvg(
+        "Price history", "MU's actual share price. The parabolic rise — from $101 in May 2025 to $1,059 now in 12 months — is one of the most dramatic runs for a trillion-dollar company. Every dollar of that gain represents the AI memory supercycle repricing Micron from 'commodity' to 'critical AI infrastructure.'",
+        "This part already happened — it's real, not a forecast.", "#cdd5e3", "hist-line")} />
+      {HISTORY.map((d, i) => (
+        <g key={i}>
+          <circle cx={histPts[i][0]} cy={histPts[i][1]} r={i === nHist - 1 ? 4.5 : 3}
+            fill={i === nHist - 1 ? "#2f6dff" : "#0a0d14"}
+            stroke={i === nHist - 1 ? "#fff" : "#8a93a6"} strokeWidth="1.5"
+            {...tipSvg(i === nHist - 1 ? "Where we are today" : d.q,
+              i === nHist - 1
+                ? `MU is at $${NOW_PRICE} — near its all-time high. Q3 FY2026 earnings report in 21 days (June 24). The $33.5B revenue guide and 81% gross margin guide for Q3 are already largely in the stock price.`
+                : `At the end of ${d.q}, MU was around $${d.p}. ${d.q === "Q3 FY25" ? "This was the 52-week low — the May 2025 tariff/macro panic before the AI memory supercycle was priced in." : ""}`,
+              null, i === nHist - 1 ? "#9fb4ff" : "#cdd5e3")} />
+          {i === nHist - 1 && <text x={histPts[i][0] - 6} y={histPts[i][1] - 12} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="end">NOW ${NOW_PRICE}</text>}
+        </g>
+      ))}
+      {mid.map(([x, y], i) => (
+        <g key={i} className="diamond" style={{ animationDelay: `${0.5 + i * 0.12}s` }}>
+          <rect x={x - 4} y={y - 4} width="8" height="8" transform={`rotate(45 ${x} ${y})`}
+            fill="#0a0d14" stroke={c.accent} strokeWidth="1.6"
+            {...tipSvg(`Forecast: ${FUTURE_Q[i]}`,
+              i === 0
+                ? `${FUTURE_Q[i]} results are due June 24 — 21 days away. This is not a far-out forecast; it's an imminent catalyst.`
+                : `A milestone on the most-likely price path for the ${c.label} scenario. Each diamond is roughly one quarter further into the future.`,
+              "Hover the shaded cone around it for the uncertainty range.", c.accent)} />
+          <text x={x} y={y - 12} fill={i === 0 ? "#e0a83b" : c.accent} fontSize="10.5" fontFamily={FONT_MONO} textAnchor="middle">{FUTURE_Q[i]}</text>
+        </g>
+      ))}
+      {["2025", "2026", "2027"].map((yr, i) => (
+        <text key={yr} x={PAD_L + (i / 2) * plotW} y={CH_H - 10} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>{yr}</text>
+      ))}
+    </svg>
+  );
+}
+
+// ── Signal Bar ─────────────────────────────────────────────────────────────
+function SignalBar({ pos, accent, tipProps }) {
+  return (
+    <div {...(tipProps || {})} style={{ position: "relative", height: 22, borderRadius: 3, overflow: "hidden", display: "flex", border: "1px solid #1c2230" }}>
+      <div style={{ flex: 1, background: "rgba(241,86,75,0.22)" }} />
+      <div style={{ flex: 1, background: "rgba(224,168,59,0.18)" }} />
+      <div style={{ flex: 1, background: "rgba(63,208,122,0.22)" }} />
+      <div style={{ position: "absolute", top: -2, bottom: -2, left: `calc(${pos * 100}% - 1px)`, width: 2, background: accent, boxShadow: `0 0 8px ${accent}`, pointerEvents: "none" }} />
+      <div style={{ position: "absolute", top: "50%", left: `${pos * 100}%`, width: 7, height: 7, borderRadius: "50%", background: accent, transform: "translate(-50%,-50%)", boxShadow: `0 0 10px ${accent}`, pointerEvents: "none" }} />
+    </div>
+  );
+}
+function tagColor(tag) {
+  if (tag === "BEAT")  return "#3fd07a";
+  if (tag === "MATCH") return "#e0a83b";
+  if (tag === "MISS")  return "#f1564b";
+  return "#7b86a0";
+}
+
+// ── Segmented Control ──────────────────────────────────────────────────────
+function Segmented({ active, setActive, small }) {
+  const explain = {
+    bear: ["The pessimistic scenario", "Click to see MU if the HBM cycle peaks and mean-reverts. Q4 guidance on June 24 comes in below $30B, Samsung qualifies HBM3E with NVIDIA, and gross margins begin declining. The stock re-rates to cyclical-hardware multiples — that's a $320–520 range."],
+    base: ["The most-likely scenario", "Click for the base view — Q3 meets guide, Q4 guided at $34B+, and the HBM cycle extends through FY2027 at elevated margins. Stock trades sideways around $900–1,100 as 'great business with uncertainty priced in.'"],
+    bull: ["The optimistic scenario", "Click to see the upside — Q3 beats $35B, Q4 guided above $38B, and the market begins re-rating Micron from cyclical to AI infrastructure. Price reaches $1,200–1,500."],
+  };
+  return (
+    <div style={{ display: "flex", gap: 5 }}>
+      {Object.values(CASES).map((cc) => {
+        const on = active === cc.key;
+        return (
+          <div key={cc.key} onClick={() => setActive(cc.key)}
+            onMouseEnter={(e) => showTip(e, explain[cc.key][0], explain[cc.key][1], "Tip: click to switch the whole dashboard to this scenario.", cc.accent)}
+            onMouseMove={moveTip} onMouseLeave={hideTip}
+            style={{
+              padding: small ? "3px 12px" : "4px 14px", borderRadius: 4, fontSize: 11,
+              fontWeight: 700, letterSpacing: "0.08em", cursor: "pointer",
+              border: `1px solid ${on ? cc.accent : "#222a38"}`, color: on ? "#06080d" : cc.accent,
+              background: on ? cc.accent : "transparent", boxShadow: on ? `0 0 16px ${cc.glow}` : "none",
+              transition: "all .18s ease",
+            }}>{cc.label}</div>
+        );
+      })}
+    </div>
+  );
+}
+
+// ── KPI Column — Quarterly Revenue $B ─────────────────────────────────────
+const KPI_MIN = 8, KPI_MAX = 56;
+function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
+  const h = Math.max(4, Math.min(92, ((val - KPI_MIN) / (KPI_MAX - KPI_MIN)) * 100));
+  const tp = baseline
+    ? tip("Starting point (Q2 FY26)", `This is the most recent real number: Micron earned $${val}B in quarterly revenue — itself a record at the time. The Q3 FY2026 guide ($33.5B) is 40% higher still.`, "The grey dot = where we are. Bars to the right are scenario forecasts.", "#9aa4b8")
+    : tip(`Forecast: ${label}`, `In this scenario, quarterly revenue reaches ~$${val}B by ${label}. For context: Micron's entire FY2022 annual revenue was ~$30.8B — they now guide a single quarter at $33.5B.`, "Switch BEAR/BASE/BULL up top to see how scenarios diverge.", accentColor);
+  return (
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
+      <div style={{ fontSize: 11, color: accentColor, fontWeight: 700, marginBottom: 4 }}>${val}B</div>
+      {baseline
+        ? <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#3a4252", border: "1.5px solid #7b86a0", marginBottom: `${h}%` }} />
+        : <div style={{ width: "62%", height: `${h}%`, background: `linear-gradient(180deg, ${accentColor}, ${accentColor}44)`, border: `1px solid ${accentColor}`, borderRadius: 2, animation: `fadeUp .5s ease ${delay}s both`, boxShadow: `0 0 12px ${accentColor}55` }} />}
+      <div style={{ fontSize: 9.5, color: label === "Q3 FY26*" ? "#e0a83b" : "#5a6477", marginTop: 6, fontWeight: label === "Q3 FY26*" ? 700 : 400 }}>{label}</div>
+    </div>
+  );
+}
+
+// ── Signal / Margin Groups ─────────────────────────────────────────────────
+function SignalGroup({ id, title, requires, accent, evidence, children }) {
+  return (
+    <div style={{ border: "1px solid #161c28", borderRadius: 8, padding: "10px 12px", marginBottom: 12, background: "#0a0e15" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ fontSize: 12.5, color: "#e6eaf2", fontFamily: FONT_DISPLAY, fontWeight: 600 }}>
+          <span style={{ background: "#161c28", padding: "1px 6px", borderRadius: 3, fontSize: 10, fontFamily: FONT_MONO, color: "#9aa4b8", marginRight: 8, verticalAlign: "middle" }}>{id}</span>
+          <span dangerouslySetInnerHTML={{ __html: title }} />
+        </div>
+        <div style={{ fontSize: 10, color: "#5a6477" }}>EVIDENCE {evidence} ›</div>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#5a6477", margin: "4px 0 10px" }}>REQUIRES: <span style={{ color: accent }}>{requires}</span></div>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>{children}</div>
+    </div>
+  );
+}
+function SignalRow({ s, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
+      <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }} {...tip(
+        s.name, SIGNAL_HELP[s.name] || "A measurable indicator used to check whether this scenario is actually happening.",
+        `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
+        <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
+        <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>{s.unit} · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
+      </div>
+      <div>
+        <SignalBar pos={s.pos} accent={accent} tipProps={tip(
+          "Where this scenario sits",
+          "Red (left) is bad, green (right) is good. The dot shows where THIS scenario expects the number to land. All signals are WATCH until June 24.",
+          "It's a visual gauge, not an exact measurement.", accent)} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
+          <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
+          <span style={{ color: accent, fontWeight: 700 }}>{s.val}</span>
+          <span style={{ color: "#5a6477" }}>{s.guide}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+function MarginRow({ s, accent }) {
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: "0.9fr 1.1fr", gap: 12, alignItems: "center" }}>
+      <div style={{ borderLeft: `2px solid ${accent}`, paddingLeft: 8 }} {...tip(
+        s.name, SIGNAL_HELP[s.name] || "A structural health indicator for the memory business.",
+        `Status "${s.tag}": ${TAG_HELP[s.tag] || ""}`, accent)}>
+        <div style={{ fontSize: 11.5, color: "#dde3ee", lineHeight: 1.25 }}>{s.name}</div>
+        <div style={{ fontSize: 10, color: "#5a6477", marginTop: 2 }}>% · <span style={{ color: tagColor(s.tag) }}>{s.tag}</span></div>
+      </div>
+      <div>
+        <SignalBar pos={s.pos} accent={accent} tipProps={tip(
+          "Where this scenario sits", "Red = bad, green = good. All WATCH until June 24.", null, accent)} />
+        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
+          <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Reversion Clock ────────────────────────────────────────────────────────
+function ReversionClock() {
+  const dislocationDate = new Date(DISLOCATION_DATE);
+  const today = new Date();
+  const elapsed = Math.round((today - dislocationDate) / 86400000);
+  const pct = Math.min(100, (elapsed / REVERSION_PRECEDENT_DAYS) * 100);
+  const trough = REVERSION_TROUGH, baseFloor = REVERSION_BASEFLOOR, now = NOW_PRICE;
+  const rawRec = ((now - trough) / (baseFloor - trough)) * 100;
+  const recPct = Math.round(Math.min(400, rawRec));
+  const barFill = Math.min(100, rawRec / 4);
+  return (
+    <div style={{ marginTop: 12, padding: "12px 14px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "#5a6477" }}>DISLOCATION CLOCK · JUN 2025 MEMORY PANIC</div>
+        <div style={{ fontSize: 11, color: "#9aa4b8" }}><span style={{ color: "#3fd07a", fontWeight: 700 }}>{elapsed}d</span> elapsed / {REVERSION_PRECEDENT_DAYS}d precedent — <span style={{ color: "#3fd07a" }}>fully resolved ✓</span></div>
+      </div>
+      <div style={{ marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>TIME SINCE DISLOCATION (Jun 1, 2025 — 52-wk low ${trough})</div>
+      <div {...tip("How much time has passed",
+        "In June 2025, MU hit $102 during a tariff/macro panic. This bar shows elapsed days vs. the ~180-day window it took to recover. The bar is maxed — we're more than double past the recovery window. The dislocation is long resolved.",
+        "Fully elapsed = the dislocation narrative is closed.", "#e0a83b")}
+        style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: "100%", background: "linear-gradient(90deg,#f1564b,#3fd07a)", borderRadius: 7 }} />
+        <div style={{ position: "absolute", right: 0, top: -3, bottom: -3, width: 2, background: "#3fd07a" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
+        <span>day 0</span><span style={{ color: "#3fd07a" }}>180d base-reversion mark — fully elapsed ({elapsed}d) ✓</span>
+      </div>
+      <div style={{ marginTop: 12, marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>PRICE RECOVERY · ${trough} trough → ${baseFloor} base floor → ${now} ATH</div>
+      <div {...tip("How far the price has bounced back",
+        `Stock bottomed at $${trough} in June 2025. The base floor (post-Q1 FY2026 recovery zone) was $${baseFloor}. At $${now}, the stock has recovered ${recPct}% of the trough-to-base-floor gap — it massively overshot, driven by the AI memory supercycle. The dislocation narrative is closed.`,
+        "The new question: is $1,059 justified by sustainable earnings, or is it cycle-peak pricing?", "#9fb4ff")}
+        style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
+        <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${barFill}%`, background: "linear-gradient(90deg,#f1564b,#3fd07a)", borderRadius: 7 }} />
+        <div style={{ position: "absolute", left: `${barFill}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#9fb4ff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #9fb4ff", pointerEvents: "none" }} />
+      </div>
+      <div style={{ display: "flex", justifyContent: "space-between", fontSize: 9, color: "#5a6477", marginTop: 3 }}>
+        <span>${trough}</span>
+        <span style={{ color: "#9fb4ff" }}>${now} now · {recPct}% of trough-to-base gap (bar scaled: full = {recPct}%)</span>
+        <span>${baseFloor}</span>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
+        The June 2025 dislocation has <span style={{ color: "#3fd07a", fontWeight: 700 }}>completely resolved</span> — stock at ${now} is <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{recPct}%</span> of the way from trough to the first recovery target, an unprecedented overshoot. The AI memory supercycle drove a <span style={{ color: "#fff", fontWeight: 700 }}>10× return in 12 months</span>. The open question is not "will it recover?" — it's whether the <span style={{ color: "#e0a83b", fontWeight: 700 }}>cycle extends beyond 2026</span>. Watch <span style={{ color: "#e0a83b", fontWeight: 700 }}>June 24</span>.
+      </div>
+    </div>
+  );
+}
+
+// ── Track Record ───────────────────────────────────────────────────────────
+function TrackRecord() {
+  const W = 1000, H = 300, pl = 44, pr = 70, pt = 20, pb = 40;
+  const pw = W - pl - pr, ph = H - pt - pb;
+  const y = (p) => pt + (1 - (p - TRACK_PRICE_MIN) / (TRACK_PRICE_MAX - TRACK_PRICE_MIN)) * ph;
+  const x = (i) => pl + (TRACK.length === 1 ? pw / 2 : (i / (TRACK.length - 1)) * pw);
+  const grid = [600, 500, 400, 300, 200, 100];
+  const pathPts = TRACK.map((t, i) => [x(i), y(t.post)]);
+  const linePath = "M " + pathPts.map(([px, py]) => `${px} ${py}`).join(" L ");
+  const hits = TRACK.filter((t) => t.landed.includes("base") || t.landed.includes("bull")).length;
+  return (
+    <div style={{ background: "#080b11", padding: "16px 18px", borderTop: "1px solid #161c28" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
+        <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
+          <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>TR · BACKTEST</span>
+          THESIS TRACK RECORD · RECONSTRUCTED BANDS vs ACTUAL PRICE
+        </div>
+        <div style={{ fontSize: 11, color: "#7b86a0" }}>BASE-OR-BETTER LANDINGS: <span style={{ color: "#3fd07a", fontWeight: 700 }}>{hits}/{TRACK.length}</span></div>
+      </div>
+      <div style={{ fontSize: 10.5, color: "#5a6477", marginBottom: 10 }}>
+        Each column = one earnings date. Stacked zones are the scenario bands as they would have been drawn at that time. Note: Q1 FY26 and Q2 FY26 each blew completely past the bull band — the supercycle was more powerful than any reasonable ex-ante forecast.
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
+        {grid.map((p) => (
+          <g key={p}>
+            <line x1={pl} y1={y(p)} x2={W - pr} y2={y(p)} stroke="#161c28" strokeWidth="1" strokeDasharray="1 5" />
+            <text x={W - pr + 8} y={y(p) + 3} fill="#5a6477" fontSize="11" fontFamily={FONT_MONO}>${p}</text>
+          </g>
+        ))}
+        {TRACK.map((t, i) => {
+          const cx = x(i), bw = 46;
+          const landWord = t.landed.includes("bull") ? "well above the optimistic zone" : t.landed.includes("base") ? "the middle zone" : "the pessimistic zone";
+          const reactWord = (t.reaction === "--" || t.reaction === "−−") ? "the stock FELL sharply" : t.reaction === "++" ? "the stock SURGED" : "the stock ROSE";
+          const seg = (range, color) => (
+            <rect x={cx - bw / 2} y={y(range[1])} width={bw} height={Math.max(2, y(range[0]) - y(range[1]))}
+              fill={color} opacity={t.conf === "med" ? 0.32 : 0.5} rx="2"
+              style={{ animation: `fadeUp .5s ease ${i * 0.08}s both` }}
+              {...tipSvg(`${t.q} earnings`,
+                `At this earnings date, the scenario band would have been: red=bear, yellow=base, green=bull. In reality, ${reactWord} and the price ended up in ${landWord} (~$${t.post}).`,
+                t.conf === "med" ? "Marked 'lower-confidence' — bands reconstructed in hindsight." : null,
+                color.includes("63,208") ? "#3fd07a" : color.includes("224,168") ? "#e0a83b" : "#f1564b")} />
+          );
+          return (
+            <g key={t.q}>
+              {seg(t.bull, "rgba(63,208,122,0.55)")}
+              {seg(t.base, "rgba(224,168,59,0.5)")}
+              {seg(t.bear, "rgba(241,86,75,0.5)")}
+              <text x={cx} y={H - 24} fill="#9aa4b8" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle">{t.q}</text>
+              <text x={cx} y={H - 11} fill={t.conf === "med" ? "#5a6477" : "#3a4252"} fontSize="8.5" fontFamily={FONT_MONO} textAnchor="middle">
+                {t.conf === "med" ? "lower-conf" : ""}
+              </text>
+            </g>
+          );
+        })}
+        <path d={linePath} fill="none" stroke="#dde3ee" strokeWidth="2.2" className="track-line" style={{ filter: "drop-shadow(0 0 4px rgba(221,227,238,0.4))" }} />
+        {TRACK.map((t, i) => {
+          const isLast = i === TRACK.length - 1;
+          return (
+            <g key={t.q} style={{ animation: `pop .4s cubic-bezier(.2,1.4,.4,1) ${0.3 + i * 0.08}s both` }}>
+              <circle cx={x(i)} cy={y(t.post)} r={isLast ? 6 : 4} fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
+                {...tipSvg(isLast ? "Most recent quarter (Q2 FY26)" : `${t.q}: actual price`,
+                  isLast ? `After Q2 FY2026 earnings (March 2026), MU traded around $${t.post}. The stock has since run from $620 to $1,059 in anticipation of the Q3 FY2026 print on June 24. Note: $${t.post} is already above the bull band drawn at the time of the Q2 report.`
+                    : `After ${t.q} earnings, MU actually traded around $${t.post}. Compare this dot to the colored bars behind it.`,
+                  null, isLast ? "#9fb4ff" : "#cdd5e3")} />
+              {isLast && <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">Q2 FY26 ${t.post}</text>}
+            </g>
+          );
+        })}
+      </svg>
+      <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
+        <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
+          Tracked <span style={{ color: "#3fd07a", fontWeight: 700 }}>base-or-better all {hits} of {TRACK.length} quarters</span>. More striking: the last two quarters (<span style={{ color: "#3fd07a" }}>Q1 FY26 and Q2 FY26</span>) each printed <span style={{ color: "#fff", fontWeight: 700 }}>above the bull band</span> — the AI memory supercycle was more powerful than any reasonable forecast could have anticipated. Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> is above the chart's own scale — it's being driven by anticipation of the Q3 FY2026 print on <span style={{ color: "#e0a83b", fontWeight: 700 }}>June 24</span>. That print will either validate or challenge the current multiple.
+        </div>
+      </div>
+      <ReversionClock />
+      <div style={{ fontSize: 9.5, color: "#3d4555", marginTop: 8, lineHeight: 1.5 }}>
+        ⚠ Bands are reconstructed now — not archived in real time. Lower-confidence quarters (Q1/Q2 FY25) are pre-AI-supercycle awareness. The actual magnitude of the revenue ramp exceeded all scenario bands — this is a feature of cyclical companies at turning points, not a modeling error. Micron fiscal year ends August 31.
+      </div>
+    </div>
+  );
+}
+
+// ── Main Component ─────────────────────────────────────────────────────────
+function MuThesis() {
+  const [active, setActive] = useState("base");
+  const c = CASES[active];
+  const kpiVals = KPI_PROJ[active];
+  return (
+    <div style={{ background: "#06080d", minHeight: "100vh", padding: "20px 16px", fontFamily: FONT_MONO, color: "#cdd5e3" }}>
+      <div className="grain" style={{ maxWidth: 1280, margin: "0 auto", position: "relative", border: "1px solid #161c28", borderRadius: 12, background: "linear-gradient(160deg,#0a0d14,#070a10)", boxShadow: "0 40px 120px rgba(0,0,0,0.6)", overflow: "hidden" }}>
+
+        {/* ── Header ── */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "16px 22px", borderBottom: "1px solid #161c28" }}>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 14 }}>
+            <div style={{ fontFamily: FONT_DISPLAY, fontSize: 24, letterSpacing: "0.35em", color: "#f3f5f9", fontWeight: 600 }}>TH<span style={{ color: c.accent }}>3</span>SIS</div>
+            <div {...tip("👋 New here?", "Hover your mouse over anything — charts, bars, dots, labels — for a plain-English explanation. No finance degree required.", "This hint is one too.", "#3fd07a")}
+              style={{ fontSize: 10, color: "#5a6477", border: "1px solid #222a38", borderRadius: 20, padding: "3px 10px", cursor: "help" }}>
+              ⓘ hover anything to learn what it means
+            </div>
+            <div className="blink" style={{ fontSize: 10, color: "#e0a83b", border: "1px solid #3a2800", borderRadius: 20, padding: "3px 10px" }}>
+              ⚡ Q3 EARNINGS · JUN 24 · 21 DAYS
+            </div>
+          </div>
+          <div style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 12.5, color: "#7b86a0" }}>
+            <span>{AS_OF_DATE}</span>
+            <span style={{ color: "#cdd5e3" }}>NASDAQ:MU</span>
+            <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "#9aa4b8" }}>Micron Technology</span>
+            <span {...tip("Today's share price",
+              `One share of MU costs about $${NOW_PRICE} — near its all-time high. Q2 FY2026 printed $23.9B revenue at 74.4% gross margins. Q3 (reporting June 24) is guided at $33.5B and 81% GM. The debate: does the cycle extend or peak?`,
+              null, "#fff")}
+              style={{ color: "#fff", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}.00</span>
+          </div>
+        </div>
+
+        {/* ── Two-column body ── */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 1, background: "#161c28" }}>
+
+          {/* Left — chart + KPI */}
+          <div style={{ background: "#080b11", padding: "16px 18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>NOW</span>
+                MU · PRICE &amp; RISK-REWARD
+              </div>
+              <Segmented active={active} setActive={setActive} />
+            </div>
+            <div className="panel" key={active + "-chart"}><FanChart c={c} /></div>
+            <div style={{ marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#5a6477" }}>
+              <span><span style={{ color: c.accent }}>━━</span> {c.label.toLowerCase()} mid &nbsp; <span style={{ color: "#2f6dff" }}>┊</span> now &nbsp; <span style={{ color: "#cdd5e3" }}>━</span> history &nbsp; <span style={{ color: "#e0a83b" }}>◆</span> Q3 FY26* = Jun 24</span>
+              <span>12M TARGET <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></span>
+            </div>
+
+            {/* KPI chart */}
+            <div style={{ marginTop: 18, borderTop: "1px solid #161c28", paddingTop: 14 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.16em", color: "#7b86a0", marginBottom: 4 }}
+                {...tip("The single most important number",
+                  "Quarterly revenue tells you where Micron is in the memory cycle. The guidance of $33.5B for Q3 is 40% above Q2's record $23.9B. For reference, Micron's entire FY2022 annual revenue was ~$30.8B. If the $33.5B/quarter rate is sustainable, $1,059 is cheap. If it's cycle-peak, the stock is expensive.",
+                  "This KPI drives everything — gross margin, EPS, and the multiple all follow revenue trajectory.", "#9fb4ff")}>
+                <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>KPI · K01</span>
+                Quarterly Revenue
+                <span style={{ color: "#5a6477", marginLeft: 8 }}>$B  ·  HIGHER BETTER</span>
+                <span style={{ color: "#e0a83b", marginLeft: 8, fontSize: 10 }}>* = reports Jun 24</span>
+              </div>
+              <div className="panel" key={active + "-kpi"} style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 120, padding: "12px 4px 0" }}>
+                <KpiCol label="Q2 FY26" val={KPI_HIST} baseline accentColor="#7b86a0" />
+                {kpiVals.map((v, i) => <KpiCol key={i} label={FUTURE_Q[i]} val={v} accentColor={c.accent} delay={i * 0.08} />)}
+              </div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
+                <div>
+                  <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THIS MEASURES</div>
+                  <div style={{ color: "#9aa4b8" }}>Total quarterly revenue across DRAM, HBM, and NAND. The $33.5B Q3 guide implies HBM for AI training is the dominant driver. Bull case shows continued acceleration; bear case shows the classic memory cycle peak-and-crash pattern.</div>
+                </div>
+                <div>
+                  <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THE <span style={{ color: c.accent }}>{c.label}</span> CASE REQUIRES</div>
+                  <div style={{ color: c.accent }}>
+                    {active === "bull"
+                      ? "Q3 beats $33.5B ($35B+), Q4 guided above $38B, and quarterly revenue continues compounding toward $50B as HBM4 ramps and HBM TAM expands toward $100B by 2028."
+                      : active === "base"
+                      ? "Q3 meets the $33.5B guide; Q4 guided at $34–37B showing cycle durability; revenue holds at $33–35B through FY2027 as HBM manufacturing complexity keeps supply disciplined."
+                      : "Q3 meets guide but Q4 is guided below $30B, signaling the peak. Revenue then declines toward $15–20B as new HBM supply from Samsung and SK Hynix closes the gap and pricing softens."}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Right — thesis + signals */}
+          <div style={{ background: "#080b11", padding: "16px 18px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+              <div style={{ fontSize: 11.5, letterSpacing: "0.18em", color: "#7b86a0" }}>THESIS · ALL SIGNALS</div>
+              <div style={{ fontSize: 12, color: "#7b86a0" }}>{c.label.toLowerCase()} 12M <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></div>
+            </div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 12 }}>
+              <Segmented active={active} setActive={setActive} small />
+              <span className="dot-track" style={{ marginLeft: 6, fontSize: 10.5, color: c.accent }}>● TRACKING</span>
+            </div>
+            <div className="panel" key={active + "-op"} style={{ fontSize: 12.5, lineHeight: 1.6, color: "#bcc6d8", marginBottom: 16, minHeight: 72 }}>{c.op}</div>
+
+            <SignalGroup id="SN01" title="Revenue Cycle &amp; Forward Guidance" requires={c.requires01} accent={c.accent} evidence={3}>
+              {SIGNALS[active].map((s, i) => <SignalRow key={i} s={s} accent={c.accent} />)}
+            </SignalGroup>
+
+            <SignalGroup id="SN02" title="Margin Structure &amp; Product Mix" requires={c.requires02} accent={c.accent} evidence={2}>
+              {MARGIN[active].map((s, i) => <MarginRow key={i} s={s} accent={c.accent} />)}
+            </SignalGroup>
+
+            <div style={{ marginTop: 14, borderTop: "1px solid #161c28", paddingTop: 10 }}>
+              <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 3 }}>WHAT BREAKS THE <span style={{ color: c.accent }}>{c.label}</span> CASE</div>
+              <div style={{ fontSize: 11.5, color: "#9aa4b8", lineHeight: 1.5 }}>{c.breaks}</div>
+            </div>
+
+            {/* Valuation ruler */}
+            <div style={{ marginTop: 14, padding: "10px 12px", background: "#0a0d14", border: "1px solid #161c28", borderRadius: 6 }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 4 }}>VALUATION RULER</div>
+              <div {...tip("How we price this stock",
+                "For a cyclical company like Micron, using peak-cycle P/E is dangerous — it always looks 'cheap' right before margins collapse. The bear case uses trough normalized EPS × 10× (cyclical floor). The base and bull cases use FY2027 sustained EPS × 13–17×. At $1,059: 13.8× annualized Q3 guide — the market is already applying a cyclical discount.",
+                "Bear: $25 × 10× = $250 (floor $320–520). Base: $65 × 15× = $975. Bull: $88 × 17× = $1,496. Bands are wide — cycles move fast.", "#9aa4b8")}
+                style={{ fontSize: 11, color: "#9aa4b8", lineHeight: 1.5 }}>
+                Cyclical normalized EPS × P/E. At $1,059: 13.8× annualized Q3 guide — already discounting mean reversion. Bear: ~$25 trough × 10× = $250 (floor $320). Base: ~$65 FY2027 × 15× = $975. Bull: ~$88 × 17× = $1,496.
+              </div>
+            </div>
+
+            {/* Risk / Reward */}
+            <div style={{ marginTop: 10, padding: "10px 12px", background: "#0a0d14", border: "1px solid #2a1a1a", borderRadius: 6 }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 8 }}>RISK / REWARD AT ${NOW_PRICE}</div>
+              {[
+                { label: "BEAR", color: "#f1564b", lo: 320,  hi: 520  },
+                { label: "BASE", color: "#e0a83b", lo: 900,  hi: 1100 },
+                { label: "BULL", color: "#3fd07a", lo: 1200, hi: 1500 },
+              ].map(({ label, color, lo, hi }) => {
+                const mid = Math.round((lo + hi) / 2);
+                const pct = Math.round(((mid - NOW_PRICE) / NOW_PRICE) * 100);
+                const sign = pct >= 0 ? "+" : "";
+                const barW = Math.max(4, Math.min(96, ((pct + 65) / 140) * 100));
+                return (
+                  <div key={label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}
+                    {...tip(`${label} scenario return`,
+                      `If the ${label.toLowerCase()} case plays out over 12 months, price would land in the $${lo.toLocaleString()}–$${hi.toLocaleString()} range — roughly ${sign}${pct}% from today's $${NOW_PRICE.toLocaleString()}.`,
+                      "Midpoint of range used. Memory cycles move fast — these bands are intentionally wide.", color)}>
+                    <div style={{ fontSize: 9.5, color, fontWeight: 700, width: 34 }}>{label}</div>
+                    <div style={{ flex: 1, position: "relative", height: 8, background: "#0d1018", borderRadius: 4, border: "1px solid #1c2230" }}>
+                      <div style={{ position: "absolute", top: 0, bottom: 0, left: 0, width: `${barW}%`, background: color, opacity: 0.45, borderRadius: 4 }} />
+                      <div style={{ position: "absolute", top: "50%", left: `${barW}%`, transform: "translate(-50%,-50%)", width: 6, height: 6, borderRadius: "50%", background: color, boxShadow: `0 0 6px ${color}` }} />
+                    </div>
+                    <div style={{ fontSize: 10.5, color, fontWeight: 700, width: 44, textAlign: "right" }}>{sign}{pct}%</div>
+                    <div style={{ fontSize: 9, color: "#4a5366", width: 80 }}>${lo.toLocaleString()}–${hi.toLocaleString()}</div>
+                  </div>
+                );
+              })}
+              <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #161c28", fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55 }}
+                {...tip("What this asymmetry means",
+                  `At $${NOW_PRICE.toLocaleString()}, the base is roughly flat and the bear case is a ~−60% drawdown if the memory cycle peaks. Memory cycle reversals are historically fast and severe — the 2022–2023 downcycle took DRAM pricing down 70%+ in 18 months. The bull case (+27%) requires the cycle to extend AND the multiple to hold.`,
+                  "Cyclical stocks at peak look cheap on current earnings and expensive on normalized earnings — simultaneously. That's the trap.", "#9aa4b8")}>
+                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−60%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>−6%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+27%</span> — <span style={{ color: "#f1564b" }}>asymmetric downside.</span> The cycle reversal risk is large and fast; bull upside is modest from here.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Footer ── */}
+        <div style={{ padding: "10px 22px", borderTop: "1px solid #161c28", display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#4a5366" }}>
+          <span>OBSERVABLE NOW: Samsung HBM3E NVIDIA qualification · SK Hynix 2027 capacity data · DRAM spot pricing indices · industry supply reports</span>
+          <span style={{ color: "#e0a83b", fontWeight: 700 }}>CONFIRMS JUN 24: Q3 revenue vs $33.5B · Q4 guidance · gross margin · FY2027 outlook</span>
+        </div>
+
+        <TrackRecord />
+      </div>
+
+      <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "#3d4555", lineHeight: 1.5 }}>
+        Illustrative scenario framing built on public consensus &amp; estimates as of June 2026 — not a prediction and not financial advice. Valuation ruler: cyclical normalized EPS × P/E — using peak-cycle P/E for a memory company is misleading; the bear case uses trough EPS × trough multiple. Q3 FY2026 results on June 24, 2026 are the next major catalyst. Memory cycles move fast in both directions.
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<MuThesis />);
+</script>
+</body>
+</html>
