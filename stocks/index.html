@@ -8,7 +8,54 @@
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; background: #06080d; color: #cdd5e3; font-family: 'JetBrains Mono', ui-monospace, monospace; overflow: hidden; }
+
+  :root {
+    --bg:           #06080d;
+    --header-bg:    linear-gradient(160deg, #0a0d14, #070a10);
+    --bd:           #161c28;
+    --bd2:          #222a38;
+    --tx-title:     #f3f5f9;
+    --tx-main:      #dde4f0;
+    --tx-dim:       #3a4252;
+    --tx-chip:      #4a5366;
+    --accent:       #2f6dff;
+    --accent-soft:  #9fb4ff;
+    --search-bg:    #0d1018;
+    --search-tx:    #e8edf5;
+    --search-ph:    #3a4252;
+    --loading-bg:   #06080d;
+    --empty-mark:   #111620;
+    --empty-span:   #1a2540;
+    --empty-msg:    #2a3344;
+    --chip-bd:      #1c2230;
+    --chip-act-tx:  #9fb4ff;
+    --chip-act-nm:  #5a78aa;
+  }
+  :root.light {
+    --bg:           #f5ede2;
+    --header-bg:    linear-gradient(160deg, #fdf8f0, #f0e6d4);
+    --bd:           #d9cdc0;
+    --bd2:          #c8bcaf;
+    --tx-title:     #3a3558;
+    --tx-main:      #575279;
+    --tx-dim:       #8e8aa6;
+    --tx-chip:      #7e7a96;
+    --accent:       #2f6dff;
+    --accent-soft:  #0c9fce;
+    --search-bg:    #ede0d0;
+    --search-tx:    #3a3558;
+    --search-ph:    #a9a5ba;
+    --loading-bg:   #f5ede2;
+    --empty-mark:   #eddecf;
+    --empty-span:   #e0d0bc;
+    --empty-msg:    #9e9ab4;
+    --chip-bd:      #d9cdc0;
+    --chip-act-tx:  #0c9fce;
+    --chip-act-nm:  #8e8aa6;
+  }
+
+  html, body { height: 100%; background: var(--bg); color: var(--tx-main);
+    font-family: 'JetBrains Mono', ui-monospace, monospace; overflow: hidden; transition: background .2s, color .2s; }
 
   /* ── Shell layout ───────────────────────────────────── */
   #shell { display: flex; flex-direction: column; height: 100vh; }
@@ -17,80 +64,76 @@
   #header {
     flex-shrink: 0;
     padding: 14px 28px 12px;
-    border-bottom: 1px solid #161c28;
-    background: linear-gradient(160deg, #0a0d14, #070a10);
+    border-bottom: 1px solid var(--bd);
+    background: var(--header-bg);
+    transition: background .2s, border-color .2s;
   }
   #top-row { display: flex; align-items: center; gap: 20px; }
   #wordmark {
     font-family: 'Spectral', Georgia, serif;
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: 0.35em;
-    color: #f3f5f9;
-    white-space: nowrap;
+    font-size: 22px; font-weight: 600;
+    letter-spacing: 0.35em; color: var(--tx-title); white-space: nowrap;
   }
-  #wordmark span { color: #2f6dff; }
+  #wordmark span { color: var(--accent); }
 
   /* search bar */
   #search-wrap {
-    display: flex; align-items: center; gap: 0;
-    background: #0d1018; border: 1px solid #222a38;
-    border-radius: 6px; overflow: hidden;
-    transition: border-color .15s;
+    display: flex; align-items: center;
+    background: var(--search-bg); border: 1px solid var(--bd2);
+    border-radius: 6px; overflow: hidden; transition: border-color .15s;
   }
-  #search-wrap:focus-within { border-color: #2f6dff; box-shadow: 0 0 0 2px rgba(47,109,255,0.15); }
+  #search-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(47,109,255,0.15); }
   #search-input {
     background: transparent; border: none; outline: none;
-    color: #e8edf5; font-family: inherit; font-size: 13px; font-weight: 700;
+    color: var(--search-tx); font-family: inherit; font-size: 13px; font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase;
     padding: 7px 12px; width: 120px;
   }
-  #search-input::placeholder { color: #3a4252; font-weight: 400; text-transform: none; letter-spacing: 0; }
+  #search-input::placeholder { color: var(--search-ph); font-weight: 400; text-transform: none; letter-spacing: 0; }
   #search-btn {
-    background: #2f6dff; border: none; cursor: pointer;
+    background: var(--accent); border: none; cursor: pointer;
     color: #fff; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-    padding: 0 14px; height: 100%; white-space: nowrap;
-    transition: background .15s;
+    padding: 0 14px; height: 100%; white-space: nowrap; transition: background .15s;
   }
   #search-btn:hover { background: #4a84ff; }
 
-  /* error badge */
-  #not-found {
-    display: none; align-items: center; gap: 6px;
-    font-size: 10.5px; color: #f1564b;
+  /* theme toggle */
+  #theme-btn {
+    margin-left: auto;
+    background: transparent; border: 1px solid var(--bd); border-radius: 20px;
+    padding: 4px 12px; cursor: pointer; font-family: inherit; font-size: 10px;
+    color: var(--tx-dim); letter-spacing: 0.08em; white-space: nowrap;
+    transition: all .15s;
   }
+  #theme-btn:hover { border-color: var(--accent); color: var(--tx-main); }
+
+  /* error badge */
+  #not-found { display: none; align-items: center; gap: 6px; font-size: 10.5px; color: #f1564b; }
   #not-found.on { display: flex; }
 
   /* subtitle */
-  #subtitle { font-size: 10px; color: #3a4252; margin-top: 2px; letter-spacing: 0.06em; }
+  #subtitle { font-size: 10px; color: var(--tx-dim); margin-top: 2px; letter-spacing: 0.06em; }
 
   /* ── Chip rail ──────────────────────────────────────── */
-  #chip-rail {
-    display: flex; align-items: center; gap: 6px;
-    margin-top: 10px; flex-wrap: wrap;
-  }
-  #chip-label { font-size: 9.5px; color: #3a4252; letter-spacing: 0.12em; margin-right: 2px; }
+  #chip-rail { display: flex; align-items: center; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  #chip-label { font-size: 9.5px; color: var(--tx-dim); letter-spacing: 0.12em; margin-right: 2px; }
   .chip {
     display: flex; align-items: center; gap: 6px;
-    background: transparent; border: 1px solid #1c2230; border-radius: 5px;
-    padding: 4px 10px; cursor: pointer;
-    transition: all .15s; font-family: inherit;
+    background: transparent; border: 1px solid var(--chip-bd); border-radius: 5px;
+    padding: 4px 10px; cursor: pointer; transition: all .15s; font-family: inherit;
   }
-  .chip:hover { border-color: #2f6dff; background: rgba(47,109,255,0.07); }
-  .chip.active { border-color: #2f6dff; background: rgba(47,109,255,0.12); }
-  .chip-ticker { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: #cdd5e3; }
-  .chip.active .chip-ticker { color: #9fb4ff; }
-  .chip-name { font-size: 9.5px; color: #4a5366; }
-  .chip.active .chip-name { color: #5a78aa; }
+  .chip:hover { border-color: var(--accent); background: rgba(47,109,255,0.07); }
+  .chip.active { border-color: var(--accent); background: rgba(47,109,255,0.12); }
+  .chip-ticker { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--tx-main); }
+  .chip.active .chip-ticker { color: var(--chip-act-tx); }
+  .chip-name { font-size: 9.5px; color: var(--tx-chip); }
+  .chip.active .chip-name { color: var(--chip-act-nm); }
 
   /* ── Main area ──────────────────────────────────────── */
   #main { flex: 1; position: relative; overflow: hidden; }
 
   /* iframe */
-  #thesis-frame {
-    display: none; width: 100%; height: 100%; border: none;
-    background: #06080d;
-  }
+  #thesis-frame { display: none; width: 100%; height: 100%; border: none; background: var(--bg); }
   #thesis-frame.on { display: block; }
 
   /* empty state */
@@ -103,32 +146,25 @@
   #empty-mark {
     font-family: 'Spectral', Georgia, serif;
     font-size: 48px; font-weight: 600; letter-spacing: 0.35em;
-    color: #111620;
+    color: var(--empty-mark);
   }
-  #empty-mark span { color: #1a2540; }
-  #empty-msg { font-size: 11px; color: #2a3344; letter-spacing: 0.1em; text-align: center; line-height: 1.8; }
+  #empty-mark span { color: var(--empty-span); }
+  #empty-msg { font-size: 11px; color: var(--empty-msg); letter-spacing: 0.1em; text-align: center; line-height: 1.8; }
   #empty-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
   .empty-chip {
-    background: transparent; border: 1px solid #161c28; border-radius: 5px;
+    background: transparent; border: 1px solid var(--bd); border-radius: 5px;
     padding: 5px 14px; cursor: pointer; font-family: inherit;
-    font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: #2a3344;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--empty-msg);
     transition: all .2s;
   }
-  .empty-chip:hover { border-color: #2f6dff; color: #9fb4ff; background: rgba(47,109,255,0.07); }
+  .empty-chip:hover { border-color: var(--accent); color: var(--chip-act-tx); background: rgba(47,109,255,0.07); }
 
-  /* loading overlay inside iframe area */
-  #loading {
-    display: none; position: absolute; inset: 0;
-    align-items: center; justify-content: center;
-    background: #06080d;
-  }
+  /* loading */
+  #loading { display: none; position: absolute; inset: 0; align-items: center; justify-content: center; background: var(--loading-bg); }
   #loading.on { display: flex; }
-  #loading-dot {
-    width: 8px; height: 8px; border-radius: 50%; background: #2f6dff;
-    animation: pulse-dot 1.2s ease-in-out infinite;
-  }
+  #loading-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse-dot 1.2s ease-in-out infinite; }
   @keyframes pulse-dot { 0%,100%{opacity:.3;transform:scale(.7);} 50%{opacity:1;transform:scale(1);} }
-  #loading-text { font-size: 10.5px; color: #3a4252; letter-spacing: 0.12em; margin-left: 10px; }
+  #loading-text { font-size: 10.5px; color: var(--tx-dim); letter-spacing: 0.12em; margin-left: 10px; }
 </style>
 </head>
 <body>
@@ -145,6 +181,8 @@
       </div>
 
       <div id="not-found">⚠ no thesis for that ticker yet</div>
+
+      <button id="theme-btn">☀ LIGHT</button>
     </div>
     <div id="subtitle">investment thesis library · hover anything in a thesis for plain-english explanations</div>
 
@@ -172,88 +210,100 @@
 
 <script>
 // ── Thesis registry ──────────────────────────────────────────────────────────
-// Add new tickers here as they are built.
 const REGISTRY = {
   AMZN:  { path: "AMZN/AMZN-thesis.html",   name: "Amazon.com" },
   NVDA:  { path: "NVDA/NVDA-thesis.html",   name: "NVIDIA" },
   ASML:  { path: "ASML/ASML-thesis.html",   name: "ASML Holding" },
   FICO:  { path: "FICO/FICO-thesis.html",   name: "Fair Isaac" },
-  TSM:   { path: "TSM/TSM-thesis.html",    name: "Taiwan Semi" },
+  TSM:   { path: "TSM/TSM-thesis.html",     name: "Taiwan Semi" },
   GOOGL: { path: "GOOGL/GOOGL-thesis.html", name: "Alphabet" },
   ALAB:  { path: "ALAB/alab-thesis.html",   name: "Astera Labs" },
   AVGO:  { path: "avgo/avgo-thesis.html",   name: "Broadcom Inc." },
   META:  { path: "META/META-thesis.html",   name: "Meta Platforms" },
   MRVL:  { path: "mrvl/mrvl-thesis.html",  name: "Marvell Technology" },
-  MU:    { path: "MU/MU-thesis.html",      name: "Micron Technology" },
-  MSFT:  { path: "MSFT/MSFT-thesis.html", name: "Microsoft" },
+  MU:    { path: "MU/MU-thesis.html",       name: "Micron Technology" },
+  MSFT:  { path: "MSFT/MSFT-thesis.html",  name: "Microsoft" },
 };
 
 // ── DOM refs ─────────────────────────────────────────────────────────────────
-const input      = document.getElementById("search-input");
-const btn        = document.getElementById("search-btn");
-const frame      = document.getElementById("thesis-frame");
-const empty      = document.getElementById("empty");
-const emptyChips = document.getElementById("empty-chips");
-const chipRail   = document.getElementById("chip-rail");
-const notFound   = document.getElementById("not-found");
-const loading    = document.getElementById("loading");
+const input      = document.getElementById('search-input');
+const btn        = document.getElementById('search-btn');
+const frame      = document.getElementById('thesis-frame');
+const empty      = document.getElementById('empty');
+const emptyChips = document.getElementById('empty-chips');
+const chipRail   = document.getElementById('chip-rail');
+const notFound   = document.getElementById('not-found');
+const loading    = document.getElementById('loading');
+const themeBtn   = document.getElementById('theme-btn');
+
+// ── Theme ────────────────────────────────────────────────────────────────────
+const THEME_KEY = 'th3sis_theme';
+// Default is light; only switch to dark if explicitly saved as 'dark'
+let isLight = localStorage.getItem(THEME_KEY) !== 'dark';
+
+function applyTheme(light) {
+  isLight = light;
+  document.documentElement.classList.toggle('light', light);
+  // Label shows current mode (click to toggle away from it)
+  themeBtn.textContent = light ? '☀ LIGHT' : '◑ DARK';
+  localStorage.setItem(THEME_KEY, light ? 'light' : 'dark');
+  // postMessage is more reliable than contentDocument on file:// protocol
+  try { frame.contentWindow.postMessage({ type: 'th3sis-theme', light }, '*'); } catch (_) {}
+}
+
+applyTheme(isLight);
+themeBtn.addEventListener('click', () => applyTheme(!isLight));
 
 // ── Build chips ──────────────────────────────────────────────────────────────
 let activeChip = null;
 
 function makeChip(ticker, target) {
   const info = REGISTRY[ticker];
-  const el = document.createElement("button");
-  el.className = "chip";
+  const el = document.createElement('button');
+  el.className = 'chip';
   el.dataset.ticker = ticker;
   el.innerHTML = `<span class="chip-ticker">${ticker}</span><span class="chip-name">${info.name}</span>`;
-  el.addEventListener("click", () => loadTicker(ticker));
+  el.addEventListener('click', () => loadTicker(ticker));
   target.appendChild(el);
   return el;
 }
 
-// Header chips
 const headerChips = {};
-Object.keys(REGISTRY).forEach(t => {
-  headerChips[t] = makeChip(t, chipRail);
-});
+Object.keys(REGISTRY).forEach(t => { headerChips[t] = makeChip(t, chipRail); });
 
-// Empty-state chips (larger, centered)
 Object.keys(REGISTRY).forEach(t => {
-  const el = document.createElement("button");
-  el.className = "empty-chip";
+  const el = document.createElement('button');
+  el.className = 'empty-chip';
   el.textContent = t;
-  el.addEventListener("click", () => loadTicker(t));
+  el.addEventListener('click', () => loadTicker(t));
   emptyChips.appendChild(el);
 });
 
 // ── Load a thesis ─────────────────────────────────────────────────────────────
 function loadTicker(ticker) {
   const t = ticker.trim().toUpperCase();
-  notFound.classList.remove("on");
+  notFound.classList.remove('on');
 
   if (!REGISTRY[t]) {
-    notFound.classList.add("on");
-    setTimeout(() => notFound.classList.remove("on"), 3000);
+    notFound.classList.add('on');
+    setTimeout(() => notFound.classList.remove('on'), 3000);
     return;
   }
 
-  // Highlight active chip
-  if (activeChip) activeChip.classList.remove("active");
+  if (activeChip) activeChip.classList.remove('active');
   activeChip = headerChips[t] || null;
-  if (activeChip) activeChip.classList.add("active");
+  if (activeChip) activeChip.classList.add('active');
 
-  // Show loading, hide empty
-  empty.classList.add("hidden");
-  frame.classList.remove("on");
-  loading.classList.add("on");
-
+  empty.classList.add('hidden');
+  frame.classList.remove('on');
+  loading.classList.add('on');
   input.value = t;
 
-  // Load iframe
   frame.onload = () => {
-    loading.classList.remove("on");
-    frame.classList.add("on");
+    loading.classList.remove('on');
+    frame.classList.add('on');
+    // Send theme to iframe — postMessage works on file:// unlike contentDocument
+    try { frame.contentWindow.postMessage({ type: 'th3sis-theme', light: isLight }, '*'); } catch (_) {}
     frame.onload = null;
   };
   frame.src = REGISTRY[t].path;
@@ -265,21 +315,17 @@ function handleSearch() {
   if (val) loadTicker(val);
 }
 
-btn.addEventListener("click", handleSearch);
-input.addEventListener("keydown", e => {
-  if (e.key === "Enter") handleSearch();
-  // clear not-found on new input
-  if (e.key !== "Enter") notFound.classList.remove("on");
+btn.addEventListener('click', handleSearch);
+input.addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSearch();
+  if (e.key !== 'Enter') notFound.classList.remove('on');
 });
-
-// Auto-uppercase as user types
-input.addEventListener("input", () => {
+input.addEventListener('input', () => {
   const pos = input.selectionStart;
   input.value = input.value.toUpperCase();
   input.setSelectionRange(pos, pos);
 });
 
-// Focus search on load
 input.focus();
 </script>
 </body>

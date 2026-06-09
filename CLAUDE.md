@@ -101,9 +101,17 @@ Pressure-test reasoning rather than affirming it. In particular, watch for the
 
 ## Technical conventions for the HTML build
 
-- Single self-contained `.html` file. React + Babel via CDN is acceptable
-  (note it needs internet on first load); offer an offline-bundled version if asked.
+- Each stock lives in `stocks/<TICKER>/`. The file links to `../theme.css` for all color
+  variables — **do not embed `:root` / `:root.light` blocks inline**. Theme is centralized.
+- React + Babel via CDN is acceptable (needs internet on first load).
+- **No hardcoded hex colors in JSX inline styles.** Every color must use `var(--...)` from
+  `theme.css`. Semantic chart colors (bear red `#f1564b`, base amber `#e0a83b`, bull green
+  `#3fd07a`, accent blue `#2f6dff`) are the only permitted exceptions.
 - **No browser storage** (localStorage/sessionStorage) — keep state in React state only.
+  Exception: `th3sis_theme` key (read-only in stock files — `index.html` owns writes).
+- Each stock must include the theme bootstrap script (see `theme.css` header comment) BEFORE
+  the Babel script tag. It applies the saved theme before first React render and listens for
+  postMessage theme changes from `index.html`.
 - Put ALL per-quarter editable values in ONE clearly-marked config block at the top
   ("EDIT EVERYTHING IN THIS BLOCK EACH QUARTER") so updates never require hunting through code.
 - Backtest uses a **fixed rolling window** (default 6 quarters): keep an append-only
@@ -111,6 +119,9 @@ Pressure-test reasoning rather than affirming it. In particular, watch for the
 - Aesthetic: dark "terminal" theme, monospace + a display serif, restrained animation.
   Match or exceed the META reference; avoid generic AI styling.
 - After writing, verify the JSX compiles before delivering.
+- **⚠ Legacy stocks** (built before June 2026): ALAB, AMZN, ASML, FICO, GOOGL, META, MRVL,
+  MSFT, MU, NVDA, TSM use hardcoded hex in JSX — light mode will not render correctly for
+  them until each is refactored. Refactor at the stock's next quarterly update, not before.
 
 ---
 
