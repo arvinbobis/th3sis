@@ -165,8 +165,52 @@ WHAT SURPRISED ME THIS QUARTER:
 ────────────────────────────────────────────
 ```
 
-### Q2 FY2026 — June 3, 2026 (fill in after the report)
-*(your first live entry goes here)*
+### Q2 FY2026 — June 3, 2026
+
+```
+────────────────────────────────────────────
+QUARTER: Q2  FY2026          UPDATED ON: 2026-06-06
+Price at update: $387   Most-likely case: BASE (probability tail toward BEAR elevated)
+
+AI Revenue print: $10.8B   vs guide: $10.7B   (BEAT — thin; +143% YoY)
+XPU customer count: 6 (unchanged; volume disclosures: Anthropic 5 GW 2027, OpenAI 1.3 GW 2027, Meta 3 GW through 2028)
+Software revenue: $7.18B   vs est: $7.32B   (MISS; +9% YoY)
+EBITDA margin: 69%   (BEAT vs guided ~68%)
+Q3 AI revenue guidance: $16.0B   (MISS vs analyst whisper ~$17.2B — primary selloff driver)
+Non-GAAP EPS: $2.44   (BEAT vs ~$2.32 consensus)
+Stock reaction: −15% over Jun 3–4; new dislocation at ~$385 trough
+
+THESIS AUDIT (one line each):
+  Bear  — narrative still true? YES, and it activated partially: software miss + AI guide miss
+          vs whisper are exactly the bear triggers. Not full bear yet (AI rev still growing
+          fast), but the "guide disappointment" pattern is live. Bands updated: $210–$280.
+  Base  — narrative still true? MOSTLY. AI revenue beat and $100B FY2027 target held.
+          But the Q3 guide miss introduces uncertainty about whether the ramp is on schedule
+          or running behind. Stock re-priced to ~$387 (~27x NTM) gives better entry math.
+          Bands updated: $390–$460. Most-probable case, but confidence lowered.
+  Bull  — narrative still true? WEAKENED. No 7th customer; AI guide missed whisper.
+          The multi-GW volume disclosures (Anthropic 5 GW, OpenAI 1.3 GW) are bullish facts
+          but they're 2027 events — the market wants 2026 confirmation first.
+          Bands updated: $530–$650.
+
+PROBABILITY shift this quarter: Was BASE with meaningful BULL tail.
+  Now BASE with elevated BEAR probability tail. The guide-miss pattern is the new
+  swing variable. If Q3 prints at or above $16B, BULL tail reinstates. If Q3 misses
+  again, base erodes toward bear.
+
+WHAT WOULD PROVE ME WRONG (for base case):
+  Two consecutive AI revenue guidance misses (Q3 guide of $16B followed by another
+  below-whisper guide for Q4). That pattern confirms demand is softer than
+  multi-year contracts imply — and the $100B FY2027 target becomes credibility risk.
+
+WHAT SURPRISED ME THIS QUARTER:
+  The market's severity of reaction to a $1.2B AI guide miss (below ~$17.2B whisper)
+  when the actual Q2 print beat, EPS beat, and margins beat. It reveals how much
+  "whisper number" premium was baked into the ~$460 price — the stock was priced for
+  perfection-plus, not perfection. The dislocation framework (>15% single-day drop)
+  correctly flagged this as a resettable event, not a thesis-ending one.
+────────────────────────────────────────────
+```
 
 ---
 
