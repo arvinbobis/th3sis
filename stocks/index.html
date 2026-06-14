@@ -211,18 +211,18 @@
 <script>
 // ── Thesis registry ──────────────────────────────────────────────────────────
 const REGISTRY = {
-  AMZN:  { path: "AMZN/AMZN-thesis.html",   name: "Amazon.com" },
-  NVDA:  { path: "NVDA/NVDA-thesis.html",   name: "NVIDIA" },
-  ASML:  { path: "ASML/ASML-thesis.html",   name: "ASML Holding" },
-  FICO:  { path: "FICO/FICO-thesis.html",   name: "Fair Isaac" },
-  TSM:   { path: "TSM/TSM-thesis.html",     name: "Taiwan Semi" },
-  GOOGL: { path: "GOOGL/GOOGL-thesis.html", name: "Alphabet" },
   ALAB:  { path: "ALAB/alab-thesis.html",   name: "Astera Labs" },
+  AMZN:  { path: "AMZN/AMZN-thesis.html",   name: "Amazon.com" },
+  ASML:  { path: "ASML/ASML-thesis.html",   name: "ASML Holding" },
   AVGO:  { path: "avgo/avgo-thesis.html",   name: "Broadcom Inc." },
+  FICO:  { path: "FICO/FICO-thesis.html",   name: "Fair Isaac" },
+  GOOGL: { path: "GOOGL/GOOGL-thesis.html", name: "Alphabet" },
   META:  { path: "META/META-thesis.html",   name: "Meta Platforms" },
   MRVL:  { path: "mrvl/mrvl-thesis.html",  name: "Marvell Technology" },
-  MU:    { path: "MU/MU-thesis.html",       name: "Micron Technology" },
   MSFT:  { path: "MSFT/MSFT-thesis.html",  name: "Microsoft" },
+  MU:    { path: "MU/MU-thesis.html",       name: "Micron Technology" },
+  NVDA:  { path: "NVDA/NVDA-thesis.html",   name: "NVIDIA" },
+  TSM:   { path: "TSM/TSM-thesis.html",     name: "Taiwan Semi" },
 };
 
 // ── DOM refs ─────────────────────────────────────────────────────────────────
@@ -269,9 +269,9 @@ function makeChip(ticker, target) {
 }
 
 const headerChips = {};
-Object.keys(REGISTRY).forEach(t => { headerChips[t] = makeChip(t, chipRail); });
+Object.keys(REGISTRY).sort().forEach(t => { headerChips[t] = makeChip(t, chipRail); });
 
-Object.keys(REGISTRY).forEach(t => {
+Object.keys(REGISTRY).sort().forEach(t => {
   const el = document.createElement('button');
   el.className = 'empty-chip';
   el.textContent = t;
