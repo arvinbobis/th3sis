@@ -130,9 +130,9 @@
   Leftover folder never committed. Shows in every `git status`. Either commit or add to `.gitignore`.  
   _Chair: QA_
 
-- [ ] **[BACKLOG] CDN offline fallback**  
+- [x] **[BACKLOG] CDN offline fallback**  
   Google Fonts + React + ReactDOM + Babel = 4 external CDN requests. No internet = blank page with no error message. Add a `<noscript>` banner and consider self-hosting or bundling the React/Babel assets.  
-  _Chair: QA + Engineering_
+  _Chair: QA + Engineering_ · Fixed 2026-06-15 — `cdnFail(lib)` inline function defined before CDN scripts; `onerror="cdnFail('REACT/REACT-DOM/BABEL')"` on each script tag replaces `#root` with a styled error + reload link; `<noscript>` block added for JS-disabled browsers
 
 ---
 
@@ -147,7 +147,7 @@
 | 🟢 Performance | 2 | 2 / 2 fixed ✅ |
 | 🟢 Responsive | 1 | 1 / 1 fixed ✅ |
 | ⚪ Backlog | 4 | 0 / 4 fixed |
-| **Total** | **23** | **19 / 23 fixed** |
+| **Total** | **23** | **20 / 23 fixed** |
 
 ---
 

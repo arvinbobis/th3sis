@@ -7,9 +7,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../theme.css" />
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<script>
+function cdnFail(lib) {
+  var el = document.getElementById('root');
+  if (!el) return;
+  el.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100vh;background:#06080d';
+  el.innerHTML =
+    '<div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:20px;font-family:\'JetBrains Mono\',monospace">'
+    + '<div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230">TH<span style="color:#2f6dff">3</span>SIS</div>'
+    + '<div style="font-size:11px;letter-spacing:0.18em;color:#f1564b">FAILED TO LOAD · ' + lib + '</div>'
+    + '<div style="font-size:10px;letter-spacing:0.12em;color:#3a4252">No internet connection — check your network and reload.</div>'
+    + '<a href="javascript:location.reload()" style="margin-top:4px;color:#2f6dff;text-decoration:none;border:1px solid #2f6dff33;border-radius:20px;padding:4px 14px;font-size:9px;letter-spacing:0.14em">↺ RELOAD</a>'
+    + '</div>';
+}
+</script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" onerror="cdnFail('REACT')"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" onerror="cdnFail('REACT-DOM')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js" onerror="cdnFail('BABEL')"></script>
 <style>
   html, body { margin: 0; padding: 0; background: #06080d; }
   * { box-sizing: border-box; }
@@ -59,6 +73,15 @@
 </style>
 </head>
 <body>
+<noscript>
+  <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#06080d;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;">
+      <div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230;">TH<span style="color:#2f6dff">3</span>SIS</div>
+      <div style="font-size:11px;letter-spacing:0.18em;color:#f1564b;">JAVASCRIPT REQUIRED</div>
+      <div style="font-size:10px;letter-spacing:0.12em;color:#3a4252;">Enable JavaScript in your browser settings and reload.</div>
+    </div>
+  </div>
+</noscript>
 <div id="root" style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.18em;color:#3a4252;">
   <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
     <div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230;">TH<span style="color:#2f6dff">3</span>SIS</div>
