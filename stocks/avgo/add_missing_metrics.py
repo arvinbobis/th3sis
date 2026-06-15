@@ -8,7 +8,7 @@ import json, re
 from pathlib import Path
 import openpyxl
 
-XLSX = Path(__file__).parent / "avgo-wise-q2fy26.xlsx"
+XLSX = Path(__file__).parent / "wise" / "avgo-wise-q2fy26.xlsx"
 HTML = Path(__file__).parent / "avgo-thesis.html"
 
 wb = openpyxl.load_workbook(XLSX, data_only=True)

@@ -5,7 +5,7 @@ from pathlib import Path
 import openpyxl
 
 CSV  = Path(__file__).parent / "avgo-10-year-history.csv"
-XLSX = Path(__file__).parent / "avgo-wise-q2fy26.xlsx"
+XLSX = Path(__file__).parent / "wise" / "avgo-wise-q2fy26.xlsx"
 HTML = Path(__file__).parent / "avgo-thesis.html"
 
 # ── Load CSV → date:price dict ───────────────────────────────────────────────
