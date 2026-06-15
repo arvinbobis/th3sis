@@ -2329,14 +2329,19 @@ const visW   = (lo, hi) => `${((hi - lo) / (VIS_HI - VIS_LO) * 100).toFixed(2)}%
 const visC   = (lo, hi) => ((lo + hi) / 2 - VIS_LO) / (VIS_HI - VIS_LO) * 100;
 
 // localStorage key — per ticker, database-ready schema for future Supabase migration
-const POS_KEY = "th3sis_pos_AVGO";
+const POS_KEY            = "th3sis_pos_AVGO";
+const POS_SCHEMA_VERSION = 1;
 const DEFAULT_TRANCHES = [
   { id: 1, label: "STARTER",  price: "", shares: "", date: null, note: "" },
   { id: 2, label: "ADD",      price: "", shares: "", date: null, note: "" },
   { id: 3, label: "CONFIRM",  price: "", shares: "", date: null, note: "" },
 ];
 function loadPos() {
-  try { return JSON.parse(localStorage.getItem(POS_KEY)) || null; } catch { return null; }
+  try {
+    const d = JSON.parse(localStorage.getItem(POS_KEY));
+    if (!d || d.version !== POS_SCHEMA_VERSION) { localStorage.removeItem(POS_KEY); return null; }
+    return d;
+  } catch { return null; }
 }
 
 
@@ -2943,11 +2948,15 @@ function FutureTab() {
   const [panel, setPanel] = useState("outcomes");
 
   // ── Dry powder tracker (localStorage key: th3sis_portfolio) ──────────────
-  const STORE_KEY = "th3sis_portfolio";
-  const defaultStore = () => ({ cycleAmount: 800, cycleDays: 15, cycles: [] });
+  const STORE_KEY             = "th3sis_portfolio";
+  const PORTFOLIO_SCHEMA_VERSION = 1;
+  const defaultStore = () => ({ version: PORTFOLIO_SCHEMA_VERSION, cycleAmount: 800, cycleDays: 15, cycles: [] });
   const loadStore = () => {
-    try { return JSON.parse(localStorage.getItem(STORE_KEY)) || defaultStore(); }
-    catch { return defaultStore(); }
+    try {
+      const d = JSON.parse(localStorage.getItem(STORE_KEY));
+      if (!d || d.version !== PORTFOLIO_SCHEMA_VERSION) { localStorage.removeItem(STORE_KEY); return defaultStore(); }
+      return d;
+    } catch { return defaultStore(); }
   };
   const [store, setStore] = useState(loadStore);
   const saveStore = (s) => { localStorage.setItem(STORE_KEY, JSON.stringify(s)); setStore(s); };
@@ -4697,8 +4706,15 @@ function PastTab() {
 }
 
 // ── Financials Tab ─────────────────────────────────────────────────────────
-const FIN_STORE_KEY = "th3sis_fin_AVGO";
-function loadFinState() { try { return JSON.parse(localStorage.getItem(FIN_STORE_KEY)) || null; } catch { return null; } }
+const FIN_STORE_KEY        = "th3sis_fin_AVGO";
+const FIN_SCHEMA_VERSION   = 1;
+function loadFinState() {
+  try {
+    const d = JSON.parse(localStorage.getItem(FIN_STORE_KEY));
+    if (!d || d.version !== FIN_SCHEMA_VERSION) { localStorage.removeItem(FIN_STORE_KEY); return null; }
+    return d;
+  } catch { return null; }
+}
 
 function fmtFinVal(v, fmt) {
   if (v === null || v === undefined) return "—";

@@ -18,13 +18,13 @@
 
 ## 🟠 Risk (fix before next quarterly update)
 
-- [ ] **[RISK] Case sensitivity — `stocks/AVGO/` vs `stocks/avgo/`**  
+- [x] **[RISK] Case sensitivity — `stocks/AVGO/` vs `stocks/avgo/`**  
   Python scripts create files in `stocks/AVGO/` (uppercase). Git tracks them as `stocks/avgo/` (lowercase). Harmless on macOS (case-insensitive FS) but will break on Linux — GitHub Pages runs Linux. Establish a hard convention: all paths use lowercase. Future scripts must write to `stocks/avgo/`.  
-  _Chair: Engineering + QA_
+  _Chair: Engineering + QA_ · Fixed 2026-06-15 — lowercase-only rule codified in CLAUDE.md; existing scripts already use `Path(__file__).parent` so no path string changes needed
 
-- [ ] **[RISK] localStorage schema has `version: 1` but no migration logic**  
+- [x] **[RISK] localStorage schema has `version: 1` but no migration logic**  
   Three keys (`th3sis_pos_AVGO`, `th3sis_fin_AVGO`, `th3sis_portfolio`) carry `{ version: 1, ... }`. If the schema changes during a quarterly update, stale data in a user's browser silently corrupts state with no error or recovery path. Add a version check on load and reset to defaults when version mismatch is detected.  
-  _Chair: Engineering + QA_
+  _Chair: Engineering + QA_ · Fixed 2026-06-15 — all three loaders now check `d.version !== SCHEMA_VERSION` and call `localStorage.removeItem` before returning null/default
 
 ---
 
@@ -141,7 +141,7 @@
 | Priority | Count | Status |
 |---|---|---|
 | 🔴 Bug | 2 | 2 / 2 fixed ✅ |
-| 🟠 Risk | 2 | 0 / 2 fixed |
+| 🟠 Risk | 2 | 2 / 2 fixed ✅ |
 | 🟡 Quality | 7 | 0 / 7 fixed |
 | 🟡 UX | 5 | 0 / 5 fixed |
 | 🟢 Performance | 2 | 0 / 2 fixed |
@@ -151,4 +151,4 @@
 
 ---
 
-_Last updated: 2026-06-15_
+_Last updated: 2026-06-15 (both orange risks closed)_

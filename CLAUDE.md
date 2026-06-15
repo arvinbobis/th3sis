@@ -25,8 +25,11 @@ Reference implementation to match for quality/structure: the META build in
 `reference/meta-thesis.html` and `reference/meta-QUARTERLY-CHECKLIST.md`. Open and
 pattern-match against these real files — they are the quality floor to meet or exceed.
 
-**Where outputs go:** put each stock's files in its own folder, `stocks/<TICKER>/`
-(e.g. `stocks/NVDA/NVDA-thesis.html`). Create the folder if it doesn't exist.
+**Where outputs go:** put each stock's files in its own folder, `stocks/<ticker>/`
+(e.g. `stocks/nvda/nvda-thesis.html`). Folder names and file names must be **lowercase** —
+GitHub Pages runs on Linux (case-sensitive FS) and will 404 on uppercase paths. Python
+scripts that reference paths must use `Path(__file__).parent / "filename"` (relative to the
+script itself), never hardcoded absolute paths or uppercase strings like `"stocks/NVDA/"`.
 
 ---
 
