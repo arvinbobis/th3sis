@@ -30,7 +30,7 @@
 
 ## 🟡 Code Quality (fix in next development session)
 
-- [ ] **[QUALITY] Three near-identical localStorage loaders — extract one util**  
+- [x] **[QUALITY] Three near-identical localStorage loaders — extract one util**  
   `loadPos()`, `loadFinState()`, and the dry-powder loader share the same try/catch/parse/fallback pattern. Extract a single generic helper:  
   ```js
   function loadStorage(key, fallback) {
@@ -38,34 +38,34 @@
     catch { return fallback; }
   }
   ```  
-  _Chair: Engineering_
+  _Chair: Engineering_ · Fixed 2026-06-15 — `loadStorage(key, version, fallback)` extracted; all three loaders now one-liners
 
-- [ ] **[QUALITY] 69 of 72 `.map()` calls missing `key=` prop**  
+- [x] **[QUALITY] 69 of 72 `.map()` calls missing `key=` prop**  
   React cannot optimize list reconciliation without keys. Every chevron toggle or slider drag forces full list re-renders. Add stable `key=` props to all mapped JSX lists. Use the item's name/id, not array index where possible.  
-  _Chair: Engineering_
+  _Chair: Engineering_ · Verified 2026-06-15 — all JSX-producing `.map()` calls already have `key=` on the element; grep was misleading (keys are on element lines, not the `.map()` line)
 
-- [ ] **[QUALITY] `TICKER_META` — AVGO hardcoded in ~18 places**  
+- [x] **[QUALITY] `TICKER_META` — AVGO hardcoded in ~18 places**  
   `"th3sis_pos_AVGO"`, `"th3sis_fin_AVGO"`, `"NASDAQ:AVGO"`, `"Broadcom Inc."`, `"AVGO"` are scattered throughout. Define a single config object at the top of the file so future templates only need one edit:  
   ```js
   const TICKER_META = { ticker: "AVGO", exchange: "NASDAQ", company: "Broadcom Inc." };
   ```  
-  _Chair: Engineering_
+  _Chair: Engineering_ · Fixed 2026-06-15 — `TICKER_META` added to config block; POS_KEY, FIN_STORE_KEY, isAvgo check, peers find, and header labels all reference it
 
-- [ ] **[QUALITY] `localStorage.getItem()` called on every render in root component**  
+- [x] **[QUALITY] `localStorage.getItem()` called on every render in root component**  
   `AvgoThesis()` line 4915: `const dark = localStorage.getItem('th3sis_theme') !== 'light'` runs synchronously on every re-render. Move to a `useState` initialized once, or derive from a CSS class check.  
-  _Chair: Engineering_
+  _Chair: Engineering_ · Fixed 2026-06-15 — `dark` variable was also unused; removed entirely
 
-- [ ] **[QUALITY] `window.confirm()` used for destructive "clear position" action**  
+- [x] **[QUALITY] `window.confirm()` used for destructive "clear position" action**  
   Synchronous, blocks the UI thread, unstyled, looks like a browser security warning. Replace with an inline confirmation UI (e.g., a "confirm?" button that appears on first click).  
-  _Chair: Engineering + UX_
+  _Chair: Engineering + UX_ · Fixed 2026-06-15 — replaced with two-step inline flow: CLEAR → CONFIRM CLEAR / CANCEL using `clearPending` state
 
-- [ ] **[QUALITY] SBC/Revenue Q2 FY26 = 0.0% with no data-gap indicator**  
+- [x] **[QUALITY] SBC/Revenue Q2 FY26 = 0.0% with no data-gap indicator**  
   The xlsx source has an unfilled cell for Q2 FY26 SBC/Revenue. Explorer displays `0.0%` with no indication it's missing data vs. a genuine zero. Treat zero/null from this source as `null` and render `"—"` via `fmtFinVal`.  
-  _Chair: QA + Engineering_
+  _Chair: QA + Engineering_ · Fixed 2026-06-15 — last quarterly value changed to `null`; `fmtFinVal` already returns `"—"` for null
 
-- [ ] **[QUALITY] `TRACK_ALL` has no deduplication guard**  
+- [x] **[QUALITY] `TRACK_ALL` has no deduplication guard**  
   If the same quarter is appended twice during a quarterly update, the backtest renders a duplicate dot and a kinked line. Add a uniqueness check on the `q` field when slicing.  
-  _Chair: QA_
+  _Chair: QA_ · Fixed 2026-06-15 — `TRACK` now derived via `new Map([t.q, t])` keyed dedup before slicing
 
 ---
 
@@ -142,7 +142,7 @@
 |---|---|---|
 | 🔴 Bug | 2 | 2 / 2 fixed ✅ |
 | 🟠 Risk | 2 | 2 / 2 fixed ✅ |
-| 🟡 Quality | 7 | 0 / 7 fixed |
+| 🟡 Quality | 7 | 7 / 7 fixed ✅ |
 | 🟡 UX | 5 | 0 / 5 fixed |
 | 🟢 Performance | 2 | 0 / 2 fixed |
 | 🟢 Responsive | 1 | 0 / 1 fixed |
@@ -151,4 +151,4 @@
 
 ---
 
-_Last updated: 2026-06-15 (both orange risks closed)_
+_Last updated: 2026-06-15 (all bugs, risks, and quality items closed)_

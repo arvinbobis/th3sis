@@ -130,6 +130,9 @@ function tipSvg(title, body, note, color, extraClass) {
    ║                                                                          ║
    ╚══════════════════════════════════════════════════════════════════════════╝ */
 
+// 0 ── TICKER identity (used for storage keys, header labels)
+const TICKER_META = { ticker: "AVGO", exchange: "NASDAQ", company: "Broadcom Inc." };
+
 // 1 ── DATE shown top-right
 const AS_OF_DATE = "2026-06-06";
 
@@ -241,7 +244,7 @@ const TRACK_ALL = [
   { q: "Q2 FY26", date: "2026-06", post: 387, reaction: "--", bear: [255,310], base: [420,490], bull: [580,700], landed: "bear→base",   conf: "high" },
 ];
 const TRACK_WINDOW = 6;
-const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
+const TRACK = Array.from(new Map(TRACK_ALL.map(t => [t.q, t])).values()).slice(-TRACK_WINDOW);
 const TRACK_PRICE_MIN = 80, TRACK_PRICE_MAX = 740;
 
 // ── THE PAST — historical data (update annually) ──────────────────────────────
@@ -1874,7 +1877,7 @@ const FIN_METRICS = [
     "fmt": "%",
     "desc": "Stock comp as % of revenue — dilution intensity",
     "annual": [5.1, 5.2, 5.9, 9.7, 8.3, 6.2, 4.6, 6.1, 11.1, 11.8],
-    "quarterly": [6.2, 5.6, 5.0, 4.8, 4.4, 4.3, 4.4, 5.9, 7.1, 6.9, 13.2, 11.7, 10.6, 9.3, 8.6, 11.8, 14.6, 12.2, 11.3, 0.0]
+    "quarterly": [6.2, 5.6, 5.0, 4.8, 4.4, 4.3, 4.4, 5.9, 7.1, 6.9, 13.2, 11.7, 10.6, 9.3, 8.6, 11.8, 14.6, 12.2, 11.3, null]
   },
   {
     "name": "Debt / Assets",
@@ -2329,20 +2332,23 @@ const visW   = (lo, hi) => `${((hi - lo) / (VIS_HI - VIS_LO) * 100).toFixed(2)}%
 const visC   = (lo, hi) => ((lo + hi) / 2 - VIS_LO) / (VIS_HI - VIS_LO) * 100;
 
 // localStorage key — per ticker, database-ready schema for future Supabase migration
-const POS_KEY            = "th3sis_pos_AVGO";
+// Generic localStorage loader — clears stale data on schema version mismatch
+function loadStorage(key, version, fallback) {
+  try {
+    const d = JSON.parse(localStorage.getItem(key));
+    if (!d || d.version !== version) { localStorage.removeItem(key); return fallback; }
+    return d;
+  } catch { return fallback; }
+}
+
+const POS_KEY            = `th3sis_pos_${TICKER_META.ticker}`;
 const POS_SCHEMA_VERSION = 1;
 const DEFAULT_TRANCHES = [
   { id: 1, label: "STARTER",  price: "", shares: "", date: null, note: "" },
   { id: 2, label: "ADD",      price: "", shares: "", date: null, note: "" },
   { id: 3, label: "CONFIRM",  price: "", shares: "", date: null, note: "" },
 ];
-function loadPos() {
-  try {
-    const d = JSON.parse(localStorage.getItem(POS_KEY));
-    if (!d || d.version !== POS_SCHEMA_VERSION) { localStorage.removeItem(POS_KEY); return null; }
-    return d;
-  } catch { return null; }
-}
+function loadPos() { return loadStorage(POS_KEY, POS_SCHEMA_VERSION, null); }
 
 
 
@@ -2884,7 +2890,7 @@ function CurrentTab() {
                 </thead>
                 <tbody>
                   {v.peers.map((p) => {
-                    const isAvgo = p.t === "AVGO";
+                    const isAvgo = p.t === TICKER_META.ticker;
                     const col = isAvgo ? "var(--blue-soft)" : "var(--tx5)";
                     return (
                       <tr key={p.t} {...tip(p.t, `${p.note}. FWD P/E: ${p.fpe}× · EV/EBITDA: ${p.ev_eb}× · FCF yield: ${p.fcf_y}%`, isAvgo ? "Your holding" : null, col)}
@@ -2948,16 +2954,10 @@ function FutureTab() {
   const [panel, setPanel] = useState("outcomes");
 
   // ── Dry powder tracker (localStorage key: th3sis_portfolio) ──────────────
-  const STORE_KEY             = "th3sis_portfolio";
+  const STORE_KEY                = "th3sis_portfolio";
   const PORTFOLIO_SCHEMA_VERSION = 1;
   const defaultStore = () => ({ version: PORTFOLIO_SCHEMA_VERSION, cycleAmount: 800, cycleDays: 15, cycles: [] });
-  const loadStore = () => {
-    try {
-      const d = JSON.parse(localStorage.getItem(STORE_KEY));
-      if (!d || d.version !== PORTFOLIO_SCHEMA_VERSION) { localStorage.removeItem(STORE_KEY); return defaultStore(); }
-      return d;
-    } catch { return defaultStore(); }
-  };
+  const loadStore    = () => loadStorage(STORE_KEY, PORTFOLIO_SCHEMA_VERSION, defaultStore());
   const [store, setStore] = useState(loadStore);
   const saveStore = (s) => { localStorage.setItem(STORE_KEY, JSON.stringify(s)); setStore(s); };
 
@@ -2968,6 +2968,7 @@ function FutureTab() {
   const [settingsForm, setSettingsForm] = useState({ cycleAmount: 800, cycleDays: 15 });
 
   // ── Position state (migrated from PositionTab) ───────────────────────────
+  const [clearPending, setClearPending] = useState(false);
   const [checks, setChecks]         = useState(() => loadPos()?.checks    || { aiTarget: false, xpuCustomers: false, aiGrowth: false, vmwareArr: false });
   const [tranches, setTranches]     = useState(() => loadPos()?.tranches  || DEFAULT_TRANCHES);
   const [existing, setExisting]     = useState(() => {
@@ -2992,7 +2993,14 @@ function FutureTab() {
   const updateEx      = (id, fld, val) => setExisting(exs => exs.map(e => e.id === id ? { ...e, [fld]: val } : e));
   const addExisting   = () => setExisting(exs => [...exs, { id: Date.now(), price: "", shares: "", date: "" }]);
   const delExisting   = id => setExisting(exs => exs.length > 1 ? exs.filter(e => e.id !== id) : exs);
-  const clearPos      = () => { if (window.confirm("Clear all AVGO position data?")) { localStorage.removeItem(POS_KEY); setTranches(DEFAULT_TRANCHES); setChecks({ aiTarget: false, xpuCustomers: false, aiGrowth: false, vmwareArr: false }); } };
+  const clearPos      = () => {
+    localStorage.removeItem(POS_KEY);
+    setTranches(DEFAULT_TRANCHES);
+    setChecks({ aiTarget: false, xpuCustomers: false, aiGrowth: false, vmwareArr: false });
+    setExisting([{ id: 1, price: "", shares: "", date: "" }]);
+    setPortfolioK(100); setPosPct(2.0);
+    setClearPending(false);
+  };
 
   const allGreen    = Object.values(checks).every(Boolean);
   const greenCount  = Object.values(checks).filter(Boolean).length;
@@ -3679,9 +3687,13 @@ function FutureTab() {
             <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "var(--tx6)" }}>MY AVGO POSITION</div>
             <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
               <span style={{ fontSize: 9, color: flash ? "#3fd07a" : "transparent", transition: "color .3s", letterSpacing: "0.1em" }}>✓ SAVED</span>
-              <button onClick={clearPos} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3,
-                border: "1px solid rgba(241,86,75,0.3)", background: "rgba(241,86,75,0.08)",
-                color: "#f1564b", cursor: "pointer", letterSpacing: "0.08em" }}>CLEAR</button>
+              {clearPending
+                ? <>
+                    <button onClick={clearPos} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid rgba(241,86,75,0.7)", background: "rgba(241,86,75,0.18)", color: "#f1564b", cursor: "pointer", letterSpacing: "0.08em" }}>CONFIRM CLEAR</button>
+                    <button onClick={() => setClearPending(false)} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid var(--bd2)", background: "transparent", color: "var(--tx5)", cursor: "pointer", letterSpacing: "0.08em" }}>CANCEL</button>
+                  </>
+                : <button onClick={() => setClearPending(true)} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid rgba(241,86,75,0.3)", background: "rgba(241,86,75,0.08)", color: "#f1564b", cursor: "pointer", letterSpacing: "0.08em" }}>CLEAR</button>
+              }
             </div>
           </div>
 
@@ -4081,7 +4093,7 @@ function PastTab() {
   const latestROIC = PAST_ROIC[9];
   const latestLev  = PAST_ND_EBITDA[9];
   const evAvg      = PAST_EVEBITDA.reduce((a, b) => a + b, 0) / PAST_EVEBITDA.length;
-  const evNow      = v.peers.find(p => p.t === "AVGO")?.ev_eb ?? PAST_EVEBITDA[9];
+  const evNow      = v.peers.find(p => p.t === TICKER_META.ticker)?.ev_eb ?? PAST_EVEBITDA[9];
 
   const durabilityStatus = revCAGR > 0.12 && latestGM > 55
     ? { label: "STRONG",   desc: `${(revCAGR * 100).toFixed(0)}% 10Y REVENUE CAGR · ${latestGM}% GROSS MARGIN`, col: "#3fd07a" }
@@ -4706,15 +4718,9 @@ function PastTab() {
 }
 
 // ── Financials Tab ─────────────────────────────────────────────────────────
-const FIN_STORE_KEY        = "th3sis_fin_AVGO";
-const FIN_SCHEMA_VERSION   = 1;
-function loadFinState() {
-  try {
-    const d = JSON.parse(localStorage.getItem(FIN_STORE_KEY));
-    if (!d || d.version !== FIN_SCHEMA_VERSION) { localStorage.removeItem(FIN_STORE_KEY); return null; }
-    return d;
-  } catch { return null; }
-}
+const FIN_STORE_KEY      = `th3sis_fin_${TICKER_META.ticker}`;
+const FIN_SCHEMA_VERSION = 1;
+function loadFinState() { return loadStorage(FIN_STORE_KEY, FIN_SCHEMA_VERSION, null); }
 
 function fmtFinVal(v, fmt) {
   if (v === null || v === undefined) return "—";
@@ -4933,7 +4939,6 @@ function MetricCard({ metric, period, onRemove }) {
 function AvgoThesis() {
   const [active, setActive]       = useState("base");
   const [activeTab, setActiveTab] = useState("the-past");
-  const dark = localStorage.getItem('th3sis_theme') !== 'light';
   const c = CASES[active];
   const kpiVals = KPI_PROJ[active];
   return (
@@ -4951,8 +4956,8 @@ function AvgoThesis() {
           </div>
           <div style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 12.5, color: "var(--tx4)" }}>
             <span>{AS_OF_DATE}</span>
-            <span style={{ color: "var(--tx1)" }}>NASDAQ:AVGO</span>
-            <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "var(--tx3)" }}>Broadcom Inc.</span>
+            <span style={{ color: "var(--tx1)" }}>{TICKER_META.exchange}:{TICKER_META.ticker}</span>
+            <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "var(--tx3)" }}>{TICKER_META.company}</span>
             <span {...tip("Today's share price", `One share of AVGO costs about $${NOW_PRICE} right now (post 10:1 split, post Q2 FY2026 earnings). The stock dropped ~15% after the Q3 AI guide of $16B missed analyst whispers. Next earnings: Q3 FY2026 (~Sep 2026).`, null, "var(--title)")}
               style={{ color: "var(--title)", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}</span>
           </div>
