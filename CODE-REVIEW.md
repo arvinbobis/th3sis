@@ -110,9 +110,9 @@
 
 ## 🟢 Responsive / Mobile (nice-to-have)
 
-- [ ] **[RESPONSIVE] No responsive layout below ~900px**  
+- [x] **[RESPONSIVE] No responsive layout below ~900px**  
   `maxWidth: 1280` container collapses without reflow on small screens. Fan chart SVG, KPI bar grid, and Explorer card grid all need breakpoints. No media queries exist in inline styles or `theme.css`.  
-  _Chair: UX_
+  _Chair: UX_ · Fixed 2026-06-15 — added `@media (max-width: 768px)` and `@media (max-width: 480px)` rules targeting `.hdr-right`, `.hdr-company`, `.resp-2col-main`, `.resp-3col`, `.resp-2col`; applied classNames to 8 key grid containers across all three tabs; company name hidden on narrow; main fan-chart/scenario 2-col splits to 1-col; 3-col P/E + position summary to 2-col (768) → 1-col (480)
 
 ---
 
@@ -145,9 +145,9 @@
 | 🟡 Quality | 7 | 7 / 7 fixed ✅ |
 | 🟡 UX | 5 | 5 / 5 fixed ✅ |
 | 🟢 Performance | 2 | 2 / 2 fixed ✅ |
-| 🟢 Responsive | 1 | 0 / 1 fixed |
+| 🟢 Responsive | 1 | 1 / 1 fixed ✅ |
 | ⚪ Backlog | 4 | 0 / 4 fixed |
-| **Total** | **23** | **18 / 23 fixed** |
+| **Total** | **23** | **19 / 23 fixed** |
 
 ---
 

@@ -46,6 +46,16 @@
   .ld-dot { width:5px; height:5px; border-radius:50%; background:#2f6dff; display:inline-block; animation:pulse 1.2s ease-in-out infinite; }
   .grain::before { content:""; position:absolute; inset:0; pointer-events:none; opacity:var(--grain-op);
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+  @media (max-width: 768px) {
+    .hdr-right      { flex-wrap: wrap !important; gap: 8px !important; }
+    .hdr-company    { display: none !important; }
+    .resp-2col-main { grid-template-columns: 1fr !important; }
+    .resp-3col      { grid-template-columns: 1fr 1fr !important; }
+  }
+  @media (max-width: 480px) {
+    .resp-3col { grid-template-columns: 1fr !important; }
+    .resp-2col { grid-template-columns: 1fr !important; }
+  }
 </style>
 </head>
 <body>
@@ -2615,7 +2625,7 @@ function CurrentTab() {
               </div>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 1,
+            <div className="resp-2col-main" style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 1,
               background: "var(--bd)", borderRadius: 8, overflow: "hidden" }}>
 
               {/* Left — fan chart + KPI */}
@@ -2763,7 +2773,7 @@ function CurrentTab() {
             </div>
 
             {/* P/E cards */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 14 }}>
+            <div className="resp-3col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, marginBottom: 14 }}>
               {[
                 { label: "CURRENT P/E",   val: (NOW_PRICE / v.ntm_eps).toFixed(1) + "×", sub: `on $${v.ntm_eps} NTM EPS`,        col: "var(--blue-soft)" },
                 { label: "NORMAL RANGE",  val: `${v.pe_normal_lo}–${v.pe_normal_hi}×`,    sub: "historical base multiple",        col: "var(--tx3)" },
@@ -2818,7 +2828,7 @@ function CurrentTab() {
             <div {...tip("Reverse DCF — what is the market pricing in?", `Works backwards from today's price: given a discount rate and terminal multiple, what annual EPS growth rate must the market be embedding? At $${NOW_PRICE}, the required CAGR is ${cagrDisplay}. ${cagrNote} Adjust sliders to stress-test assumptions.`, "Low required CAGR = not priced for perfection. High = very little room for error.", cagrColor)}
               style={{ padding: "14px 16px", background: "var(--inner-bg)", border: `1px solid ${cagrColor}44`, borderRadius: 8, marginBottom: 14 }}>
               <div style={{ fontSize: 8.5, letterSpacing: "0.14em", color: "var(--tx6)", marginBottom: 12 }}>REVERSE DCF · IMPLIED EPS CAGR</div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+              <div className="resp-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
                 {[
                   { label: "DISCOUNT RATE", val: dr, set: setDr, min: 6, max: 14, step: 0.5, fmt: v => `${v.toFixed(1)}%` },
                   { label: `TERMINAL P/E (${dcfN}YR)`, val: termPE, set: setTermPE, min: 15, max: 35, step: 1, fmt: v => `${v}×` },
@@ -2843,7 +2853,7 @@ function CurrentTab() {
             </div>
 
             {/* 2-col: AI revenue implied + FCF yield */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+            <div className="resp-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
               <div {...tip("Price-implied AI revenue", `At $${NOW_PRICE}, the market is baking in roughly $55–65B of FY2026 AI revenue — near management's $56B reaffirmed guide. The $100B FY2027 target is not yet fully priced in. A beat + raised guide unlocks the remaining upside.`, null, "var(--blue-soft)")}
                 style={{ background: "var(--inner-bg)", border: "1px solid var(--bd)", borderRadius: 8, padding: "14px 16px" }}>
                 <div style={{ fontSize: 8.5, letterSpacing: "0.14em", color: "var(--tx6)", marginBottom: 10 }}>PRICE-IMPLIED AI REVENUE</div>
@@ -3837,7 +3847,7 @@ function FutureTab() {
           </div>
 
           {/* Combined summary */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 12 }}>
+          <div className="resp-3col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 12 }}>
             {[
               { label: "EXISTING",       shares: exShares,  cost: exCost,  basis: exBasis,   color: "#2f6dff" },
               { label: "THESIS ADDS",    shares: totShares, cost: totCost, basis: blended,    color: "var(--tx3)" },
@@ -4356,7 +4366,7 @@ function PastTab() {
         <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.22em",
           color: "var(--tx6)", marginBottom: 14 }}>THE PAST — IS THIS WORTH OWNING?</div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
+        <div className="resp-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
           <ScoreCard question="DOES IT GROW CONSISTENTLY?"
             answer={durabilityStatus.label} desc={durabilityStatus.desc}
             col={durabilityStatus.col} panelKey="durability"
@@ -4449,7 +4459,7 @@ function PastTab() {
               col={durabilityStatus.col}
               summary={`Revenue compounded at ~${(revCAGR * 100).toFixed(0)}% annually from $${PAST_REV[0]}B (FY16) to $${PAST_REV[9]}B (FY25). Gross margin expanded ${(latestGM - PAST_GM[0]).toFixed(0)} points to ${latestGM}% — a durability signal: pricing power improving, not eroding. FCF grew from $${PAST_FCF[0]}B to $${latestFCF}B.`} />
 
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+            <div className="resp-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <ChartBox title="REVENUE ($B) · FY16–FY25" sub="Annual total net revenue · acquisitions annotated">
                 <BarChart
                   data={PAST_REV} labels={PAST_YEARS} unit="B"
@@ -4977,10 +4987,10 @@ function AvgoThesis() {
               ⓘ hover anything to learn what it means
             </div>
           </div>
-          <div style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 12.5, color: "var(--tx4)" }}>
+          <div className="hdr-right" style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 12.5, color: "var(--tx4)" }}>
             <span>{AS_OF_DATE}</span>
             <span style={{ color: "var(--tx1)" }}>{TICKER_META.exchange}:{TICKER_META.ticker}</span>
-            <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "var(--tx3)" }}>{TICKER_META.company}</span>
+            <span className="hdr-company" style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "var(--tx3)" }}>{TICKER_META.company}</span>
             <span {...tip("Today's share price", `One share of AVGO costs about $${NOW_PRICE} right now (post 10:1 split, post Q2 FY2026 earnings). The stock dropped ~15% after the Q3 AI guide of $16B missed analyst whispers. Next earnings: Q3 FY2026 (~Sep 2026).`, null, "var(--title)")}
               style={{ color: "var(--title)", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}</span>
             <button onClick={toggleTheme} aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
