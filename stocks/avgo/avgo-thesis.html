@@ -43,12 +43,19 @@
   input[type="number"]::-webkit-outer-spin-button,
   input[type="number"]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
   input[type="number"]:focus { outline: 1px solid var(--blue-soft); outline-offset: 1px; }
+  .ld-dot { width:5px; height:5px; border-radius:50%; background:#2f6dff; display:inline-block; animation:pulse 1.2s ease-in-out infinite; }
   .grain::before { content:""; position:absolute; inset:0; pointer-events:none; opacity:var(--grain-op);
     background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 </style>
 </head>
 <body>
-<div id="root"></div>
+<div id="root" style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.18em;color:#3a4252;">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+    <div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230;">TH<span style="color:#2f6dff">3</span>SIS</div>
+    <div style="display:flex;gap:5px;"><span class="ld-dot" style="animation-delay:0s"></span><span class="ld-dot" style="animation-delay:.2s"></span><span class="ld-dot" style="animation-delay:.4s"></span></div>
+    <div>LOADING THESIS…</div>
+  </div>
+</div>
 <script>
 // Listen for theme changes from parent index.html
 window.addEventListener('message', function(e) {
@@ -105,11 +112,14 @@ const TAG_HELP = {
   WATCH: "not decided yet — keep an eye on it.",
 };
 
+function tipTitle(title, body, note) {
+  return [title, body, note].filter(Boolean).join(' — ');
+}
 function tip(title, body, note, color) {
-  return { className:"tip-target", onMouseEnter:(e)=>showTip(e,title,body,note,color), onMouseMove:(e)=>moveTip(e), onMouseLeave:hideTip };
+  return { className:"tip-target", title:tipTitle(title,body,note), onMouseEnter:(e)=>showTip(e,title,body,note,color), onMouseMove:(e)=>moveTip(e), onMouseLeave:hideTip };
 }
 function tipSvg(title, body, note, color, extraClass) {
-  return { className:(extraClass?extraClass+" ":"")+"tip-target", onMouseEnter:(e)=>showTip(e,title,body,note,color), onMouseMove:(e)=>moveTip(e), onMouseLeave:hideTip };
+  return { className:(extraClass?extraClass+" ":"")+"tip-target", title:tipTitle(title,body,note), onMouseEnter:(e)=>showTip(e,title,body,note,color), onMouseMove:(e)=>moveTip(e), onMouseLeave:hideTip };
 }
 
 /* ╔══════════════════════════════════════════════════════════════════════════╗
@@ -2558,15 +2568,18 @@ function CurrentTab() {
 
         {/* Bear / Base / Bull toggle */}
         <div style={{ display: "flex", gap: 6, alignItems: "center", marginLeft: 14, flexShrink: 0 }}>
-          {["bear", "base", "bull"].map(k => (
-            <button key={k} onClick={() => setActive(k)} style={{
-              background: active === k ? CASES[k].accent : "transparent",
-              color:      active === k ? "var(--page-bg)" : CASES[k].accent,
-              border: `1px solid ${CASES[k].accent}`,
-              borderRadius: 4, padding: "4px 12px", cursor: "pointer",
-              fontFamily: FONT_MONO, fontSize: 9, fontWeight: 700,
-              letterSpacing: "0.1em", transition: "all .15s",
-            }}>{CASES[k].label}</button>
+          {[["bear","▼"],["base","◆"],["bull","▲"]].map(([k, icon]) => (
+            <button key={k} onClick={() => setActive(k)}
+              aria-label={`Switch to ${k} case scenario`}
+              aria-pressed={active === k}
+              style={{
+                background: active === k ? CASES[k].accent : "transparent",
+                color:      active === k ? "var(--page-bg)" : CASES[k].accent,
+                border: `1px solid ${CASES[k].accent}`,
+                borderRadius: 4, padding: "4px 12px", cursor: "pointer",
+                fontFamily: FONT_MONO, fontSize: 9, fontWeight: 700,
+                letterSpacing: "0.1em", transition: "all .15s",
+              }}>{icon} {CASES[k].label}</button>
           ))}
         </div>
       </div>
@@ -3543,12 +3556,12 @@ function FutureTab() {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
             <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "var(--tx6)" }}>CYCLE LOG</div>
             <div style={{ display: "flex", gap: 6 }}>
-              <button onClick={() => { setSettingsForm({ cycleAmount: store.cycleAmount, cycleDays: store.cycleDays }); setSettingsOpen(!settingsOpen); }}
+              <button aria-label="Open dry powder cycle settings" onClick={() => { setSettingsForm({ cycleAmount: store.cycleAmount, cycleDays: store.cycleDays }); setSettingsOpen(!settingsOpen); }}
                 style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid var(--bd2)",
                   background: "var(--btn-bg)", color: "var(--tx5)", cursor: "pointer", letterSpacing: "0.08em" }}>
                 ⚙ SETTINGS
               </button>
-              <button onClick={openAdd}
+              <button aria-label="Log a new dry powder cycle" onClick={openAdd}
                 style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid #3fd07a55",
                   background: "rgba(63,208,122,0.12)", color: "#3fd07a", cursor: "pointer", letterSpacing: "0.08em" }}>
                 + ADD CYCLE
@@ -3579,7 +3592,7 @@ function FutureTab() {
                       fontSize: 10, outline: "none", fontFamily: "inherit" }} />
                 </div>
               </div>
-              <button onClick={saveSettings}
+              <button aria-label="Save cycle settings" onClick={saveSettings}
                 style={{ padding: "4px 12px", borderRadius: 3, border: "1px solid #3fd07a55",
                   background: "rgba(63,208,122,0.12)", color: "#3fd07a", cursor: "pointer",
                   fontSize: 9, letterSpacing: "0.08em" }}>SAVE</button>
@@ -3611,11 +3624,11 @@ function FutureTab() {
                 ))}
               </div>
               <div style={{ display: "flex", gap: 6 }}>
-                <button onClick={saveForm}
+                <button aria-label="Save cycle entry" onClick={saveForm}
                   style={{ padding: "4px 12px", borderRadius: 3, border: "1px solid #3fd07a55",
                     background: "rgba(63,208,122,0.12)", color: "#3fd07a", cursor: "pointer",
                     fontSize: 9 }}>SAVE</button>
-                <button onClick={() => setEditingCycle(null)}
+                <button aria-label="Cancel cycle edit" onClick={() => setEditingCycle(null)}
                   style={{ padding: "4px 12px", borderRadius: 3, border: "1px solid var(--bd2)",
                     background: "var(--btn-bg)", color: "var(--tx6)", cursor: "pointer", fontSize: 9 }}>CANCEL</button>
               </div>
@@ -3649,10 +3662,10 @@ function FutureTab() {
                   <span style={{ color: "#e0a83b" }}>${(parseFloat(c.saved) || 0).toLocaleString()}</span>
                   <span style={{ color: "var(--tx6)", fontSize: 9 }}>{c.note || "—"}</span>
                   <span style={{ display: "flex", gap: 4 }}>
-                    <button onClick={() => openEdit(c)}
+                    <button aria-label="Edit this cycle" onClick={() => openEdit(c)}
                       style={{ fontSize: 8, padding: "2px 5px", borderRadius: 2, border: "1px solid var(--bd2)",
                         background: "var(--btn-bg)", color: "var(--tx5)", cursor: "pointer" }}>✎</button>
-                    <button onClick={() => deleteCycle(c.id)}
+                    <button aria-label="Delete this cycle" onClick={() => deleteCycle(c.id)}
                       style={{ fontSize: 8, padding: "2px 5px", borderRadius: 2, border: "1px solid rgba(241,86,75,0.3)",
                         background: "rgba(241,86,75,0.08)", color: "#f1564b", cursor: "pointer" }}>×</button>
                   </span>
@@ -3689,10 +3702,10 @@ function FutureTab() {
               <span style={{ fontSize: 9, color: flash ? "#3fd07a" : "transparent", transition: "color .3s", letterSpacing: "0.1em" }}>✓ SAVED</span>
               {clearPending
                 ? <>
-                    <button onClick={clearPos} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid rgba(241,86,75,0.7)", background: "rgba(241,86,75,0.18)", color: "#f1564b", cursor: "pointer", letterSpacing: "0.08em" }}>CONFIRM CLEAR</button>
-                    <button onClick={() => setClearPending(false)} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid var(--bd2)", background: "transparent", color: "var(--tx5)", cursor: "pointer", letterSpacing: "0.08em" }}>CANCEL</button>
+                    <button aria-label="Confirm: clear all position data" onClick={clearPos} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid rgba(241,86,75,0.7)", background: "rgba(241,86,75,0.18)", color: "#f1564b", cursor: "pointer", letterSpacing: "0.08em" }}>CONFIRM CLEAR</button>
+                    <button aria-label="Cancel clear" onClick={() => setClearPending(false)} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid var(--bd2)", background: "transparent", color: "var(--tx5)", cursor: "pointer", letterSpacing: "0.08em" }}>CANCEL</button>
                   </>
-                : <button onClick={() => setClearPending(true)} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid rgba(241,86,75,0.3)", background: "rgba(241,86,75,0.08)", color: "#f1564b", cursor: "pointer", letterSpacing: "0.08em" }}>CLEAR</button>
+                : <button aria-label="Clear all position data" onClick={() => setClearPending(true)} style={{ fontSize: 8, padding: "3px 8px", borderRadius: 3, border: "1px solid rgba(241,86,75,0.3)", background: "rgba(241,86,75,0.08)", color: "#f1564b", cursor: "pointer", letterSpacing: "0.08em" }}>CLEAR</button>
               }
             </div>
           </div>
@@ -3702,7 +3715,7 @@ function FutureTab() {
             border: "1px solid rgba(47,109,255,0.22)", borderRadius: 6, marginBottom: 10 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
               <div style={{ fontSize: 9.5, letterSpacing: "0.12em", color: "#2f6dff", fontWeight: 700 }}>EXISTING · PRE-THESIS</div>
-              <button onClick={addExisting} style={{ background: "transparent", border: "1px solid rgba(47,109,255,0.35)",
+              <button aria-label="Add existing position entry row" onClick={addExisting} style={{ background: "transparent", border: "1px solid rgba(47,109,255,0.35)",
                 borderRadius: 4, padding: "3px 10px", cursor: "pointer", fontSize: 9.5,
                 color: "#2f6dff", fontFamily: FONT_MONO, letterSpacing: "0.08em" }}>+ ADD ROW</button>
             </div>
@@ -3743,7 +3756,7 @@ function FutureTab() {
                           style={{ ...posInputStyle, textAlign: "left", accentColor: "#2f6dff" }} />
                       </td>
                       <td style={{ padding: "4px 6px", textAlign: "center", width: 22 }}>
-                        <button onClick={() => delExisting(e.id)}
+                        <button aria-label="Remove this existing position entry" onClick={() => delExisting(e.id)}
                           style={{ background: "transparent", border: "none", cursor: "pointer",
                             color: existing.length > 1 ? "rgba(47,109,255,0.4)" : "var(--tx9)",
                             fontSize: 13, lineHeight: 1, padding: "0 2px", fontFamily: FONT_MONO }}>×</button>
@@ -3766,7 +3779,7 @@ function FutureTab() {
           <div style={{ marginBottom: 10 }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
               <div style={{ fontSize: 9.5, letterSpacing: "0.12em", color: "var(--tx5)", fontWeight: 700 }}>THESIS-DRIVEN ADDS</div>
-              <button onClick={addTranche} style={{ background: "transparent", border: "1px solid var(--bd2)",
+              <button aria-label="Add thesis-driven buy tranche row" onClick={addTranche} style={{ background: "transparent", border: "1px solid var(--bd2)",
                 borderRadius: 4, padding: "3px 10px", cursor: "pointer", fontSize: 9.5,
                 color: "var(--tx4)", fontFamily: FONT_MONO, letterSpacing: "0.08em" }}>+ ADD ROW</button>
             </div>
@@ -3811,7 +3824,7 @@ function FutureTab() {
                         {t.date || "—"}
                       </td>
                       <td style={{ padding: "4px 6px", textAlign: "center", width: 22 }}>
-                        <button onClick={() => deleteTranche(t.id)}
+                        <button aria-label="Remove this buy tranche" onClick={() => deleteTranche(t.id)}
                           style={{ background: "transparent", border: "none", cursor: "pointer",
                             color: "var(--tx8)", fontSize: 13, lineHeight: 1,
                             padding: "0 2px", fontFamily: FONT_MONO }}>×</button>
@@ -4546,7 +4559,7 @@ function PastTab() {
               </div>
               <div style={{ display: "flex", gap: 4 }}>
                 {["annual", "quarterly"].map(p => (
-                  <button key={p} onClick={() => setPeriod(p)} style={{
+                  <button key={p} aria-label={`Show ${p} data`} aria-pressed={period === p} onClick={() => setPeriod(p)} style={{
                     background: period === p ? "var(--blue-soft)" : "transparent",
                     color: period === p ? "var(--page-bg)" : "var(--tx4)",
                     border: `1px solid ${period === p ? "var(--blue-soft)" : "var(--bd)"}`,
@@ -4577,7 +4590,7 @@ function PastTab() {
                     padding: "9px 4px", letterSpacing: "0.03em" }}
                 />
                 {finQuery && (
-                  <button onClick={() => { setFinQuery(""); setFinOpen(false); }}
+                  <button aria-label="Clear metric search" onClick={() => { setFinQuery(""); setFinOpen(false); }}
                     style={{ background: "transparent", border: "none", color: "var(--tx5)",
                       cursor: "pointer", padding: "0 12px", fontSize: 16, fontFamily: FONT_MONO }}>×</button>
                 )}
@@ -4643,7 +4656,7 @@ function PastTab() {
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 16 }}>
                 <span style={{ fontSize: 9, color: "var(--tx6)", letterSpacing: "0.1em", alignSelf: "center", marginRight: 2 }}>QUICK ADD ›</span>
                 {FIN_METRICS.filter(m => !pinned.includes(m.name)).slice(0, 10).map(m => (
-                  <button key={m.name} onClick={() => addMetric(m.name)}
+                  <button key={m.name} aria-label={`Add ${m.name} to dashboard`} onClick={() => addMetric(m.name)}
                     style={{ background: "transparent", border: "1px solid var(--bd)", borderRadius: 4,
                       padding: "3px 10px", cursor: "pointer", fontFamily: FONT_MONO,
                       fontSize: 9.5, color: "var(--tx4)", letterSpacing: "0.06em", transition: "all .15s" }}
@@ -4843,14 +4856,14 @@ function MetricCard({ metric, period, onRemove }) {
               <div style={{ fontSize: 9, color: "var(--tx6)" }}>{lbls[lbls.length - 1]}</div>
             </div>
           )}
-          <button onClick={() => setShowInsight(s => !s)} style={{
+          <button aria-label={showInsight ? "Hide plain-English insight" : "Show plain-English insight"} onClick={() => setShowInsight(s => !s)} style={{
             background: showInsight ? "var(--blue-soft)" : "transparent",
             color: showInsight ? "var(--page-bg)" : "var(--tx5)",
             border: `1px solid ${showInsight ? "var(--blue-soft)" : "var(--bd)"}`,
             borderRadius: 4, cursor: "pointer", fontFamily: FONT_MONO,
             fontSize: 9, padding: "3px 9px", letterSpacing: "0.08em",
             transition: "all .15s", whiteSpace: "nowrap" }}>▸ EXPLAIN</button>
-          <button onClick={onRemove} style={{ background: "transparent", border: "none",
+          <button aria-label={`Remove ${metric.name} from dashboard`} onClick={onRemove} style={{ background: "transparent", border: "none",
             cursor: "pointer", color: "var(--tx6)", fontSize: 18, padding: "0 2px",
             fontFamily: FONT_MONO, lineHeight: 1 }}>×</button>
         </div>
@@ -4939,6 +4952,14 @@ function MetricCard({ metric, period, onRemove }) {
 function AvgoThesis() {
   const [active, setActive]       = useState("base");
   const [activeTab, setActiveTab] = useState("the-past");
+  const [isLight, setIsLight]     = useState(() => document.documentElement.classList.contains('light'));
+  const toggleTheme = () => {
+    const next = !isLight;
+    setIsLight(next);
+    document.documentElement.classList.toggle('light', next);
+    localStorage.setItem('th3sis_theme', next ? 'light' : 'dark');
+    try { window.parent.postMessage({ type: 'th3sis-theme', light: next }, '*'); } catch (_) {}
+  };
   const c = CASES[active];
   const kpiVals = KPI_PROJ[active];
   return (
@@ -4960,6 +4981,12 @@ function AvgoThesis() {
             <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "var(--tx3)" }}>{TICKER_META.company}</span>
             <span {...tip("Today's share price", `One share of AVGO costs about $${NOW_PRICE} right now (post 10:1 split, post Q2 FY2026 earnings). The stock dropped ~15% after the Q3 AI guide of $16B missed analyst whispers. Next earnings: Q3 FY2026 (~Sep 2026).`, null, "var(--title)")}
               style={{ color: "var(--title)", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}</span>
+            <button onClick={toggleTheme} aria-label={isLight ? "Switch to dark mode" : "Switch to light mode"}
+              style={{ background: "transparent", border: "1px solid var(--bd2)", borderRadius: 20,
+                padding: "3px 10px", cursor: "pointer", fontFamily: FONT_MONO, fontSize: 9,
+                color: "var(--tx5)", letterSpacing: "0.08em", transition: "all .15s" }}>
+              {isLight ? "◑ DARK" : "☀ LIGHT"}
+            </button>
           </div>
         </div>
 

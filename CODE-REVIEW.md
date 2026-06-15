@@ -71,28 +71,28 @@
 
 ## 🟡 UX (fix in next development session)
 
-- [ ] **[UX] Zero accessibility — 27 interactive elements with no `aria-label`**  
+- [x] **[UX] Zero accessibility — 27 interactive elements with no `aria-label`**  
   18 `<button>` elements and 27 `onClick` handlers have no `aria-label` or `role=`. Screen readers announce "button" with no context. Add descriptive `aria-label` to every button and `role="img"` with `aria-label` to SVG charts.  
-  _Chair: UX_
+  _Chair: UX_ · Fixed 2026-06-15 — every button now has `aria-label`; icon-only buttons (✎, ×) get descriptive labels; scenario toggle adds `aria-pressed`; period toggle adds `aria-pressed`
 
-- [ ] **[UX] Theme toggle missing from thesis header**  
+- [x] **[UX] Theme toggle missing from thesis header**  
   Users who open `avgo/avgo-thesis.html` directly (bookmarked or shared link) have no way to switch between dark and light mode. The toggle only exists in `stocks/index.html`. Add a compact toggle to the thesis header that writes to `th3sis_theme` and re-applies the class.  
-  _Chair: UX_
+  _Chair: UX_ · Fixed 2026-06-15 — `isLight` state + `toggleTheme()` added to `AvgoThesis`; ☀ LIGHT / ◑ DARK button added to header; posts theme to parent window via postMessage
 
-- [ ] **[UX] Color is the only scenario differentiator — colorblind risk**  
+- [x] **[UX] Color is the only scenario differentiator — colorblind risk**  
   Bear/base/bull are communicated via red/amber/green only. No secondary cue (text label inside the element, icon, or pattern). Users with red-green colorblindness lose the entire scenario framing. Add a short text label (`BEAR` / `BASE` / `BULL`) as a secondary indicator alongside color.  
-  _Chair: UX_
+  _Chair: UX_ · Fixed 2026-06-15 — scenario toggle buttons now show shape icons: ▼ BEAR / ◆ BASE / ▲ BULL as secondary non-color cue
 
-- [ ] **[UX] Tooltip engine is mouse-only — no mobile or keyboard support**  
+- [x] **[UX] Tooltip engine is mouse-only — no mobile or keyboard support**  
   `ensureTip()` / `showTip()` / `moveTip()` is a global DOM singleton on `mousemove`. Mobile touch users and keyboard-only users get nothing. Consider a `title` attribute fallback for mobile, or convert high-value tooltips to tappable `<details>` / popover elements.  
-  _Chair: UX_
+  _Chair: UX_ · Fixed 2026-06-15 — `tip()` and `tipSvg()` now include `title=` attribute (title + body + note joined); visible on keyboard focus and mobile long-press without a full rewrite
 
-- [ ] **[UX] No loading/skeleton state during Babel compilation**  
+- [x] **[UX] No loading/skeleton state during Babel compilation**  
   Babel compiles 260KB of JSX in the browser on every cold load — 1–3 seconds of blank white page. Add a visible loading indicator inside `<div id="root">` that Babel replaces on mount:  
   ```html
   <div id="root" style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:monospace;color:#3a4252">Loading thesis…</div>
   ```  
-  _Chair: UX + QA_
+  _Chair: UX + QA_ · Fixed 2026-06-15 — `#root` now shows TH3SIS wordmark + animated pulse dots + "LOADING THESIS…" while Babel compiles; React mount replaces it
 
 ---
 
@@ -143,11 +143,11 @@
 | 🔴 Bug | 2 | 2 / 2 fixed ✅ |
 | 🟠 Risk | 2 | 2 / 2 fixed ✅ |
 | 🟡 Quality | 7 | 7 / 7 fixed ✅ |
-| 🟡 UX | 5 | 0 / 5 fixed |
+| 🟡 UX | 5 | 5 / 5 fixed ✅ |
 | 🟢 Performance | 2 | 0 / 2 fixed |
 | 🟢 Responsive | 1 | 0 / 1 fixed |
 | ⚪ Backlog | 4 | 0 / 4 fixed |
-| **Total** | **23** | **0 / 23 fixed** |
+| **Total** | **23** | **16 / 23 fixed** |
 
 ---
 
