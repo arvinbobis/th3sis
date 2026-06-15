@@ -6,13 +6,13 @@
 
 ## 🔴 Bugs (fix immediately)
 
-- [ ] **[BUG] Price display renders as `$382.07.00`**  
+- [x] **[BUG] Price display renders as `$382.07.00`**  
   `stocks/avgo/avgo-thesis.html` line 4936: `` `$${NOW_PRICE}.00` `` should be `` `$${NOW_PRICE}` `` (price already has decimals).  
-  _Chair: QA + UX_
+  _Chair: QA + UX_ · Fixed 2026-06-15
 
-- [ ] **[BUG] DCF divide-by-zero when `termPE` slider is dragged to 0**  
+- [x] **[BUG] DCF divide-by-zero when `termPE` slider is dragged to 0**  
   `impliedCAGR` formula divides by `v.ntm_eps * termPE` — if `termPE = 0`, result is `Infinity`. Color logic and label strings don't handle `Infinity` or `NaN`. Add a guard: `if (!termPE || termPE <= 0) return`.  
-  _Chair: QA + Engineering_
+  _Chair: QA + Engineering_ · Fixed 2026-06-15
 
 ---
 
@@ -140,7 +140,7 @@
 
 | Priority | Count | Status |
 |---|---|---|
-| 🔴 Bug | 2 | 0 / 2 fixed |
+| 🔴 Bug | 2 | 2 / 2 fixed ✅ |
 | 🟠 Risk | 2 | 0 / 2 fixed |
 | 🟡 Quality | 7 | 0 / 7 fixed |
 | 🟡 UX | 5 | 0 / 5 fixed |
@@ -151,4 +151,4 @@
 
 ---
 
-_Last updated: 2026-06-14_
+_Last updated: 2026-06-15_

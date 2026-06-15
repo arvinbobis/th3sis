@@ -2384,30 +2384,35 @@ function CurrentTab() {
   const [dr, setDr]         = useState(VAL_CONFIG.default_discount_pct);
   const [termPE, setTermPE] = useState(VAL_CONFIG.default_terminal_pe);
   const dcfN        = VAL_CONFIG.dcf_years;
-  const impliedCAGR = (Math.pow(NOW_PRICE * Math.pow(1 + dr / 100, dcfN) / (v.ntm_eps * termPE), 1 / dcfN) - 1) * 100;
-  const cagrRounded = impliedCAGR.toFixed(1);
-  const cagrColor   = impliedCAGR > 25 ? "#f1564b" : impliedCAGR > 15 ? "#e0a83b" : "#3fd07a";
-  const cagrNote    = impliedCAGR < 15
+  const impliedCAGR = (termPE > 0 && v.ntm_eps > 0)
+    ? (Math.pow(NOW_PRICE * Math.pow(1 + dr / 100, dcfN) / (v.ntm_eps * termPE), 1 / dcfN) - 1) * 100
+    : null;
+  const cagrRounded = impliedCAGR !== null ? impliedCAGR.toFixed(1) : "—";
+  const cagrDisplay = impliedCAGR !== null ? `+${cagrRounded}%` : "—";
+  const cagrColor   = impliedCAGR === null ? "var(--tx4)" : impliedCAGR > 25 ? "#f1564b" : impliedCAGR > 15 ? "#e0a83b" : "#3fd07a";
+  const cagrNote    = impliedCAGR === null
+    ? "Adjust sliders to calculate the implied growth rate."
+    : impliedCAGR < 15
     ? "Low bar — not priced for perfection. Even moderate execution justifies the price."
     : impliedCAGR < 25
     ? "Moderate bar — requires solid execution on the AI revenue ramp."
     : "High bar — requires near-perfect execution on the $100B FY2027 target.";
 
   const marketMood = pePos > 0.67
-    ? { label: "ELEVATED OPTIMISM", sub: `market pricing +${cagrRounded}% EPS CAGR (high bar)`,       col: "#f1564b" }
+    ? { label: "ELEVATED OPTIMISM", sub: `market pricing ${cagrDisplay} EPS CAGR (high bar)`,       col: "#f1564b" }
     : pePos > 0.4
-    ? { label: "MODERATE OPTIMISM", sub: `market requires +${cagrRounded}% EPS CAGR`,                 col: "#e0a83b" }
-    : { label: "SKEPTICISM / FEAR",  sub: `market requires only +${cagrRounded}% EPS CAGR (low bar)`, col: "#3fd07a" };
+    ? { label: "MODERATE OPTIMISM", sub: `market requires ${cagrDisplay} EPS CAGR`,                 col: "#e0a83b" }
+    : { label: "SKEPTICISM / FEAR",  sub: `market requires only ${cagrDisplay} EPS CAGR (low bar)`, col: "#3fd07a" };
 
   const overallVerdict = thesisStatus.label === "BROKEN"
     ? { label: "REDUCE / EXIT",       sub: "Kill-switch criteria met — act on signal",                                                                         col: "#f1564b" }
     : thesisStatus.label === "WATCH" && belowBase
-    ? { label: "HOLD — WATCH CLOSELY", sub: `Signals mixed · price attractive · market requires only +${cagrRounded}% EPS CAGR — wait for Q3 clarity`,         col: "#e0a83b" }
+    ? { label: "HOLD — WATCH CLOSELY", sub: `Signals mixed · price attractive · market requires only ${cagrDisplay} EPS CAGR — wait for Q3 clarity`,         col: "#e0a83b" }
     : belowBase
-    ? { label: "CONSIDER ADDING",      sub: `Thesis ${thesisStatus.label.toLowerCase()} · below base floor · market requires only +${cagrRounded}% EPS CAGR`, col: "#3fd07a" }
+    ? { label: "CONSIDER ADDING",      sub: `Thesis ${thesisStatus.label.toLowerCase()} · below base floor · market requires only ${cagrDisplay} EPS CAGR`, col: "#3fd07a" }
     : inBase
-    ? { label: "HOLD AND MONITOR",     sub: `Thesis ${thesisStatus.label.toLowerCase()} · price fair · market requires +${cagrRounded}% EPS CAGR`,            col: "#e0a83b" }
-    : { label: "WAIT FOR PULLBACK",    sub: `Thesis ${thesisStatus.label.toLowerCase()} · price stretched · market pricing +${cagrRounded}% EPS CAGR`,        col: "#f1564b" };
+    ? { label: "HOLD AND MONITOR",     sub: `Thesis ${thesisStatus.label.toLowerCase()} · price fair · market requires ${cagrDisplay} EPS CAGR`,            col: "#e0a83b" }
+    : { label: "WAIT FOR PULLBACK",    sub: `Thesis ${thesisStatus.label.toLowerCase()} · price stretched · market pricing ${cagrDisplay} EPS CAGR`,        col: "#f1564b" };
 
   // ── Scorecard card (clickable → switches evidence panel) ──────────────────
   const ScoreCard = ({ question, answer, detail, col, panelKey, tipTitle, tipBody }) => (
@@ -2460,10 +2465,10 @@ function CurrentTab() {
           <ScoreCard
             question="WHAT IS THE MARKET ASSUMING?"
             answer={marketMood.label}
-            detail={`P/E ${currentPE}× · requires +${cagrRounded}% EPS CAGR · FCF yield ${fcfYield}%`}
+            detail={`P/E ${currentPE}× · requires ${cagrDisplay} EPS CAGR · FCF yield ${fcfYield}%`}
             col={marketMood.col} panelKey="mood"
             tipTitle="What is the market assuming?"
-            tipBody={`At ${currentPE}× NTM P/E, the market requires a +${cagrRounded}% EPS CAGR over ${dcfN} years just to justify today's price (at ${dr}% discount rate, ${termPE}× terminal P/E). ${cagrNote} FCF yield ${fcfYield}% vs 10Y Treasury ${v.risk_free_pct}% — positive spread means equities still offer a risk premium above risk-free.`} />
+            tipBody={`At ${currentPE}× NTM P/E, the market requires a ${cagrDisplay} EPS CAGR over ${dcfN} years just to justify today's price (at ${dr}% discount rate, ${termPE}× terminal P/E). ${cagrNote} FCF yield ${fcfYield}% vs 10Y Treasury ${v.risk_free_pct}% — positive spread means equities still offer a risk premium above risk-free.`} />
           <ScoreCard
             question="AM I GETTING PAID FOR THE RISK?"
             answer={`${asymStatus.label} — ${asymStatus.desc}`}
@@ -2780,13 +2785,13 @@ function CurrentTab() {
                 </div>
                 <div style={{ fontSize: 11, color: "var(--tx3)", lineHeight: 1.6 }}>
                   At {currentPE}× forward P/E, the market is pricing in the FY2026 $56B AI guide but has not fully priced the $100B FY2027 target.
-                  The reverse DCF says the crowd is only requiring <span style={{ color: cagrColor, fontWeight: 700 }}>+{cagrRounded}% EPS CAGR</span> to justify today's price. {cagrNote}
+                  The reverse DCF says the crowd is only requiring <span style={{ color: cagrColor, fontWeight: 700 }}>{cagrDisplay} EPS CAGR</span> to justify today's price. {cagrNote}
                 </div>
               </div>
             </div>
 
             {/* Reverse DCF */}
-            <div {...tip("Reverse DCF — what is the market pricing in?", `Works backwards from today's price: given a discount rate and terminal multiple, what annual EPS growth rate must the market be embedding? At $${NOW_PRICE}, the required CAGR is +${cagrRounded}%. ${cagrNote} Adjust sliders to stress-test assumptions.`, "Low required CAGR = not priced for perfection. High = very little room for error.", cagrColor)}
+            <div {...tip("Reverse DCF — what is the market pricing in?", `Works backwards from today's price: given a discount rate and terminal multiple, what annual EPS growth rate must the market be embedding? At $${NOW_PRICE}, the required CAGR is ${cagrDisplay}. ${cagrNote} Adjust sliders to stress-test assumptions.`, "Low required CAGR = not priced for perfection. High = very little room for error.", cagrColor)}
               style={{ padding: "14px 16px", background: "var(--inner-bg)", border: `1px solid ${cagrColor}44`, borderRadius: 8, marginBottom: 14 }}>
               <div style={{ fontSize: 8.5, letterSpacing: "0.14em", color: "var(--tx6)", marginBottom: 12 }}>REVERSE DCF · IMPLIED EPS CAGR</div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
@@ -2806,7 +2811,7 @@ function CurrentTab() {
               <div style={{ padding: "10px 14px", background: "var(--panel-bg)", borderRadius: 6, border: `1px solid ${cagrColor}33` }}>
                 <div style={{ fontSize: 9, color: "var(--tx6)", marginBottom: 4, letterSpacing: "0.1em" }}>AT ${NOW_PRICE}, MARKET REQUIRES</div>
                 <div style={{ fontSize: 28, fontWeight: 700, color: cagrColor, lineHeight: 1 }}>
-                  +{cagrRounded}% EPS CAGR
+                  {cagrDisplay} EPS CAGR
                 </div>
                 <div style={{ fontSize: 9.5, color: "var(--tx7)", margin: "4px 0 8px" }}>over {dcfN}yr · NTM EPS $${v.ntm_eps} · ${dcfN}yr terminal {termPE}× · discount {dr}%</div>
                 <div style={{ fontSize: 10.5, color: "var(--tx3)", lineHeight: 1.55 }}>{cagrNote}</div>
@@ -4933,7 +4938,7 @@ function AvgoThesis() {
             <span style={{ color: "var(--tx1)" }}>NASDAQ:AVGO</span>
             <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "var(--tx3)" }}>Broadcom Inc.</span>
             <span {...tip("Today's share price", `One share of AVGO costs about $${NOW_PRICE} right now (post 10:1 split, post Q2 FY2026 earnings). The stock dropped ~15% after the Q3 AI guide of $16B missed analyst whispers. Next earnings: Q3 FY2026 (~Sep 2026).`, null, "var(--title)")}
-              style={{ color: "var(--title)", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}.00</span>
+              style={{ color: "var(--title)", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}</span>
           </div>
         </div>
 
