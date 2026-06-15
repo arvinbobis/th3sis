@@ -4089,13 +4089,14 @@ function PastTab() {
     localStorage.setItem(FIN_STORE_KEY, JSON.stringify({ version: 1, period, pinned }));
   }, [period, pinned]);
 
-  const unpinned   = FIN_METRICS.filter(m => !pinned.includes(m.name));
-  const suggestions = finQuery
-    ? unpinned.filter(m => m.name.toLowerCase().includes(finQuery.toLowerCase()) ||
-        m.group.toLowerCase().includes(finQuery.toLowerCase())).slice(0, 12)
-    : unpinned;
-  const FIN_GROUPS = [...new Set(FIN_METRICS.map(m => m.group))];
-  const grouped    = FIN_GROUPS.map(g => ({ group: g, items: suggestions.filter(m => m.group === g) })).filter(g => g.items.length > 0);
+  const unpinned   = React.useMemo(() => FIN_METRICS.filter(m => !pinned.includes(m.name)), [pinned]);
+  const suggestions = React.useMemo(() => {
+    if (!finQuery) return unpinned;
+    const q = finQuery.toLowerCase();
+    return unpinned.filter(m => m.name.toLowerCase().includes(q) || m.group.toLowerCase().includes(q)).slice(0, 12);
+  }, [unpinned, finQuery]);
+  const FIN_GROUPS = React.useMemo(() => [...new Set(FIN_METRICS.map(m => m.group))], []);
+  const grouped    = React.useMemo(() => FIN_GROUPS.map(g => ({ group: g, items: suggestions.filter(m => m.group === g) })).filter(g => g.items.length > 0), [FIN_GROUPS, suggestions]);
   const addMetric    = name => { setPinned(p => [...p, name]); setFinQuery(""); setFinOpen(false); };
   const removeMetric = name => setPinned(p => p.filter(x => x !== name));
 
@@ -4809,6 +4810,7 @@ function generateInsight(metric, period) {
 function MetricCard({ metric, period, onRemove }) {
   const { name, group, fmt, desc } = metric;
   const [showInsight, setShowInsight] = useState(false);
+  const insight = React.useMemo(() => generateInsight(metric, period), [metric.name, period]);
   const allVals = metric[period];
   const allLbls = FIN_LABELS[period];
   const maxShow = period === "quarterly" ? 12 : 10;
@@ -4877,7 +4879,7 @@ function MetricCard({ metric, period, onRemove }) {
           <div style={{ fontSize: 8.5, letterSpacing: "0.12em", color: "var(--blue-soft)",
             marginBottom: 6, fontWeight: 700 }}>▸ PLAIN ENGLISH</div>
           <div style={{ fontSize: 11.5, color: "var(--tx2)", lineHeight: 1.75 }}>
-            {generateInsight(metric, period)}
+            {insight}
           </div>
         </div>
       )}

@@ -98,13 +98,13 @@
 
 ## 🟢 Performance (nice-to-have)
 
-- [ ] **[PERF] No memoization on expensive computations**  
+- [x] **[PERF] No memoization on expensive computations**  
   Zero `useMemo` or `useCallback` in the entire file. The Explorer filter/group/sort pipeline (65 metrics), `generateInsight()` for every pinned card, and fan chart geometry all re-run on every state change including unrelated ones (e.g., slider drags). Wrap the filter pipeline and insight generation in `useMemo`.  
-  _Chair: Engineering_
+  _Chair: Engineering_ · Fixed 2026-06-15 — `unpinned`, `suggestions`, `FIN_GROUPS`, `grouped` all wrapped in `React.useMemo` with correct deps; search query lowercased once per memo
 
-- [ ] **[PERF] `generateInsight()` runs on every render per card**  
+- [x] **[PERF] `generateInsight()` runs on every render per card**  
   Called inside `MetricCard` render with no memoization. For 10+ pinned cards, this is 10+ full insight computations on every keystroke in the search box. Memoize with `useMemo([metric.name, period])`.  
-  _Chair: Engineering_
+  _Chair: Engineering_ · Fixed 2026-06-15 — `insight` computed once at top of `MetricCard` via `React.useMemo([metric.name, period])`; hoisted above conditional render to comply with Rules of Hooks
 
 ---
 
@@ -144,10 +144,10 @@
 | 🟠 Risk | 2 | 2 / 2 fixed ✅ |
 | 🟡 Quality | 7 | 7 / 7 fixed ✅ |
 | 🟡 UX | 5 | 5 / 5 fixed ✅ |
-| 🟢 Performance | 2 | 0 / 2 fixed |
+| 🟢 Performance | 2 | 2 / 2 fixed ✅ |
 | 🟢 Responsive | 1 | 0 / 1 fixed |
 | ⚪ Backlog | 4 | 0 / 4 fixed |
-| **Total** | **23** | **16 / 23 fixed** |
+| **Total** | **23** | **18 / 23 fixed** |
 
 ---
 
