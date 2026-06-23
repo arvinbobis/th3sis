@@ -9,66 +9,74 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  /* Shell palette — kept in sync with stocks/theme.css (teal dark / paper light, peach accent). */
   :root {
-    --bg:           #06080d;
-    --header-bg:    linear-gradient(160deg, #0a0d14, #070a10);
-    --bd:           #161c28;
-    --bd2:          #222a38;
-    --tx-title:     #f3f5f9;
-    --tx-main:      #dde4f0;
-    --tx-dim:       #3a4252;
-    --tx-chip:      #4a5366;
-    --accent:       #2f6dff;
-    --accent-soft:  #9fb4ff;
-    --search-bg:    #0d1018;
-    --search-tx:    #e8edf5;
-    --search-ph:    #3a4252;
-    --loading-bg:   #06080d;
-    --empty-mark:   #111620;
-    --empty-span:   #1a2540;
-    --empty-msg:    #2a3344;
-    --chip-bd:      #1c2230;
-    --chip-act-tx:  #9fb4ff;
-    --chip-act-nm:  #5a78aa;
+    --bg:           #051214;
+    --header-bg:    linear-gradient(160deg, #0b191b, #051214);
+    --bd:           #253336;
+    --bd2:          #314043;
+    --tx-title:     #d9ecef;
+    --tx-main:      #d9ecef;
+    --tx-dim:       #5f6f72;
+    --tx-chip:      #798a8d;
+    --accent:       #f2a26a;
+    --accent-soft:  #f2a26a;
+    --accent-fg:    #1a1410;
+    --search-bg:    #1b292c;
+    --search-tx:    #d9ecef;
+    --search-ph:    #5f6f72;
+    --loading-bg:   #051214;
+    --empty-mark:   #1b292c;
+    --empty-span:   #253336;
+    --empty-msg:    #5f6f72;
+    --chip-bd:      #253336;
+    --chip-act-tx:  #f2a26a;
+    --chip-act-nm:  #798a8d;
+    --dot-go:       #66b278;
+    --dot-stop:     #dd817a;
   }
   :root.light {
-    --bg:           #f5ede2;
-    --header-bg:    linear-gradient(160deg, #fdf8f0, #f0e6d4);
-    --bd:           #d9cdc0;
-    --bd2:          #c8bcaf;
-    --tx-title:     #3a3558;
-    --tx-main:      #575279;
-    --tx-dim:       #8e8aa6;
-    --tx-chip:      #7e7a96;
-    --accent:       #2f6dff;
-    --accent-soft:  #0c9fce;
-    --search-bg:    #ede0d0;
-    --search-tx:    #3a3558;
-    --search-ph:    #a9a5ba;
-    --loading-bg:   #f5ede2;
-    --empty-mark:   #eddecf;
-    --empty-span:   #e0d0bc;
-    --empty-msg:    #9e9ab4;
-    --chip-bd:      #d9cdc0;
-    --chip-act-tx:  #0c9fce;
-    --chip-act-nm:  #8e8aa6;
+    --bg:           #f4ece0;
+    --header-bg:    linear-gradient(160deg, #fdf8ef, #efe5d4);
+    --bd:           #e2d3bf;
+    --bd2:          #d6c8b4;
+    --tx-title:     #211c15;
+    --tx-main:      #342e25;
+    --tx-dim:       #968a76;
+    --tx-chip:      #756a58;
+    --accent:       #ac5700;
+    --accent-soft:  #ac5700;
+    --accent-fg:    #fdf8ef;
+    --search-bg:    #ebdcc9;
+    --search-tx:    #211c15;
+    --search-ph:    #968a76;
+    --loading-bg:   #f4ece0;
+    --empty-mark:   #ebdcc9;
+    --empty-span:   #d6c8b4;
+    --empty-msg:    #968a76;
+    --chip-bd:      #e2d3bf;
+    --chip-act-tx:  #ac5700;
+    --chip-act-nm:  #756a58;
+    --dot-go:       #66b278;
+    --dot-stop:     #dd817a;
   }
 
   html, body { height: 100%; background: var(--bg); color: var(--tx-main);
     font-family: 'JetBrains Mono', ui-monospace, monospace; overflow: hidden; transition: background .2s, color .2s; }
 
   /* ── Shell layout ───────────────────────────────────── */
-  #shell { display: flex; flex-direction: column; height: 100vh; }
+  #shell { display: flex; flex-direction: row; height: 100vh; }
 
-  /* ── Header ─────────────────────────────────────────── */
-  #header {
+  /* ── Sidebar ────────────────────────────────────────── */
+  #sidebar {
     flex-shrink: 0;
-    padding: 14px 28px 12px;
-    border-bottom: 1px solid var(--bd);
+    width: 244px;
+    display: flex; flex-direction: column;
+    padding: 18px 16px 16px;
+    border-right: 1px solid var(--bd);
     background: var(--header-bg);
     transition: background .2s, border-color .2s;
   }
-  #top-row { display: flex; align-items: center; gap: 20px; }
   #wordmark {
     font-family: 'Spectral', Georgia, serif;
     font-size: 22px; font-weight: 600;
@@ -76,58 +84,68 @@
   }
   #wordmark span { color: var(--accent); }
 
+  /* subtitle */
+  #subtitle { font-size: 9.5px; color: var(--tx-dim); margin-top: 7px; letter-spacing: 0.05em; line-height: 1.65; }
+
   /* search bar */
   #search-wrap {
-    display: flex; align-items: center;
+    display: flex; align-items: stretch; margin-top: 14px;
     background: var(--search-bg); border: 1px solid var(--bd2);
     border-radius: 6px; overflow: hidden; transition: border-color .15s;
   }
-  #search-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(47,109,255,0.15); }
+  #search-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent); }
   #search-input {
     background: transparent; border: none; outline: none;
     color: var(--search-tx); font-family: inherit; font-size: 13px; font-weight: 700;
     letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 7px 12px; width: 120px;
+    padding: 7px 12px; width: 100%; min-width: 0;
   }
   #search-input::placeholder { color: var(--search-ph); font-weight: 400; text-transform: none; letter-spacing: 0; }
   #search-btn {
     background: var(--accent); border: none; cursor: pointer;
-    color: #fff; font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-    padding: 0 14px; height: 100%; white-space: nowrap; transition: background .15s;
+    color: var(--accent-fg); font-family: inherit; font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    padding: 0 14px; white-space: nowrap; transition: filter .15s;
   }
-  #search-btn:hover { background: #4a84ff; }
+  #search-btn:hover { filter: brightness(1.08); }
+
+  /* error badge */
+  #not-found { display: none; align-items: flex-start; gap: 6px; font-size: 10px; color: var(--dot-stop); margin-top: 8px; line-height: 1.4; }
+  #not-found.on { display: flex; }
+
+  /* ── Chip rail (vertical list) ──────────────────────── */
+  #chip-label { font-size: 9.5px; color: var(--tx-dim); letter-spacing: 0.12em; margin: 16px 0 8px; flex-shrink: 0; }
+  #chip-rail {
+    display: flex; flex-direction: column; gap: 5px;
+    flex: 1; overflow-y: auto; margin: 0 -4px; padding: 0 4px;
+  }
+  .chip {
+    display: flex; align-items: center; gap: 8px;
+    background: transparent; border: 1px solid var(--chip-bd); border-radius: 5px;
+    padding: 7px 10px; cursor: pointer; transition: all .15s; font-family: inherit;
+    text-align: left; flex-shrink: 0;
+  }
+  .chip:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+  .chip.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, transparent); }
+  /* buy-alert radar dot (only lit for theses with alert config) */
+  .chip-dot { width: 13px; flex-shrink: 0; font-size: 12px; line-height: 1; text-align: center; color: var(--tx-chip); }
+  .chip-dot.armed      { color: var(--dot-go); animation: pulse-dot 1.4s ease-in-out infinite; }  /* in zone + thesis intact → GO LOOK */
+  .chip-dot.suppressed { color: var(--dot-stop); }   /* in zone but thesis flag off → do NOT add */
+  .chip-dot.quiet      { color: var(--tx-chip); }       /* visible-but-muted: monitored, not triggered */
+  .chip-dot.unknown    { color: var(--tx-dim); }        /* hollow ring: no live data right now */
+  .chip-ticker { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--tx-main); min-width: 44px; flex-shrink: 0; }
+  .chip.active .chip-ticker { color: var(--chip-act-tx); }
+  .chip-name { font-size: 9.5px; color: var(--tx-chip); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .chip.active .chip-name { color: var(--chip-act-nm); }
 
   /* theme toggle */
   #theme-btn {
-    margin-left: auto;
+    margin-top: 14px; flex-shrink: 0; align-self: flex-start;
     background: transparent; border: 1px solid var(--bd); border-radius: 20px;
-    padding: 4px 12px; cursor: pointer; font-family: inherit; font-size: 10px;
+    padding: 6px 14px; cursor: pointer; font-family: inherit; font-size: 10px;
     color: var(--tx-dim); letter-spacing: 0.08em; white-space: nowrap;
     transition: all .15s;
   }
   #theme-btn:hover { border-color: var(--accent); color: var(--tx-main); }
-
-  /* error badge */
-  #not-found { display: none; align-items: center; gap: 6px; font-size: 10.5px; color: #f1564b; }
-  #not-found.on { display: flex; }
-
-  /* subtitle */
-  #subtitle { font-size: 10px; color: var(--tx-dim); margin-top: 2px; letter-spacing: 0.06em; }
-
-  /* ── Chip rail ──────────────────────────────────────── */
-  #chip-rail { display: flex; align-items: center; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-  #chip-label { font-size: 9.5px; color: var(--tx-dim); letter-spacing: 0.12em; margin-right: 2px; }
-  .chip {
-    display: flex; align-items: center; gap: 6px;
-    background: transparent; border: 1px solid var(--chip-bd); border-radius: 5px;
-    padding: 4px 10px; cursor: pointer; transition: all .15s; font-family: inherit;
-  }
-  .chip:hover { border-color: var(--accent); background: rgba(47,109,255,0.07); }
-  .chip.active { border-color: var(--accent); background: rgba(47,109,255,0.12); }
-  .chip-ticker { font-size: 11px; font-weight: 700; letter-spacing: 0.08em; color: var(--tx-main); }
-  .chip.active .chip-ticker { color: var(--chip-act-tx); }
-  .chip-name { font-size: 9.5px; color: var(--tx-chip); }
-  .chip.active .chip-name { color: var(--chip-act-nm); }
 
   /* ── Main area ──────────────────────────────────────── */
   #main { flex: 1; position: relative; overflow: hidden; }
@@ -157,7 +175,7 @@
     font-size: 11px; font-weight: 700; letter-spacing: 0.1em; color: var(--empty-msg);
     transition: all .2s;
   }
-  .empty-chip:hover { border-color: var(--accent); color: var(--chip-act-tx); background: rgba(47,109,255,0.07); }
+  .empty-chip:hover { border-color: var(--accent); color: var(--chip-act-tx); background: color-mix(in srgb, var(--accent) 8%, transparent); }
 
   /* loading */
   #loading { display: none; position: absolute; inset: 0; align-items: center; justify-content: center; background: var(--loading-bg); }
@@ -170,26 +188,23 @@
 <body>
 <div id="shell">
 
-  <!-- ── Header ──────────────────────────────────────────────────────── -->
-  <div id="header">
-    <div id="top-row">
-      <div id="wordmark">TH<span>3</span>SIS</div>
-
-      <div id="search-wrap">
-        <input id="search-input" type="text" placeholder="ticker symbol…" autocomplete="off" autocorrect="off" spellcheck="false" />
-        <button id="search-btn">▸ LOAD</button>
-      </div>
-
-      <div id="not-found">⚠ no thesis for that ticker yet</div>
-
-      <button id="theme-btn">☀ LIGHT</button>
-    </div>
+  <!-- ── Sidebar ─────────────────────────────────────────────────────── -->
+  <div id="sidebar">
+    <div id="wordmark">TH<span>3</span>SIS</div>
     <div id="subtitle">investment thesis library · hover anything in a thesis for plain-english explanations</div>
 
-    <!-- Chip rail -->
-    <div id="chip-rail">
-      <span id="chip-label">AVAILABLE ›</span>
+    <div id="search-wrap">
+      <input id="search-input" type="text" placeholder="ticker symbol…" autocomplete="off" autocorrect="off" spellcheck="false" />
+      <button id="search-btn">▸ LOAD</button>
     </div>
+
+    <div id="not-found">⚠ no thesis for that ticker yet</div>
+
+    <!-- Chip list -->
+    <div id="chip-label">AVAILABLE ›</div>
+    <div id="chip-rail"></div>
+
+    <button id="theme-btn">☀ LIGHT</button>
   </div>
 
   <!-- ── Main ────────────────────────────────────────────────────────── -->
@@ -201,7 +216,7 @@
     <iframe id="thesis-frame" title="Investment Thesis"></iframe>
     <div id="empty">
       <div id="empty-mark">TH<span>3</span>SIS</div>
-      <div id="empty-msg">SELECT A TICKER ABOVE TO LOAD ITS THESIS<br>OR TYPE ANY SYMBOL AND PRESS LOAD</div>
+      <div id="empty-msg">SELECT A TICKER FROM THE SIDEBAR TO LOAD ITS THESIS<br>OR TYPE ANY SYMBOL AND PRESS LOAD</div>
       <div id="empty-chips"></div>
     </div>
   </div>
@@ -214,7 +229,8 @@ const REGISTRY = {
   ALAB:  { path: "ALAB/alab-thesis.html",   name: "Astera Labs" },
   AMZN:  { path: "AMZN/AMZN-thesis.html",   name: "Amazon.com" },
   ASML:  { path: "ASML/ASML-thesis.html",   name: "ASML Holding" },
-  AVGO:  { path: "avgo/avgo-thesis.html",   name: "Broadcom Inc." },
+  AVGO:  { path: "avgo/avgo-thesis.html",   name: "Broadcom Inc.",
+           alert: { buyFloor: 390, intact: true, nextEarnings: "2026-09-04" } }, // mirror of AVGO config ALERT block
   FICO:  { path: "FICO/FICO-thesis.html",   name: "Fair Isaac" },
   GOOGL: { path: "GOOGL/GOOGL-thesis.html", name: "Alphabet" },
   META:  { path: "META/META-thesis.html",   name: "Meta Platforms" },
@@ -222,7 +238,8 @@ const REGISTRY = {
   MSFT:  { path: "MSFT/MSFT-thesis.html",  name: "Microsoft" },
   MU:    { path: "MU/MU-thesis.html",       name: "Micron Technology" },
   NVDA:  { path: "NVDA/NVDA-thesis.html",   name: "NVIDIA" },
-  TSM:   { path: "TSM/TSM-thesis.html",     name: "Taiwan Semi" },
+  TSM:   { path: "tsm/tsm-thesis.html",     name: "Taiwan Semi",
+           alert: { buyFloor: 415, intact: true, nextEarnings: "2026-07-16" } }, // mirror of TSM config ALERT block
 };
 
 // ── DOM refs ─────────────────────────────────────────────────────────────────
@@ -262,7 +279,8 @@ function makeChip(ticker, target) {
   const el = document.createElement('button');
   el.className = 'chip';
   el.dataset.ticker = ticker;
-  el.innerHTML = `<span class="chip-ticker">${ticker}</span><span class="chip-name">${info.name}</span>`;
+  const dot = info.alert ? `<span class="chip-dot unknown" title="checking last close…">○</span>` : `<span class="chip-dot"></span>`;
+  el.innerHTML = `${dot}<span class="chip-ticker">${ticker}</span><span class="chip-name">${info.name}</span>`;
   el.addEventListener('click', () => loadTicker(ticker));
   target.appendChild(el);
   return el;
@@ -278,6 +296,54 @@ Object.keys(REGISTRY).sort().forEach(t => {
   el.addEventListener('click', () => loadTicker(t));
   emptyChips.appendChild(el);
 });
+
+// ── Buy-alert radar ────────────────────────────────────────────────────────────
+// For each thesis that declares alert config, fetch the last daily close and light a
+// sidebar dot per the pre-committed two-input gate (price AND thesis-intact):
+//   ARMED      close ≤ buyFloor AND intact   → green ⚑  (GO-LOOK, not GO-BUY)
+//   SUPPRESSED close ≤ buyFloor AND !intact  → red ✕    (price low because story changed)
+//   QUIET      close > buyFloor               → dim ·
+//   UNKNOWN    live close unavailable         → faint ·  (graceful fallback)
+// Live close = Yahoo chart via a public CORS proxy; any failure leaves the dot neutral.
+// Nothing cached. The flag (intact) is mirrored from each stock's config ALERT block.
+const ALERT_PROXY = "https://api.allorigins.win/get?url=";
+
+async function lastClose(symbol) {
+  try {
+    const y = `https://query1.finance.yahoo.com/v8/finance/chart/${symbol}?interval=1d&range=5d`;
+    const r = await fetch(ALERT_PROXY + encodeURIComponent(y));
+    if (!r.ok) return null;
+    const res = JSON.parse((await r.json()).contents).chart.result[0];
+    const closes = ((res.indicators && res.indicators.quote[0].close) || []).filter(x => x != null);
+    const px = closes.length ? closes[closes.length - 1] : (res.meta && res.meta.regularMarketPrice);
+    return Number.isFinite(px) ? Math.round(px * 100) / 100 : null;
+  } catch (_) { return null; }
+}
+
+function alertState(close, a) {
+  const stale = a.nextEarnings && new Date() > new Date(a.nextEarnings);
+  const staleNote = stale ? ` ⚠ Band may be stale (past ${a.nextEarnings}) — refresh the thesis before trusting this floor.` : "";
+  if (close == null)
+    return { cls: "unknown", glyph: "○", msg: "live close unavailable (offline/blocked) — open the thesis to check manually." };
+  if (close > a.buyFloor)
+    return { cls: "quiet", glyph: "●", msg: `$${close} — $${Math.round(close - a.buyFloor)} above your $${a.buyFloor} floor. Quiet.${staleNote}` };
+  if (!a.intact)
+    return { cls: "suppressed", glyph: "✕", msg: `$${close} — in the buy zone (≤ $${a.buyFloor}) but the THESIS FLAG IS OFF (a kill-switch tripped). Do NOT add — the price is low because the story changed. Re-underwrite first.${staleNote}` };
+  return { cls: "armed", glyph: "⚑", msg: `$${close} — ENTERED your buy zone (≤ $${a.buyFloor}), thesis intact. This is a GO-LOOK, not a GO-BUY: reopen the thesis, confirm no kill-switch tripped, then act on the plan you wrote calmly.${staleNote}` };
+}
+
+async function runRadar() {
+  for (const t of Object.keys(REGISTRY)) {
+    const a = REGISTRY[t].alert;
+    const chip = headerChips[t];
+    if (!a || !chip) continue;
+    const dot = chip.querySelector('.chip-dot');
+    const s = alertState(await lastClose(t), a);
+    if (dot) { dot.className = `chip-dot ${s.cls}`; dot.textContent = s.glyph; }
+    chip.title = `${t} buy-alert — ${s.msg}`;
+  }
+}
+runRadar();
 
 // ── Load a thesis ─────────────────────────────────────────────────────────────
 function loadTicker(ticker) {

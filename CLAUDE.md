@@ -110,11 +110,20 @@ Pressure-test reasoning rather than affirming it. In particular, watch for the
 - **No hardcoded hex colors in JSX inline styles.** Every color must use `var(--...)` from
   `theme.css`. Semantic chart colors (bear red `#f1564b`, base amber `#e0a83b`, bull green
   `#3fd07a`, accent blue `#2f6dff`) are the only permitted exceptions.
+- **`html, body { background: var(--page-bg); }` — never a literal hex.** A hardcoded dark
+  literal leaks through repaint/overscroll gaps and outside the centered content column,
+  showing as a black bar in light mode.
 - **No browser storage** (localStorage/sessionStorage) — keep state in React state only.
   Exception: `th3sis_theme` key (read-only in stock files — `index.html` owns writes).
 - Each stock must include the theme bootstrap script (see `theme.css` header comment) BEFORE
   the Babel script tag. It applies the saved theme before first React render and listens for
   postMessage theme changes from `index.html`.
+- **The `TabNav` (THE PAST/CURRENT/FUTURE row) must NOT be sticky/fixed** — `display: "flex"`
+  only, no `position: "sticky"`/`top`/`zIndex`. Sticky caused overlap/repaint issues when the
+  index loads the page in an iframe; let the row scroll with the content.
+- **The `#root` mount div must use `align-items: safe center; justify-content: safe center`**, not
+  plain `center`. Plain `center` pushes a tall thesis's top above the scroll origin, clipping the
+  header/first verdict row unreachably; `safe` centers short content but top-aligns when it overflows.
 - Put ALL per-quarter editable values in ONE clearly-marked config block at the top
   ("EDIT EVERYTHING IN THIS BLOCK EACH QUARTER") so updates never require hunting through code.
 - Backtest uses a **fixed rolling window** (default 6 quarters): keep an append-only
