@@ -214,6 +214,11 @@
       <span class="chip-ticker">FOLIO</span>
       <span class="chip-name">positions &amp; allocation</span>
     </button>
+    <button id="actions-chip" class="chip pinned">
+      <span class="chip-dot quiet">▸</span>
+      <span class="chip-ticker">ACTIONS</span>
+      <span class="chip-name">limit orders &amp; to-dos</span>
+    </button>
 
     <!-- Chip list -->
     <div id="chip-label">THESES ›</div>
@@ -270,6 +275,7 @@ const loading    = document.getElementById('loading');
 const loadingTxt = document.getElementById('loading-text');
 const themeBtn   = document.getElementById('theme-btn');
 const portfolioChip = document.getElementById('portfolio-chip');
+const actionsChip   = document.getElementById('actions-chip');
 
 // ── Theme ────────────────────────────────────────────────────────────────────
 const THEME_KEY = 'th3sis_theme';
@@ -389,6 +395,16 @@ function loadPortfolio() {
   loadFrame('portfolio/positions.html', 'LOADING PORTFOLIO…');
 }
 portfolioChip.addEventListener('click', loadPortfolio);
+
+// ── Load the action-items page ────────────────────────────────────────────────
+function loadActions() {
+  notFound.classList.remove('on');
+  if (activeChip) activeChip.classList.remove('active');
+  activeChip = actionsChip;
+  actionsChip.classList.add('active');
+  loadFrame('portfolio/action-items.html', 'LOADING ACTION ITEMS…');
+}
+actionsChip.addEventListener('click', loadActions);
 
 // ── Load a thesis ─────────────────────────────────────────────────────────────
 function loadTicker(ticker) {

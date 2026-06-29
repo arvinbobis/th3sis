@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TH3SIS · ACTIONS — Action Items</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../theme.css" />
+<script>
+function cdnFail(lib) {
+  var el = document.getElementById('root');
+  if (!el) return;
+  el.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100vh;background:#06080d';
+  el.innerHTML =
+    '<div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:20px;font-family:\'JetBrains Mono\',monospace">'
+    + '<div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230">TH<span style="color:#46aad9">3</span>SIS</div>'
+    + '<div style="font-size:11px;letter-spacing:0.18em;color:#dd817a">FAILED TO LOAD · ' + lib + '</div>'
+    + '<div style="font-size:10px;letter-spacing:0.12em;color:#3a4252">No internet connection — check your network and reload.</div>'
+    + '<a href="javascript:location.reload()" style="margin-top:4px;color:#46aad9;text-decoration:none;border:1px solid #46aad933;border-radius:20px;padding:4px 14px;font-size:9px;letter-spacing:0.14em">↺ RELOAD</a>'
+    + '</div>';
+}
+</script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" onerror="cdnFail('REACT')"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" onerror="cdnFail('REACT-DOM')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js" onerror="cdnFail('BABEL')"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: var(--page-bg); }
+  * { box-sizing: border-box; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
+  @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  @keyframes grow  { from { transform: scaleX(0);} to { transform: scaleX(1);} }
+  .panel { animation: fadeUp .55s ease both; }
+  .tip-target { cursor: help; border-bottom: 1px dotted var(--bd3); }
+  .row-hover { transition: background .12s ease; }
+  .row-hover:hover { background: var(--row-hl); }
+  .seg-grow { transform-origin: left center; animation: grow .9s cubic-bezier(.3,1,.4,1) both; }
+  .dot-armed { animation: pulse 1.4s ease-in-out infinite; }
+  #tip-box {
+    position: fixed; z-index: 9999; max-width: 320px; pointer-events: none;
+    background: var(--tip-bg); border: 1px solid var(--tip-bd);
+    border-radius: 10px; padding: 12px 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.28); opacity: 0; transition: opacity .14s ease;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #tip-box.on { opacity: 1; }
+  #tip-box .tt { font-size: 11px; font-weight: 700; letter-spacing: .08em; margin-bottom: 5px; }
+  #tip-box .tb { font-size: 11.5px; line-height: 1.55; color: var(--tx2); }
+  .ld-dot { width:5px; height:5px; border-radius:50%; background:#46aad9; display:inline-block; animation:pulse 1.2s ease-in-out infinite; }
+  ::-webkit-scrollbar { height: 8px; width: 8px; }
+  ::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 8px; }
+  @media (max-width: 820px) {
+    .resp-2 { grid-template-columns: 1fr !important; }
+    .resp-summary { grid-template-columns: 1fr 1fr !important; }
+  }
+</style>
+</head>
+<body>
+<noscript>
+  <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#06080d;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;">
+      <div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230;">TH<span style="color:#46aad9">3</span>SIS</div>
+      <div style="font-size:11px;letter-spacing:0.18em;color:#dd817a;">JAVASCRIPT REQUIRED</div>
+    </div>
+  </div>
+</noscript>
+<div id="root" style="display:flex;align-items:safe center;justify-content:safe center;min-height:100vh;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.18em;color:#3a4252;">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+    <div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230;">TH<span style="color:#46aad9">3</span>SIS</div>
+    <div style="display:flex;gap:5px;"><span class="ld-dot" style="animation-delay:0s"></span><span class="ld-dot" style="animation-delay:.2s"></span><span class="ld-dot" style="animation-delay:.4s"></span></div>
+    <div>LOADING ACTION ITEMS…</div>
+  </div>
+</div>
+<script>
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'th3sis-theme') {
+    document.documentElement.classList.toggle('light', !!e.data.light);
+    localStorage.setItem('th3sis_theme', e.data.light ? 'light' : 'dark');
+  }
+});
+(function() {
+  if (localStorage.getItem('th3sis_theme') !== 'dark') {
+    document.documentElement.classList.add('light');
+  }
+})();
+</script>
+<script src="portfolio-data.js"></script>
+<script type="text/babel">
+const FONT_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+const FONT_DISPLAY = "'Spectral', Georgia, serif";
+
+const GAIN = "#3fd07a", LOSS = "#f1564b", WARN = "#e0a83b", BLUE = "#2f6dff";
+const ACCENT = "var(--blue-soft)";
+
+// shared snapshot + strategy
+const ASOF = PF_ASOF, ACCT = PF_ACCT, POS = PF_POS, LIVE = PF_LIVE;
+const { CORE_TICKERS, TARGET_CORE_PCT, GEN_MULTIPLE, GEN_MIN_PROG, MUSK_BUCKET_CAP, LIMITS, RULES, REVIEW_GATES } = PF_STRAT;
+
+const usd = (v, d=2) => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const pct = (v, d=0) => (v>=0?"+":"") + v.toFixed(d) + "%";
+
+// tooltip engine
+let tipEl = null;
+function tip(){ if(!tipEl){ tipEl=document.createElement("div"); tipEl.id="tip-box"; document.body.appendChild(tipEl);} return tipEl; }
+function showTip(e,title,body,color){ const el=tip(); el.innerHTML=`<div class="tt" style="color:${color||ACCENT}">${title}</div><div class="tb">${body}</div>`; el.classList.add("on"); moveTip(e); }
+function moveTip(e){ const el=tip(),p=16; let x=e.clientX+p,y=e.clientY+p; const r=el.getBoundingClientRect(); if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-p; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-p; el.style.left=x+"px"; el.style.top=y+"px"; }
+function hideTip(){ tip().classList.remove("on"); }
+
+// ── derived ──────────────────────────────────────────────────────────────────
+const investedMV = POS.reduce((s,p)=>s+p.mv,0);
+const corePct    = POS.filter(p=>CORE_TICKERS.includes(p.t)).reduce((s,p)=>s+p.mv,0) / investedMV * 100;
+const gens = POS.filter(p=>!CORE_TICKERS.includes(p.t))
+  .map(p=>({ ...p, prog:(p.px/p.avg-1)*100, past:p.px>=GEN_MULTIPLE*p.avg, orig:p.avg*p.qty }));
+const pastTrim    = gens.filter(p=>p.past).sort((a,b)=>b.prog-a.prog);
+const nearTrigger = gens.filter(p=>!p.past && p.prog>=GEN_MIN_PROG).sort((a,b)=>b.prog-a.prog);
+const plannedCap  = LIMITS.reduce((s,l)=>s+(l.cap||0),0);
+const capGap      = plannedCap - ACCT.cash;
+const wontFill    = LIMITS.filter(l=>l.limit!=null && LIVE[l.t] && LIVE[l.t].px > l.limit);
+const awaiting    = LIMITS.filter(l=>!LIVE[l.t] && !l.watch);
+const watching    = LIMITS.filter(l=>l.watch);
+const LOSER_CLUSTER = ["SPGI","MCO","FICO","EFX","MSCI","INTU","CME","CBOE"];
+
+// ── atoms ──────────────────────────────────────────────────────────────────
+const Panel = ({children, style, delay=0}) => (
+  <div className="panel" style={{ background:"var(--panel-bg)", border:"1px solid var(--bd)", borderRadius:14, padding:20, animationDelay:delay+"s", ...style }}>{children}</div>
+);
+const Eyebrow = ({children, note, color}) => (
+  <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", marginBottom:14, gap:12, flexWrap:"wrap" }}>
+    <div style={{ fontSize:10.5, letterSpacing:"0.2em", color:color||"var(--tx5)", textTransform:"uppercase", fontWeight:700 }}>{children}</div>
+    {note && <div style={{ fontSize:10, color:"var(--tx5)", letterSpacing:"0.04em" }}>{note}</div>}
+  </div>
+);
+function Item({ tag, color, head, right, body, tipTitle, tipBody, dot }) {
+  return (
+    <div className="row-hover" style={{ display:"flex", gap:13, padding:"13px 14px", border:"1px solid var(--bd)", borderLeft:`3px solid ${color}`, borderRadius:9, background:"var(--inner-bg)", cursor: tipBody?"help":"default" }}
+      onMouseEnter={tipBody?(e)=>showTip(e,tipTitle,tipBody,color):undefined} onMouseMove={tipBody?moveTip:undefined} onMouseLeave={tipBody?hideTip:undefined}>
+      <span style={{ flexShrink:0, alignSelf:"flex-start", marginTop:1, fontSize:8, fontWeight:700, letterSpacing:"0.12em", color:color, border:`1px solid ${color}`, borderRadius:4, padding:"3px 7px", whiteSpace:"nowrap" }}>
+        {dot && <span className="dot-armed" style={{ marginRight:5 }}>●</span>}{tag}
+      </span>
+      <div style={{ flex:1, minWidth:0 }}>
+        <div style={{ display:"flex", justifyContent:"space-between", gap:10, alignItems:"baseline" }}>
+          <span style={{ fontSize:12.5, fontWeight:700, color:"var(--tx1)", letterSpacing:"0.02em" }}>{head}</span>
+          {right && <span style={{ fontSize:11, fontWeight:700, color:color, flexShrink:0, whiteSpace:"nowrap" }}>{right}</span>}
+        </div>
+        {body && <div style={{ fontSize:10.5, color:"var(--tx3)", lineHeight:1.6, marginTop:5 }}>{body}</div>}
+      </div>
+    </div>
+  );
+}
+
+// ── sections ──────────────────────────────────────────────────────────────
+function SummaryStrip() {
+  const cells = [
+    { n: pastTrim.length, l: "trim decision", c: pastTrim.length?ACCENT:"var(--tx4)" },
+    { n: wontFill.length, l: "don't-chase", c: wontFill.length?WARN:"var(--tx4)" },
+    { n: awaiting.length, l: "awaiting fill", c: BLUE },
+    { n: usd(capGap,0), l: "capital gap to fund ladder", c: capGap>0?WARN:GAIN, wide:true },
+  ];
+  return (
+    <Panel style={{ padding:"16px 20px" }}>
+      <div className="resp-summary" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:1, background:"var(--bd)", border:"1px solid var(--bd)", borderRadius:10, overflow:"hidden" }}>
+        {cells.map((c,i)=>(
+          <div key={i} style={{ background:"var(--panel-bg)", padding:"13px 15px" }}>
+            <div style={{ fontSize:22, fontWeight:700, color:c.c, fontFamily:FONT_MONO }}>{c.n}</div>
+            <div style={{ fontSize:9, color:"var(--tx5)", letterSpacing:"0.1em", marginTop:4, textTransform:"uppercase" }}>{c.l}</div>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+function DecideNow() {
+  if (!pastTrim.length) return null;
+  return (
+    <Panel delay={.04}>
+      <Eyebrow color={ACCENT} note="generator trim · thesis-gated">① Decide now</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+        {pastTrim.map(p=>(
+          <Item key={p.t} dot tag="TRIM?" color={ACCENT}
+            head={`${p.t} — past your 2× trigger (${pct(p.ret)})`}
+            right={`recover ${usd(p.orig,0)}`}
+            body={<>The generator move, <i>only if the {p.t} thesis still holds</i>: trim ~<b>{usd(p.orig,0)}</b> (≈{(p.orig/p.px).toFixed(2)} sh) to recover your original capital, let ~<b>{usd(p.mv-p.orig,0)}</b> ride free as house money. Then redeploy into the next idea. <b>Gate first:</b> is the chokepoint intact and is the bull case <i>not</i> already fully in the multiple?</>}
+            tipTitle={`${p.t} generator trim`}
+            tipBody={`Bought at ${usd(p.avg)}, now ${usd(p.px)} — ${pct(p.ret)} on cost, ${((p.px/p.avg)).toFixed(2)}× your basis. Rule: double + thesis-intact → trim to recover capital, let the rest compound for free. Never trim on price alone.`} />
+        ))}
+        <Item tag="FUNDS" color={WARN}
+          head={`This trim funds the deployment ladder`}
+          right={capGap>0?`gap ${usd(capGap,0)}`:"covered"}
+          body={<>Your pending limits need ~<b>{usd(plannedCap,0)}</b> of new capital vs <b>{usd(ACCT.cash,0)}</b> cash — a <b>{usd(capGap,0)}</b> shortfall. Trimming the winner above more than closes it, instead of adding fresh capital (rule 4). Sequence: trim → redeploy.</>} />
+      </div>
+    </Panel>
+  );
+}
+
+function Orders() {
+  return (
+    <Panel delay={.07}>
+      <Eyebrow note="manual · GTC · below market">② Pending orders — deployment ladder</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:9 }}>
+        {LIMITS.map(l=>{
+          const live = LIVE[l.t];
+          let tag, color, right, status;
+          if (l.limit == null) { tag="RIDE/TRIM"; color="var(--tx5)"; right="no new $"; status="Let ride toward the 2× trim; no fresh capital."; }
+          else if (live && live.px > l.limit) { tag="DON'T CHASE"; color=WARN; right=`${pct((live.px/l.limit-1)*100)} over`; status=`Live ${usd(live.px)} vs ${usd(l.limit,0)} limit — won't fill. Patience is the position (rule 3).`; }
+          else if (live && live.px <= l.limit) { tag="WOULD FILL"; color=GAIN; right="in zone"; status=`Live ${usd(live.px)} at/below your ${usd(l.limit,0)} limit. Check WHY before celebrating (rule 2).`; }
+          else if (l.watch) { tag="WATCH"; color=BLUE; right=`@ ${usd(l.limit,0)}`; status="Watchlist only — not armed."; }
+          else { tag="AWAITING"; color=BLUE; right=`@ ${usd(l.limit,0)}`; status="Order resting below market — awaiting a fill."; }
+          return (
+            <Item key={l.t} tag={tag} color={color}
+              head={<>{l.t} <span style={{ color:"var(--tx5)", fontWeight:400, fontSize:11 }}>· {l.size}{l.musk && " · Musk bucket"}</span></>}
+              right={right} body={status}
+              tipTitle={`${l.t} — ${l.size}`} tipBody={l.anchor} />
+          );
+        })}
+      </div>
+      <div style={{ marginTop:12, padding:"10px 12px", border:"1px solid var(--bd2)", borderLeft:`2px solid ${WARN}`, borderRadius:8, background:"var(--inner-bg)", fontSize:10, color:"var(--tx3)", lineHeight:1.6 }}>
+        <b style={{color:WARN}}>Correlation cap:</b> {LIMITS.filter(l=>l.musk).map(l=>l.t).join(" + ")} count as <b>one</b> ~{usd(MUSK_BUCKET_CAP,0)} bet (shared CEO/narrative, possible merger) — not two independent slices.
+      </div>
+    </Panel>
+  );
+}
+
+function HoldRide() {
+  return (
+    <Panel delay={.1}>
+      <Eyebrow note="no action — let the plan work">③ Hold / let ride</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+        <Item tag="COMPOUND" color="var(--tx5)"
+          head="Generator names climbing toward 2×"
+          body={<>{nearTrigger.map((p,i)=><span key={p.t}><b style={{color:"var(--tx2)"}}>{p.t}</b> {p.prog.toFixed(0)}%{i<nearTrigger.length-1?" · ":""}</span>)} — all mid-compound. No trim early, no add at highs. Patience does the work.</>} />
+        <Item tag="DCA" color="var(--tx5)"
+          head={`Rebuild the core — ${corePct.toFixed(1)}% vs ~${TARGET_CORE_PCT}% target`}
+          right={`core ${corePct.toFixed(0)}%`}
+          body={<>IUSG + QQQ are far below the ~{TARGET_CORE_PCT}% core target. Keep the weekly DCA going — new savings flow here first, satellites only on conviction + cushion.</>} />
+        <Item tag="HORIZON" color="var(--tx5)"
+          head="Loser cluster — held, not touched"
+          body={<>{LOSER_CLUSTER.join(" · ")} — the drawdown is a <i>thematic</i> financial-data cluster, not random. Held on a 5–8yr horizon, no action; just don't add. Sharpest watch: <b style={{color:"var(--tx2)"}}>INTU</b> (deepest drawdown).</>} />
+      </div>
+    </Panel>
+  );
+}
+
+function Gates() {
+  const today = new Date(ASOF);
+  return (
+    <Panel delay={.13}>
+      <Eyebrow color={BLUE} note="the real thesis re-tests">④ Review gates — upcoming earnings</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:9 }}>
+        {REVIEW_GATES.slice().sort((a,b)=>new Date(a.date)-new Date(b.date)).map(g=>{
+          const days = Math.round((new Date(g.date)-today)/86400000);
+          return (
+            <Item key={g.t} tag={`${g.date}`} color={BLUE}
+              head={<>{g.t} <span style={{ color:"var(--tx5)", fontWeight:400, fontSize:11 }}>· in {days} days</span></>}
+              body={g.note} />
+          );
+        })}
+      </div>
+      <div style={{ fontSize:9.5, color:"var(--tx6)", marginTop:11, lineHeight:1.6 }}>
+        Every generator trim and every add is gated on the thesis surviving its next print. A kill-switch breach flips the buy-alert to "do not add" — re-underwrite before acting.
+      </div>
+    </Panel>
+  );
+}
+
+function Discipline() {
+  return (
+    <Panel delay={.16}>
+      <Eyebrow>⑤ Discipline — read before you click</Eyebrow>
+      <div className="resp-2" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"8px 22px" }}>
+        {RULES.map((r,i)=>(
+          <div key={i} style={{ display:"flex", gap:9, alignItems:"baseline" }}>
+            <span style={{ fontSize:10, fontWeight:700, color:ACCENT, flexShrink:0, fontFamily:FONT_MONO }}>{String(i+1).padStart(2,"0")}</span>
+            <span style={{ fontSize:10.5, color:"var(--tx3)", lineHeight:1.55 }}>{r}</span>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+function App() {
+  return (
+    <div style={{ width:"100%", maxWidth:1000, margin:"0 auto", padding:"26px 22px 60px", fontFamily:FONT_MONO }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:20, flexWrap:"wrap", gap:14 }}>
+        <div>
+          <div style={{ fontFamily:FONT_DISPLAY, fontSize:26, fontWeight:600, letterSpacing:"0.3em", color:"var(--tx1)" }}>
+            TH<span style={{color:ACCENT}}>3</span>SIS · ACTIONS
+          </div>
+          <div style={{ fontSize:9.5, color:"var(--tx5)", letterSpacing:"0.08em", marginTop:7 }}>
+            what to do next — derived from STRATEGY.md · live IBKR snapshot · hover any item for the why
+          </div>
+        </div>
+        <div style={{ textAlign:"right" }}>
+          <div style={{ fontSize:9, color:"var(--tx5)", letterSpacing:"0.14em" }}>AS OF</div>
+          <div style={{ fontSize:12, color:"var(--tx2)", fontWeight:700 }}>{ASOF}</div>
+        </div>
+      </div>
+
+      <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+        <SummaryStrip />
+        <DecideNow />
+        <Orders />
+        <HoldRide />
+        <Gates />
+        <Discipline />
+      </div>
+
+      <div style={{ marginTop:22, padding:"14px 18px", border:"1px dashed var(--bd2)", borderRadius:10, fontSize:9.5, color:"var(--tx5)", lineHeight:1.7 }}>
+        ⚠ <b style={{color:"var(--tx4)"}}>Not financial advice.</b> Action items are mechanically derived from STRATEGY.md and a static IBKR snapshot as of {ASOF} — prices and theses drift. Every "trim" and "add" is <b>thesis-gated</b>: confirm the chokepoint is intact and a cushion exists before acting. Execute manually, deliberately.
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
