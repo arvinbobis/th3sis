@@ -103,12 +103,12 @@ const WARN = "#e0a83b";   // base amber
 const ACCENT = "var(--blue-soft)"; // peach accent from theme.css
 
 // ───────────────────────────────────────────────────────────────────────────
-// LIVE SNAPSHOT — pulled from Interactive Brokers, as of 2026-06-26.
+// LIVE SNAPSHOT — pulled from Interactive Brokers, as of 2026-06-29.
 // Account-level numbers come straight from the IBKR account summary; per-position
 // rows are the open positions. Re-pull before trusting these — prices drift daily.
 // ───────────────────────────────────────────────────────────────────────────
-const ASOF = "2026-06-26";
-const ACCT = { netLiq: 33038.90, cash: 1252.30, dividends: 5.70, buyingPower: 1252.30 };
+const ASOF = "2026-06-29";
+const ACCT = { netLiq: 33896.71, cash: 1252.68, dividends: 5.32, buyingPower: 1252.68 };
 
 const THEMES = {
   semis:        { label: "AI Semis & Hardware",        short: "Semis",      blurb: "The picks-and-shovels of the AI build-out — chips, fab tools, networking silicon." },
@@ -122,45 +122,83 @@ const THEMES = {
 
 // ticker, name, qty, avgCost, lastPx, mktVal, unrealPnl, dayPnl, theme, hasThesis
 const RAW = [
-  ["ALAB","Astera Labs",          0.3484, 289.87,  384.23,  133.86,   32.87,  -4.80, "semis",        true ],
-  ["AMZN","Amazon.com",           8.1653, 202.74,  227.69, 1859.16,  203.75,   5.55, "platforms",    true ],
-  ["ANET","Arista Networks",      0.6839, 147.66,  162.40,  111.07,   10.08,  -2.09, "semis",        false],
-  ["ARM","Arm Holdings",          0.2558, 283.82,  333.00,   85.18,   12.58,  -3.76, "semis",        false],
-  ["ASML","ASML Holding",         1.0586, 730.61, 1789.13, 1893.97, 1120.55, -55.10, "semis",        true ],
-  ["AVGO","Broadcom",             1.1432, 351.63,  371.86,  425.11,   23.13,  -8.06, "semis",        true ],
-  ["AXP","American Express",      1.5881, 315.47,  343.25,  545.12,   44.12,   1.25, "payments",     false],
-  ["BKNG","Booking Holdings",    10.7000, 188.61,  177.99, 1904.49, -113.58,  10.06, "diversifiers", false],
-  ["BN","Brookfield",            11.0450,  45.36,   42.83,  473.06,  -27.94,  -1.88, "diversifiers", false],
-  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  248.44,  260.59,  -40.39,   3.63, "findata",      false],
-  ["CME","CME Group",             0.9659, 311.60,  226.25,  218.53,  -82.44,   1.21, "findata",      false],
-  ["EFX","Equifax",               4.9299, 253.60,  151.93,  749.00, -501.24,  -0.00, "findata",      false],
-  ["EQIX","Equinix",              0.0936,1078.41, 1092.72,  102.28,    1.34,   0.48, "power",        false],
-  ["ETN","Eaton",                 0.2627, 384.38,  412.78,  108.44,    7.46,  -1.86, "power",        false],
-  ["FICO","Fair Isaac",           1.8783,1407.84, 1146.41, 2153.30, -491.05,   5.50, "findata",      true ],
-  ["GE","GE Aerospace",           2.7332, 295.44,  370.00, 1011.28,  203.78,  -3.72, "power",        false],
-  ["GEV","GE Vernova",            0.2719,1106.68, 1064.00,  289.30,  -11.60,  -5.84, "power",        false],
-  ["GOOG","Alphabet",             3.0338, 227.50,  340.69, 1033.58,  343.38,  -4.56, "platforms",    true ],
-  ["INTU","Intuit",               2.3960, 642.94,  257.71,  617.47, -923.00,   6.33, "platforms",    false],
-  ["IUSG","iShares S&P US Growth",11.0836,163.04,  182.21, 2019.54,  212.45,  -7.09, "index",        false],
-  ["LRCX","Lam Research",         0.3395, 297.47,  389.00,  132.07,   31.08,  -4.35, "semis",        false],
-  ["MA","Mastercard",             5.2499, 532.50,  492.00, 2582.95, -212.65,  16.17, "payments",     false],
-  ["MCO","Moody's",               5.1545, 484.90,  438.85, 2262.05, -237.38,   0.00, "findata",      false],
-  ["META","Meta Platforms",       2.9644, 610.47,  545.13, 1615.98, -193.70,   6.70, "platforms",    true ],
-  ["MRVL","Marvell Technology",   0.3694, 194.44,  268.21,   99.08,   27.25,  -4.82, "semis",        true ],
-  ["MSCI","MSCI",                 1.7176, 567.03,  546.24,  938.22,  -35.71,   2.89, "findata",      false],
-  ["MSFT","Microsoft",            5.8559, 434.43,  357.32, 2092.40, -451.58,  26.26, "platforms",    true ],
-  ["MU","Micron Technology",      0.1323, 762.87, 1143.40,  151.27,   50.34,  -9.28, "semis",        true ],
-  ["NVDA","NVIDIA",               2.1852, 183.96,  193.35,  422.51,   20.52,  -5.22, "semis",        true ],
-  ["PWR","Quanta Services",       0.4109, 732.43,  705.42,  289.86,  -11.10,  -5.41, "power",        false],
-  ["QQQ","Invesco QQQ",           0.9735, 722.02,  707.59,  688.84,  -14.05,  -8.56, "index",        false],
-  ["SPGI","S&P Global",           5.8357, 504.01,  397.50, 2319.69, -621.53,  13.77, "findata",      false],
-  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  425.53,  305.62,    4.62,  -6.79, "semis",        true ],
-  ["V","Visa",                    5.6834, 306.90,  331.50, 1884.05,  139.79,   5.57, "payments",     false],
+  ["ALAB","Astera Labs",          0.3484, 289.87,  388.46,  135.34,   34.35,  -1.14, "semis",        true ],
+  ["AMZN","Amazon.com",           8.1653, 202.74,  242.99, 1984.07,  328.67,  84.08, "platforms",    true ],
+  ["ANET","Arista Networks",      0.6839, 147.66,  156.40,  106.96,    5.97,  -0.82, "semis",        false],
+  ["ARM","Arm Holdings",          0.2558, 283.82,  308.84,   79.00,    6.40,  -6.50, "semis",        false],
+  ["ASML","ASML Holding",         1.0586, 730.61, 1786.36, 1891.04, 1117.62,  -8.74, "semis",        true ],
+  ["AVGO","Broadcom",             1.1432, 351.63,  362.86,  414.83,   12.84,  -2.46, "semis",        true ],
+  ["AXP","American Express",      1.5881, 315.47,  341.24,  541.92,   40.93,   1.40, "payments",     false],
+  ["BKNG","Booking Holdings",    10.7000, 188.61,  184.35, 1972.55,  -45.53,  30.92, "diversifiers", false],
+  ["BN","Brookfield",            11.0450,  45.36,   42.15,  465.55,  -35.45,  -7.95, "diversifiers", false],
+  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  235.87,  247.40,  -53.57,  -6.65, "findata",      false],
+  ["CME","CME Group",             0.9659, 311.60,  221.85,  214.28,  -86.69,   0.82, "findata",      false],
+  ["EFX","Equifax",               4.9299, 253.60,  159.11,  784.40, -465.85,   3.11, "findata",      false],
+  ["EQIX","Equinix",              0.0936,1078.41, 1092.99,  102.30,    1.36,   0.16, "power",        false],
+  ["ETN","Eaton",                 0.2627, 384.38,  404.84,  106.35,    5.38,   0.57, "power",        false],
+  ["FICO","Fair Isaac",           1.8783,1407.84, 1203.83, 2261.15, -383.20,  39.52, "findata",      true ],
+  ["GE","GE Aerospace",           2.7332, 295.44,  372.38, 1017.79,  210.29,   9.24, "power",        false],
+  ["GEV","GE Vernova",            0.2719,1106.68, 1084.25,  294.81,   -6.10,  10.63, "power",        false],
+  ["GOOG","Alphabet",             3.0338, 227.50,  346.38, 1050.85,  360.65,  35.47, "platforms",    true ],
+  ["INTU","Intuit",               2.3960, 642.94,  274.45,  657.57, -882.90,  16.11, "platforms",    false],
+  ["IUSG","iShares S&P US Growth",11.0836,163.04,  183.04, 2028.74,  221.64,  13.52, "index",        false],
+  ["LRCX","Lam Research",         0.3395, 297.47,  384.62,  130.58,   29.59,   1.88, "semis",        false],
+  ["MA","Mastercard",             5.2499, 532.50,  510.19, 2678.45, -117.15,  58.64, "payments",     false],
+  ["MCO","Moody's",               5.1545, 484.90,  453.27, 2336.35, -163.08,  16.78, "findata",      false],
+  ["META","Meta Platforms",       2.9644, 610.47,  564.97, 1674.80, -134.88,  43.64, "platforms",    true ],
+  ["MRVL","Marvell Technology",   0.3694, 194.44,  253.28,   93.56,   21.74,  -4.98, "semis",        true ],
+  ["MSCI","MSCI",                 1.7176, 567.03,  562.78,  966.63,   -7.30,  13.62, "findata",      false],
+  ["MSFT","Microsoft",            5.8559, 434.43,  375.64, 2199.71, -344.27,  15.64, "platforms",    true ],
+  ["MU","Micron Technology",      0.1323, 762.87, 1044.75,  138.22,   37.29, -11.59, "semis",        true ],
+  ["NVDA","NVIDIA",               2.1852, 183.96,  191.65,  418.78,   16.80,  -1.93, "semis",        true ],
+  ["PWR","Quanta Services",       0.4109, 732.43,  692.81,  284.68,  -16.28,   2.03, "power",        false],
+  ["QQQ","Invesco QQQ",           0.9735, 722.02,  708.78,  690.00,  -12.89,   2.20, "index",        false],
+  ["SPGI","S&P Global",           5.8357, 504.01,  407.66, 2378.98, -562.24,  -2.92, "findata",      false],
+  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  435.12,  312.50,   11.50,   1.99, "semis",        true ],
+  ["V","Visa",                    5.6834, 306.90,  343.25, 1950.84,  206.59,  39.91, "payments",     false],
 ];
 const POS = RAW.map(r => ({
   t:r[0], name:r[1], qty:r[2], avg:r[3], px:r[4], mv:r[5], up:r[6], day:r[7], theme:r[8], thesis:r[9],
   ret: r[6] / (r[5] - r[6]) * 100,                       // unrealized return on cost
 }));
+
+// ───────────────────────────────────────────────────────────────────────────
+// CAPITAL-ALLOCATION STRATEGY LAYER — the "$1,000 generator" (see STRATEGY.md)
+// Let a low-cost, high-conviction chokepoint compound. Once it ~doubles AND the
+// thesis is still intact, trim to recover the original capital, let the rest ride
+// as "house money," redeploy into the next idea. Trim trigger = px ≥ 2× avg cost.
+// ───────────────────────────────────────────────────────────────────────────
+const CORE_TICKERS    = ["IUSG", "QQQ"];   // broad-market core, weekly DCA
+const TARGET_CORE_PCT = 70;                 // simplify/focus target
+const GEN_MULTIPLE    = 2;                  // double = trim trigger (thesis-gated)
+const GEN_MIN_PROG    = 15;                 // hide deep laggards far from trigger
+
+// Active manual GTC limit ladder — all below market, speculative slices.
+const LIMITS = [
+  { t:"GE",   limit:null, size:"ride → 2×", musk:false, watch:false,
+    anchor:"Own it cheap ($295 basis). Let ride to ~$1,600 position value (≈2× on $808), then trim ~$600–800 and let the rest ride. Don't add at record highs." },
+  { t:"MU",   limit:900,  size:"~$850 → $1k", musk:false, watch:false,
+    anchor:"Add to the $150 nibble toward ~$1,000 total. ~7–8× fwd earnings at $900 = real cushion vs a near-high entry." },
+  { t:"TSLA", limit:250,  size:"$500", musk:true, watch:false,
+    anchor:"Re-entry at a 'buy real fear' level. No valuation floor (312× earnings) — sentiment/support anchor only. Size accordingly." },
+  { t:"SPCX", limit:100,  size:"$500", musk:true, watch:false,
+    anchor:"Starter anchored to ~$63 DCF floor (Damodaran/Morningstar). Capped here — NOT a 2nd tranche." },
+  { t:"TDG",  limit:1150, size:"small", musk:false, watch:true,
+    anchor:"Watchlist only. Better-valued than GE but 5.9× leverage + rate risk. GE is likely enough for aerospace." },
+];
+const MUSK_BUCKET_CAP = 1000;  // SPCX + TSLA sized as ONE correlated ~$1,000 bet
+
+const RULES = [
+  "Buy chokepoints with a cushion — both must be true.",
+  "A fill is not a gift — check WHY the price dropped first.",
+  "Don't chase a bounce above your limit. Patience is the position.",
+  "Don't add fresh capital just to round a number.",
+  "Size correlated bets as one bucket (SPCX + TSLA = one Musk bet).",
+  "Beware X / social selection bias — the boring 'fairly valued' note is often the honest one.",
+  "Winners win because bought early/cheap — the cushion lives in the cost basis.",
+  "Manual execution always — stay deliberate at the one moment that matters.",
+];
+const liveByT = Object.fromEntries(POS.map(p => [p.t, p]));
 
 // ── formatters ──────────────────────────────────────────────────────────────
 const usd = (v, d=2) => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -500,6 +538,99 @@ function Attention({ s }) {
   );
 }
 
+function Generator({ s }) {
+  const corePct = POS.filter(p=>CORE_TICKERS.includes(p.t)).reduce((a,p)=>a+p.mv,0) / s.investedMV * 100;
+  const gens = POS
+    .filter(p => !CORE_TICKERS.includes(p.t))
+    .map(p => ({ ...p, prog:(p.px/p.avg - 1)*100, past: p.px >= GEN_MULTIPLE*p.avg, orig: p.avg*p.qty }))
+    .filter(p => p.prog >= GEN_MIN_PROG)
+    .sort((a,b)=>b.prog-a.prog);
+  return (
+    <Panel delay={.13}>
+      <Eyebrow note={`trim trigger = 2× cost · thesis-gated`}>The generator — capital recycling engine</Eyebrow>
+      <div style={{ fontSize:10.5, color:"var(--tx3)", lineHeight:1.6, marginBottom:14 }}>
+        Each bar fills from your <b style={{color:"var(--tx2)"}}>cost</b> (left) to <b style={{color:"var(--tx2)"}}>2× cost</b> (right edge = the trim trigger).
+        At the edge — <i>and only if the thesis still holds</i> — trim to recover your original capital and let the rest ride as house money.
+        <Tip title="CORE vs SATELLITE" body={`Strategy target: ~${TARGET_CORE_PCT}% in a broad-market core (IUSG + QQQ, weekly DCA), ~${100-TARGET_CORE_PCT}% in 1–3 high-conviction satellites. Today core is ${corePct.toFixed(1)}% — the simplify/focus shift is still early.`} color={WARN}>
+          <span style={{ color:"var(--tx5)" }}> &nbsp;Core today: <b style={{color:WARN}}>{corePct.toFixed(1)}%</b> vs ~{TARGET_CORE_PCT}% target.</span>
+        </Tip>
+      </div>
+      <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+        {gens.map(p=>{
+          const fill = Math.min(p.prog, 100);
+          return (
+            <div key={p.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:10, padding:"3px 6px", borderRadius:5, cursor:"help" }}
+              onMouseEnter={(e)=>showTip(e, `${p.t} · ${p.name}`, p.past
+                ? `PAST 2×: up ${pct(p.ret)} on a ${usd(p.avg)} basis. Generator move (thesis permitting): trim ~${usd(p.orig,0)} to recover original capital, let ~${usd(p.mv-p.orig,0)} ride free as house money.`
+                : `${p.prog.toFixed(0)}% of the way to the 2× trim trigger (needs ${usd(p.avg*2)}, now ${usd(p.px)}). Let it compound — don't trim early, don't add at highs.`,
+                p.past?GAIN:ACCENT)}
+              onMouseMove={moveTip} onMouseLeave={hideTip}>
+              <span style={{ width:46, fontSize:10.5, fontWeight:700, color:"var(--tx2)", flexShrink:0 }}>{p.t}</span>
+              <div style={{ position:"relative", flex:1, height:16, background:"var(--inner-bg)", border:"1px solid var(--bd)", borderRadius:4, overflow:"hidden" }}>
+                <div className="seg-grow" style={{ height:"100%", width:fill+"%", background: p.past?GAIN:ACCENT, opacity: p.past?.9:.7 }} />
+                {p.past && <span style={{ position:"absolute", right:7, top:0, lineHeight:"15px", fontSize:8.5, fontWeight:700, letterSpacing:"0.1em", color:"var(--page-bg)" }}>● TRIM ZONE</span>}
+              </div>
+              <span style={{ width:108, textAlign:"right", fontSize:10, flexShrink:0, color: p.past?GAIN:"var(--tx4)" }}>
+                {p.past ? `recover ${usd(p.orig,0)}` : `${p.prog.toFixed(0)}% to 2×`}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ fontSize:9, color:"var(--tx6)", marginTop:11 }}>Names &lt;{GEN_MIN_PROG}% of the way to 2× are hidden. Core ETFs (IUSG, QQQ) compound passively and aren't generators.</div>
+    </Panel>
+  );
+}
+
+function LimitLadder() {
+  const muskNames = LIMITS.filter(l=>l.musk).map(l=>l.t).join(" + ");
+  return (
+    <Panel delay={.15}>
+      <Eyebrow note="manual · GTC · below market">Deployment ladder — pending limit orders</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+        {LIMITS.map(l=>{
+          const live = liveByT[l.t];
+          let status, sc = "var(--tx5)";
+          if (l.limit == null) { status = "ride / trim plan — no new capital"; }
+          else if (live) {
+            const above = (live.px/l.limit - 1)*100;
+            if (live.px > l.limit) { status = `live ${usd(live.px)} · ${above.toFixed(0)}% above limit — won't fill, don't chase`; sc = WARN; }
+            else { status = `live ${usd(live.px)} · at/below limit — would fill`; sc = GAIN; }
+          } else { status = l.watch ? "watchlist — not armed" : "awaiting — not held"; }
+          return (
+            <div key={l.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:12, padding:"8px 10px", border:"1px solid var(--bd)", borderRadius:8, cursor:"help" }}
+              onMouseEnter={(e)=>showTip(e, `${l.t} — ${l.size}`, l.anchor, l.musk?WARN:ACCENT)} onMouseMove={moveTip} onMouseLeave={hideTip}>
+              <span style={{ width:54, fontSize:12, fontWeight:700, color:"var(--tx1)", flexShrink:0 }}>{l.t}</span>
+              <span style={{ width:78, fontSize:11, color: l.limit?ACCENT:"var(--tx5)", fontWeight:700, flexShrink:0 }}>{l.limit?usd(l.limit,0):"—"}</span>
+              <span style={{ width:96, fontSize:10, color:"var(--tx4)", flexShrink:0 }}>{l.size}</span>
+              <span style={{ flex:1, fontSize:10, color:sc, textAlign:"right" }}>{status}{l.musk && " · Musk bucket"}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ marginTop:12, padding:"10px 12px", border:"1px solid var(--bd2)", borderLeft:`2px solid ${WARN}`, borderRadius:8, background:"var(--inner-bg)", fontSize:10, color:"var(--tx3)", lineHeight:1.6 }}>
+        <b style={{color:WARN}}>Correlation cap:</b> {muskNames} are sized as <b>one</b> ~{usd(MUSK_BUCKET_CAP,0)} bet, not two — shared CEO, narrative, and a possible 12–18mo merger. Post-merger they could collapse into a single ticker's worth of risk.
+      </div>
+    </Panel>
+  );
+}
+
+function DisciplineStrip() {
+  return (
+    <Panel delay={.18}>
+      <Eyebrow>The discipline rules — the actual edge</Eyebrow>
+      <div className="resp-grid-4" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"8px 22px" }}>
+        {RULES.map((r,i)=>(
+          <div key={i} style={{ display:"flex", gap:9, alignItems:"baseline" }}>
+            <span style={{ fontSize:10, fontWeight:700, color:ACCENT, flexShrink:0, fontFamily:FONT_MONO }}>{String(i+1).padStart(2,"0")}</span>
+            <span style={{ fontSize:10.5, color:"var(--tx3)", lineHeight:1.55 }}>{r}</span>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
 // ═══════════════════════════════════════════════════════════════════════════
 function App() {
   const s = useStats();
@@ -514,7 +645,7 @@ function App() {
             TH<span style={{color:ACCENT}}>3</span>SIS · FOLIO
           </div>
           <div style={{ fontSize:9.5, color:"var(--tx5)", letterSpacing:"0.08em", marginTop:7 }}>
-            live positions · Interactive Brokers · built for a 5-year horizon — hover anything for plain-english context
+            live positions · Interactive Brokers · operating the "$1,000 generator" (see STRATEGY.md) — hover anything for plain-english context
           </div>
         </div>
         <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -536,8 +667,11 @@ function App() {
         <ThemeAllocation s={s} />
         <ConvictionConcentration s={s} />
         <Scoreboard s={s} />
+        <Generator s={s} />
+        <LimitLadder />
         <PositionsTable s={s} showDaily={showDaily} />
         <Attention s={s} />
+        <DisciplineStrip />
       </div>
 
       <div style={{ marginTop:22, padding:"14px 18px", border:"1px dashed var(--bd2)", borderRadius:10, fontSize:9.5, color:"var(--tx5)", lineHeight:1.7 }}>

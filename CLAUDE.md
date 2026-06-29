@@ -92,6 +92,29 @@ Pressure-test reasoning rather than affirming it. In particular, watch for the
 
 ---
 
+## Capital-allocation layer — the "$1,000 generator" (see `STRATEGY.md`)
+
+A thesis being *real* does not mean you must own it, or own *more* of it. Sitting **above**
+the per-stock thesis is a portfolio engine, documented in full in `STRATEGY.md`. Frame every
+capital recommendation through it — never recommend adding at highs without a cushion.
+
+- **The generator:** deploy a low-cost, high-conviction position; once it **roughly doubles
+  AND the thesis is still intact**, trim to recover the original capital, let the remainder
+  ride as "house money," then redeploy into the next idea. Trim trigger ≈ **price ≥ 2× avg
+  cost, thesis-gated** (never trim on price alone; never add just to round a number).
+- **Two anchors of every buy (both required):** (1) a **chokepoint** thesis — own the
+  bottleneck nobody routes around; (2) a **valuation cushion** — the cushion lives in the
+  cost basis, so a great business bought at a price that already pays for the thesis is not a
+  great stock.
+- **Core / satellite:** ~70% broad-market core (IUSG + QQQ, DCA), ~30% in 1–3 satellites.
+- **Correlated bets are one bucket** (e.g. SPCX + TSLA = one ~$1,000 Musk bet, not two).
+- This is consistent with the buy-alert discipline (price AND thesis-intact → "go look, not
+  go buy"). The FOLIO page (`stocks/portfolio/positions.html`) renders the live generator
+  ladder, limit ladder, and these rules. Keep all three — `STRATEGY.md`, the FOLIO config
+  block, and the per-stock ALERT block — in sync.
+
+---
+
 ## Data freshness rules (critical)
 
 - **Always pull current data before building or updating.** Prices, estimates, leadership,
