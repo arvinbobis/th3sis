@@ -112,6 +112,13 @@
   #not-found { display: none; align-items: flex-start; gap: 6px; font-size: 10px; color: var(--dot-stop); margin-top: 8px; line-height: 1.4; }
   #not-found.on { display: flex; }
 
+  /* ── Pinned overview entry ──────────────────────────── */
+  #nav-label { font-size: 9.5px; color: var(--tx-dim); letter-spacing: 0.12em; margin: 16px 0 8px; flex-shrink: 0; }
+  .chip.pinned { flex-shrink: 0; background: color-mix(in srgb, var(--accent) 7%, transparent); }
+  .chip.pinned .chip-dot.quiet { color: var(--accent); }
+  .chip.pinned.active { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); }
+  .chip.pinned.active .chip-ticker { color: var(--chip-act-tx); }
+
   /* ── Chip rail (vertical list) ──────────────────────── */
   #chip-label { font-size: 9.5px; color: var(--tx-dim); letter-spacing: 0.12em; margin: 16px 0 8px; flex-shrink: 0; }
   #chip-rail {
@@ -200,8 +207,16 @@
 
     <div id="not-found">⚠ no thesis for that ticker yet</div>
 
+    <!-- Pinned overview -->
+    <div id="nav-label">OVERVIEW ›</div>
+    <button id="portfolio-chip" class="chip pinned">
+      <span class="chip-dot quiet">◈</span>
+      <span class="chip-ticker">FOLIO</span>
+      <span class="chip-name">positions &amp; allocation</span>
+    </button>
+
     <!-- Chip list -->
-    <div id="chip-label">AVAILABLE ›</div>
+    <div id="chip-label">THESES ›</div>
     <div id="chip-rail"></div>
 
     <button id="theme-btn">☀ LIGHT</button>
@@ -226,7 +241,8 @@
 <script>
 // ── Thesis registry ──────────────────────────────────────────────────────────
 const REGISTRY = {
-  ALAB:  { path: "ALAB/alab-thesis.html",   name: "Astera Labs" },
+  ALAB:  { path: "alab/alab-thesis.html",   name: "Astera Labs",
+           alert: { buyFloor: 300, intact: true, nextEarnings: "2026-08-11" } }, // mirror of ALAB config ALERT block
   AMZN:  { path: "AMZN/AMZN-thesis.html",   name: "Amazon.com" },
   ASML:  { path: "ASML/ASML-thesis.html",   name: "ASML Holding" },
   AVGO:  { path: "avgo/avgo-thesis.html",   name: "Broadcom Inc.",
@@ -251,7 +267,9 @@ const emptyChips = document.getElementById('empty-chips');
 const chipRail   = document.getElementById('chip-rail');
 const notFound   = document.getElementById('not-found');
 const loading    = document.getElementById('loading');
+const loadingTxt = document.getElementById('loading-text');
 const themeBtn   = document.getElementById('theme-btn');
+const portfolioChip = document.getElementById('portfolio-chip');
 
 // ── Theme ────────────────────────────────────────────────────────────────────
 const THEME_KEY = 'th3sis_theme';
@@ -345,6 +363,33 @@ async function runRadar() {
 }
 runRadar();
 
+// ── Generic frame loader (shared by theses + portfolio) ───────────────────────
+function loadFrame(path, label) {
+  empty.classList.add('hidden');
+  frame.classList.remove('on');
+  if (loadingTxt) loadingTxt.textContent = label || 'LOADING…';
+  loading.classList.add('on');
+
+  frame.onload = () => {
+    loading.classList.remove('on');
+    frame.classList.add('on');
+    // Send theme to iframe — postMessage works on file:// unlike contentDocument
+    try { frame.contentWindow.postMessage({ type: 'th3sis-theme', light: isLight }, '*'); } catch (_) {}
+    frame.onload = null;
+  };
+  frame.src = path;
+}
+
+// ── Load the portfolio overview ───────────────────────────────────────────────
+function loadPortfolio() {
+  notFound.classList.remove('on');
+  if (activeChip) activeChip.classList.remove('active');
+  activeChip = portfolioChip;
+  portfolioChip.classList.add('active');
+  loadFrame('portfolio/positions.html', 'LOADING PORTFOLIO…');
+}
+portfolioChip.addEventListener('click', loadPortfolio);
+
 // ── Load a thesis ─────────────────────────────────────────────────────────────
 function loadTicker(ticker) {
   const t = ticker.trim().toUpperCase();
@@ -360,19 +405,8 @@ function loadTicker(ticker) {
   activeChip = headerChips[t] || null;
   if (activeChip) activeChip.classList.add('active');
 
-  empty.classList.add('hidden');
-  frame.classList.remove('on');
-  loading.classList.add('on');
   input.value = t;
-
-  frame.onload = () => {
-    loading.classList.remove('on');
-    frame.classList.add('on');
-    // Send theme to iframe — postMessage works on file:// unlike contentDocument
-    try { frame.contentWindow.postMessage({ type: 'th3sis-theme', light: isLight }, '*'); } catch (_) {}
-    frame.onload = null;
-  };
-  frame.src = REGISTRY[t].path;
+  loadFrame(REGISTRY[t].path, 'LOADING THESIS…');
 }
 
 // ── Search events ─────────────────────────────────────────────────────────────

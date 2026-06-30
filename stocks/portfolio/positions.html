@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TH3SIS · FOLIO — Live Positions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../theme.css" />
+<script>
+function cdnFail(lib) {
+  var el = document.getElementById('root');
+  if (!el) return;
+  el.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100vh;background:#06080d';
+  el.innerHTML =
+    '<div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:20px;font-family:\'JetBrains Mono\',monospace">'
+    + '<div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230">TH<span style="color:#46aad9">3</span>SIS</div>'
+    + '<div style="font-size:11px;letter-spacing:0.18em;color:#dd817a">FAILED TO LOAD · ' + lib + '</div>'
+    + '<div style="font-size:10px;letter-spacing:0.12em;color:#3a4252">No internet connection — check your network and reload.</div>'
+    + '<a href="javascript:location.reload()" style="margin-top:4px;color:#46aad9;text-decoration:none;border:1px solid #46aad933;border-radius:20px;padding:4px 14px;font-size:9px;letter-spacing:0.14em">↺ RELOAD</a>'
+    + '</div>';
+}
+</script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" onerror="cdnFail('REACT')"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" onerror="cdnFail('REACT-DOM')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js" onerror="cdnFail('BABEL')"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: var(--page-bg); }
+  * { box-sizing: border-box; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
+  @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  @keyframes grow  { from { transform: scaleX(0);} to { transform: scaleX(1);} }
+  .panel { animation: fadeUp .55s ease both; }
+  .tip-target { cursor: help; border-bottom: 1px dotted var(--bd3); }
+  .tip-target:hover { filter: brightness(1.15); }
+  .row-hover { transition: background .12s ease; }
+  .row-hover:hover { background: var(--row-hl); }
+  .sort-h { cursor: pointer; user-select: none; transition: color .12s; }
+  .sort-h:hover { color: var(--blue-soft); }
+  .pill { transition: all .15s ease; cursor: pointer; }
+  .pill:hover { filter: brightness(1.12); }
+  .seg-grow { transform-origin: left center; animation: grow .9s cubic-bezier(.3,1,.4,1) both; }
+  #tip-box {
+    position: fixed; z-index: 9999; max-width: 320px; pointer-events: none;
+    background: var(--tip-bg); border: 1px solid var(--tip-bd);
+    border-radius: 10px; padding: 12px 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.28); opacity: 0; transition: opacity .14s ease;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #tip-box.on { opacity: 1; }
+  #tip-box .tt { font-size: 11px; font-weight: 700; letter-spacing: .08em; margin-bottom: 5px; }
+  #tip-box .tb { font-size: 11.5px; line-height: 1.55; color: var(--tx2); }
+  .ld-dot { width:5px; height:5px; border-radius:50%; background:#46aad9; display:inline-block; animation:pulse 1.2s ease-in-out infinite; }
+  ::-webkit-scrollbar { height: 8px; width: 8px; }
+  ::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 8px; }
+  @media (max-width: 820px) {
+    .resp-grid-4 { grid-template-columns: 1fr 1fr !important; }
+    .resp-grid-3 { grid-template-columns: 1fr !important; }
+    .hide-narrow { display: none !important; }
+  }
+</style>
+</head>
+<body>
+<noscript>
+  <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#06080d;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;">
+      <div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230;">TH<span style="color:#46aad9">3</span>SIS</div>
+      <div style="font-size:11px;letter-spacing:0.18em;color:#dd817a;">JAVASCRIPT REQUIRED</div>
+    </div>
+  </div>
+</noscript>
+<div id="root" style="display:flex;align-items:safe center;justify-content:safe center;min-height:100vh;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.18em;color:#3a4252;">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+    <div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230;">TH<span style="color:#46aad9">3</span>SIS</div>
+    <div style="display:flex;gap:5px;"><span class="ld-dot" style="animation-delay:0s"></span><span class="ld-dot" style="animation-delay:.2s"></span><span class="ld-dot" style="animation-delay:.4s"></span></div>
+    <div>LOADING PORTFOLIO…</div>
+  </div>
+</div>
+<script>
+// Theme sync with parent index.html shell
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'th3sis-theme') {
+    document.documentElement.classList.toggle('light', !!e.data.light);
+    localStorage.setItem('th3sis_theme', e.data.light ? 'light' : 'dark');
+  }
+});
+(function() {
+  if (localStorage.getItem('th3sis_theme') !== 'dark') {
+    document.documentElement.classList.add('light');
+  }
+})();
+</script>
+<script type="text/babel">
+const { useState, useMemo } = React;
+
+const FONT_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+const FONT_DISPLAY = "'Spectral', Georgia, serif";
+
+// Sanctioned semantic chart colors (the only permitted literal hexes per project conventions)
+const GAIN = "#3fd07a";   // bull green
+const LOSS = "#f1564b";   // bear red
+const WARN = "#e0a83b";   // base amber
+const ACCENT = "var(--blue-soft)"; // peach accent from theme.css
+
+// ───────────────────────────────────────────────────────────────────────────
+// LIVE SNAPSHOT — pulled from Interactive Brokers, as of 2026-06-29.
+// Account-level numbers come straight from the IBKR account summary; per-position
+// rows are the open positions. Re-pull before trusting these — prices drift daily.
+// ───────────────────────────────────────────────────────────────────────────
+const ASOF = "2026-06-29";
+const ACCT = { netLiq: 33896.71, cash: 1252.68, dividends: 5.32, buyingPower: 1252.68 };
+
+const THEMES = {
+  semis:        { label: "AI Semis & Hardware",        short: "Semis",      blurb: "The picks-and-shovels of the AI build-out — chips, fab tools, networking silicon." },
+  platforms:    { label: "Mega-Cap Platforms",         short: "Platforms",  blurb: "The compounding cash machines — cloud, ads, software distribution at global scale." },
+  findata:      { label: "Financial Data & Exchanges", short: "Fin Data",   blurb: "Toll-booth businesses: ratings, indices, credit scores, exchange order flow. High moats, but priced rich." },
+  payments:     { label: "Payment Networks",           short: "Payments",   blurb: "Card rails that clip a fee on global spending — secular volume growth, light capital." },
+  power:        { label: "Power, Grid & Data Centers",  short: "Power/DC",   blurb: "The electricity and physical plumbing the AI era runs on — grid, turbines, colos." },
+  index:        { label: "Core Index Funds",           short: "Index",      blurb: "Broad market ballast — diversification you don't have to underwrite stock by stock." },
+  diversifiers: { label: "Diversifiers",               short: "Diversify",  blurb: "Holdings that march to their own drum — capital allocators, travel demand." },
+};
+
+// ticker, name, qty, avgCost, lastPx, mktVal, unrealPnl, dayPnl, theme, hasThesis
+const RAW = [
+  ["ALAB","Astera Labs",          0.3484, 289.87,  388.46,  135.34,   34.35,  -1.14, "semis",        true ],
+  ["AMZN","Amazon.com",           8.1653, 202.74,  242.99, 1984.07,  328.67,  84.08, "platforms",    true ],
+  ["ANET","Arista Networks",      0.6839, 147.66,  156.40,  106.96,    5.97,  -0.82, "semis",        false],
+  ["ARM","Arm Holdings",          0.2558, 283.82,  308.84,   79.00,    6.40,  -6.50, "semis",        false],
+  ["ASML","ASML Holding",         1.0586, 730.61, 1786.36, 1891.04, 1117.62,  -8.74, "semis",        true ],
+  ["AVGO","Broadcom",             1.1432, 351.63,  362.86,  414.83,   12.84,  -2.46, "semis",        true ],
+  ["AXP","American Express",      1.5881, 315.47,  341.24,  541.92,   40.93,   1.40, "payments",     false],
+  ["BKNG","Booking Holdings",    10.7000, 188.61,  184.35, 1972.55,  -45.53,  30.92, "diversifiers", false],
+  ["BN","Brookfield",            11.0450,  45.36,   42.15,  465.55,  -35.45,  -7.95, "diversifiers", false],
+  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  235.87,  247.40,  -53.57,  -6.65, "findata",      false],
+  ["CME","CME Group",             0.9659, 311.60,  221.85,  214.28,  -86.69,   0.82, "findata",      false],
+  ["EFX","Equifax",               4.9299, 253.60,  159.11,  784.40, -465.85,   3.11, "findata",      false],
+  ["EQIX","Equinix",              0.0936,1078.41, 1092.99,  102.30,    1.36,   0.16, "power",        false],
+  ["ETN","Eaton",                 0.2627, 384.38,  404.84,  106.35,    5.38,   0.57, "power",        false],
+  ["FICO","Fair Isaac",           1.8783,1407.84, 1203.83, 2261.15, -383.20,  39.52, "findata",      true ],
+  ["GE","GE Aerospace",           2.7332, 295.44,  372.38, 1017.79,  210.29,   9.24, "power",        false],
+  ["GEV","GE Vernova",            0.2719,1106.68, 1084.25,  294.81,   -6.10,  10.63, "power",        false],
+  ["GOOG","Alphabet",             3.0338, 227.50,  346.38, 1050.85,  360.65,  35.47, "platforms",    true ],
+  ["INTU","Intuit",               2.3960, 642.94,  274.45,  657.57, -882.90,  16.11, "platforms",    false],
+  ["IUSG","iShares S&P US Growth",11.0836,163.04,  183.04, 2028.74,  221.64,  13.52, "index",        false],
+  ["LRCX","Lam Research",         0.3395, 297.47,  384.62,  130.58,   29.59,   1.88, "semis",        false],
+  ["MA","Mastercard",             5.2499, 532.50,  510.19, 2678.45, -117.15,  58.64, "payments",     false],
+  ["MCO","Moody's",               5.1545, 484.90,  453.27, 2336.35, -163.08,  16.78, "findata",      false],
+  ["META","Meta Platforms",       2.9644, 610.47,  564.97, 1674.80, -134.88,  43.64, "platforms",    true ],
+  ["MRVL","Marvell Technology",   0.3694, 194.44,  253.28,   93.56,   21.74,  -4.98, "semis",        true ],
+  ["MSCI","MSCI",                 1.7176, 567.03,  562.78,  966.63,   -7.30,  13.62, "findata",      false],
+  ["MSFT","Microsoft",            5.8559, 434.43,  375.64, 2199.71, -344.27,  15.64, "platforms",    true ],
+  ["MU","Micron Technology",      0.1323, 762.87, 1044.75,  138.22,   37.29, -11.59, "semis",        true ],
+  ["NVDA","NVIDIA",               2.1852, 183.96,  191.65,  418.78,   16.80,  -1.93, "semis",        true ],
+  ["PWR","Quanta Services",       0.4109, 732.43,  692.81,  284.68,  -16.28,   2.03, "power",        false],
+  ["QQQ","Invesco QQQ",           0.9735, 722.02,  708.78,  690.00,  -12.89,   2.20, "index",        false],
+  ["SPGI","S&P Global",           5.8357, 504.01,  407.66, 2378.98, -562.24,  -2.92, "findata",      false],
+  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  435.12,  312.50,   11.50,   1.99, "semis",        true ],
+  ["V","Visa",                    5.6834, 306.90,  343.25, 1950.84,  206.59,  39.91, "payments",     false],
+];
+const POS = RAW.map(r => ({
+  t:r[0], name:r[1], qty:r[2], avg:r[3], px:r[4], mv:r[5], up:r[6], day:r[7], theme:r[8], thesis:r[9],
+  ret: r[6] / (r[5] - r[6]) * 100,                       // unrealized return on cost
+}));
+
+// ───────────────────────────────────────────────────────────────────────────
+// CAPITAL-ALLOCATION STRATEGY LAYER — the "$1,000 generator" (see STRATEGY.md)
+// Let a low-cost, high-conviction chokepoint compound. Once it ~doubles AND the
+// thesis is still intact, trim to recover the original capital, let the rest ride
+// as "house money," redeploy into the next idea. Trim trigger = px ≥ 2× avg cost.
+// ───────────────────────────────────────────────────────────────────────────
+const CORE_TICKERS    = ["IUSG", "QQQ"];   // broad-market core, weekly DCA
+const TARGET_CORE_PCT = 70;                 // simplify/focus target
+const GEN_MULTIPLE    = 2;                  // double = trim trigger (thesis-gated)
+const GEN_MIN_PROG    = 15;                 // hide deep laggards far from trigger
+
+// Active manual GTC limit ladder — all below market, speculative slices.
+const LIMITS = [
+  { t:"GE",   limit:null, size:"ride → 2×", musk:false, watch:false,
+    anchor:"Own it cheap ($295 basis). Let ride to ~$1,600 position value (≈2× on $808), then trim ~$600–800 and let the rest ride. Don't add at record highs." },
+  { t:"MU",   limit:900,  size:"~$850 → $1k", musk:false, watch:false,
+    anchor:"Add to the $150 nibble toward ~$1,000 total. ~7–8× fwd earnings at $900 = real cushion vs a near-high entry." },
+  { t:"TSLA", limit:250,  size:"$500", musk:true, watch:false,
+    anchor:"Re-entry at a 'buy real fear' level. No valuation floor (312× earnings) — sentiment/support anchor only. Size accordingly." },
+  { t:"SPCX", limit:100,  size:"$500", musk:true, watch:false,
+    anchor:"Starter anchored to ~$63 DCF floor (Damodaran/Morningstar). Capped here — NOT a 2nd tranche." },
+  { t:"TDG",  limit:1150, size:"small", musk:false, watch:true,
+    anchor:"Watchlist only. Better-valued than GE but 5.9× leverage + rate risk. GE is likely enough for aerospace." },
+];
+const MUSK_BUCKET_CAP = 1000;  // SPCX + TSLA sized as ONE correlated ~$1,000 bet
+
+const RULES = [
+  "Buy chokepoints with a cushion — both must be true.",
+  "A fill is not a gift — check WHY the price dropped first.",
+  "Don't chase a bounce above your limit. Patience is the position.",
+  "Don't add fresh capital just to round a number.",
+  "Size correlated bets as one bucket (SPCX + TSLA = one Musk bet).",
+  "Beware X / social selection bias — the boring 'fairly valued' note is often the honest one.",
+  "Winners win because bought early/cheap — the cushion lives in the cost basis.",
+  "Manual execution always — stay deliberate at the one moment that matters.",
+];
+const liveByT = Object.fromEntries(POS.map(p => [p.t, p]));
+
+// ── formatters ──────────────────────────────────────────────────────────────
+const usd = (v, d=2) => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const k   = (v) => "$" + (v/1000).toFixed(1) + "k";
+const pct = (v, d=1) => (v>=0?"+":"") + v.toFixed(d) + "%";
+const pc  = (v) => v>=0 ? GAIN : LOSS;
+
+// ── tooltip engine ──────────────────────────────────────────────────────────
+let tipEl = null;
+function tip() { if(!tipEl){ tipEl=document.createElement("div"); tipEl.id="tip-box"; document.body.appendChild(tipEl);} return tipEl; }
+function showTip(e,title,body,color){ const el=tip(); el.innerHTML=`<div class="tt" style="color:${color||ACCENT}">${title}</div><div class="tb">${body}</div>`; el.classList.add("on"); moveTip(e); }
+function moveTip(e){ const el=tip(),p=16; let x=e.clientX+p,y=e.clientY+p; const r=el.getBoundingClientRect(); if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-p; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-p; el.style.left=x+"px"; el.style.top=y+"px"; }
+function hideTip(){ tip().classList.remove("on"); }
+function Tip({ title, body, color, children, style }) {
+  return <span className="tip-target" style={style}
+    onMouseEnter={(e)=>showTip(e,title,body,color)} onMouseMove={moveTip} onMouseLeave={hideTip}>{children}</span>;
+}
+
+// ── small UI atoms ──────────────────────────────────────────────────────────
+const Panel = ({children, style, delay=0}) => (
+  <div className="panel" style={{ background:"var(--panel-bg)", border:"1px solid var(--bd)", borderRadius:14, padding:20, animationDelay:delay+"s", ...style }}>{children}</div>
+);
+const Eyebrow = ({children, note}) => (
+  <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", marginBottom:14, gap:12, flexWrap:"wrap" }}>
+    <div style={{ fontSize:10, letterSpacing:"0.22em", color:"var(--tx5)", textTransform:"uppercase" }}>{children}</div>
+    {note && <div style={{ fontSize:10, color:"var(--tx5)", letterSpacing:"0.04em" }}>{note}</div>}
+  </div>
+);
+
+// ── derived portfolio math ──────────────────────────────────────────────────
+function useStats() {
+  return useMemo(() => {
+    const investedMV = POS.reduce((s,p)=>s+p.mv,0);
+    const totalUp    = POS.reduce((s,p)=>s+p.up,0);
+    const totalDay   = POS.reduce((s,p)=>s+p.day,0);
+    const costBasis  = investedMV - totalUp;
+    const totalRet   = totalUp / costBasis * 100;
+    const cashPct    = ACCT.cash / ACCT.netLiq * 100;
+
+    // theme rollup
+    const themeMap = {};
+    POS.forEach(p => {
+      const m = themeMap[p.theme] || (themeMap[p.theme] = { key:p.theme, mv:0, up:0, n:0, names:[] });
+      m.mv += p.mv; m.up += p.up; m.n += 1; m.names.push(p.t);
+    });
+    const themes = Object.values(themeMap)
+      .map(m => ({ ...m, wt:m.mv/investedMV*100, ret:m.up/(m.mv-m.up)*100 }))
+      .sort((a,b)=>b.mv-a.mv);
+
+    // concentration
+    const byMV = [...POS].sort((a,b)=>b.mv-a.mv);
+    const top5  = byMV.slice(0,5).reduce((s,p)=>s+p.mv,0);
+    const top10 = byMV.slice(0,10).reduce((s,p)=>s+p.mv,0);
+
+    // thesis coverage
+    const coveredMV = POS.filter(p=>p.thesis).reduce((s,p)=>s+p.mv,0);
+    const coveredN  = POS.filter(p=>p.thesis).length;
+
+    // attention signals
+    const worst = [...POS].sort((a,b)=>a.ret-b.ret)[0];
+    const bigUnwritten = POS.filter(p=>!p.thesis).sort((a,b)=>b.mv-a.mv)[0];
+    const weakTheme = [...themes].sort((a,b)=>a.ret-b.ret)[0];
+
+    return { investedMV, totalUp, totalDay, costBasis, totalRet, cashPct, themes,
+             top5, top10, coveredMV, coveredN, worst, bigUnwritten, weakTheme, byMV };
+  }, []);
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SECTIONS
+// ═══════════════════════════════════════════════════════════════════════════
+
+function Hero({ s, showDaily }) {
+  const investedPct = s.investedMV / ACCT.netLiq * 100;
+  return (
+    <Panel style={{ padding:"24px 24px 22px" }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", flexWrap:"wrap", gap:18 }}>
+        <div>
+          <div style={{ fontSize:10, letterSpacing:"0.22em", color:"var(--tx5)", marginBottom:8 }}>NET LIQUIDATION VALUE</div>
+          <div style={{ fontFamily:FONT_DISPLAY, fontSize:46, fontWeight:600, color:"var(--tx1)", lineHeight:1 }}>{usd(ACCT.netLiq)}</div>
+          <div style={{ marginTop:12, display:"flex", gap:16, flexWrap:"wrap", alignItems:"center" }}>
+            <Tip title="UNREALIZED P&L" body={`The paper gain/loss on positions you still hold, vs. what you paid. Cost basis ≈ ${usd(s.costBasis,0)}. This is mark-to-market noise until you sell — a long-term holder watches the trend, not the tick.`} color={pc(s.totalUp)}>
+              <span style={{ fontSize:13, color:pc(s.totalUp), fontWeight:700 }}>{usd(s.totalUp,0)} <span style={{opacity:.8}}>({pct(s.totalRet)})</span></span>
+            </Tip>
+            <span style={{ fontSize:11, color:"var(--tx5)" }}>unrealized · all-time on cost</span>
+          </div>
+        </div>
+        <div style={{ textAlign:"right" }}>
+          <div style={{ fontSize:9.5, letterSpacing:"0.2em", color:"var(--tx5)" }}>INVESTED vs. DRY POWDER</div>
+          <div style={{ width:220, height:10, borderRadius:6, overflow:"hidden", marginTop:9, marginLeft:"auto", display:"flex", background:"var(--inner-bg)", border:"1px solid var(--bd)" }}>
+            <div className="seg-grow" style={{ width:investedPct+"%", background:ACCENT }} />
+            <div className="seg-grow" style={{ width:(100-investedPct)+"%", background:WARN, opacity:.55, animationDelay:".15s" }} />
+          </div>
+          <div style={{ display:"flex", gap:14, justifyContent:"flex-end", marginTop:9, fontSize:10.5 }}>
+            <span style={{ color:"var(--tx3)" }}><b style={{color:"var(--tx1)"}}>{investedPct.toFixed(1)}%</b> invested · {usd(s.investedMV,0)}</span>
+            <Tip title="DRY POWDER" body={`Cash sitting ready to deploy: ${usd(ACCT.cash)} (${s.cashPct.toFixed(1)}% of the book). For a 5-year holder, dry powder is optionality — ammo to buy great businesses when they go on sale. Thin powder means a drawdown finds you fully invested with nothing to add.`} color={WARN}>
+              <span style={{ color:WARN }}><b>{s.cashPct.toFixed(1)}%</b> cash · {usd(ACCT.cash,0)}</span>
+            </Tip>
+          </div>
+        </div>
+      </div>
+
+      <div className="resp-grid-4" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:1, marginTop:22, background:"var(--bd)", border:"1px solid var(--bd)", borderRadius:10, overflow:"hidden" }}>
+        <Stat label="POSITIONS" value={POS.length} sub={`across ${s.themes.length} themes`} />
+        <Stat label="THESIS-BACKED" value={`${(s.coveredMV/s.investedMV*100).toFixed(0)}%`} sub={`${s.coveredN} of ${POS.length} names`} tipB={`Share of invested dollars that have a written TH3SIS on file (${s.coveredN} names). The rest is conviction you haven't documented — the first place a long-term holder should look.`} />
+        <Stat label="TOP-5 WEIGHT" value={`${(s.top5/s.investedMV*100).toFixed(0)}%`} sub={`top-10 ${(s.top10/s.investedMV*100).toFixed(0)}%`} tipB={`Your five largest positions are ${(s.top5/s.investedMV*100).toFixed(1)}% of the book. Concentration compounds faster — and hurts faster. Know your number.`} />
+        {showDaily
+          ? <Stat label="TODAY" value={usd(s.totalDay,0)} sub="daily noise" color={pc(s.totalDay)} />
+          : <Stat label="DIV. ACCRUED" value={usd(ACCT.dividends)} sub="awaiting payout" />}
+      </div>
+    </Panel>
+  );
+}
+const Stat = ({label, value, sub, color, tipB}) => {
+  const inner = (
+    <div style={{ background:"var(--panel-bg)", padding:"14px 16px" }}>
+      <div style={{ fontSize:9, letterSpacing:"0.18em", color:"var(--tx5)" }}>{label}</div>
+      <div style={{ fontSize:22, fontWeight:700, color:color||"var(--tx1)", marginTop:6, fontFamily:FONT_MONO }}>{value}</div>
+      <div style={{ fontSize:9.5, color:"var(--tx5)", marginTop:3 }}>{sub}</div>
+    </div>
+  );
+  return tipB
+    ? <Tip title={label} body={tipB} style={{ borderBottom:"none", display:"block" }}>{inner}</Tip>
+    : inner;
+};
+
+function ThemeAllocation({ s }) {
+  // monochrome peach opacity tiers, ordered by weight (terminal-restrained, theme-safe)
+  const tiers = [1, .82, .66, .52, .40, .30, .22];
+  const [hover, setHover] = useState(null);
+  return (
+    <Panel delay={.05}>
+      <Eyebrow note={`${s.themes.length} themes · ${usd(s.investedMV,0)} invested`}>Where the money sleeps — allocation by theme</Eyebrow>
+
+      <div style={{ display:"flex", width:"100%", height:34, borderRadius:8, overflow:"hidden", gap:2, background:"var(--inner-bg)" }}>
+        {s.themes.map((th,i)=>(
+          <div key={th.key} className="seg-grow"
+            onMouseEnter={(e)=>{setHover(th.key); showTip(e, THEMES[th.key].label, `${th.wt.toFixed(1)}% of the book · ${usd(th.mv,0)} · ${th.n} holdings · ${pct(th.ret)} unrealized. ${THEMES[th.key].blurb}`);}}
+            onMouseMove={moveTip} onMouseLeave={()=>{setHover(null);hideTip();}}
+            style={{ width:th.wt+"%", background:ACCENT, opacity: hover&&hover!==th.key?.18:tiers[i], cursor:"help",
+                     animationDelay:(i*.05)+"s", transition:"opacity .15s", minWidth:3 }} />
+        ))}
+      </div>
+
+      <div className="resp-grid-3" style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:10, marginTop:16 }}>
+        {s.themes.map((th,i)=>(
+          <div key={th.key} onMouseEnter={()=>setHover(th.key)} onMouseLeave={()=>setHover(null)}
+            style={{ border:"1px solid var(--bd)", borderRadius:10, padding:"12px 13px",
+                     background: hover===th.key ? "var(--row-hl)" : "transparent", transition:"background .12s" }}>
+            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+              <span style={{ width:9, height:9, borderRadius:2, background:ACCENT, opacity:tiers[i], flexShrink:0 }} />
+              <span style={{ fontSize:11, fontWeight:700, color:"var(--tx1)", letterSpacing:"0.04em" }}>{THEMES[th.key].label}</span>
+            </div>
+            <div style={{ display:"flex", justifyContent:"space-between", alignItems:"baseline" }}>
+              <span style={{ fontSize:21, fontWeight:700, fontFamily:FONT_MONO, color:"var(--tx1)" }}>{th.wt.toFixed(1)}<span style={{fontSize:12,color:"var(--tx5)"}}>%</span></span>
+              <span style={{ fontSize:11, fontWeight:700, color:pc(th.up) }}>{pct(th.ret)}</span>
+            </div>
+            <div style={{ fontSize:9.5, color:"var(--tx5)", marginTop:5, display:"flex", justifyContent:"space-between" }}>
+              <span>{usd(th.mv,0)}</span><span>{th.names.join(" · ")}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+function ConvictionConcentration({ s }) {
+  const coveredPct = s.coveredMV/s.investedMV*100;
+  const next5 = s.top10 - s.top5;
+  const rest  = s.investedMV - s.top10;
+  const seg = (v,fill,op) => <div style={{ width:(v/s.investedMV*100)+"%", background:fill, opacity:op }} className="seg-grow" />;
+  return (
+    <Panel delay={.1}>
+      <Eyebrow>Conviction &amp; concentration — the long-game checks</Eyebrow>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:22 }} className="resp-grid-3">
+
+        <div>
+          <div style={{ fontSize:11, color:"var(--tx2)", marginBottom:10, lineHeight:1.5 }}>
+            <Tip title="THESIS COVERAGE" body="How much of your invested capital is backed by a documented, falsifiable thesis (with a kill-switch). Uncovered size is where conviction is implicit — fine for an index fund, riskier for a single stock.">
+              <b style={{color:"var(--tx1)"}}>Thesis coverage</b></Tip> — {coveredPct.toFixed(0)}% of dollars written up
+          </div>
+          <div style={{ display:"flex", height:26, borderRadius:7, overflow:"hidden", background:"var(--inner-bg)", border:"1px solid var(--bd)" }}>
+            <div className="seg-grow" style={{ width:coveredPct+"%", background:ACCENT, display:"flex", alignItems:"center", paddingLeft:9 }}>
+              <span style={{ fontSize:9.5, fontWeight:700, color:"var(--page-bg)" }}>WRITTEN {coveredPct.toFixed(0)}%</span>
+            </div>
+            <div className="seg-grow" style={{ width:(100-coveredPct)+"%", background:"var(--ghost)", display:"flex", alignItems:"center", justifyContent:"flex-end", paddingRight:9, animationDelay:".12s" }}>
+              <span style={{ fontSize:9.5, fontWeight:700, color:"var(--tx4)" }}>UNWRITTEN {(100-coveredPct).toFixed(0)}%</span>
+            </div>
+          </div>
+          <div style={{ fontSize:10, color:"var(--tx5)", marginTop:9, lineHeight:1.6 }}>
+            {s.coveredN} of {POS.length} names carry a TH3SIS. The unwritten {(100-coveredPct).toFixed(0)}% — led by <b style={{color:"var(--tx3)"}}>{s.bigUnwritten.t}</b> at {usd(s.bigUnwritten.mv,0)} — is implicit conviction.
+          </div>
+        </div>
+
+        <div>
+          <div style={{ fontSize:11, color:"var(--tx2)", marginBottom:10, lineHeight:1.5 }}>
+            <Tip title="CONCENTRATION" body="What fraction of the book sits in your biggest bets. Concentration is how fortunes are made and unmade — it's neither good nor bad, but it must be intentional, not accidental.">
+              <b style={{color:"var(--tx1)"}}>Concentration</b></Tip> — top 5 = {(s.top5/s.investedMV*100).toFixed(0)}%, top 10 = {(s.top10/s.investedMV*100).toFixed(0)}%
+          </div>
+          <div style={{ display:"flex", height:26, borderRadius:7, overflow:"hidden", background:"var(--inner-bg)", border:"1px solid var(--bd)" }}>
+            {seg(s.top5, ACCENT, 1)}
+            {seg(next5, ACCENT, .5)}
+            {seg(rest, "var(--ghost)", 1)}
+          </div>
+          <div style={{ display:"flex", gap:16, fontSize:10, color:"var(--tx5)", marginTop:9 }}>
+            <span><span style={{display:"inline-block",width:8,height:8,borderRadius:2,background:ACCENT,marginRight:5}}/>Top 5 · {usd(s.top5,0)}</span>
+            <span><span style={{display:"inline-block",width:8,height:8,borderRadius:2,background:ACCENT,opacity:.5,marginRight:5}}/>Next 5</span>
+            <span><span style={{display:"inline-block",width:8,height:8,borderRadius:2,background:"var(--ghost)",marginRight:5}}/>Tail {POS.length-10}</span>
+          </div>
+        </div>
+      </div>
+    </Panel>
+  );
+}
+
+function Scoreboard({ s }) {
+  const sorted = [...POS].sort((a,b)=>b.up-a.up);
+  const maxAbs = Math.max(...POS.map(p=>Math.abs(p.up)));
+  return (
+    <Panel delay={.12}>
+      <Eyebrow note="unrealized · sorted best → worst">The scoreboard — paper P&L by position</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:3 }}>
+        {sorted.map(p=>{
+          const w = Math.abs(p.up)/maxAbs*50; // % of half-width
+          const gain = p.up>=0;
+          return (
+            <div key={p.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:8, padding:"2px 6px", borderRadius:5,
+                 cursor:"help" }}
+                 onMouseEnter={(e)=>showTip(e, `${p.t} · ${p.name}`, `${usd(p.up,0)} unrealized (${pct(p.ret)}). Cost ${usd(p.avg)} → now ${usd(p.px)}. Position ${usd(p.mv,0)}.`, pc(p.up))}
+                 onMouseMove={moveTip} onMouseLeave={hideTip}>
+              <span style={{ width:46, fontSize:10.5, fontWeight:700, color:"var(--tx2)", letterSpacing:"0.06em", flexShrink:0 }}>{p.t}</span>
+              <div style={{ position:"relative", flex:1, height:15, display:"flex", alignItems:"center" }}>
+                <div style={{ position:"absolute", left:"50%", top:0, bottom:0, width:1, background:"var(--bd2)" }} />
+                <div className="seg-grow" style={{ position:"absolute", height:11, borderRadius:3,
+                  background: gain?GAIN:LOSS, opacity:.85,
+                  left: gain?"50%":`calc(50% - ${w}%)`, width:w+"%",
+                  transformOrigin: gain?"left center":"right center" }} />
+              </div>
+              <span style={{ width:74, textAlign:"right", fontSize:10.5, fontWeight:700, color:pc(p.up), flexShrink:0 }}>{usd(p.up,0)}</span>
+              <span className="hide-narrow" style={{ width:52, textAlign:"right", fontSize:10, color:"var(--tx5)", flexShrink:0 }}>{pct(p.ret,0)}</span>
+            </div>
+          );
+        })}
+      </div>
+    </Panel>
+  );
+}
+
+function PositionsTable({ s, showDaily }) {
+  const [sort, setSort] = useState({ key:"mv", dir:-1 });
+  const rows = useMemo(()=>{
+    const r=[...POS];
+    r.sort((a,b)=>{
+      let av=a[sort.key], bv=b[sort.key];
+      if(typeof av==="string") return av.localeCompare(bv)*sort.dir;
+      return (av-bv)*sort.dir;
+    });
+    return r;
+  },[sort]);
+  const click = (key)=> setSort(s => s.key===key ? {key, dir:-s.dir} : {key, dir:key==="t"||key==="theme"?1:-1});
+  const arrow = (key)=> sort.key===key ? (sort.dir<0?" ▾":" ▴") : "";
+  const H = ({k:key, children, align="right", w}) => (
+    <th className="sort-h" onClick={()=>click(key)} style={{ textAlign:align, padding:"0 10px 9px", fontSize:9, letterSpacing:"0.12em",
+        color: sort.key===key?ACCENT:"var(--tx5)", fontWeight:700, whiteSpace:"nowrap", width:w }}>{children}{arrow(key)}</th>
+  );
+  return (
+    <Panel delay={.14} style={{ padding:"20px 14px 14px", overflowX:"auto" }}>
+      <div style={{ padding:"0 6px" }}><Eyebrow note="click any header to sort">Every position</Eyebrow></div>
+      <table style={{ width:"100%", borderCollapse:"collapse", minWidth:680 }}>
+        <thead><tr style={{ borderBottom:"1px solid var(--bd)" }}>
+          <H k="t" align="left">Ticker</H>
+          <th className="hide-narrow" style={{ textAlign:"left", padding:"0 10px 9px", fontSize:9, letterSpacing:"0.12em", color:"var(--tx5)", fontWeight:700 }}>Theme</th>
+          <H k="mv">Mkt Val</H>
+          <H k="mv">Weight</H>
+          <H k="avg">Avg Cost</H>
+          <H k="px">Last</H>
+          <H k="up">P&L $</H>
+          <H k="ret">P&L %</H>
+          {showDaily && <H k="day">Today</H>}
+          <th style={{ textAlign:"center", padding:"0 8px 9px", fontSize:9, letterSpacing:"0.1em", color:"var(--tx5)", fontWeight:700 }}>TH3SIS</th>
+        </tr></thead>
+        <tbody>
+          {rows.map(p=>(
+            <tr key={p.t} className="row-hover" style={{ borderBottom:"1px solid var(--bd)" }}>
+              <td style={{ padding:"9px 10px", textAlign:"left" }}>
+                <div style={{ fontSize:11.5, fontWeight:700, color:"var(--tx1)", letterSpacing:"0.05em" }}>{p.t}</div>
+                <div style={{ fontSize:9, color:"var(--tx5)", marginTop:1 }}>{p.name}</div>
+              </td>
+              <td className="hide-narrow" style={{ padding:"9px 10px", textAlign:"left" }}>
+                <span style={{ fontSize:9, color:"var(--tx3)", border:"1px solid var(--bd2)", borderRadius:20, padding:"2px 9px", whiteSpace:"nowrap" }}>{THEMES[p.theme].short}</span>
+              </td>
+              <td style={{ padding:"9px 10px", textAlign:"right", fontSize:11, color:"var(--tx1)", fontWeight:600 }}>{usd(p.mv,0)}</td>
+              <td style={{ padding:"9px 10px", textAlign:"right", fontSize:10.5, color:"var(--tx3)" }}>{(p.mv/s.investedMV*100).toFixed(1)}%</td>
+              <td style={{ padding:"9px 10px", textAlign:"right", fontSize:10.5, color:"var(--tx4)" }}>{usd(p.avg)}</td>
+              <td style={{ padding:"9px 10px", textAlign:"right", fontSize:10.5, color:"var(--tx2)" }}>{usd(p.px)}</td>
+              <td style={{ padding:"9px 10px", textAlign:"right", fontSize:11, fontWeight:700, color:pc(p.up) }}>{usd(p.up,0)}</td>
+              <td style={{ padding:"9px 10px", textAlign:"right", fontSize:10.5, fontWeight:700, color:pc(p.up) }}>{pct(p.ret)}</td>
+              {showDaily && <td style={{ padding:"9px 10px", textAlign:"right", fontSize:10, color:pc(p.day) }}>{usd(p.day,0)}</td>}
+              <td style={{ padding:"9px 8px", textAlign:"center" }}>
+                {p.thesis
+                  ? <span title="Documented thesis on file" style={{ color:ACCENT, fontSize:12 }}>◆</span>
+                  : <span title="No written thesis" style={{ color:"var(--tx6)", fontSize:12 }}>◇</span>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </Panel>
+  );
+}
+
+function Attention({ s }) {
+  const cards = [
+    { tag:"DEEPEST DRAWDOWN", color:LOSS, head:`${s.worst.t} · ${pct(s.worst.ret,0)}`,
+      body:`${s.worst.name} is your worst holding from cost (${usd(s.worst.up,0)}). ${s.worst.thesis?"You have a thesis — re-read the kill-switch and decide if it tripped.":"No written thesis. Decide: durable compounder on sale, or a value trap you're anchoring to?"}` },
+    { tag:"WEAKEST THEME", color:WARN, head:`${THEMES[s.weakTheme.key].short} · ${pct(s.weakTheme.ret)}`,
+      body:`${THEMES[s.weakTheme.key].label} is ${s.weakTheme.wt.toFixed(0)}% of the book (${usd(s.weakTheme.mv,0)}) and your weakest theme. Large weight + weak performance is the combination worth interrogating first.` },
+    { tag:"BIGGEST UNWRITTEN BET", color:ACCENT, head:`${s.bigUnwritten.t} · ${usd(s.bigUnwritten.mv,0)}`,
+      body:`Your largest position with no documented thesis (${(s.bigUnwritten.mv/s.investedMV*100).toFixed(1)}% of the book). Size without a written, falsifiable case is the first gap a 5-year holder should close.` },
+    { tag:"DRY POWDER", color:WARN, head:`${s.cashPct.toFixed(1)}% · ${usd(ACCT.cash,0)}`,
+      body:`Cash is thin. The whole point of a long horizon is buying quality during panics — but that needs ammo. Consider where new savings (or trims of weak theses) rebuild the reserve.` },
+  ];
+  return (
+    <Panel delay={.16}>
+      <Eyebrow>What a long-term holder should look at next</Eyebrow>
+      <div className="resp-grid-4" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12 }}>
+        {cards.map((c,i)=>(
+          <div key={i} style={{ border:"1px solid var(--bd)", borderLeft:`2px solid ${c.color}`, borderRadius:9, padding:"13px 14px", background:"var(--inner-bg)" }}>
+            <div style={{ fontSize:8.5, letterSpacing:"0.16em", color:"var(--tx5)" }}>{c.tag}</div>
+            <div style={{ fontSize:15, fontWeight:700, color:c.color, margin:"7px 0 8px", fontFamily:FONT_MONO }}>{c.head}</div>
+            <div style={{ fontSize:10, color:"var(--tx3)", lineHeight:1.6 }}>{c.body}</div>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+function Generator({ s }) {
+  const corePct = POS.filter(p=>CORE_TICKERS.includes(p.t)).reduce((a,p)=>a+p.mv,0) / s.investedMV * 100;
+  const gens = POS
+    .filter(p => !CORE_TICKERS.includes(p.t))
+    .map(p => ({ ...p, prog:(p.px/p.avg - 1)*100, past: p.px >= GEN_MULTIPLE*p.avg, orig: p.avg*p.qty }))
+    .filter(p => p.prog >= GEN_MIN_PROG)
+    .sort((a,b)=>b.prog-a.prog);
+  return (
+    <Panel delay={.13}>
+      <Eyebrow note={`trim trigger = 2× cost · thesis-gated`}>The generator — capital recycling engine</Eyebrow>
+      <div style={{ fontSize:10.5, color:"var(--tx3)", lineHeight:1.6, marginBottom:14 }}>
+        Each bar fills from your <b style={{color:"var(--tx2)"}}>cost</b> (left) to <b style={{color:"var(--tx2)"}}>2× cost</b> (right edge = the trim trigger).
+        At the edge — <i>and only if the thesis still holds</i> — trim to recover your original capital and let the rest ride as house money.
+        <Tip title="CORE vs SATELLITE" body={`Strategy target: ~${TARGET_CORE_PCT}% in a broad-market core (IUSG + QQQ, weekly DCA), ~${100-TARGET_CORE_PCT}% in 1–3 high-conviction satellites. Today core is ${corePct.toFixed(1)}% — the simplify/focus shift is still early.`} color={WARN}>
+          <span style={{ color:"var(--tx5)" }}> &nbsp;Core today: <b style={{color:WARN}}>{corePct.toFixed(1)}%</b> vs ~{TARGET_CORE_PCT}% target.</span>
+        </Tip>
+      </div>
+      <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
+        {gens.map(p=>{
+          const fill = Math.min(p.prog, 100);
+          return (
+            <div key={p.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:10, padding:"3px 6px", borderRadius:5, cursor:"help" }}
+              onMouseEnter={(e)=>showTip(e, `${p.t} · ${p.name}`, p.past
+                ? `PAST 2×: up ${pct(p.ret)} on a ${usd(p.avg)} basis. Generator move (thesis permitting): trim ~${usd(p.orig,0)} to recover original capital, let ~${usd(p.mv-p.orig,0)} ride free as house money.`
+                : `${p.prog.toFixed(0)}% of the way to the 2× trim trigger (needs ${usd(p.avg*2)}, now ${usd(p.px)}). Let it compound — don't trim early, don't add at highs.`,
+                p.past?GAIN:ACCENT)}
+              onMouseMove={moveTip} onMouseLeave={hideTip}>
+              <span style={{ width:46, fontSize:10.5, fontWeight:700, color:"var(--tx2)", flexShrink:0 }}>{p.t}</span>
+              <div style={{ position:"relative", flex:1, height:16, background:"var(--inner-bg)", border:"1px solid var(--bd)", borderRadius:4, overflow:"hidden" }}>
+                <div className="seg-grow" style={{ height:"100%", width:fill+"%", background: p.past?GAIN:ACCENT, opacity: p.past?.9:.7 }} />
+                {p.past && <span style={{ position:"absolute", right:7, top:0, lineHeight:"15px", fontSize:8.5, fontWeight:700, letterSpacing:"0.1em", color:"var(--page-bg)" }}>● TRIM ZONE</span>}
+              </div>
+              <span style={{ width:108, textAlign:"right", fontSize:10, flexShrink:0, color: p.past?GAIN:"var(--tx4)" }}>
+                {p.past ? `recover ${usd(p.orig,0)}` : `${p.prog.toFixed(0)}% to 2×`}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ fontSize:9, color:"var(--tx6)", marginTop:11 }}>Names &lt;{GEN_MIN_PROG}% of the way to 2× are hidden. Core ETFs (IUSG, QQQ) compound passively and aren't generators.</div>
+    </Panel>
+  );
+}
+
+function LimitLadder() {
+  const muskNames = LIMITS.filter(l=>l.musk).map(l=>l.t).join(" + ");
+  return (
+    <Panel delay={.15}>
+      <Eyebrow note="manual · GTC · below market">Deployment ladder — pending limit orders</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+        {LIMITS.map(l=>{
+          const live = liveByT[l.t];
+          let status, sc = "var(--tx5)";
+          if (l.limit == null) { status = "ride / trim plan — no new capital"; }
+          else if (live) {
+            const above = (live.px/l.limit - 1)*100;
+            if (live.px > l.limit) { status = `live ${usd(live.px)} · ${above.toFixed(0)}% above limit — won't fill, don't chase`; sc = WARN; }
+            else { status = `live ${usd(live.px)} · at/below limit — would fill`; sc = GAIN; }
+          } else { status = l.watch ? "watchlist — not armed" : "awaiting — not held"; }
+          return (
+            <div key={l.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:12, padding:"8px 10px", border:"1px solid var(--bd)", borderRadius:8, cursor:"help" }}
+              onMouseEnter={(e)=>showTip(e, `${l.t} — ${l.size}`, l.anchor, l.musk?WARN:ACCENT)} onMouseMove={moveTip} onMouseLeave={hideTip}>
+              <span style={{ width:54, fontSize:12, fontWeight:700, color:"var(--tx1)", flexShrink:0 }}>{l.t}</span>
+              <span style={{ width:78, fontSize:11, color: l.limit?ACCENT:"var(--tx5)", fontWeight:700, flexShrink:0 }}>{l.limit?usd(l.limit,0):"—"}</span>
+              <span style={{ width:96, fontSize:10, color:"var(--tx4)", flexShrink:0 }}>{l.size}</span>
+              <span style={{ flex:1, fontSize:10, color:sc, textAlign:"right" }}>{status}{l.musk && " · Musk bucket"}</span>
+            </div>
+          );
+        })}
+      </div>
+      <div style={{ marginTop:12, padding:"10px 12px", border:"1px solid var(--bd2)", borderLeft:`2px solid ${WARN}`, borderRadius:8, background:"var(--inner-bg)", fontSize:10, color:"var(--tx3)", lineHeight:1.6 }}>
+        <b style={{color:WARN}}>Correlation cap:</b> {muskNames} are sized as <b>one</b> ~{usd(MUSK_BUCKET_CAP,0)} bet, not two — shared CEO, narrative, and a possible 12–18mo merger. Post-merger they could collapse into a single ticker's worth of risk.
+      </div>
+    </Panel>
+  );
+}
+
+function DisciplineStrip() {
+  return (
+    <Panel delay={.18}>
+      <Eyebrow>The discipline rules — the actual edge</Eyebrow>
+      <div className="resp-grid-4" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:"8px 22px" }}>
+        {RULES.map((r,i)=>(
+          <div key={i} style={{ display:"flex", gap:9, alignItems:"baseline" }}>
+            <span style={{ fontSize:10, fontWeight:700, color:ACCENT, flexShrink:0, fontFamily:FONT_MONO }}>{String(i+1).padStart(2,"0")}</span>
+            <span style={{ fontSize:10.5, color:"var(--tx3)", lineHeight:1.55 }}>{r}</span>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+function App() {
+  const s = useStats();
+  const [showDaily, setShowDaily] = useState(false);
+  return (
+    <div style={{ width:"100%", maxWidth:1180, margin:"0 auto", padding:"26px 22px 60px", fontFamily:FONT_MONO }}>
+
+      {/* header */}
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:20, flexWrap:"wrap", gap:14 }}>
+        <div>
+          <div style={{ fontFamily:FONT_DISPLAY, fontSize:26, fontWeight:600, letterSpacing:"0.32em", color:"var(--tx1)" }}>
+            TH<span style={{color:ACCENT}}>3</span>SIS · FOLIO
+          </div>
+          <div style={{ fontSize:9.5, color:"var(--tx5)", letterSpacing:"0.08em", marginTop:7 }}>
+            live positions · Interactive Brokers · operating the "$1,000 generator" (see STRATEGY.md) — hover anything for plain-english context
+          </div>
+        </div>
+        <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+          <button className="pill" onClick={()=>setShowDaily(v=>!v)}
+            style={{ background: showDaily?ACCENT:"transparent", color: showDaily?"var(--page-bg)":"var(--tx4)",
+                     border:"1px solid "+(showDaily?ACCENT:"var(--bd2)"), borderRadius:20, padding:"6px 13px",
+                     fontFamily:FONT_MONO, fontSize:9.5, fontWeight:700, letterSpacing:"0.1em" }}>
+            {showDaily ? "● DAILY NOISE: ON" : "○ DAILY NOISE: OFF"}
+          </button>
+          <div style={{ textAlign:"right" }}>
+            <div style={{ fontSize:9, color:"var(--tx5)", letterSpacing:"0.14em" }}>AS OF</div>
+            <div style={{ fontSize:12, color:"var(--tx2)", fontWeight:700 }}>{ASOF}</div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+        <Hero s={s} showDaily={showDaily} />
+        <ThemeAllocation s={s} />
+        <ConvictionConcentration s={s} />
+        <Scoreboard s={s} />
+        <Generator s={s} />
+        <LimitLadder />
+        <PositionsTable s={s} showDaily={showDaily} />
+        <Attention s={s} />
+        <DisciplineStrip />
+      </div>
+
+      <div style={{ marginTop:22, padding:"14px 18px", border:"1px dashed var(--bd2)", borderRadius:10, fontSize:9.5, color:"var(--tx5)", lineHeight:1.7 }}>
+        ⚠ <b style={{color:"var(--tx4)"}}>Not financial advice.</b> A static snapshot of an IBKR account as of {ASOF} — prices, weights and P&L drift every session; re-pull before acting.
+        Returns are unrealized and measured on cost basis, not time-weighted. Daily P&L is muted by default on purpose: over a 5-year horizon it's noise, not signal.
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
