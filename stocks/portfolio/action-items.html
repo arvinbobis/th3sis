@@ -94,7 +94,7 @@ const ACCENT = "var(--blue-soft)";
 
 // shared snapshot + strategy
 const ASOF = PF_ASOF, ACCT = PF_ACCT, POS = PF_POS, LIVE = PF_LIVE;
-const { CORE_TICKERS, TARGET_CORE_PCT, GEN_MULTIPLE, GEN_MIN_PROG, MUSK_BUCKET_CAP, LIMITS, RULES, REVIEW_GATES } = PF_STRAT;
+const { CORE_TICKERS, TARGET_CORE_PCT, GEN_MULTIPLE, GEN_MIN_PROG, MUSK_BUCKET_CAP, LIMITS, RULES, REVIEW_GATES, TRIMMED } = PF_STRAT;
 
 const usd = (v, d=2) => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 const pct = (v, d=0) => (v>=0?"+":"") + v.toFixed(d) + "%";
@@ -110,8 +110,9 @@ function hideTip(){ tip().classList.remove("on"); }
 const investedMV = POS.reduce((s,p)=>s+p.mv,0);
 const corePct    = POS.filter(p=>CORE_TICKERS.includes(p.t)).reduce((s,p)=>s+p.mv,0) / investedMV * 100;
 const gens = POS.filter(p=>!CORE_TICKERS.includes(p.t))
-  .map(p=>({ ...p, prog:(p.px/p.avg-1)*100, past:p.px>=GEN_MULTIPLE*p.avg, orig:p.avg*p.qty }));
-const pastTrim    = gens.filter(p=>p.past).sort((a,b)=>b.prog-a.prog);
+  .map(p=>({ ...p, prog:(p.px/p.avg-1)*100, past:p.px>=GEN_MULTIPLE*p.avg, orig:p.avg*p.qty, trimmed:!!TRIMMED[p.t] }));
+const pastTrim    = gens.filter(p=>p.past && !p.trimmed).sort((a,b)=>b.prog-a.prog);
+const trimmedPos  = gens.filter(p=>p.trimmed).sort((a,b)=>b.prog-a.prog);
 const nearTrigger = gens.filter(p=>!p.past && p.prog>=GEN_MIN_PROG).sort((a,b)=>b.prog-a.prog);
 const plannedCap  = LIMITS.reduce((s,l)=>s+(l.cap||0),0);
 const capGap      = plannedCap - ACCT.cash;
@@ -188,6 +189,28 @@ function DecideNow() {
           head={`This trim funds the deployment ladder`}
           right={capGap>0?`gap ${usd(capGap,0)}`:"covered"}
           body={<>Your pending limits need ~<b>{usd(plannedCap,0)}</b> of new capital vs <b>{usd(ACCT.cash,0)}</b> cash — a <b>{usd(capGap,0)}</b> shortfall. Trimming the winner above more than closes it, instead of adding fresh capital (rule 4). Sequence: trim → redeploy.</>} />
+      </div>
+    </Panel>
+  );
+}
+
+function TrimLog() {
+  if (!trimmedPos.length) return null;
+  return (
+    <Panel delay={.05}>
+      <Eyebrow color={GAIN} note="capital recovered · remainder rides free">✓ Executed — generator log</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+        {trimmedPos.map(p=>{
+          const x = TRIMMED[p.t];
+          return (
+            <Item key={p.t} tag="BANKED" color={GAIN}
+              head={`${p.t} — trimmed ${x.date}, original capital recovered`}
+              right={`+${usd(x.realized,0)} banked`}
+              body={<>Sold <b>{x.soldQty}</b> sh @ <b>{usd(x.soldPx)}</b> → <b>{usd(x.proceeds,0)}</b> proceeds, realizing <b>{usd(x.realized,0)}</b>. The remaining <b>{p.qty.toFixed(4)} sh</b> (~<b>{usd(p.mv,0)}</b>, {(p.px/p.avg).toFixed(2)}× cost) now rides as <b>house money</b> — <i>no longer a trim candidate</i> (never re-trim on price alone). Proceeds recycle into the deployment ladder below.</>}
+              tipTitle={`${p.t} — generator root`}
+              tipBody={`The recycling engine working: a doubled, thesis-intact winner trimmed to recover original capital, leaving the remainder to compound at ~zero cost-basis risk. The ${usd(x.proceeds,0)} proceeds fund the next idea.`} />
+          );
+        })}
       </div>
     </Panel>
   );
@@ -300,6 +323,7 @@ function App() {
       <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
         <SummaryStrip />
         <DecideNow />
+        <TrimLog />
         <Orders />
         <HoldRide />
         <Gates />
