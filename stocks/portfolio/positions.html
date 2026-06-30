@@ -106,7 +106,7 @@ const ACCENT = "var(--blue-soft)"; // peach accent from theme.css
 // ── Snapshot + strategy from the shared portfolio-data.js (single source of truth,
 //    also consumed by action-items.html). Re-pull updates that one file; both follow.
 const ASOF = PF_ASOF, ACCT = PF_ACCT, THEMES = PF_THEMES, POS = PF_POS, liveByT = PF_LIVE;
-const { CORE_TICKERS, TARGET_CORE_PCT, GEN_MULTIPLE, GEN_MIN_PROG, MUSK_BUCKET_CAP, LIMITS, RULES } = PF_STRAT;
+const { CORE_TICKERS, TARGET_CORE_PCT, GEN_MULTIPLE, GEN_MIN_PROG, MUSK_BUCKET_CAP, LIMITS, RULES, TRIMMED } = PF_STRAT;
 
 // ── formatters ──────────────────────────────────────────────────────────────
 const usd = (v, d=2) => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
@@ -450,7 +450,7 @@ function Generator({ s }) {
   const corePct = POS.filter(p=>CORE_TICKERS.includes(p.t)).reduce((a,p)=>a+p.mv,0) / s.investedMV * 100;
   const gens = POS
     .filter(p => !CORE_TICKERS.includes(p.t))
-    .map(p => ({ ...p, prog:(p.px/p.avg - 1)*100, past: p.px >= GEN_MULTIPLE*p.avg, orig: p.avg*p.qty }))
+    .map(p => ({ ...p, prog:(p.px/p.avg - 1)*100, past: p.px >= GEN_MULTIPLE*p.avg, orig: p.avg*p.qty, trimmed: !!TRIMMED[p.t] }))
     .filter(p => p.prog >= GEN_MIN_PROG)
     .sort((a,b)=>b.prog-a.prog);
   return (
@@ -466,20 +466,25 @@ function Generator({ s }) {
       <div style={{ display:"flex", flexDirection:"column", gap:6 }}>
         {gens.map(p=>{
           const fill = Math.min(p.prog, 100);
+          const tx = TRIMMED[p.t];
           return (
             <div key={p.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:10, padding:"3px 6px", borderRadius:5, cursor:"help" }}
-              onMouseEnter={(e)=>showTip(e, `${p.t} · ${p.name}`, p.past
+              onMouseEnter={(e)=>showTip(e, `${p.t} · ${p.name}`, p.trimmed
+                ? `TRIMMED ${tx.date}: sold ${tx.soldQty} sh @ ${usd(tx.soldPx)}, banked ${usd(tx.realized,0)} and recovered your original capital. The remaining ${p.qty.toFixed(4)} sh (~${usd(p.mv,0)}, ${(p.px/p.avg).toFixed(2)}× cost) now rides as house money — not a trim candidate (never re-trim on price alone).`
+                : p.past
                 ? `PAST 2×: up ${pct(p.ret)} on a ${usd(p.avg)} basis. Generator move (thesis permitting): trim ~${usd(p.orig,0)} to recover original capital, let ~${usd(p.mv-p.orig,0)} ride free as house money.`
                 : `${p.prog.toFixed(0)}% of the way to the 2× trim trigger (needs ${usd(p.avg*2)}, now ${usd(p.px)}). Let it compound — don't trim early, don't add at highs.`,
-                p.past?GAIN:ACCENT)}
+                (p.past||p.trimmed)?GAIN:ACCENT)}
               onMouseMove={moveTip} onMouseLeave={hideTip}>
               <span style={{ width:46, fontSize:10.5, fontWeight:700, color:"var(--tx2)", flexShrink:0 }}>{p.t}</span>
               <div style={{ position:"relative", flex:1, height:16, background:"var(--inner-bg)", border:"1px solid var(--bd)", borderRadius:4, overflow:"hidden" }}>
-                <div className="seg-grow" style={{ height:"100%", width:fill+"%", background: p.past?GAIN:ACCENT, opacity: p.past?.9:.7 }} />
-                {p.past && <span style={{ position:"absolute", right:7, top:0, lineHeight:"15px", fontSize:8.5, fontWeight:700, letterSpacing:"0.1em", color:"var(--page-bg)" }}>● TRIM ZONE</span>}
+                <div className="seg-grow" style={{ height:"100%", width:fill+"%", background: (p.past||p.trimmed)?GAIN:ACCENT, opacity: p.trimmed?.5:(p.past?.9:.7) }} />
+                {p.trimmed
+                  ? <span style={{ position:"absolute", right:7, top:0, lineHeight:"15px", fontSize:8.5, fontWeight:700, letterSpacing:"0.1em", color:"var(--page-bg)" }}>✓ TRIMMED</span>
+                  : p.past && <span style={{ position:"absolute", right:7, top:0, lineHeight:"15px", fontSize:8.5, fontWeight:700, letterSpacing:"0.1em", color:"var(--page-bg)" }}>● TRIM ZONE</span>}
               </div>
-              <span style={{ width:108, textAlign:"right", fontSize:10, flexShrink:0, color: p.past?GAIN:"var(--tx4)" }}>
-                {p.past ? `recover ${usd(p.orig,0)}` : `${p.prog.toFixed(0)}% to 2×`}
+              <span style={{ width:108, textAlign:"right", fontSize:10, flexShrink:0, color: (p.past||p.trimmed)?GAIN:"var(--tx4)" }}>
+                {p.trimmed ? `+${usd(tx.realized,0)} · rides free` : p.past ? `recover ${usd(p.orig,0)}` : `${p.prog.toFixed(0)}% to 2×`}
               </span>
             </div>
           );

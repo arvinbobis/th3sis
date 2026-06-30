@@ -219,6 +219,11 @@
       <span class="chip-ticker">ACTIONS</span>
       <span class="chip-name">limit orders &amp; to-dos</span>
     </button>
+    <button id="generator-chip" class="chip pinned">
+      <span class="chip-dot quiet">▦</span>
+      <span class="chip-ticker">TREE</span>
+      <span class="chip-name">house-money generator</span>
+    </button>
 
     <!-- Chip list -->
     <div id="chip-label">THESES ›</div>
@@ -276,6 +281,7 @@ const loadingTxt = document.getElementById('loading-text');
 const themeBtn   = document.getElementById('theme-btn');
 const portfolioChip = document.getElementById('portfolio-chip');
 const actionsChip   = document.getElementById('actions-chip');
+const generatorChip = document.getElementById('generator-chip');
 
 // ── Theme ────────────────────────────────────────────────────────────────────
 const THEME_KEY = 'th3sis_theme';
@@ -405,6 +411,16 @@ function loadActions() {
   loadFrame('portfolio/action-items.html', 'LOADING ACTION ITEMS…');
 }
 actionsChip.addEventListener('click', loadActions);
+
+// ── Load the generator (house-money tree) page ────────────────────────────────
+function loadGenerator() {
+  notFound.classList.remove('on');
+  if (activeChip) activeChip.classList.remove('active');
+  activeChip = generatorChip;
+  generatorChip.classList.add('active');
+  loadFrame('portfolio/generator.html', 'GROWING THE TREE…');
+}
+generatorChip.addEventListener('click', loadGenerator);
 
 // ── Load a thesis ─────────────────────────────────────────────────────────────
 function loadTicker(ticker) {
