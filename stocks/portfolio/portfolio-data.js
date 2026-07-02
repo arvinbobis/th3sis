@@ -1,15 +1,18 @@
 /* ───────────────────────────────────────────────────────────────────────────
  * portfolio-data.js — single source of truth for the FOLIO + ACTIONS pages.
  *
- * LIVE SNAPSHOT pulled from Interactive Brokers, as of 2026-06-30. Account-level
+ * LIVE SNAPSHOT pulled from Interactive Brokers, as of 2026-07-01. Account-level
  * numbers come from the IBKR account summary; per-position rows are the open
  * positions. Strategy config encodes the "$1,000 generator" (see STRATEGY.md).
  * Re-pull updates THIS ONE FILE and both pages follow. Prices drift daily.
  * Exposed as plain globals (loaded before the Babel script on each page).
+ *
+ * 2026-07-01: SPGI spun off its Mobility segment as MBGL (Mobility Global Inc),
+ * distributed 1:1 — hence the matching 5.8357 share count. No thesis built yet.
  * ─────────────────────────────────────────────────────────────────────────── */
 
-const PF_ASOF = "2026-06-30";
-const PF_ACCT = { netLiq: 33969.58, cash: 2103.48, dividends: 5.32, buyingPower: 2103.48 };
+const PF_ASOF = "2026-07-01";
+const PF_ACCT = { netLiq: 34674.73, cash: 2107.80, dividends: 2.08, buyingPower: 2107.80 };
 
 const PF_THEMES = {
   semis:        { label: "AI Semis & Hardware",        short: "Semis",      blurb: "The picks-and-shovels of the AI build-out — chips, fab tools, networking silicon." },
@@ -23,40 +26,41 @@ const PF_THEMES = {
 
 // ticker, name, qty, avgCost, lastPx, mktVal, unrealPnl, dayPnl, theme, hasThesis
 const PF_RAW = [
-  ["ALAB","Astera Labs",          0.3484, 289.87,  458.64,  159.79,   58.80,   0.93, "semis",        true ],
-  ["AMZN","Amazon.com",           8.1653, 202.74,  240.87, 1966.78,  311.37,   5.96, "platforms",    true ],
-  ["ANET","Arista Networks",      0.6839, 147.66,  165.50,  113.19,   12.20,   0.96, "semis",        false],
-  ["ARM","Arm Holdings",          0.2558, 283.82,  349.29,   89.35,   16.75,   1.46, "semis",        false],
-  ["ASML","ASML Holding",         0.5986, 730.61, 1908.00, 1142.13,  704.79,  14.90, "semis",        true ],
-  ["AVGO","Broadcom",             1.1432, 351.63,  375.84,  429.66,   27.68,   3.88, "semis",        true ],
-  ["AXP","American Express",      1.5881, 315.47,  340.89,  541.37,   40.38,   0.02, "payments",     false],
-  ["BKNG","Booking Holdings",    10.7000, 188.61,  182.60, 1953.82,  -64.25,   2.03, "diversifiers", false],
-  ["BN","Brookfield",            11.0450,  45.36,   41.99,  463.78,  -37.22,  -1.66, "diversifiers", false],
-  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  231.51,  242.83,  -58.15,   0.00, "findata",      false],
-  ["CME","CME Group",             0.9659, 311.60,  218.58,  211.13,  -89.84,   0.00, "findata",      false],
-  ["EFX","Equifax",               4.9299, 253.60,  158.57,  781.73, -468.51,   0.00, "findata",      false],
-  ["EQIX","Equinix",              0.0936,1078.41, 1085.17,  101.57,    0.63,   0.00, "power",        false],
-  ["ETN","Eaton",                 0.2627, 384.38,  409.36,  107.54,    6.56,   0.29, "power",        false],
-  ["FICO","Fair Isaac",           1.8783,1407.84, 1177.52, 2211.74, -432.62,   0.00, "findata",      true ],
-  ["GE","GE Aerospace",           2.7332, 295.44,  374.66, 1024.02,  216.52,   2.60, "power",        false],
-  ["GEV","GE Vernova",            0.2719,1106.68, 1108.92,  301.52,    0.61,   1.74, "power",        false],
-  ["GOOG","Alphabet",             3.0338, 227.50,  351.71, 1067.02,  376.82,   1.30, "platforms",    true ],
-  ["INTU","Intuit",               2.3960, 642.94,  267.20,  640.21, -900.26,   1.92, "platforms",    false],
-  ["IUSG","iShares S&P US Growth",11.0836,163.04,  185.62, 2057.34,  250.24,   0.00, "index",        false],
-  ["LRCX","Lam Research",         0.3395, 297.47,  424.70,  144.19,   43.20,   4.68, "semis",        false],
-  ["MA","Mastercard",             5.2499, 532.50,  509.64, 2675.56, -120.04,   0.00, "payments",     false],
-  ["MCO","Moody's",               5.1545, 484.90,  452.73, 2333.60, -165.83,   0.00, "findata",      false],
-  ["META","Meta Platforms",       2.9644, 610.47,  564.00, 1671.92, -137.76,   4.15, "platforms",    true ],
-  ["MRVL","Marvell Technology",   0.3694, 194.44,  282.50,  104.36,   32.53,   1.75, "semis",        true ],
-  ["MSCI","MSCI",                 1.7176, 567.03,  558.00,  958.42,  -15.51,   0.00, "findata",      false],
-  ["MSFT","Microsoft",            5.8559, 434.43,  371.13, 2173.30, -370.68,  14.99, "platforms",    true ],
-  ["MU","Micron Technology",      0.1323, 762.87, 1162.58,  153.81,   52.88,   2.29, "semis",        true ],
-  ["NVDA","NVIDIA",               2.1852, 183.96,  195.84,  427.95,   25.96,   1.90, "semis",        true ],
-  ["PWR","Quanta Services",       0.4109, 732.43,  714.45,  293.57,   -7.39,   0.00, "power",        false],
-  ["QQQ","Invesco QQQ",           0.9735, 722.02,  727.98,  708.69,    5.80,   3.80, "index",        false],
-  ["SPGI","S&P Global",           5.8357, 504.01,  408.56, 2384.23, -556.99,   0.00, "findata",      false],
-  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  453.40,  325.63,   24.63,  -1.22, "semis",        true ],
-  ["V","Visa",                    5.6834, 306.90,  341.42, 1940.43,  196.17,  -1.30, "payments",     false],
+  ["ALAB","Astera Labs",          0.3484, 289.87,  429.00,  149.46,   48.47,  -0.65, "semis",        true ],
+  ["AMZN","Amazon.com",           8.1653, 202.74,  243.20, 1985.80,  330.40,  12.25, "platforms",    true ],
+  ["ANET","Arista Networks",      0.6839, 147.66,  166.00,  113.53,   12.54,  -0.42, "semis",        false],
+  ["ARM","Arm Holdings",          0.2558, 283.82,  329.90,   84.39,   11.79,  -1.94, "semis",        false],
+  ["ASML","ASML Holding",         0.5986, 730.61, 1815.96, 1087.03,  649.69, -16.21, "semis",        true ],
+  ["AVGO","Broadcom",             1.1432, 351.63,  367.00,  419.55,   17.57,  -2.68, "semis",        true ],
+  ["AXP","American Express",      1.5881, 315.47,  347.75,  552.26,   51.27,   1.11, "payments",     false],
+  ["BKNG","Booking Holdings",    10.7000, 188.61,  182.61, 1953.92,  -64.15,  -0.32, "diversifiers", false],
+  ["BN","Brookfield",            11.0450,  45.36,   42.80,  472.73,  -28.27,   0.33, "diversifiers", false],
+  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  247.72,  259.83,  -41.15,   0.00, "findata",      false],
+  ["CME","CME Group",             0.9659, 311.60,  230.00,  222.16,  -78.81,  -0.97, "findata",      false],
+  ["EFX","Equifax",               4.9299, 253.60,  162.17,  799.48, -450.76,   0.00, "findata",      false],
+  ["EQIX","Equinix",              0.0936,1078.41, 1013.62,   94.87,   -6.06,   0.00, "power",        false],
+  ["ETN","Eaton",                 0.2627, 384.38,  409.82,  107.66,    6.68,  -0.65, "power",        false],
+  ["FICO","Fair Isaac",           1.8783,1407.84, 1198.75, 2251.61, -392.74, -14.84, "findata",      true ],
+  ["GE","GE Aerospace",           2.7332, 295.44,  375.51, 1026.34,  218.84,   1.56, "power",        false],
+  ["GEV","GE Vernova",            0.2719,1106.68, 1120.00,  304.53,    3.62,  -3.90, "power",        false],
+  ["GOOG","Alphabet",             3.0338, 227.50,  355.20, 1077.61,  387.41,  -8.16, "platforms",    true ],
+  ["INTU","Intuit",               2.3960, 642.94,  267.21,  640.24, -900.24,   0.31, "platforms",    false],
+  ["IUSG","iShares S&P US Growth",11.0836,163.04,  187.32, 2076.18,  269.08,   0.00, "index",        false],
+  ["LRCX","Lam Research",         0.3395, 297.47,  388.00,  131.73,   30.74,  -1.11, "semis",        false],
+  ["MA","Mastercard",             5.2499, 532.50,  522.44, 2742.76,  -52.84,   0.00, "payments",     false],
+  ["MBGL","Mobility Global",      5.8357,  22.05,   21.19,  123.66,   -5.02,   0.00, "findata",      false],
+  ["MCO","Moody's",               5.1545, 484.90,  468.38, 2414.26,  -85.17,   0.00, "findata",      false],
+  ["META","Meta Platforms",       2.9644, 610.47,  609.00, 1805.32,   -4.36, -11.59, "platforms",    true ],
+  ["MRVL","Marvell Technology",   0.3694, 194.44,  264.00,   97.52,   25.70,  -2.97, "semis",        true ],
+  ["MSCI","MSCI",                 1.7176, 567.03,  582.03,  999.69,   25.76,   0.00, "findata",      false],
+  ["MSFT","Microsoft",            5.8559, 434.43,  385.60, 2258.04, -285.94,   7.73, "platforms",    true ],
+  ["MU","Micron Technology",      0.1323, 762.87, 1004.98,  132.96,   32.03,  -3.61, "semis",        true ],
+  ["NVDA","NVIDIA",               2.1852, 183.96,  195.94,  428.17,   26.18,  -3.58, "semis",        true ],
+  ["PWR","Quanta Services",       0.4109, 732.43,  688.01,  282.70,  -18.25,  -1.39, "power",        false],
+  ["QQQ","Invesco QQQ",           0.9735, 722.02,  721.17,  702.06,   -0.83,  -3.89, "index",        false],
+  ["SPGI","S&P Global",           5.8357, 504.01,  414.73, 2420.24, -520.98,  -1.40, "findata",      false],
+  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  441.74,  317.26,   16.26,  -1.79, "semis",        true ],
+  ["V","Visa",                    5.6834, 306.90,  350.51, 1992.07,  247.82,  -3.26, "payments",     false],
 ];
 const PF_POS = PF_RAW.map(r => ({
   t:r[0], name:r[1], qty:r[2], avg:r[3], px:r[4], mv:r[5], up:r[6], day:r[7], theme:r[8], thesis:r[9],
