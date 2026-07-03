@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TH3SIS · AVGO Broadcom — Investment Thesis</title>
+<title>TH3SIS · ALAB Astera Labs — Investment Thesis</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="../theme.css" />
@@ -133,11 +133,11 @@ function moveTip(e) {
 function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
 
 const SIGNAL_HELP = {
-  "Q2 AI Revenue vs Guide": "Broadcom designs custom AI accelerator chips (XPUs/ASICs) for Google, Meta, Anthropic, OpenAI, and two others. Q2 FY2026 actual: $10.8B — a slight beat vs. the $10.7B guide, and up 143% year-over-year. The beat is real but thin; the real disappointment was the Q3 guide of $16B coming in below analyst whispers of ~$17.2B, which triggered a 15% stock drop.",
-  "XPU Customer Count": "The number of major tech companies for which Broadcom designs custom AI accelerator chips. Still 6 (Google, Meta, Anthropic, OpenAI + 2 unnamed). Q2 call disclosed volumes for the first time: Anthropic 5+ GW starting 2027, OpenAI 1.3 GW in 2027, Meta 3 GW through 2028. No 7th customer announced — this was the bull case trigger that did not fire.",
-  "Software Revenue": "Broadcom's infrastructure software segment (primarily VMware). Q2 FY2026: $7.18B, up 9% YoY — a miss vs. the $7.32B analyst estimate. This was the secondary source of disappointment in the Q2 print. At 93% gross margin, the segment is highly profitable, but missing estimates two quarters in a row would signal ARR growth is decelerating faster than the model assumes.",
-  "Non-GAAP EBITDA Margin": "Out of every dollar Broadcom brings in, how much is left as cash profit before interest and taxes. 'Non-GAAP' strips out amortization from the VMware acquisition — a financing cost, not an economic one. Q2 FY2026: 69% — a beat vs. the guided ~68%. This is a genuine positive from the quarter and shows operating leverage.",
-  "Q3 AI Revenue Guidance": "What management says next quarter's AI chip revenue will be. Q3 FY2026 guide: $16B — over 200% YoY growth, but below analyst whisper expectations of ~$17.2B. This guidance miss was the primary catalyst for the 15% post-earnings selloff. The $100B FY2027 target was reaffirmed but not raised. Watch whether Q3 actuals land at or above $16B.",
+  "Q1 Revenue vs Consensus": "Astera Labs' total revenue from its connectivity chip portfolio (Scorpio fabric switches, Leo CXL controllers, Aries PCIe/CXL retimers, Taurus active cables). Q1 FY2026 actual: $308.4M — a real beat vs. the ~$292M analyst consensus, and up 93% year-over-year. This is the fifth straight quarter of triple-digit-adjacent YoY growth since the March 2024 IPO.",
+  "Scorpio Fabric Ramp": "Scorpio is Astera Labs' 320-lane PCIe/Ethernet fabric switch for connecting GPUs inside an AI server rack (the 'scale-up' layer) — the highest-value product in the lineup. Management said on the Q1 call it's on track to become ALAB's largest product line by revenue by year-end 2026, shipping into at least one hyperscaler's next-gen rack architecture. A slip here is the single biggest risk to the bull case.",
+  "Q2 Revenue Guide": "What management says next quarter's total revenue will be. Q2 FY2026 guide: $355–365M, above the ~$345M analyst consensus going into the print — a raise, not just an in-line guide. At the midpoint that's roughly 81%+ YoY growth, consistent with the full-year growth rate the base case assumes holds through 2026.",
+  "Non-GAAP Gross Margin": "Revenue minus cost of goods, on a non-GAAP basis (strips out stock-based comp and acquisition-related items — ALAB has made no acquisitions, so this adjustment is small and clean, unlike a company amortizing a large M&A deal). Q1 FY2026: 76.3–76.4%, above the ~75% level guided — genuinely high for a semiconductor company and a sign of pricing power in a still-scarce advanced-connectivity market. Q2 guide of ~73% reflects product mix shifting toward higher-volume, lower-margin Scorpio units — watch whether that's temporary mix or a real margin ceiling.",
+  "Leo CXL Ramp (Azure)": "Leo is Astera Labs' CXL (Compute Express Link) memory-controller product line, letting servers pool and expand memory beyond what's physically attached to a CPU. Early production ramp is on Microsoft Azure's M-series virtual machines — the first disclosed hyperscaler design win for this specific product line, distinct from Scorpio. Still early revenue contribution; the bull case needs this to inflect meaningfully in 2026, not just stay 'on track.'",
 };
 const TAG_HELP = {
   BEAT: "doing better than expected — a good sign.",
@@ -359,29 +359,34 @@ const TRACK = Array.from(new Map(TRACK_ALL.map(t => [t.q, t])).values()).slice(-
 const TRACK_PRICE_MIN = 20, TRACK_PRICE_MAX = 640;
 
 // ── THE PAST — historical data (update annually) ──────────────────────────────
-// Source: Wise Financials + 10-year monthly price CSV.  FY = Oct–Oct fiscal year.
-const PAST_YEARS       = ["FY16","FY17","FY18","FY19","FY20","FY21","FY22","FY23","FY24","FY25"];
-const PAST_REV         = [13.24, 17.64, 20.85, 22.6,  23.89, 27.45, 33.2,  35.82, 51.57, 63.89];
-const PAST_GM          = [44.9,  48.2,  51.5,  55.2,  56.6,  61.4,  66.5,  68.9,  63.0,  67.8];
-const PAST_FCF         = [2.69,  5.48,  8.24,  9.27,  11.6,  13.32, 16.31, 17.63, 19.41, 26.91];
-const PAST_ROIC        = [-0.9,  4.5,   10.7,  5.4,   5.7,   12.2,  19.7,  22.5,  5.6,   16.4];
-const PAST_ND_EBITDA   = [4.19,  0.91,  1.43,  2.94,  3.06,  1.91,  1.44,  1.24,  2.44,  1.41];
-const PAST_EVEBITDA    = [28.96, 16.16, 11.39, 15.78, 15.76, 16.65, 11.48, 18.23, 35.08, 50.62];
-const PAST_FCF_YIELD   = [4.3,   5.1,   9.0,   7.6,   8.2,   6.2,   8.5,   5.1,   2.5,   1.6];
-const PAST_NET_DEBT    = [10.54, 6.34,  13.2,  27.74, 34.07, 28.11, 27.56, 25.46, 58.22, 48.96];
-// Monthly price history: split-adjusted (10:1 July 2024), 2016-06 → 2026-06
-const PRICE_M_LABELS = ["2016-06","2016-07","2016-08","2016-09","2016-10","2016-11","2016-12","2017-01","2017-02","2017-03","2017-04","2017-05","2017-06","2017-07","2017-08","2017-09","2017-10","2017-11","2017-12","2018-01","2018-02","2018-03","2018-04","2018-05","2018-06","2018-07","2018-08","2018-09","2018-10","2018-11","2018-12","2019-01","2019-02","2019-03","2019-04","2019-05","2019-06","2019-07","2019-08","2019-09","2019-10","2019-11","2019-12","2020-01","2020-02","2020-03","2020-04","2020-05","2020-06","2020-07","2020-08","2020-09","2020-10","2020-11","2020-12","2021-01","2021-02","2021-03","2021-04","2021-05","2021-06","2021-07","2021-08","2021-09","2021-10","2021-11","2021-12","2022-01","2022-02","2022-03","2022-04","2022-05","2022-06","2022-07","2022-08","2022-09","2022-10","2022-11","2022-12","2023-01","2023-02","2023-03","2023-04","2023-05","2023-06","2023-07","2023-08","2023-09","2023-10","2023-11","2023-12","2024-01","2024-02","2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06"];
-const PRICE_M = [15.54,16.2,17.64,17.25,17.03,17.05,17.68,19.95,21.09,21.9,22.08,23.95,23.31,24.67,25.21,24.25,26.39,27.79,25.69,24.8,24.65,23.57,22.94,25.21,24.26,22.18,21.9,24.67,22.35,23.74,25.43,26.83,27.54,30.07,31.84,25.16,28.79,29.0,28.26,27.61,29.29,31.62,31.6,30.52,27.26,23.71,27.16,29.13,31.56,31.68,34.72,36.43,34.96,40.16,43.79,45.05,46.99,46.37,45.62,47.23,47.68,48.54,49.72,48.49,53.17,55.37,66.54,58.59,58.74,62.97,55.44,58.01,48.58,53.55,49.91,44.4,47.01,55.1,55.91,58.5,59.43,64.15,62.65,80.8,86.74,89.87,92.29,83.06,84.14,92.57,111.63,118.0,130.05,132.54,130.03,132.85,160.55,160.68,162.82,172.5,169.77,162.08,231.84,221.27,199.43,167.43,192.47,242.07,275.65,293.7,297.39,329.91,369.63,402.96,346.1,331.3,319.55,309.51,417.43,446.77,382.07];
-const PRICE_M_DD = [0.0,0.0,0.0,-2.2,-3.5,-3.3,0.0,0.0,0.0,0.0,0.0,0.0,-2.7,0.0,0.0,-3.8,0.0,0.0,-7.6,-10.8,-11.3,-15.2,-17.5,-9.3,-12.7,-20.2,-21.2,-11.2,-19.6,-14.6,-8.5,-3.5,-0.9,0.0,0.0,-21.0,-9.6,-8.9,-11.2,-13.3,-8.0,-0.7,-0.8,-4.1,-14.4,-25.5,-14.7,-8.5,-0.9,-0.5,0.0,0.0,-4.0,0.0,0.0,0.0,0.0,-1.3,-2.9,0.0,0.0,0.0,0.0,-2.5,0.0,0.0,0.0,-11.9,-11.7,-5.4,-16.7,-12.8,-27.0,-19.5,-25.0,-33.3,-29.4,-17.2,-16.0,-12.1,-10.7,-3.6,-5.8,0.0,0.0,0.0,0.0,-10.0,-8.8,0.0,0.0,0.0,0.0,0.0,-1.9,0.0,0.0,0.0,0.0,0.0,-1.6,-6.0,0.0,-4.6,-14.0,-27.8,-17.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-14.1,-17.8,-20.7,-23.2,0.0,0.0,-14.5];
+// Astera Labs IPO'd March 20, 2024 — there is no 10-year history to show. Real, sourced
+// periods only: two full fiscal years plus the latest quarter (mixed cadence, clearly
+// labeled — do not compare the Q1 FY26 bar 1:1 against the two full-year bars).
+// Sources: Astera Labs Q4/FY2024 and Q4/FY2025 earnings releases, Q1 FY2026 10-Q.
+const PAST_YEARS       = ["FY2024", "FY2025", "Q1 FY26"];
+const PAST_REV         = [396, 853, 308];               // total revenue, $M (FY24/FY25 = full year, Q1'26 = one quarter)
+const PAST_GM          = [74.1, 75.8, 76.3];            // non-GAAP gross margin, %
+const PAST_OPM         = [34.3, 39.2, 36.2];            // non-GAAP operating margin, % (FY2024 figure is the Q4 FY24 print — full-year non-GAAP opex margin wasn't cleanly disclosed at this granularity pre-2025)
+const PAST_EPS         = [0.37, 1.84, 0.61];            // non-GAAP diluted EPS, $ (FY24/FY25 = full year, Q1'26 = one quarter)
+// Balance sheet — a single real snapshot (Q1 FY2026 / Mar 31, 2026), not a fabricated
+// multi-year trend. ALAB has made no acquisitions and carries no debt.
+const BALANCE_SHEET = { cashAndSecurities: 1.20, totalLiabilities: 0.165, netCash: 1.03, asOf: "Mar 31, 2026" }; // $B
+// Monthly price history since IPO: real anchor points (IPO price, all-time low, each
+// TRACK_ALL post-earnings print, all-time high, current), LINEARLY INTERPOLATED between
+// them — not exact daily/monthly closes. Treat month-to-month wiggles as illustrative;
+// the anchor points themselves are real and sourced.
+const PRICE_M_LABELS = ["2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07"];
+const PRICE_M = [36.0,36.04,36.09,36.13,36.18,36.22,42.48,48.74,55,61.67,68.33,75,82.5,90,70,80.0,90.0,100,120.0,140.0,160,178.33,196.67,215,243.33,271.67,300,499.48,399.92];
+const PRICE_M_DD = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-22.2,-11.1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-19.9];
 // Key events for price chart annotations (index into PRICE_M_LABELS)
 // Each event has an idx (into PRICE_M monthly array), label, and note for tooltip
 const PAST_EVENTS = [
-  { idx: 29,  label: "CA Acq",    note: "Nov 2018 — CA Technologies acquisition ($18.9B). Broadcom pivoted from pure-play semiconductors toward enterprise infrastructure software. Revenue jumped; leverage increased. Gross margin declined initially then recovered as integration completed." },
-  { idx: 45,  label: "COVID",     note: "Mar 2020 — COVID selloff. AVGO dropped ~30% with the broad market. The thesis held: semiconductor demand accelerated post-reopening as data center and cloud buildout surged. Price recovered to new highs within 12 months." },
-  { idx: 72,  label: "Rate Peak", note: "Nov 2022 — Peak Fed rate hiking cycle. Growth multiples compressed across tech. AVGO held relatively well vs high-growth peers due to FCF generation, stable dividends, and its defensive semiconductor exposure in networking/storage." },
-  { idx: 83,  label: "VMware",    note: "Oct 2023 — VMware acquisition close ($61B). Massive leverage-up (Net Debt/EBITDA >2×). Market initially skeptical of software pivot at this price. VMware ARR target set at $8.5B by end of FY25 — achieved ahead of schedule." },
-  { idx: 97,  label: "Split",     note: "Jul 2024 — 10:1 stock split. All historical prices in this chart are split-adjusted (divided by 10). No economic effect — purely cosmetic, intended to improve retail accessibility. Pre-split price was ~$1,850 in June 2024." },
-  { idx: 120, label: "AI Miss",   note: "Jun 2026 — Q2 FY26 earnings: AI guide ($16B Q3) missed analyst whispers (~$17.2B). Software revenue also missed. Stock dropped ~15% in two days despite strong actuals ($10.8B AI beat). Current dislocation event. Base floor: $420." },
+  { idx: 0,  label: "IPO",       note: "Mar 20, 2024 — Astera Labs IPO'd on Nasdaq at $36.00/share, raising ~$534M. No prior public trading history exists before this point." },
+  { idx: 5,  label: "ATL",       note: "Aug 7, 2024 — all-time low of $36.22, essentially flat to the IPO price after the initial post-IPO settling period. The stock didn't meaningfully break out until Scorpio/Leo design wins started compounding revenue beats through late 2024." },
+  { idx: 13, label: "Tariff Selloff", note: "Apr 2025 — the broad tariff-driven selloff that hit every AI-semiconductor name pulled ALAB down toward the low-$90s before continuing to soften into the Q1 2025 print. The most recent real fear-driven dislocation on record for this stock." },
+  // Nasdaq-100 inclusion (Jun 22, 2026) isn't its own annotation — it lands in the same
+  // month as the all-time high, which the chart already labels separately (see the ATH
+  // marker below); a second dashed line at the same x-position just overlapped the label.
 ];
 
 
@@ -2106,7 +2111,7 @@ function FanChart({ c }) {
         "Wider = more uncertainty.", c.accent, "fan-band")} />
       <path d={midPath} fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="6 5" className="fan-mid" style={{ filter: "url(#softglow)" }} />
       <path d={histPath} fill="none" stroke="var(--tx1)" strokeWidth="2" {...tipSvg(
-        "Price history", "The solid white line is AVGO's actual share price since Q4 FY2024. Note: Broadcom did a 10-for-1 stock split in July 2024 — all prices here are post-split. The big run from ~$185 to $460+ was driven almost entirely by the AI custom chip story accelerating.",
+        "Price history", "The solid white line is ALAB's actual share price since Q1 FY2025. Astera Labs IPO'd in March 2024 at $36/share; no stock split has occurred. The big run from ~$70 to $300+ was driven almost entirely by the Scorpio/Leo connectivity ramp and repeated upside revenue prints.",
         "This part already happened — it's real, not a forecast.", "var(--tx1)", "hist-line")} />
       {HISTORY.map((d, i) => (
         <g key={i}>
@@ -2114,8 +2119,8 @@ function FanChart({ c }) {
             fill={i === nHist - 1 ? "#46aad9" : "var(--panel-bg)"}
             stroke={i === nHist - 1 ? "var(--title)" : "var(--tx3)"} strokeWidth="1.5"
             {...tipSvg(i === nHist - 1 ? "Where we are today" : d.q,
-              i === nHist - 1 ? `AVGO trades around $${NOW_PRICE} right now (post Q2 FY2026 earnings). Q2 printed $10.8B AI revenue (beat), but Q3 guidance of $16B missed analyst whispers — stock dropped ~15%. Everything left of this dot is history; everything right is forecast.`
-                : `At the end of ${d.q}, AVGO was around $${d.p}. All prices are post-split (10:1 in July 2024).`,
+              i === nHist - 1 ? `ALAB trades around $${NOW_PRICE} right now (post Q1 FY2026 earnings). Q1 printed $308.4M revenue (+93% YoY, a beat), and Q2 guidance of $355–365M came in above consensus. Everything left of this dot is history; everything right is forecast.`
+                : `At the end of ${d.q}, ALAB was around $${d.p}.`,
               null, i === nHist - 1 ? "var(--blue-soft)" : "var(--tx1)")} />
           {i === nHist - 1 && <text x={histPts[i][0] - 6} y={histPts[i][1] - 12} fill="var(--blue-soft)" fontSize="11" fontFamily={FONT_MONO} textAnchor="end">NOW ${NOW_PRICE}</text>}
         </g>
@@ -2159,9 +2164,9 @@ function tagColor(tag) {
 // ── Segmented Control ──────────────────────────────────────────────────────
 function Segmented({ active, setActive, small }) {
   const explain = {
-    bear: ["The pessimistic scenario", "Click to see what AVGO looks like if hyperscaler AI spending pulls back — XPU revenue misses guidance, VMware customers churn faster than expected, and the stock re-rates as a hardware cyclical. Price would likely fall to the $200–265 range."],
-    base: ["The most-likely scenario", "Click for the base view — AI chip revenue hits guidance, VMware ARR grows steadily at 15–18%, and Broadcom keeps compounding FCF at ~20% per year. Price stays in the $420–490 range near fair value."],
-    bull: ["The optimistic scenario", "Click to see the upside — Q2 AI revenue beats $10.7B guidance, a 7th hyperscaler XPU customer is announced, and the market re-rates AVGO from hardware cyclical to durable platform. Price could reach $580–700."],
+    bear: ["The pessimistic scenario", "Click to see what ALAB looks like if the Scorpio X-Series ramp slips, a hyperscaler standardizes on an in-house or competing connectivity stack, or 2026 growth decelerates well below the ~81% guide. The multiple compresses hard on a hyper-growth name repriced as merely growing. Price would likely fall to the $160–210 range."],
+    base: ["The most-likely scenario", "Click for the base view — Scorpio's X-Series fabric switch becomes the largest product line on schedule, Leo CXL keeps ramping on Azure, and full-year growth holds near the ~81% guide. Price stays in the $300–390 range — modestly below where the stock trades today."],
+    bull: ["The optimistic scenario", "Click to see the upside — Scorpio beats its ramp, a second or third hyperscaler scale-up design win is disclosed, and Leo CXL inflects, pushing 2026 growth above ~81% and lifting 2027 estimates. Price could reach $450–560."],
   };
   return (
     <div style={{ display: "flex", gap: 5 }}>
@@ -2184,16 +2189,16 @@ function Segmented({ active, setActive, small }) {
   );
 }
 
-// ── KPI Column — AI Revenue $B ─────────────────────────────────────────────
+// ── KPI Column — Total Revenue $M ──────────────────────────────────────────
 const KPI_MIN = 250, KPI_MAX = 650;
 function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
   const h = Math.max(4, Math.min(92, ((val - KPI_MIN) / (KPI_MAX - KPI_MIN)) * 100));
   const tp = baseline
-    ? tip("Starting point (Q1 FY26)", `This is the most recent real number: Broadcom earned $${val}B in AI chip revenue last quarter. The bars to the right are scenario forecasts for where it goes next.`, "The grey dot = 'where we are now'.", "var(--tx3)")
-    : tip(`Forecast: ${label}`, `In this scenario, quarterly AI semiconductor revenue reaches ~$${val}B by ${label}. CEO Hock Tan has guided to $100B+ AI chip revenue for all of FY2027 — about $25B/quarter. Taller bar = faster ramp.`, "Switch BEAR/BASE/BULL up top to see how the forecast changes.", accentColor);
+    ? tip("Starting point (Q1 FY26)", `This is the most recent real number: Astera Labs recorded $${val}M in total revenue last quarter (+93% YoY). The bars to the right are scenario forecasts for where it goes next.`, "The grey dot = 'where we are now'.", "var(--tx3)")
+    : tip(`Forecast: ${label}`, `In this scenario, quarterly total revenue reaches ~$${val}M by ${label}. Full-year 2026 growth guide implies roughly $355–365M in Q2 alone. Taller bar = faster ramp.`, "Switch BEAR/BASE/BULL up top to see how the forecast changes.", accentColor);
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
-      <div style={{ fontSize: 11, color: accentColor, fontWeight: 700, marginBottom: 4 }}>${val}B</div>
+      <div style={{ fontSize: 11, color: accentColor, fontWeight: 700, marginBottom: 4 }}>${val}M</div>
       {baseline
         ? <div style={{ width: 9, height: 9, borderRadius: "50%", background: "var(--tx8)", border: "1.5px solid #7b86a0", marginBottom: `${h}%` }} />
         : <div style={{ width: "62%", height: `${h}%`, background: `linear-gradient(180deg, ${accentColor}, ${accentColor}44)`, border: `1px solid ${accentColor}`, borderRadius: 2, animation: `fadeUp .5s ease ${delay}s both`, boxShadow: `0 0 12px ${accentColor}55` }} />}
@@ -2273,12 +2278,12 @@ function ReversionClock() {
   return (
     <div style={{ marginTop: 12, padding: "12px 14px", background: "var(--panel-bg)", border: "1px solid var(--bd)", borderRadius: 8 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "var(--tx5)" }}>REVERSION CLOCK · JUN 2026 DISLOCATION</div>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "var(--tx5)" }}>REVERSION CLOCK · APR 2025 DISLOCATION</div>
         <div style={{ fontSize: 11, color: "var(--tx3)" }}><span style={{ color: "#c59542", fontWeight: 700 }}>{elapsed}d</span> elapsed / ~{REVERSION_PRECEDENT_DAYS}d precedent</div>
       </div>
       <div style={{ marginBottom: 4, fontSize: 9.5, color: "var(--tx5)" }}>TIME SINCE DISLOCATION ({new Date(DISLOCATION_DATE).toLocaleDateString("en-US",{month:"short",day:"numeric"})})</div>
       <div {...tip("How much time has passed",
-        "In April 2026, competition fears from Marvell briefly pushed AVGO below $400. This bar shows how far along we are in the recovery cycle vs. the prior Q2 FY2025 dislocation precedent (~50 days).",
+        "In April 2025, the broad tariff selloff that hit every AI-semiconductor name pushed ALAB down toward its post-IPO lows (~$90). This bar shows how far along the stock is in the recovery cycle vs. that ~60-day precedent — ALAB has since recovered well past this floor, but it's the most recent real fear-driven dislocation on record for a stock this young.",
         "Filling up = getting closer to when recovery happened last time.", "#c59542")}
         style={{ position: "relative", height: 14, background: "var(--deep-bg)", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
         <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.min(100,pct)}%`, background: "linear-gradient(90deg,#dd817a,#c59542)", borderRadius: 7 }} />
@@ -2368,8 +2373,8 @@ function TrackRecord() {
             <g key={t.q} style={{ animation: `pop .4s cubic-bezier(.2,1.4,.4,1) ${0.3 + i * 0.08}s both` }}>
               <circle cx={x(i)} cy={y(t.post)} r={isLast ? 6 : 4} fill={isLast ? "#46aad9" : "var(--panel-bg)"} stroke="var(--title)" strokeWidth={isLast ? 2 : 1.5}
                 {...tipSvg(isLast ? "Most recent quarter" : `${t.q}: actual price`,
-                  isLast ? `After Q2 FY2026 earnings (Jun 2026), AVGO traded around $${t.post} — a ~15% post-earnings drop on a Q3 AI guide miss vs. analyst whispers. Next dot: Q3 FY2026 earnings (~Sep 2026).`
-                    : `After ${t.q} earnings, AVGO actually traded around $${t.post}. Compare this dot to the colored bars behind it to see if the predicted range was right.`,
+                  isLast ? `After Q1 FY2026 earnings (May 2026), ALAB traded around $${t.post} — a beat-and-raise print (revenue +93% YoY, Q2 guide above consensus). Next dot: Q2 FY2026 earnings (~Aug 2026).`
+                    : `After ${t.q} earnings, ALAB actually traded around $${t.post}. Compare this dot to the colored bars behind it to see if the predicted range was right.`,
                   null, isLast ? "var(--blue-soft)" : "var(--tx1)")} />
               {isLast && <text x={x(i)} y={y(t.post) - 14} fill="var(--blue-soft)" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">NOW ${t.post}</text>}
             </g>
@@ -2427,15 +2432,15 @@ function TabNav({ activeTab, setActiveTab, accentColor }) {
 
 // ── Position Tab ───────────────────────────────────────────────────────────
 const THESIS_ITEMS = [
-  { key: "aiTarget",     label: "$100B FY2027 AI target still standing", note: "Hock Tan has not revised this down" },
-  { key: "xpuCustomers", label: "All 6 XPU relationships active",        note: "No pause, cancellation, or in-house shift announced" },
-  { key: "aiGrowth",     label: "AI revenue growing quarter-over-quarter", note: "Sequential growth — not just YoY — matters here" },
-  { key: "vmwareArr",    label: "VMware ARR holding above 10% growth",   note: "Churn not accelerating; subscription model intact" },
+  { key: "revGrowth",   label: "Full-year 2026 growth guide holding ~81%", note: "Two consecutive in-line-or-better prints needed to lift estimates" },
+  { key: "scorpioRamp", label: "Scorpio X-Series on track as largest product line by year-end", note: "The single biggest ramp-timing risk to the bull case" },
+  { key: "grossMargin", label: "Non-GAAP gross margin holding 75%+", note: "Q2 guide of ~73% reflects mix shift — watch if that's temporary or a new ceiling" },
+  { key: "noInsourcing", label: "No hyperscaler in-sources or standardizes on a competing connectivity stack", note: "The chokepoint-breaking event — nothing disclosed as of this writing" },
 ];
 const PRICE_ZONES = [
-  { label: "BEAR",    lo: 210, hi: 280, mid: 245, color: "#dd817a", action: "Exit / reduce if thesis also breaking" },
-  { label: "BASE",    lo: 390, hi: 460, mid: 425, color: "#c59542", action: "Small add OK if thesis intact" },
-  { label: "BULL",    lo: 530, hi: 650, mid: 590, color: "#66b278", action: "Let it ride — don't chase" },
+  { label: "BEAR",    lo: 160, hi: 210, mid: 185, color: "#dd817a", action: "Exit / reduce if thesis also breaking" },
+  { label: "BASE",    lo: 300, hi: 390, mid: 345, color: "#c59542", action: "Small add OK if thesis intact" },
+  { label: "BULL",    lo: 450, hi: 560, mid: 505, color: "#66b278", action: "Let it ride — don't chase" },
 ];
 const VIS_LO = 150, VIS_HI = 700;
 const visPct = v => `${((v - VIS_LO) / (VIS_HI - VIS_LO) * 100).toFixed(2)}%`;
@@ -3073,7 +3078,7 @@ function FutureTab() {
 
   // ── Position state (migrated from PositionTab) ───────────────────────────
   const [clearPending, setClearPending] = useState(false);
-  const [checks, setChecks]         = useState(() => loadPos()?.checks    || { aiTarget: false, xpuCustomers: false, aiGrowth: false, vmwareArr: false });
+  const [checks, setChecks]         = useState(() => loadPos()?.checks    || { revGrowth: false, scorpioRamp: false, grossMargin: false, noInsourcing: false });
   const [tranches, setTranches]     = useState(() => loadPos()?.tranches  || DEFAULT_TRANCHES);
   const [existing, setExisting]     = useState(() => {
     const sv = loadPos()?.existing;
@@ -3100,7 +3105,7 @@ function FutureTab() {
   const clearPos      = () => {
     localStorage.removeItem(POS_KEY);
     setTranches(DEFAULT_TRANCHES);
-    setChecks({ aiTarget: false, xpuCustomers: false, aiGrowth: false, vmwareArr: false });
+    setChecks({ revGrowth: false, scorpioRamp: false, grossMargin: false, noInsourcing: false });
     setExisting([{ id: 1, price: "", shares: "", date: "" }]);
     setPortfolioK(100); setPosPct(2.0);
     setClearPending(false);
@@ -3153,8 +3158,8 @@ function FutureTab() {
   const totalDeployed  = store.cycles.reduce((s, c) => s + (parseFloat(c.deployed) || 0), 0);
   const totalSaved     = store.cycles.reduce((s, c) => s + (parseFloat(c.saved)    || 0), 0);
   const warChest       = totalSaved;
-  const avgoDeployed   = store.cycles.reduce((s, c) => {
-    const d = typeof c.deployed === "object" ? (c.deployed.AVGO || 0) : 0;
+  const alabDeployed   = store.cycles.reduce((s, c) => {
+    const d = typeof c.deployed === "object" ? (c.deployed.ALAB || 0) : 0;
     return s + d;
   }, 0);
 
@@ -3220,7 +3225,7 @@ function FutureTab() {
     { key: "outcomes", label: "① OUTCOMES",  col: bullPct > 0 ? "#66b278" : "#dd817a", tipBody: `12-month scenario returns: Bear ${bearPct}%, Base ${basePct >= 0 ? "+" : ""}${basePct}%, Bull +${bullPct}%. Includes a position value calculator — enter your share count to see real dollar P&L per scenario.` },
     { key: "downside", label: "② DOWNSIDE",  col: belowBase ? "#66b278" : "#c59542",   tipBody: `Bear case risk: $${bearMid} target (${bearPct}% from $${NOW_PRICE}). Portfolio loss calculator lets you enter your portfolio size and position % to see exact dollar risk. Kill-switch: Q3 AI revenue < $15B = exit immediately.` },
     { key: "signal",   label: "③ SIGNAL",    col: dislocSignal.col,                     tipBody: `Price attractiveness signals: NTM P/E ${currentPE}× vs 10Y range (20–42×), dislocation clock (${dislocDays}d since Jun 3 drop), and FCF yield (${fcfYield}%) vs 10Y Treasury (${VAL_CONFIG.risk_free_pct}%). Is today a better or worse entry than historical norms?` },
-    { key: "capital",  label: "④ CAPITAL & POSITION", col: warChest >= 400 ? "#66b278" : warChest >= 200 ? "#c59542" : "#dd817a", tipBody: `War chest tracker + your AVGO position ledger. Log each investing cycle (deployed + saved). Track your existing pre-thesis position, thesis-driven adds, and combined blended basis. Sizing check calculates bear-case dollar loss at your position size. Thesis checks gate whether it is time to add.` },
+    { key: "capital",  label: "④ CAPITAL & POSITION", col: warChest >= 400 ? "#66b278" : warChest >= 200 ? "#c59542" : "#dd817a", tipBody: `War chest tracker + your ALAB position ledger. Log each investing cycle (deployed + saved). Track your existing pre-thesis position, thesis-driven adds, and combined blended basis. Sizing check calculates bear-case dollar loss at your position size. Thesis checks gate whether it is time to add.` },
   ];
 
   // ── Cycle CRUD helpers ────────────────────────────────────────────────────
@@ -3293,7 +3298,7 @@ function FutureTab() {
           const pctSign = pct >= 0 ? "+" : "";
           const barW = Math.min(96, Math.max(4, ((mid - 150) / (720 - 150)) * 100));
           return (
-            <div key={label} {...tip(`${label} case — 12 months`, `Target range: $${lo}–$${hi} (midpoint $${mid}). Return from $${NOW_PRICE}: ${pctSign}${pct}%. ${label === "BEAR" ? "Triggered by: AI guide misses or VMware churn. Multiple compresses to 20–23×. Note: at current price, bear downside is larger than bull upside." : label === "BASE" ? "Q3 AI revenue meets $16B guide. VMware stabilises. AVGO re-rates from current ~26× back toward 27–30×. Near-flat return from here." : "Q3 AI revenue beats $16B materially. 7th hyperscaler customer announced. Market re-rates from ~26× to 35–38×. Closes the post-earnings gap."}`, "Midpoint of price band used. 12-month horizon. These are estimates — hold loosely.", col)} style={{ marginBottom: 10 }}>
+            <div key={label} {...tip(`${label} case — 12 months`, `Target range: $${lo}–$${hi} (midpoint $${mid}). Return from $${NOW_PRICE}: ${pctSign}${pct}%. ${label === "BEAR" ? "Triggered by: Scorpio ramp slips, or a hyperscaler in-sources/standardizes on a competing connectivity stack. Multiple compresses hard off a hyper-growth base — bear downside is larger than bull upside at today's price." : label === "BASE" ? "Q2 lands inside the $355–365M guide, full-year growth holds ~81%, Scorpio becomes the largest product line on schedule. Roughly flat-to-down from here — the stock has run ahead of the base case." : "Scorpio beats its ramp, a 2nd hyperscaler scale-up win is disclosed, Leo CXL inflects on Azure. 2026 growth guide gets raised above ~81%, supporting a higher multiple on a higher EPS base."}`, "Midpoint of price band used. 12-month horizon. These are estimates — hold loosely.", col)} style={{ marginBottom: 10 }}>
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 3 }}>
                 <span style={{ fontSize: 9.5, fontWeight: 700, color: col, letterSpacing: "0.1em" }}>{label}</span>
                 <span style={{ fontSize: 9.5, color: "var(--tx5)" }}>
@@ -3410,7 +3415,7 @@ function FutureTab() {
         {allShares > 0 && (
           <div style={{ marginTop: 12, padding: "12px 14px", background: "rgba(70,170,217,0.06)",
             border: "1px solid rgba(70,170,217,0.25)", borderRadius: 6 }}>
-            <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "#46aad9", marginBottom: 8 }}>MY AVGO POSITION — BEAR CASE IMPACT</div>
+            <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "#46aad9", marginBottom: 8 }}>MY ALAB POSITION — BEAR CASE IMPACT</div>
             <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
               {[
                 { label: "TOTAL SHARES",   val: allShares.toFixed(0),    sub: `${exShares > 0 ? exShares.toFixed(0) + " existing" : ""}${exShares > 0 && totShares > 0 ? " + " : ""}${totShares > 0 ? totShares.toFixed(0) + " adds" : ""}`, col: "#46aad9" },
@@ -3442,7 +3447,7 @@ function FutureTab() {
             </div>
           </div>
         )}
-        <Footnote text={`Bear case scenario: AI capex discipline or VMware churn. Assumes ~23× multiple on EPS ~$${bearMid === 245 ? 9.5 : 10}. Position loss is illustrative at $${NOW_PRICE} entry.`} />
+        <Footnote text={`Bear case scenario: Scorpio ramp slips, or a hyperscaler in-sources/standardizes on a competing connectivity stack. Assumes multiple compression to ~50–60× on the same ~$${VAL_CONFIG.ntm_eps} NTM non-GAAP EPS — this is a multiple story, not an earnings cut. Position loss is illustrative at $${NOW_PRICE} entry.`} />
       </div>
     );
   };
@@ -3484,9 +3489,9 @@ function FutureTab() {
         {/* P/E bar */}
         <div style={{ marginBottom: 16 }}>
           <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "var(--tx6)", marginBottom: 6 }}>
-            FORWARD P/E vs 10-YEAR RANGE ({VAL_CONFIG.pe_trough}×–{VAL_CONFIG.pe_peak}×)
+            FORWARD P/E vs RANGE SINCE IPO ({VAL_CONFIG.pe_trough}×–{VAL_CONFIG.pe_peak}×)
           </div>
-          <div {...tip("NTM P/E vs 10-Year Range", `Forward P/E = stock price ÷ next-12-month non-GAAP EPS. At $${NOW_PRICE} and $${VAL_CONFIG.ntm_eps} NTM EPS, P/E = ${currentPE}×. Historical zones: deep value (20–24×), fair value (28–32×), expensive (38–42×). Post-earnings selloff brought the multiple from ~32× down to ~${currentPE}×. 'Non-GAAP' strips ~$5–8B/yr of VMware acquisition amortisation — GAAP P/E would be ~40–50× and misleading.`, null, "var(--tx3)")} style={{ position: "relative", height: 24, borderRadius: 4, overflow: "hidden",
+          <div {...tip("NTM P/E vs Range Since IPO", `Forward P/E = stock price ÷ next-12-month non-GAAP EPS. At $${NOW_PRICE} and $${VAL_CONFIG.ntm_eps} NTM EPS, P/E = ${currentPE}×. Zones: trough (${VAL_CONFIG.pe_trough}–${VAL_CONFIG.pe_bear_hi}×), fair value (${VAL_CONFIG.pe_normal_lo}–${VAL_CONFIG.pe_normal_hi}×), expensive (${VAL_CONFIG.pe_bull_lo}–${VAL_CONFIG.pe_peak}×). 'Non-GAAP' strips stock-based compensation — ALAB has made no acquisitions, so unlike a serial-acquirer there's no amortization distortion to remove.`, null, "var(--tx3)")} style={{ position: "relative", height: 24, borderRadius: 4, overflow: "hidden",
             display: "flex", border: "1px solid var(--bd)" }}>
             {zones.map(z => (
               <div key={z.label} {...tip(z.label, `${z.label}: ${z.lo}–${z.hi}× NTM P/E. ${z.label === "DEEP VALUE" ? "Historically cheap. Rare — last seen at the 2022 rate-shock bottom. Exceptional entry if thesis is intact." : z.label === "FAIR VALUE" ? `Normal historical range (${z.lo}–${z.hi}×). Neither cheap nor expensive. Reasonable entry for long-term holders.` : z.label === "EXPENSIVE" ? "Premium multiple. The stock is pricing in bull-case execution. Limited margin of safety." : "Transitional zone between fair value and adjacent zones."}`, null, z.col)} style={{
@@ -3510,7 +3515,7 @@ function FutureTab() {
         </div>
 
         {/* Dislocation signal */}
-        <div {...tip("Dislocation Signal", `A dislocation occurs when a short-term event (earnings miss, macro shock, sector rotation) causes a stock to trade materially below its intrinsic value for a temporary window. The Jun 3, 2026 Q2 earnings drop (−15%) is the most recent event. ${dislocDays} days later, the stock is ${NOW_PRICE < REVERSION_BASEFLOOR ? "still below the base floor of $" + REVERSION_BASEFLOOR + " — the dislocation window is open." : "recovering past the base floor of $" + REVERSION_BASEFLOOR + "."}`, "Historical precedent: 2022 rate shock took ~60 days to recover. 2023 VMware uncertainty resolved in ~90 days.", dislocSignal.col)} style={{ padding: "10px 14px", borderRadius: 6, marginBottom: 12,
+        <div {...tip("Dislocation Signal", `A dislocation occurs when a short-term event (earnings miss, macro shock, sector rotation) causes a stock to trade materially below its intrinsic value for a temporary window. The April 2025 broad AI-semiconductor tariff selloff is the most recent real event for ALAB. ${dislocDays} days later, the stock is ${NOW_PRICE < REVERSION_BASEFLOOR ? "still below the base floor of $" + REVERSION_BASEFLOOR + " — the dislocation window is open." : "well past the base floor of $" + REVERSION_BASEFLOOR + " — the dislocation has resolved."}`, `Historical precedent: the April 2025 selloff took ~${REVERSION_PRECEDENT_DAYS} days to recover.`, dislocSignal.col)} style={{ padding: "10px 14px", borderRadius: 6, marginBottom: 12,
           background: `${dislocSignal.col}12`, border: `1px solid ${dislocSignal.col}44` }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
@@ -3521,11 +3526,11 @@ function FutureTab() {
             </div>
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: dislocSignal.col }}>{dislocDays}d</div>
-              <div style={{ fontSize: 8.5, color: "var(--tx7)" }}>SINCE JUN 3 DROP</div>
+              <div style={{ fontSize: 8.5, color: "var(--tx7)" }}>SINCE APR 2025 SELLOFF</div>
             </div>
           </div>
           <div style={{ marginTop: 8, fontSize: 9.5, color: "var(--tx6)", lineHeight: 1.55 }}>
-            Historical precedent: AVGO dislocations (2022 rate shock, 2023 VMware close) resolved within 45–90 days when thesis remained intact. Base floor: ${REVERSION_BASEFLOOR}.
+            Historical precedent: the April 2025 tariff selloff resolved within ~{REVERSION_PRECEDENT_DAYS} days when the thesis remained intact. Base floor: ${REVERSION_BASEFLOOR}.
           </div>
         </div>
 
@@ -3583,9 +3588,9 @@ function FutureTab() {
         {/* FCF yield */}
         <div style={{ display: "flex", gap: 8 }}>
           {[
-            { label: "FCF YIELD", val: `${fcfYield}%`, sub: `$${VAL_CONFIG.fcf_ntm_b}B NTM FCF`, col: "#66b278", tipTitle: "FCF Yield", tipBody: `Free Cash Flow Yield = NTM FCF ÷ Market Cap. At $${fcfYield}%, every $100 invested in AVGO generates $${fcfYield} of real cash per year — before it is deployed into dividends, buybacks, or acquisitions. A higher yield = cheaper stock relative to cash generation. Current: $${VAL_CONFIG.fcf_ntm_b}B FCF ÷ $${(NOW_PRICE * VAL_CONFIG.shares_b).toFixed(0)}B market cap.` },
+            { label: "FCF YIELD", val: `${fcfYield}%`, sub: `$${VAL_CONFIG.fcf_ntm_b}B NTM FCF`, col: "#66b278", tipTitle: "FCF Yield", tipBody: `Free Cash Flow Yield = NTM FCF ÷ Market Cap. At $${fcfYield}%, every $100 invested in ALAB generates $${fcfYield} of real cash per year — before it is reinvested in the business (ALAB pays no dividend and hasn't done buybacks or acquisitions; it holds the cash). A higher yield = cheaper stock relative to cash generation. Current: $${VAL_CONFIG.fcf_ntm_b}B FCF ÷ $${(NOW_PRICE * VAL_CONFIG.shares_b).toFixed(0)}B market cap.` },
             { label: "10Y TREASURY", val: `${VAL_CONFIG.risk_free_pct}%`, sub: "risk-free rate", col: "var(--tx6)", tipTitle: "10-Year Treasury Yield", tipBody: `The risk-free rate: what you earn on US Treasuries — the safest alternative. At ${VAL_CONFIG.risk_free_pct}%, this is the baseline. Any equity investment must clear this hurdle plus a risk premium. When rates are high, equities are relatively less attractive.` },
-            { label: "SPREAD", val: `+${(parseFloat(fcfYield) - VAL_CONFIG.risk_free_pct).toFixed(2)}%`, sub: "FCF yield vs risk-free", col: parseFloat(fcfYield) > VAL_CONFIG.risk_free_pct ? "#66b278" : "#dd817a", tipTitle: "Equity Risk Premium (FCF spread)", tipBody: `Spread = FCF Yield − 10Y Treasury. Positive spread means equities offer extra return vs risk-free. At +${(parseFloat(fcfYield) - VAL_CONFIG.risk_free_pct).toFixed(2)}%, AVGO's FCF yield beats Treasuries by ${(parseFloat(fcfYield) - VAL_CONFIG.risk_free_pct).toFixed(2)} points. A thin or negative spread is a warning that the stock is priced richly vs safe alternatives.` },
+            { label: "SPREAD", val: `+${(parseFloat(fcfYield) - VAL_CONFIG.risk_free_pct).toFixed(2)}%`, sub: "FCF yield vs risk-free", col: parseFloat(fcfYield) > VAL_CONFIG.risk_free_pct ? "#66b278" : "#dd817a", tipTitle: "Equity Risk Premium (FCF spread)", tipBody: `Spread = FCF Yield − 10Y Treasury. Positive spread means equities offer extra return vs risk-free. At +${(parseFloat(fcfYield) - VAL_CONFIG.risk_free_pct).toFixed(2)}%, ALAB's FCF yield beats Treasuries by ${(parseFloat(fcfYield) - VAL_CONFIG.risk_free_pct).toFixed(2)} points. A thin or negative spread is a warning the stock is priced richly vs safe alternatives — expected for a hyper-growth name priced on future cash flow, not today's.` },
           ].map(({ label, val, sub, col, tipTitle, tipBody }) => (
             <div key={label} {...tip(tipTitle, tipBody, null, col)} style={{ flex: 1, padding: "8px 10px", borderRadius: 6,
               background: "var(--inner-bg)", border: "1px solid var(--bd2)", textAlign: "center" }}>
@@ -3595,7 +3600,7 @@ function FutureTab() {
             </div>
           ))}
         </div>
-        <Footnote text={`P/E uses non-GAAP NTM EPS $${VAL_CONFIG.ntm_eps} (strips VMware acquisition amortization ~$5–8B/yr). GAAP P/E would be significantly higher.`} />
+        <Footnote text={`P/E uses non-GAAP NTM EPS $${VAL_CONFIG.ntm_eps} (strips stock-based compensation, standard for a recently-IPO'd growth company — ALAB has made no acquisitions, so there's no amortization distortion to remove). GAAP P/E would be somewhat higher.`} />
       </div>
     );
   };
@@ -3785,10 +3790,10 @@ function FutureTab() {
           </div>
         </div>
 
-        {/* ── MY AVGO POSITION ─────────────────────────────────────────────── */}
+        {/* ── MY ALAB POSITION ─────────────────────────────────────────────── */}
         <div style={{ marginTop: 16, borderTop: "1px solid var(--bd)", paddingTop: 14 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
-            <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "var(--tx6)" }}>MY AVGO POSITION</div>
+            <div style={{ fontSize: 9, letterSpacing: "0.12em", color: "var(--tx6)" }}>MY ALAB POSITION</div>
             <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
               <span style={{ fontSize: 9, color: flash ? "#66b278" : "transparent", transition: "color .3s", letterSpacing: "0.1em" }}>✓ SAVED</span>
               {clearPending
@@ -3954,7 +3959,7 @@ function FutureTab() {
             <div style={{ display: "flex", gap: 16, marginBottom: 12, flexWrap: "wrap" }}>
               {[
                 { label: "PORTFOLIO ($K)", val: portfolioK, set: setPortfolioK, min: 10, max: 5000, step: 10, fmt: v => `$${v.toLocaleString()}K` },
-                { label: "AVGO POSITION (%)", val: posPct, set: setPosPct, min: 0.5, max: 20, step: 0.5, fmt: v => `${v.toFixed(1)}%` },
+                { label: "ALAB POSITION (%)", val: posPct, set: setPosPct, min: 0.5, max: 20, step: 0.5, fmt: v => `${v.toFixed(1)}%` },
               ].map(({ label, val, set, min, max, step, fmt }) => (
                 <div key={label} style={{ flex: 1, minWidth: 140 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
@@ -4043,7 +4048,7 @@ function FutureTab() {
       {/* ── Top scorecard grid ── */}
       <div style={{ maxWidth: 1280, margin: "0 auto", padding: "20px 22px 0" }}>
         <div style={{ fontSize: 9, letterSpacing: "0.14em", color: "var(--tx7)", marginBottom: 10 }}>
-          THE FUTURE · SHOULD I DEPLOY CAPITAL TO AVGO THIS CYCLE?
+          THE FUTURE · SHOULD I DEPLOY CAPITAL TO ALAB THIS CYCLE?
         </div>
 
         {/* 2×2 scorecards */}
@@ -4059,16 +4064,16 @@ function FutureTab() {
           />
           <ScoreCard
             tipTitle="If I'm wrong, how much do I lose?"
-            tipBody={`Bear case: $${bearLo}–$${bearHi} range (${bearPct}% from $${NOW_PRICE}). This assumes multiple compression to 20–23× on cut EPS ~$9.50 — triggered by persistent AI guide misses or VMware churn acceleration. Use the portfolio loss calculator in this panel to see the dollar impact on your specific position size.`}
+            tipBody={`Bear case: $${bearLo}–$${bearHi} range (${bearPct}% from $${NOW_PRICE}). This assumes multiple compression to ~50–60× on the same ~$${VAL_CONFIG.ntm_eps} NTM EPS — triggered by a Scorpio ramp slip or a hyperscaler in-sourcing connectivity, not an earnings cut. Use the portfolio loss calculator in this panel to see the dollar impact on your specific position size.`}
             question="IF I'M WRONG, HOW MUCH DO I LOSE?"
             answer={`BEAR ${bearPct}% — $${bearLo}–${bearHi}`}
-            detail={`Bear case: AI guidance misses persist · Multiple compresses to 20–23× · VMware churn`}
+            detail={`Bear case: Scorpio ramp slips · Hyperscaler in-sources connectivity · Multiple compresses to ~50–60×`}
             col="#dd817a"
             panelKey="downside"
           />
           <ScoreCard
             tipTitle="Is today's price a gift or a trap?"
-            tipBody={`At ${currentPE}× NTM P/E, AVGO trades ${parseFloat(currentPE) <= VAL_CONFIG.pe_normal_lo ? "below its historical fair value range (28–32×)" : parseFloat(currentPE) <= VAL_CONFIG.pe_normal_hi ? "inside its historical fair value range (28–32×)" : "above its historical fair value range (28–32×)"}. The Jun 3 earnings drop created a dislocation — ${dislocDays} days ago — and the stock remains below the base floor of $${REVERSION_BASEFLOOR}. Historical dislocations have resolved in 45–90 days when the thesis stayed intact.`}
+            tipBody={`At ${currentPE}× NTM P/E, ALAB trades ${parseFloat(currentPE) <= VAL_CONFIG.pe_normal_lo ? `below its typical fair-value range (${VAL_CONFIG.pe_normal_lo}–${VAL_CONFIG.pe_normal_hi}×)` : parseFloat(currentPE) <= VAL_CONFIG.pe_normal_hi ? `inside its typical fair-value range (${VAL_CONFIG.pe_normal_lo}–${VAL_CONFIG.pe_normal_hi}×)` : `above its typical fair-value range (${VAL_CONFIG.pe_normal_lo}–${VAL_CONFIG.pe_normal_hi}×)`}. The most recent real dislocation was the April 2025 tariff selloff — ${dislocDays} days ago — since resolved; the stock has since compounded well past the base floor of $${REVERSION_BASEFLOOR}. That precedent resolved in ~${REVERSION_PRECEDENT_DAYS} days when the thesis stayed intact.`}
             question="IS TODAY'S PRICE A GIFT OR A TRAP?"
             answer={`${parseFloat(currentPE)}× NTM P/E — ${parseFloat(currentPE) <= VAL_CONFIG.pe_normal_lo ? "BELOW FAIR" : parseFloat(currentPE) <= VAL_CONFIG.pe_normal_hi ? "FAIR VALUE" : "ABOVE FAIR"}`}
             detail={`${dislocSignal.label}: ${dislocDays}d since Jun 3 drop · Base floor $${REVERSION_BASEFLOOR}`}
@@ -4190,39 +4195,42 @@ function PastTab() {
   const removeMetric = name => setPinned(p => p.filter(x => x !== name));
 
   // ── Derived verdicts ──────────────────────────────────────────────────────
-  const revCAGR    = Math.pow(PAST_REV[9] / PAST_REV[0], 1 / 9) - 1;
-  const latestGM   = PAST_GM[9];
-  const latestFCF  = PAST_FCF[9];
-  const latestROIC = PAST_ROIC[9];
-  const latestLev  = PAST_ND_EBITDA[9];
-  const evAvg      = PAST_EVEBITDA.reduce((a, b) => a + b, 0) / PAST_EVEBITDA.length;
-  const evNow      = v.peers.find(p => p.t === TICKER_META.ticker)?.ev_eb ?? PAST_EVEBITDA[9];
+  // Only 2 full fiscal years exist (FY2024, FY2025) — this is YoY growth, not a CAGR.
+  // PAST_REV[2] (Q1 FY26) is a single quarter and deliberately excluded from this calc.
+  const revCAGR    = PAST_REV[1] / PAST_REV[0] - 1;
+  const latestGM   = PAST_GM[2];
+  const latestOPM  = PAST_OPM[2];
+  const latestEPS  = PAST_EPS[2];
+  const currentPE  = (NOW_PRICE / v.ntm_eps).toFixed(1);
 
-  const durabilityStatus = revCAGR > 0.12 && latestGM > 55
-    ? { label: "STRONG",   desc: `${(revCAGR * 100).toFixed(0)}% 10Y REVENUE CAGR · ${latestGM}% GROSS MARGIN`, col: "#66b278" }
-    : revCAGR > 0.06
-    ? { label: "ADEQUATE", desc: `${(revCAGR * 100).toFixed(0)}% 10Y REVENUE CAGR`,                              col: "#c59542" }
-    : { label: "WEAK",     desc: "GROWTH STALLED",                                                                col: "#dd817a" };
+  const durabilityStatus = revCAGR > 0.5 && latestGM > 65
+    ? { label: "STRONG",   desc: `${(revCAGR * 100).toFixed(0)}% FY24→FY25 REVENUE GROWTH · ${latestGM}% GROSS MARGIN`, col: "#66b278" }
+    : revCAGR > 0.2
+    ? { label: "ADEQUATE", desc: `${(revCAGR * 100).toFixed(0)}% FY24→FY25 REVENUE GROWTH`,                              col: "#c59542" }
+    : { label: "WEAK",     desc: "GROWTH DECELERATING",                                                                   col: "#dd817a" };
 
-  const valueStatus = latestROIC > 15
-    ? { label: "STRONG",   desc: `ROIC ${latestROIC}% · FCF $${latestFCF}B (FY25)`,   col: "#66b278" }
-    : latestROIC > 8
-    ? { label: "ADEQUATE", desc: `ROIC ${latestROIC}% · ABOVE WACC`,                  col: "#c59542" }
-    : { label: "WATCH",    desc: `ROIC ${latestROIC}% · NEAR OR BELOW WACC`,          col: "#dd817a" };
+  const valueStatus = latestOPM > 35
+    ? { label: "STRONG",   desc: `NON-GAAP OP MARGIN ${latestOPM}% · EPS $${latestEPS} (Q1 FY26)`,   col: "#66b278" }
+    : latestOPM > 20
+    ? { label: "ADEQUATE", desc: `NON-GAAP OP MARGIN ${latestOPM}% · SCALING`,                        col: "#c59542" }
+    : { label: "WATCH",    desc: `NON-GAAP OP MARGIN ${latestOPM}% · STILL RAMPING`,                  col: "#dd817a" };
 
-  const leverageStatus = latestLev < 2
-    ? { label: "MANAGEABLE", desc: `${latestLev}× NET DEBT / EBITDA · DECLINING`,  col: "#66b278" }
-    : latestLev < 3
-    ? { label: "ELEVATED",   desc: `${latestLev}× NET DEBT / EBITDA · WATCH`,      col: "#c59542" }
-    : { label: "STRETCHED",  desc: `${latestLev}× NET DEBT / EBITDA · HIGH RISK`,  col: "#dd817a" };
+  // ALAB has made no acquisitions and carries no debt — this is a real-time snapshot,
+  // not a leverage-cycle history (there is no leverage cycle to show).
+  const leverageStatus = BALANCE_SHEET.netCash > 0
+    ? { label: "DEBT-FREE", desc: `$${BALANCE_SHEET.netCash.toFixed(2)}B NET CASH · NO BORROWINGS`,  col: "#66b278" }
+    : { label: "WATCH",     desc: "NET DEBT POSITION",                                                col: "#dd817a" };
 
-  const moodStatus = evNow < evAvg * 0.85
-    ? { label: "DEPRESSED",      desc: `EV/EBITDA ${evNow}× · BELOW 10Y AVG ${evAvg.toFixed(0)}×`, col: "#66b278" }
-    : evNow < evAvg * 1.2
-    ? { label: "FAIRLY VALUED",  desc: `EV/EBITDA ${evNow}× · NEAR 10Y AVG ${evAvg.toFixed(0)}×`,  col: "#c59542" }
-    : { label: "ELEVATED",       desc: `EV/EBITDA ${evNow}× · ABOVE 10Y AVG ${evAvg.toFixed(0)}×`, col: "#dd817a" };
+  const moodStatus = currentPE <= v.pe_normal_lo
+    ? { label: "BELOW NORMAL RANGE", desc: `${currentPE}× NTM P/E · BELOW ${v.pe_normal_lo}–${v.pe_normal_hi}× ZONE`, col: "#66b278" }
+    : currentPE <= v.pe_normal_hi
+    ? { label: "FAIRLY VALUED",      desc: `${currentPE}× NTM P/E · INSIDE ${v.pe_normal_lo}–${v.pe_normal_hi}× ZONE`, col: "#c59542" }
+    : { label: "ELEVATED",           desc: `${currentPE}× NTM P/E · ABOVE ${v.pe_normal_lo}–${v.pe_normal_hi}× ZONE`,  col: "#dd817a" };
 
-  const scores = [durabilityStatus, valueStatus, leverageStatus, moodStatus];
+  // moodStatus (valuation/price) is deliberately excluded from the BUSINESS quality
+  // verdict below — the verdict tooltip is explicit that this is about the business, not
+  // today's price, so an expensive-but-strong business shouldn't read as a "concern."
+  const scores = [durabilityStatus, valueStatus, leverageStatus];
   const reds   = scores.filter(s => s.col === "#dd817a").length;
   const ambers = scores.filter(s => s.col === "#c59542").length;
   const overallBiz = reds > 0
@@ -4233,7 +4241,7 @@ function PastTab() {
 
   // ── ScoreCard (click → switch panel) ─────────────────────────────────────
   const ScoreCard = ({ question, answer, desc, col, panelKey, tipTitle, tipBody }) => (
-    <div onClick={() => setPanel(panelKey)} {...(tipTitle ? tip(tipTitle, tipBody, "Click to view 10-year evidence below", col) : {})} style={{
+    <div onClick={() => setPanel(panelKey)} {...(tipTitle ? tip(tipTitle, tipBody, "Click to view the evidence below", col) : {})} style={{
       background: "var(--inner-bg)", border: `1px solid ${col}44`,
       borderLeft: `3px solid ${col}`, borderRadius: 8, padding: "14px 16px",
       cursor: "pointer", transition: "background .15s",
@@ -4246,11 +4254,11 @@ function PastTab() {
   );
 
   const PANELS = [
-    { key: "durability", label: "① DURABILITY",     sub: "revenue · margin · FCF",    tipBody: "10 years of Revenue, Gross Margin, and Free Cash Flow. Are the numbers growing consistently through cycles? We want to see durable compounding, not one-time spikes." },
-    { key: "value",      label: "② VALUE CREATION", sub: "ROIC · capital returns",    tipBody: "ROIC vs cost of capital and FCF Yield history. Is management creating real economic value — or just growing revenue while destroying shareholder capital?" },
-    { key: "leverage",   label: "③ LEVERAGE",        sub: "debt · acquisitions",       tipBody: "Net Debt/EBITDA trend over 10 years including major acquisitions. Does the company borrow sensibly, and does it deleverage quickly? Sustained high leverage limits future optionality." },
-    { key: "mood",       label: "④ MOOD HISTORY",   sub: "price · multiple · cycle",  tipBody: "10-year monthly price, drawdown from rolling ATH, and EV/EBITDA multiple history. When has the market been too fearful or too greedy — and what happened next?" },
-    { key: "explorer",   label: "⑤ EXPLORER",       sub: "search · pin · dig deeper", tipBody: "Raw financials explorer — 35 metrics across 7 groups (Income Statement, Margins, Cash Flow, Balance Sheet, Valuation, Returns, Leverage). Pin any metric to see a 10-year annual or 20-quarter chart with YoY badges. Source: Wisesheets Q2 FY2026." },
+    { key: "durability", label: "① DURABILITY",     sub: "revenue · margin",          tipBody: "Revenue and gross margin since the March 2024 IPO — only 2 full fiscal years exist, plus the latest quarter. Are the numbers growing consistently, or was FY2025 a one-time spike?" },
+    { key: "value",      label: "② VALUE CREATION", sub: "op margin · EPS",           tipBody: "Non-GAAP operating margin and EPS trajectory since IPO. ROIC isn't a meaningful lens yet — the balance sheet is still mostly IPO cash, not reinvested capital. Is growth actually converting to profit as the company scales?" },
+    { key: "leverage",   label: "③ BALANCE SHEET",  sub: "cash · no debt",            tipBody: "A snapshot, not a history — ALAB has made no acquisitions and carries no debt. Real question: how much dry powder does the balance sheet give it to keep funding growth without external capital?" },
+    { key: "mood",       label: "④ MOOD HISTORY",   sub: "price · drawdown · P/E",    tipBody: "Monthly price and drawdown from rolling ATH since IPO, plus where today's forward P/E sits vs. its typical range. When has the market been too fearful or too greedy on this name — and what happened next?" },
+    { key: "explorer",   label: "⑤ EXPLORER",       sub: "search · pin · dig deeper", tipBody: "Raw financials explorer. Real, sourced metrics only — deliberately smaller than a mature company's explorer since ALAB has ~2 years of public financial history, not 10. Pin any metric to see its trend." },
   ];
 
   // ── Inline SVG bar chart ──────────────────────────────────────────────────
@@ -4350,7 +4358,7 @@ function PastTab() {
         })}
         {/* NOW dot */}
         <circle cx={xOf(nowIdx)} cy={yOf(PRICE_M[nowIdx])} r={3} fill="#46aad9"
-          {...tipSvg("Current price", `$${PRICE_M[nowIdx]} — where AVGO trades today (split-adjusted). The 10-year chart shows price compounded at ~19% annually, with sharp drawdowns during rate shock (2022), VMware acquisition uncertainty (2023), and the Jun 2026 AI guide miss (−15%).`, null, "#46aad9")} />
+          {...tipSvg("Current price", `$${PRICE_M[nowIdx]} — where ALAB trades today. Since the March 2024 IPO ($36.00), the stock has compounded rapidly on repeated Scorpio/Leo revenue beats, with one sharp drawdown during the April 2025 tariff selloff and a pullback off the June 2026 all-time high ($499.48) set on Nasdaq-100 inclusion.`, null, "#46aad9")} />
         <text x={xOf(nowIdx) - 6} y={yOf(PRICE_M[nowIdx]) - 6} textAnchor="end"
           fontSize={8} fill="#46aad9" fontWeight="700">${PRICE_M[nowIdx]}</text>
         {/* ATH label */}
@@ -4359,7 +4367,7 @@ function PastTab() {
           return (
             <g>
               <circle cx={xOf(athIdx)} cy={yOf(PRICE_M[athIdx])} r={2.5} fill="#c59542"
-                {...tipSvg("All-Time High", `$${PRICE_M[athIdx]} — the highest monthly close in the 10-year window. Reached in early 2026 before the Q2 FY26 earnings guide miss triggered a ~15% drawdown. ATH multiples were ~32× NTM P/E.`, null, "#c59542")} />
+                {...tipSvg("All-Time High", `$${PRICE_M[athIdx]} — reached Jun 30, 2026, days after Nasdaq-100 inclusion broadened the buyer base. The stock has since pulled back to around $${NOW_PRICE}.`, null, "#c59542")} />
               <text x={xOf(athIdx) + 4} y={yOf(PRICE_M[athIdx]) - 4} fontSize={7.5}
                 fill="#c59542">ATH ${PRICE_M[athIdx]}</text>
             </g>
@@ -4398,7 +4406,7 @@ function PastTab() {
           return (
             <text x={xOf(wIdx)} y={yOf(minDD) + 10} textAnchor="middle"
               fontSize={7.5} fill="#dd817a"
-              {...tipSvg("Maximum Drawdown", `${minDD}% — the deepest drop from a prior all-time high in the 10-year window. This occurred during the 2022 rate-shock selloff. AVGO recovered and went on to make new highs. Drawdown charts help you visualize what holding through a bad period actually felt like.`, null, "#dd817a")}>{minDD}%</text>
+              {...tipSvg("Maximum Drawdown", `${minDD}% — the deepest drop from a prior all-time high since the March 2024 IPO. This occurred in the aftermath of the April 2025 tariff selloff. ALAB recovered and went on to make new highs. Drawdown charts help you visualize what holding through a bad period actually felt like.`, null, "#dd817a")}>{minDD}%</text>
           );
         })()}
         <text x={pad.l - 4} y={pad.t + 3} textAnchor="end" fontSize={7} fill="var(--tx7)">0%</text>
@@ -4450,22 +4458,22 @@ function PastTab() {
             answer={durabilityStatus.label} desc={durabilityStatus.desc}
             col={durabilityStatus.col} panelKey="durability"
             tipTitle="Does it grow consistently?"
-            tipBody={`Looks at 10 years of Revenue, Gross Margin, and Free Cash Flow. We want upward trends that hold through cycles — not spike-and-crash. AVGO has grown revenue at ~${(revCAGR * 100).toFixed(0)}% CAGR, expanded gross margin from 45% to ${latestGM}%, and grown FCF 10×. Acquisitions add lumpy top-line steps — focus on organic margin trends.`} />
-          <ScoreCard question="DOES IT CREATE VALUE (ROIC > WACC)?"
+            tipBody={`Revenue and gross margin since the March 2024 IPO — only 2 full fiscal years exist. ALAB grew revenue ${(revCAGR * 100).toFixed(0)}% from FY2024 ($${PAST_REV[0]}M) to FY2025 ($${PAST_REV[1]}M), and non-GAAP gross margin has held ${PAST_GM[0]}–${latestGM}% throughout — genuinely high for a semiconductor company. One data point of deceleration (Q1 FY26 growth was "only" 93% YoY vs FY25's 115%) is worth watching, not yet a trend.`} />
+          <ScoreCard question="IS GROWTH CONVERTING TO PROFIT?"
             answer={valueStatus.label} desc={valueStatus.desc}
             col={valueStatus.col} panelKey="value"
-            tipTitle="Does it create value?"
-            tipBody={`ROIC (Return on Invested Capital) measures how efficiently management deploys capital. Above WACC (~8–12%) = value creation. Below = value destruction. AVGO's ROIC dips after each big acquisition (CA, VMware) then recovers — FY25 at ${latestROIC}% is healthy. FCF yield declining is a sign of stock re-rating, not FCF decline.`} />
-          <ScoreCard question="IS DEBT UNDER CONTROL?"
+            tipTitle="Is growth converting to profit?"
+            tipBody={`Non-GAAP operating margin measures how much of each new revenue dollar falls to the bottom line as the business scales. ROIC isn't used here — the balance sheet is still mostly unspent IPO cash, which would make ROIC look artificially poor and isn't a meaningful signal yet. Operating margin expanded from ${PAST_OPM[0]}% (Q4 FY24) to ${PAST_OPM[1]}% (FY25) before easing to ${latestOPM}% in Q1 FY26 — non-GAAP EPS of $${latestEPS} is up from $${PAST_EPS[0]} for all of FY2024.`} />
+          <ScoreCard question="IS THE BALANCE SHEET STRONG?"
             answer={leverageStatus.label} desc={leverageStatus.desc}
             col={leverageStatus.col} panelKey="leverage"
-            tipTitle="Is debt under control?"
-            tipBody={`Net Debt / EBITDA shows how many years of cash profit it would take to repay all debt. Under 2× = manageable. Over 3× = risky (limits flexibility and raises refinancing risk). AVGO consistently levers up for acquisitions then deleverages aggressively — current ${latestLev}× is well within safe territory.`} />
+            tipTitle="Is the balance sheet strong?"
+            tipBody={`ALAB has made no acquisitions and carries no debt — as of ${BALANCE_SHEET.asOf}, it holds $${BALANCE_SHEET.cashAndSecurities}B in cash and marketable securities against just $${BALANCE_SHEET.totalLiabilities}B in total liabilities, for roughly $${BALANCE_SHEET.netCash}B in net cash. This is a real-time snapshot, not a leverage cycle — there's nothing to delever from.`} />
           <ScoreCard question="DOES THE MARKET OVER/UNDERPRICE IT?"
             answer={moodStatus.label} desc={moodStatus.desc}
             col={moodStatus.col} panelKey="mood"
             tipTitle="Does the market over/underprice it?"
-            tipBody={`EV/EBITDA vs its own 10-year average tells you whether the market is paying a premium or discount for this business. Not a buy/sell signal on its own — context matters (growth rate, interest rates, sector rotation). Current EV/EBITDA near 10Y average of ~${evAvg.toFixed(0)}× = fairly valued mood.`} />
+            tipBody={`Forward P/E vs. its typical range tells you whether the market is paying a premium or discount for this business today. Not a buy/sell signal on its own. At ${currentPE}× NTM P/E against a typical ${v.pe_normal_lo}–${v.pe_normal_hi}× range, ALAB is priced for a hyper-growth name executing well — there's little room for a stumble.`} />
         </div>
 
         <div {...tip("THE PAST · Business Quality Verdict", "Synthesises all four dimensions: durability (consistent growth), value creation (ROIC > WACC), leverage (debt control), and market mood (EV/EBITDA vs history). All green = business earns the right to a premium multiple. Any red = investigate before deploying capital. This is about the BUSINESS, not today's price.", "Hover each quadrant above for what it measures.", overallBiz.col)} style={{ padding: "14px 16px", background: overallBiz.col + "12",
@@ -4481,13 +4489,13 @@ function PastTab() {
               <div style={{ fontSize: 10.5, color: "var(--tx4)", marginTop: 4 }}>{overallBiz.sub}</div>
             </div>
             <div style={{ fontSize: 9.5, color: "var(--tx5)", textAlign: "right", lineHeight: 1.8 }}>
-              <div {...tip("Revenue (10-year)", "Broadcom grew annual revenue from $13.2B (FY16) to $63.9B (FY25) — a ~19% CAGR. This includes two transformative acquisitions: CA Technologies (FY19, +$7B) and VMware (FY24, +$14B). Organic growth is harder to isolate, but margin expansion alongside revenue growth confirms quality, not just volume.", null, "#66b278")}>Revenue <span style={{ color: "#66b278", fontWeight: 700 }}>$13B → $64B</span> (10Y)</div>
-              <div {...tip("Free Cash Flow (10-year)", "FCF grew from $2.7B (FY16) to $26.9B (FY25) — roughly 10× in 10 years. This is the most important number: cash that can repay debt, fund dividends, buy back shares, or fund the next acquisition. Growing FCF despite large debt loads from acquisitions confirms business quality.", null, "#66b278")}>FCF <span style={{ color: "#66b278", fontWeight: 700 }}>$2.7B → $26.9B</span> (10Y)</div>
-              <div {...tip("Total price return (10-year)", "From ~$15.60 (Jun 2016, split-adjusted) to ~$382 today = +2,359%. This includes dividends reinvested. Over the same period, the S&P 500 returned ~340%. Compounding at this rate is exceptional — but past returns are anchored to a specific M&A cycle and AI tailwind that may or may not repeat.", null, "#66b278")}>Price <span style={{ color: "#66b278", fontWeight: 700 }}>+2,359%</span> (Jun 2016 → now)</div>
+              <div {...tip("Revenue since IPO", "Astera Labs grew total revenue from $396M (FY2024) to $853M (FY2025) — +115% — with Q1 FY2026 running at $308M for the quarter alone (+93% YoY). No acquisitions; this is entirely organic, driven by Scorpio/Leo/Aries design wins ramping at hyperscalers.", null, "#66b278")}>Revenue <span style={{ color: "#66b278", fontWeight: 700 }}>$396M → $853M</span> (FY24→FY25)</div>
+              <div {...tip("Non-GAAP EPS since IPO", "Non-GAAP diluted EPS grew from $0.37 (all of FY2024) to $1.84 (all of FY2025) — roughly 5×. Q1 FY2026 alone printed $0.61, already a third of all of FY2025's total. This is the clearest single signal that scale is translating to real per-share profit, not just top-line growth.", null, "#66b278")}>EPS <span style={{ color: "#66b278", fontWeight: 700 }}>$0.37 → $1.84</span> (FY24→FY25)</div>
+              <div {...tip("Total price return since IPO", `From the $36.00 IPO price (Mar 2024) to ~$${NOW_PRICE} today = +${Math.round((NOW_PRICE/36-1)*100)}%, off an all-time high of $499.48 reached Jun 30, 2026 on Nasdaq-100 inclusion. Compounding at this rate over ~2 years is exceptional — but it's a very short track record for a single-digit-year-old public company, not a multi-cycle history.`, null, "#66b278")}>Price <span style={{ color: "#66b278", fontWeight: 700 }}>+{Math.round((NOW_PRICE/36-1)*100)}%</span> (Mar 2024 → now)</div>
             </div>
           </div>
           <div style={{ fontSize: 11, color: "var(--tx4)", lineHeight: 1.75, marginTop: 10 }}>
-            AVGO has compounded revenue at ~19% annually for 10 years through disciplined acquisitions (CA, Symantec, VMware), each time deleveraging within 2 years. Gross margins expanded from 45% to 68%, FCF grew 10×, and ROIC recovered to 16% post-VMware integration. The business has earned the right to a premium multiple — the question is always whether the current multiple is the right one.
+            ALAB has compounded revenue +115% (FY2024→FY2025) entirely organically — no acquisitions, no debt — while non-GAAP gross margin held 74–76% and non-GAAP EPS grew roughly 5×. This is a ~2-year public track record, not a decade of proof across cycles: real and strong so far, but the business hasn't yet been tested by a genuine downturn the way a mature compounder has. The question is whether today's ~{currentPE}× multiple already prices in a continuation of this pace.
           </div>
         </div>
       </div>
@@ -4536,20 +4544,19 @@ function PastTab() {
             </div>
             <Banner status={durabilityStatus.label} desc={durabilityStatus.desc}
               col={durabilityStatus.col}
-              summary={`Revenue compounded at ~${(revCAGR * 100).toFixed(0)}% annually from $${PAST_REV[0]}B (FY16) to $${PAST_REV[9]}B (FY25). Gross margin expanded ${(latestGM - PAST_GM[0]).toFixed(0)} points to ${latestGM}% — a durability signal: pricing power improving, not eroding. FCF grew from $${PAST_FCF[0]}B to $${latestFCF}B.`} />
+              summary={`Revenue grew ${(revCAGR * 100).toFixed(0)}% from $${PAST_REV[0]}M (FY2024) to $${PAST_REV[1]}M (FY2025) — with Q1 FY2026 alone printing $${PAST_REV[2]}M (+93% YoY). Gross margin held ${PAST_GM[0]}–${latestGM}% throughout — a durability signal: pricing power holding as the company scales, not eroding. Only ~2 years of public data exists; there's no downturn in this record yet.`} />
 
             <div className="resp-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <ChartBox title="REVENUE ($B) · FY16–FY25" sub="Annual total net revenue · acquisitions annotated">
+              <ChartBox title="TOTAL REVENUE ($M) · SINCE IPO" sub="FY24/FY25 = full year · Q1 FY26 = one quarter, not annualized">
                 <BarChart
-                  data={PAST_REV} labels={PAST_YEARS} unit="B"
+                  data={PAST_REV} labels={PAST_YEARS} unit="M"
                   colorFn={v => "#66b278"} height={110} />
                 <div style={{ display: "flex", gap: 16, marginTop: 8, fontSize: 9, color: "var(--tx6)" }}>
-                  <span>FY18 CA Acq <span style={{ color: "var(--tx3)" }}>+$7B rev</span></span>
-                  <span>FY24 VMware <span style={{ color: "var(--tx3)" }}>+$14B rev</span></span>
+                  <span>No acquisitions <span style={{ color: "var(--tx3)" }}>— 100% organic growth</span></span>
                 </div>
               </ChartBox>
 
-              <ChartBox title="GROSS MARGIN (%) · FY16–FY25" sub="Measures pricing power and product mix quality">
+              <ChartBox title="NON-GAAP GROSS MARGIN (%) · SINCE IPO" sub="Measures pricing power and product mix quality">
                 <BarChart
                   data={PAST_GM} labels={PAST_YEARS} unit="%"
                   colorFn={v => v > 65 ? "#66b278" : v > 55 ? "#c59542" : "#dd817a"}
@@ -4557,13 +4564,7 @@ function PastTab() {
               </ChartBox>
             </div>
 
-            <ChartBox title="FREE CASH FLOW ($B) · FY16–FY25" sub="Cash generated after capex — the real earnings">
-              <BarChart
-                data={PAST_FCF} labels={PAST_YEARS} unit="B"
-                colorFn={v => "#66b278"} height={80} />
-            </ChartBox>
-
-            <Footnote text="FY16 revenue jump (+94% YoY) reflects the Avago–Broadcom merger. FY19 reflects CA Technologies ($18.9B). FY24 reflects VMware close ($61B). Organic growth is harder to isolate but margin expansion confirms pricing power over volume. FY24 GM dip to 63% reflects VMware integration costs; recovered to 67.8% in FY25." />
+            <Footnote text="Only 2 full fiscal years of public data exist (Astera Labs IPO'd March 2024) — this is a short, strong track record, not a multi-cycle history. Revenue growth decelerated slightly from FY25's +115% to Q1 FY26's +93% YoY: worth watching as a trend, not yet a red flag. Sources: Q4/FY2024 and Q4/FY2025 earnings releases, Q1 FY2026 10-Q." />
           </div>
         )}
 
@@ -4572,69 +4573,62 @@ function PastTab() {
           <div>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.2em",
               color: "var(--tx5)", marginBottom: 18, paddingBottom: 8, borderBottom: "1px solid var(--bd)" }}>
-              DOES IT CREATE VALUE (ROIC &gt; WACC)?
+              IS GROWTH CONVERTING TO PROFIT?
             </div>
             <Banner status={valueStatus.label} desc={valueStatus.desc}
               col={valueStatus.col}
-              summary={`ROIC of ${latestROIC}% (FY25) exceeds a typical WACC of 8–10%, meaning each dollar reinvested creates more than a dollar of value. The FY24 dip to 5.6% reflects acquisition accounting for VMware — a $61B deal that takes time to earn through. FY25 recovery to 16.4% confirms integration is working.`} />
+              summary={`Non-GAAP operating margin expanded from ${PAST_OPM[0]}% (Q4 FY2024) to ${PAST_OPM[1]}% (all of FY2025) before easing to ${latestOPM}% in Q1 FY2026 — a real signal of operating leverage as the business scales, with one recent data point of margin softening (Q2 FY26 guide of ~73% gross margin reflects a similar mix shift) worth watching. Non-GAAP EPS grew from $${PAST_EPS[0]} (FY2024) to $${PAST_EPS[1]} (FY2025) — roughly 5×.`} />
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <ChartBox title="ROIC (%) · FY16–FY25" sub="Return on Invested Capital — above WACC = value creation">
+              <ChartBox title="NON-GAAP OPERATING MARGIN (%) · SINCE IPO" sub="How much of each new revenue dollar reaches the bottom line">
                 <BarChart
-                  data={PAST_ROIC} labels={PAST_YEARS} unit="%"
-                  colorFn={v => v > 15 ? "#66b278" : v > 5 ? "#c59542" : "#dd817a"}
+                  data={PAST_OPM} labels={PAST_YEARS} unit="%"
+                  colorFn={v => v > 35 ? "#66b278" : v > 20 ? "#c59542" : "#dd817a"}
                   height={110} />
                 <div style={{ fontSize: 9, color: "var(--tx6)", marginTop: 8 }}>
-                  Green &gt;15% · Amber 5–15% · Red &lt;5% (acquisition integration dip)
+                  ROIC isn't shown here — invested capital is still mostly unspent IPO cash, which would make it look artificially poor.
                 </div>
               </ChartBox>
 
-              <ChartBox title="FCF YIELD (%) · FY16–FY25" sub="FCF ÷ market cap at year-end price">
+              <ChartBox title="NON-GAAP DILUTED EPS ($) · SINCE IPO" sub="FY24/FY25 = full year · Q1 FY26 = one quarter">
                 <BarChart
-                  data={PAST_FCF_YIELD} labels={PAST_YEARS} unit="%"
-                  colorFn={v => v > 5 ? "#66b278" : v > 2.5 ? "#c59542" : "#dd817a"}
+                  data={PAST_EPS} labels={PAST_YEARS} unit=""
+                  colorFn={v => "#66b278"}
                   height={110} />
                 <div style={{ fontSize: 9, color: "var(--tx6)", marginTop: 8 }}>
-                  Declining yield = stock re-rating higher (not declining FCF). FCF itself grew 10×.
+                  Q1 FY26's $0.61 alone is already a third of all of FY2025's $1.84.
                 </div>
               </ChartBox>
             </div>
 
-            <Footnote text="ROIC dipped to -0.9% (FY16) and 5.6% (FY24) in acquisition years — both recoveries were faster than market expected. FCF yield compression from 9% (FY18) to 1.6% (FY25) reflects a 24× stock re-rating, not FCF deterioration. NTM FCF yield at current $382 is ~3.9% — back in the reasonable zone after the AI re-rating correction." />
+            <Footnote text="Non-GAAP figures strip stock-based compensation, standard for a recently-IPO'd growth company — ALAB has made no acquisitions, so there's no amortization distortion to remove, unlike a serial-acquirer. FY2024 operating margin uses the Q4 FY24 print since a full-year figure at this detail wasn't cleanly disclosed pre-2025." />
           </div>
         )}
 
-        {/* ─ ③ LEVERAGE ─ */}
+        {/* ─ ③ BALANCE SHEET ─ */}
         {panel === "leverage" && (
           <div>
             <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.2em",
               color: "var(--tx5)", marginBottom: 18, paddingBottom: 8, borderBottom: "1px solid var(--bd)" }}>
-              IS DEBT UNDER CONTROL?
+              IS THE BALANCE SHEET STRONG?
             </div>
             <Banner status={leverageStatus.label} desc={leverageStatus.desc}
               col={leverageStatus.col}
-              summary={`Net Debt/EBITDA of ${latestLev}× (FY25) is below 2× — Broadcom's historical comfort zone. Each major acquisition caused a spike (CA: 2.9×, VMware: 2.4×), followed by rapid deleveraging within 1–2 years. This pattern is consistent and deliberate: Tan acquires, strips costs, repays debt, repeats.`} />
+              summary={`As of ${BALANCE_SHEET.asOf}, ALAB holds $${BALANCE_SHEET.cashAndSecurities}B in cash and marketable securities against just $${BALANCE_SHEET.totalLiabilities}B in total liabilities — roughly $${BALANCE_SHEET.netCash}B in net cash, funded by the March 2024 IPO plus since-positive operating cash flow. No acquisitions, no borrowings. This is a real-time snapshot, not a leverage-cycle history — there's no debt story to tell yet.`} />
 
-            <ChartBox title="NET DEBT / EBITDA · FY16–FY25" sub="Leverage ratio — below 2× is manageable for a FCF machine">
+            <ChartBox title="CASH &amp; SECURITIES VS. TOTAL LIABILITIES ($B)" sub={`Single snapshot as of ${BALANCE_SHEET.asOf} — not a multi-year trend`}>
               <BarChart
-                data={PAST_ND_EBITDA} labels={PAST_YEARS} unit="×"
-                colorFn={v => v < 2 ? "#66b278" : v < 3 ? "#c59542" : "#dd817a"}
-                height={130} />
+                data={[BALANCE_SHEET.cashAndSecurities, BALANCE_SHEET.totalLiabilities]}
+                labels={["CASH + SECURITIES", "TOTAL LIABILITIES"]} unit="B"
+                colorFn={(v, i) => "#66b278"}
+                height={110} />
               <div style={{ display: "flex", gap: 20, marginTop: 8, fontSize: 9, color: "var(--tx6)" }}>
-                <span>FY16: <span style={{ color: "#dd817a" }}>4.2×</span> (initial debt load)</span>
-                <span>FY19: <span style={{ color: "#c59542" }}>2.9×</span> (CA acq)</span>
-                <span>FY24: <span style={{ color: "#c59542" }}>2.4×</span> (VMware $61B)</span>
-                <span>FY25: <span style={{ color: "#66b278" }}>1.4×</span> (delevered)</span>
+                <span>Net cash: <span style={{ color: "#66b278" }}>${BALANCE_SHEET.netCash}B</span></span>
+                <span>Debt: <span style={{ color: "#66b278" }}>$0</span></span>
               </div>
             </ChartBox>
 
-            <ChartBox title="NET DEBT ABSOLUTE ($B) · FY16–FY25" sub="Raw debt load — growing but EBITDA growing faster">
-              <BarChart
-                data={PAST_NET_DEBT} labels={PAST_YEARS} unit="B"
-                colorFn={v => "#c59542"} height={80} />
-            </ChartBox>
-
-            <Footnote text="Broadcom's playbook: acquire a large asset with hidden margin (CA, VMware), cut R&D to bone, convert revenue to FCF at 40%+ margin, repay debt at $10–15B/year. Net debt peaked at $58B after VMware close (FY24) and dropped to $49B in FY25. At $27B NTM FCF, debt could be cleared in under 2 years if they stopped buybacks and dividends — they won't, but that's the floor." />
+            <Footnote text="Source: Astera Labs Q1 FY2026 10-Q (period ended March 31, 2026). This balance sheet gives ALAB real optionality — it can keep funding Scorpio/Leo/Aries R&D and capacity commitments entirely from its own cash, with no need to raise debt or dilute shareholders in a downturn." />
           </div>
         )}
 
@@ -4784,34 +4778,39 @@ function PastTab() {
             </div>
             <Banner status={moodStatus.label} desc={moodStatus.desc}
               col={moodStatus.col}
-              summary={`EV/EBITDA of ${evNow}× (current, post-selloff) sits near the 10-year average of ${evAvg.toFixed(0)}×. The stock has had 3 major drawdowns of 20%+ in 10 years — each a buying window. The AI re-rating took EV/EBITDA to 50× (FY25) before the Q2 guide miss repriced it back to fair value. The market overreacts in both directions.`} />
+              summary={`At ${currentPE}× NTM P/E, ALAB sits ${currentPE <= v.pe_normal_lo ? "below" : currentPE <= v.pe_normal_hi ? "inside" : "above"} its typical ${v.pe_normal_lo}–${v.pe_normal_hi}× range (trough ${v.pe_trough}× to peak ${v.pe_peak}× since IPO). The stock has had one major drawdown of 20%+ since going public (the Apr 2025 tariff selloff) — a real buying window in hindsight. Only ~2 years of trading history exists, so "cyclical" here means one cycle, not several.`} />
 
-            <ChartBox title="AVGO PRICE · 10-YEAR MONTHLY · 2016–2026"
-              sub="Split-adjusted (10:1 Jul 2024) · dashed lines = key events">
+            <ChartBox title="ALAB PRICE · MONTHLY SINCE IPO · MAR 2024–JUL 2026"
+              sub="Real anchor points (IPO, ATL, each earnings print, ATH, now), linearly interpolated between them">
               <PriceLineChart />
             </ChartBox>
 
-            <ChartBox title="DRAWDOWN FROM ROLLING ATH · 10-YEAR"
+            <ChartBox title="DRAWDOWN FROM ROLLING ATH · SINCE IPO"
               sub="How far below the peak at each point — shows entry windows">
               <DrawdownChart />
               <div style={{ display: "flex", gap: 16, marginTop: 8, fontSize: 9, color: "var(--tx6)" }}>
-                <span>Max drawdown: <span style={{ color: "#dd817a" }}>−33.3%</span> (Sep 2022, rate shock)</span>
-                <span>Current: <span style={{ color: "#c59542" }}>−14.5%</span> from ATH</span>
+                <span>Max drawdown: <span style={{ color: "#dd817a" }}>−22.2%</span> (May 2025, tariff-selloff aftermath)</span>
+                <span>Current: <span style={{ color: "#c59542" }}>−19.9%</span> from ATH</span>
               </div>
             </ChartBox>
 
-            <ChartBox title="EV / EBITDA · ANNUAL FY16–FY25"
-              sub="Year-end multiple — shows market optimism/pessimism cycles">
-              <BarChart
-                data={PAST_EVEBITDA} labels={PAST_YEARS} unit="×"
-                colorFn={v => v > evAvg * 1.3 ? "#dd817a" : v > evAvg * 0.85 ? "#c59542" : "#66b278"}
-                height={90} />
-              <div style={{ fontSize: 9, color: "var(--tx6)", marginTop: 6 }}>
-                10Y average: {evAvg.toFixed(0)}× · Current NTM EV/EBITDA: {evNow}× (at ${NOW_PRICE})
+            <ChartBox title="FORWARD P/E · WHERE TODAY SITS IN THE RANGE"
+              sub="Zone positioning since IPO, not a fabricated multi-year multiple history">
+              <div style={{ position: "relative", height: 28, background: "var(--deep-bg)", borderRadius: 6, overflow: "hidden", marginBottom: 8 }}>
+                <div style={{ position: "absolute", left: "0%", width: `${((v.pe_bear_hi - v.pe_trough) / (v.pe_peak - v.pe_trough) * 100)}%`, top: 0, bottom: 0, background: "#66b27833" }} />
+                <div style={{ position: "absolute", left: `${((v.pe_bear_hi - v.pe_trough) / (v.pe_peak - v.pe_trough) * 100)}%`, width: `${((v.pe_normal_hi - v.pe_bear_hi) / (v.pe_peak - v.pe_trough) * 100)}%`, top: 0, bottom: 0, background: "#c5954233" }} />
+                <div style={{ position: "absolute", left: `${((v.pe_normal_hi - v.pe_trough) / (v.pe_peak - v.pe_trough) * 100)}%`, width: `${((v.pe_peak - v.pe_normal_hi) / (v.pe_peak - v.pe_trough) * 100)}%`, top: 0, bottom: 0, background: "#dd817a33" }} />
+                <div style={{ position: "absolute", left: `${Math.min(96, Math.max(0, (currentPE - v.pe_trough) / (v.pe_peak - v.pe_trough) * 100))}%`, top: 0, bottom: 0, width: 3, background: "var(--blue-soft)" }} {...tip("Current P/E", `${currentPE}× NTM P/E, at $${NOW_PRICE}`, null, "var(--blue-soft)")} />
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 8.5, color: "var(--tx6)" }}>
+                <span>Trough {v.pe_trough}×</span>
+                <span>Bear {v.pe_bear_hi}×</span>
+                <span>Normal {v.pe_normal_lo}–{v.pe_normal_hi}×</span>
+                <span>Peak {v.pe_peak}×</span>
               </div>
             </ChartBox>
 
-            <Footnote text="P/E ratio is not used here — GAAP EPS is distorted by amortization of acquired intangibles ($5–8B/year post-VMware). EV/EBITDA is the cleaner signal. FY25 spike to 50× reflected the AI narrative peak; current 22× is at the long-term mean. The pattern: AI optimism → multiple expansion → catalyst miss → compression → re-rate. AVGO has mean-reverted every time." />
+            <Footnote text="Forward P/E is the valuation ruler used throughout this thesis — ALAB has no acquisitions and minimal amortization to distort GAAP EPS, unlike a serial-acquirer where EV/EBITDA is the cleaner signal. The zone bounds (trough/bear/normal/peak) are judgment calls anchored to where the stock has actually traded since IPO, not a decade of precedent — hold them loosely and widen them as more real history accumulates." />
           </div>
         )}
 
@@ -5040,7 +5039,7 @@ function MetricCard({ metric, period, onRemove }) {
 }
 
 // ── Main Component ─────────────────────────────────────────────────────────
-function AvgoThesis() {
+function AlabThesis() {
   const [active, setActive]       = useState("base");
   const [activeTab, setActiveTab] = useState("the-current");
   // Deep-link support: stocks/index.html's hash router sends { type:'th3sis-goto',
@@ -5064,7 +5063,7 @@ function AvgoThesis() {
       if (p == null) { setLive({ status: "static", at: null }); return; }
       NOW_PRICE = p;                              // bands/EPS stay as-of AS_OF_DATE on purpose
       HISTORY[HISTORY.length - 1].p = p;          // fan-chart "NOW" point
-      PRICE_M[PRICE_M.length - 1]   = p;          // 10-year monthly chart's last point
+      PRICE_M[PRICE_M.length - 1]   = p;          // price chart's last point
       setLive({ status: "live", at: new Date() });
     });
     return () => { cancelled = true; };
@@ -5143,13 +5142,13 @@ function AvgoThesis() {
       </div>
 
       <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "var(--tx7)", lineHeight: 1.5 }}>
-        Illustrative scenario framing built on public consensus &amp; estimates as of {AS_OF_DATE} — not a prediction and not financial advice. Price ranges are scenario mid-bands; KPI markers are positional, not literal. Valuation ruler: forward non-GAAP EPS × P/E multiple (strips VMware amortization). Data inputs will move with every print. Next earnings: Q3 FY2026 (~Sep 2026).
+        Illustrative scenario framing built on public consensus &amp; estimates as of {AS_OF_DATE} — not a prediction and not financial advice. Price ranges are scenario mid-bands; KPI markers are positional, not literal. Valuation ruler: forward non-GAAP EPS × P/E multiple (no acquisition amortization to strip — ALAB has made none). Data inputs will move with every print. Next earnings: Q2 FY2026 (~Aug 2026).
       </div>
     </div>
   );
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<AvgoThesis />);
+ReactDOM.createRoot(document.getElementById("root")).render(<AlabThesis />);
 </script>
 </body>
 </html>
