@@ -266,12 +266,14 @@ async function fetchLivePrice() {
   }
 }
 
-// 11 ── ALERT — buy-trigger pre-commitment (canonical source of the flag).
-//   The gate + alert message live in the library shell (stocks/index.html); this block is
-//   the source of truth and is MIRRORED into that file's REGISTRY — keep the two in sync
-//   each quarter. thesisIntact is the one judgement software can't make: flip it to false
-//   the moment a kill-switch KPI breaches, which disarms the buy alert so you never add
-//   into a broken thesis. (See the QUARTERLY checklist for the flip step.)
+// 11 ── ALERT — buy-trigger pre-commitment.
+//   Canonical source is PF_ALERTS.TSM in stocks/portfolio/portfolio-data.js — that's
+//   what index.html's chip-dot radar actually reads. This copy is a FALLBACK only,
+//   for anyone opening this file directly/offline; update it here too at each
+//   quarterly touch so it doesn't silently drift from PF_ALERTS. thesisIntact is the
+//   one judgement software can't make: flip it to false the moment a kill-switch KPI
+//   breaches, which disarms the buy alert so you never add into a broken thesis.
+//   (See the QUARTERLY checklist for the flip step.)
 const ALERT = {
   symbol: "TSM",
   buyFloor: 415,            // base-case floor (baseLo, from base.target12): close at/below = pre-committed entry zone

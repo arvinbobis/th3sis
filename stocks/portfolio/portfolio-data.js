@@ -17,6 +17,21 @@
 const PF_ASOF = "2026-07-02";
 const PF_ACCT = { netLiq: 35152.71, cash: 2124.82, dividends: 2.09, buyingPower: 2124.82 };
 
+// ── Buy-alert pre-commitment (single source of truth for every armed ticker) ──
+// Previously hand-mirrored in three places: each thesis's own `const ALERT`,
+// stocks/index.html's REGISTRY[t].alert (drives the chip-dot radar), and
+// STRATEGY.md §3's limit ladder. This block is now the ONE write point — the
+// thesis's own ALERT const (if present) is a fallback for opening the file
+// directly/offline, annotated as such; index.html reads this directly.
+// thesisIntact is the one judgement software can't make: flip it to false the
+// moment a kill-switch KPI breaches, which disarms the buy alert so you never
+// add into a broken thesis. (See each stock's QUARTERLY checklist for the flip step.)
+const PF_ALERTS = {
+  ALAB: { buyFloor: 300, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-08-11" },
+  AVGO: { buyFloor: 390, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-09-04" },
+  TSM:  { buyFloor: 415, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-07-16" },
+};
+
 const PF_THEMES = {
   semis:        { label: "AI Semis & Hardware",        short: "Semis",      blurb: "The picks-and-shovels of the AI build-out — chips, fab tools, networking silicon." },
   platforms:    { label: "Mega-Cap Platforms",         short: "Platforms",  blurb: "The compounding cash machines — cloud, ads, software distribution at global scale." },

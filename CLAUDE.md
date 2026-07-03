@@ -110,8 +110,11 @@ capital recommendation through it — never recommend adding at highs without a 
 - **Correlated bets are one bucket** (e.g. SPCX + TSLA = one ~$1,000 Musk bet, not two).
 - This is consistent with the buy-alert discipline (price AND thesis-intact → "go look, not
   go buy"). The FOLIO page (`stocks/portfolio/positions.html`) renders the live generator
-  ladder, limit ladder, and these rules. Keep all three — `STRATEGY.md`, the FOLIO config
-  block, and the per-stock ALERT block — in sync.
+  ladder, limit ladder, and these rules, all read from `portfolio-data.js`. **`PF_ALERTS` in
+  `portfolio-data.js` is the single write point for buy-alert data** — `stocks/index.html`'s
+  chip-dot radar reads it directly. A stock's own `const ALERT` in its thesis config block is
+  a fallback only (for opening the file directly/offline) — update it at each quarterly touch
+  so it doesn't silently drift, but `PF_ALERTS` is what's actually live.
 
 ---
 
