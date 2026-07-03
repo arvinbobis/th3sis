@@ -234,6 +234,11 @@
       <span class="chip-ticker">SCORE</span>
       <span class="chip-name">band coverage &amp; calibration</span>
     </button>
+    <button id="radar-chip" class="chip pinned">
+      <span class="chip-dot quiet">◐</span>
+      <span class="chip-ticker">RADAR</span>
+      <span class="chip-name">frontier themes vs. holdings</span>
+    </button>
 
     <!-- Chip list -->
     <div id="chip-label">THESES ›</div>
@@ -300,6 +305,7 @@ const actionsChip   = document.getElementById('actions-chip');
 const generatorChip = document.getElementById('generator-chip');
 const strategyChip  = document.getElementById('strategy-chip');
 const calibrationChip = document.getElementById('calibration-chip');
+const radarChip = document.getElementById('radar-chip');
 
 // ── Theme ────────────────────────────────────────────────────────────────────
 const THEME_KEY = 'th3sis_theme';
@@ -459,6 +465,16 @@ function loadCalibration() {
   loadFrame('portfolio/calibration.html', 'LOADING THE SCORECARD…');
 }
 calibrationChip.addEventListener('click', loadCalibration);
+
+// ── Load the radar (frontier themes) page ─────────────────────────────────────
+function loadRadar() {
+  notFound.classList.remove('on');
+  if (activeChip) activeChip.classList.remove('active');
+  activeChip = radarChip;
+  radarChip.classList.add('active');
+  loadFrame('portfolio/radar.html', 'SCANNING THE FRONTIER…');
+}
+radarChip.addEventListener('click', loadRadar);
 
 // ── Load a thesis ─────────────────────────────────────────────────────────────
 function loadTicker(ticker) {

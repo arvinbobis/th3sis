@@ -18,6 +18,10 @@ Search the web for just enough to answer the gate questions below. Do not do the
 - Whether this would overlap an existing holding's risk cluster — cross-check against
   `STRATEGY.md` §2 and §3 (the Musk bucket, the findata cluster, existing satellites) and
   `stocks/portfolio/portfolio-data.js` for current positions/themes
+- Whether this candidate IS one of the frontier themes already being watched — check
+  `PF_RADAR.THEMES` in `portfolio-data.js`. If so, use its `evidence`/`tripwire` as a
+  starting point rather than re-deriving from scratch, and note whether this prescreen is
+  what its tripwire firing looks like.
 
 ## Step 2 — Run the six-question gate
 Answer each explicitly, one line of reasoning per question:

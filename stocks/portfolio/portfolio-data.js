@@ -214,3 +214,47 @@ const PF_PRESCREEN = [
     cushion:"~89x trailing sales, still -27% margin, re-rated another +16% on the very $8B Iridium deal being evaluated — no margin of safety if the space-datacenter narrative slips.",
     note:"Scout (grok-buy-side-scalper) flagged the space/orbital-compute theme across 4 reports (reward 7.8), but the valuation problem STRATEGY.md §6 already noted (~65–100x sales, no cushion) has gotten worse, not better. Duplicates existing SPCX space exposure. Re-confirms the prior pass, not a reversal." },
 ];
+
+// ── The frontier radar (see .claude/commands/radar.md) ─────────────────────────
+// Cross-cutting themes that can disrupt (or accelerate) MULTIPLE holdings at once —
+// distinct from PF_PRESCREEN, which gates NEW ideas one ticker at a time. The lesson
+// this exists to fix: being late to semis wasn't picking bad companies, it was discovery
+// latency. Durable long-horizon holdings create the mirror-image risk — they give
+// frontiers time to come to THEM. Every row needs a falsifiable tripwire with a
+// condition an actual filing/disclosure can trip, not a mood ("watch stablecoins" doesn't
+// count; "first top-10 retailer offers stablecoin checkout" does).
+// coverage: "thesis-covered" (already a named kill-switch in a built dashboard) ·
+//   "thesis-gap" (a thesis exists but doesn't mention this risk yet — the actionable ones) ·
+//   "prescreen-only" (no full thesis built; tracked only at the GATE level) · "n/a" (not held).
+const PF_RADAR = {
+  updated: "2026-07-03",
+  THEMES: [
+    { id:"stablecoins", label:"Stablecoins vs. card-network fees", direction:"threatens",
+      holdings:["V","MA"], coverage:"prescreen-only",
+      evidence:"GATE prescreen (2026-07-03) already names this as live and genuinely two-sided — stablecoin checkout threatens the 2–3% card fee model that is V/MA's entire moat.",
+      tripwire:"A top-10 US retailer offers a stablecoin checkout discount, or V/MA disclose stablecoin volume cannibalization in a 10-Q." },
+    { id:"kalshi", label:"Prediction markets vs. regulated exchanges", direction:"threatens",
+      holdings:["CME","CBOE"], coverage:"prescreen-only",
+      evidence:"CME's own GATE prescreen note already names this kill-switch. CBOE failed prescreen partly because analysts flag it as 'most at risk' of the group.",
+      tripwire:"CME's CFTC lawsuit resolves against CME, or Kalshi discloses institutional (not just retail) volume crossing a material share of exchange volume." },
+    { id:"ai-eats-software", label:"AI commoditizing software incumbents", direction:"threatens",
+      holdings:["INTU"], coverage:"prescreen-only",
+      evidence:"GATE prescreen already flags 'AI eats TurboTax' as the loud consensus bear case — already priced into INTU's 38% YTD decline, not a hidden risk.",
+      tripwire:"TurboTax discloses an actual filing-share loss (IRS Direct File expansion, or a named competitor's filed share gain) — a real number, not sentiment." },
+    { id:"packaging-multivendor", label:"Advanced packaging going multi-vendor (TSMC CoWoS monopoly eroding)", direction:"threatens",
+      holdings:["TSM"], coverage:"thesis-gap",
+      evidence:"Scout (SemiAnalysis, 2026-07-01) flagged Google's TPU 'Humufish' shifting from TSMC CoWoS to Intel EMIB-T — first hard evidence of a design win outside TSMC.",
+      tripwire:"A second hyperscaler discloses a non-TSMC advanced-packaging design win (a real allocation, not a pilot).",
+      note:"GAP: TSM's thesis currently frames CoWoS capacity as an expanding bottleneck/moat (bullish framing) with no kill-switch for multi-vendor erosion. Add at TSM's next /update-thesis." },
+    { id:"neocloud", label:"Hyperscalers becoming neoclouds (selling excess AI compute externally)", direction:"enables",
+      holdings:["MSFT","AMZN","GOOGL"], coverage:"thesis-gap",
+      evidence:"Scout (SemiAnalysis, 2026-07-03): 'Meta Compute: Everyone Wants To Be A Neocloud' — Bedrock 2.0 / Azure Foundry / Vertex all monetizing spare capacity as a routing tollbooth.",
+      tripwire:"Any of the three discloses a material new external-compute revenue line in a 10-Q (not a press-release pilot).",
+      note:"Upside optionality, not a kill-switch — none of MSFT/AMZN/GOOGL's theses currently name this as a bull-case accelerant. Consider adding at each stock's next /update-thesis." },
+    { id:"orbital-compute", label:"Orbital / space-based compute", direction:"watch",
+      holdings:[], coverage:"n/a",
+      evidence:"Scout flagged this across 4 reports with the highest reward score of the cycle (RKLB/Iridium deal, Coatue naming space datacenters in SpaceX's own valuation framework).",
+      tripwire:"RKLB (or a pure-play successor) re-rates down 30%+ from current levels without a fundamental deterioration — re-run /prescreen; a real cushion may finally exist.",
+      note:"Nothing held — RKLB FAILED /prescreen 2026-07-03 on cushion. Tracked purely as a re-entry watch item, not a current exposure." },
+  ],
+};
