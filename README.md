@@ -13,7 +13,8 @@ thesis-builder/
 ├── bootstrap.sh                   ← scaffolds a fresh workspace in one command
 ├── package.json                   ← pins playwright, used by tools/verify-thesis.js
 ├── tools/
-│   └── verify-thesis.js           ← headless render + sync-lint check, see /verify-thesis
+│   ├── verify-thesis.js           ← headless render + sync-lint check, see /verify-thesis
+│   └── build-scorecard.js         ← aggregates every TRACK_ALL, see /scorecard
 ├── reference/                     ← the META build, as a quality benchmark to match
 │   ├── meta-thesis.html
 │   └── meta-QUARTERLY-CHECKLIST.md
@@ -21,13 +22,15 @@ thesis-builder/
     └── commands/
         ├── thesis.md              ← /thesis TICKER         (build a new one)
         ├── update-thesis.md       ← /update-thesis TICKER  (roll an existing one forward)
-        └── verify-thesis.md       ← /verify-thesis TICKER  (headless render + lint check)
+        ├── verify-thesis.md       ← /verify-thesis TICKER  (headless render + lint check)
+        └── scorecard.md           ← /scorecard TICKER      (grade + regenerate calibration)
 ```
 
-`tools/verify-thesis.js` assumes this repo's own layout — a `stocks/index.html` REGISTRY and
-a `stocks/portfolio/portfolio-data.js` — since that's what it cross-checks against. A freshly
-bootstrapped workspace (below) doesn't have those yet; the check is meant for a repo that has
-grown into having a portfolio layer, not a hard requirement for using `/thesis` on its own.
+`tools/verify-thesis.js` and `tools/build-scorecard.js` both assume this repo's own layout —
+a `stocks/index.html` REGISTRY and a `stocks/portfolio/portfolio-data.js` — since that's what
+they cross-check against. A freshly bootstrapped workspace (below) doesn't have those yet;
+these checks are meant for a repo that has grown into having a portfolio layer, not a hard
+requirement for using `/thesis` on its own.
 
 ## Setup — the easy way (bootstrap)
 
@@ -91,6 +94,15 @@ last step):**
 Headless render in both themes + a sync-lint pass (TRACK_ALL dedup, alert data drift,
 lowercase paths, stray hex colors, disk-vs-git casing). Screenshots land in
 `tools/.verify-output/`.
+
+**Grade the last prediction + refresh the calibration page (also runs automatically inside
+`/update-thesis`):**
+```
+/scorecard NVDA
+```
+Checks whether the most-likely case stated *before* this quarter matched what actually
+landed — the only calibration number in the system that isn't hindsight-biased — then
+regenerates `stocks/portfolio/scorecard-data.js` for the CALIBRATION page.
 
 **Tip:** if you just want it to build without pausing for your review of the reasoning,
 say "just build it" in the same message.

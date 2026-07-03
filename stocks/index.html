@@ -229,6 +229,11 @@
       <span class="chip-ticker">GATE</span>
       <span class="chip-name">prescreen doctrine &amp; verdicts</span>
     </button>
+    <button id="calibration-chip" class="chip pinned">
+      <span class="chip-dot quiet">◎</span>
+      <span class="chip-ticker">SCORE</span>
+      <span class="chip-name">band coverage &amp; calibration</span>
+    </button>
 
     <!-- Chip list -->
     <div id="chip-label">THESES ›</div>
@@ -294,6 +299,7 @@ const portfolioChip = document.getElementById('portfolio-chip');
 const actionsChip   = document.getElementById('actions-chip');
 const generatorChip = document.getElementById('generator-chip');
 const strategyChip  = document.getElementById('strategy-chip');
+const calibrationChip = document.getElementById('calibration-chip');
 
 // ── Theme ────────────────────────────────────────────────────────────────────
 const THEME_KEY = 'th3sis_theme';
@@ -443,6 +449,16 @@ function loadStrategy() {
   loadFrame('portfolio/strategy.html', 'LOADING THE GATE…');
 }
 strategyChip.addEventListener('click', loadStrategy);
+
+// ── Load the calibration (scorecard) page ─────────────────────────────────────
+function loadCalibration() {
+  notFound.classList.remove('on');
+  if (activeChip) activeChip.classList.remove('active');
+  activeChip = calibrationChip;
+  calibrationChip.classList.add('active');
+  loadFrame('portfolio/calibration.html', 'LOADING THE SCORECARD…');
+}
+calibrationChip.addEventListener('click', loadCalibration);
 
 // ── Load a thesis ─────────────────────────────────────────────────────────────
 function loadTicker(ticker) {

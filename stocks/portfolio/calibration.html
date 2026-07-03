@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TH3SIS · CALIBRATION — grading the bands</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../theme.css" />
+<script>
+function cdnFail(lib) {
+  var el = document.getElementById('root');
+  if (!el) return;
+  el.style.cssText = 'display:flex;align-items:center;justify-content:center;height:100vh;background:#06080d';
+  el.innerHTML =
+    '<div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:20px;font-family:\'JetBrains Mono\',monospace">'
+    + '<div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230">TH<span style="color:#46aad9">3</span>SIS</div>'
+    + '<div style="font-size:11px;letter-spacing:0.18em;color:#dd817a">FAILED TO LOAD · ' + lib + '</div>'
+    + '<div style="font-size:10px;letter-spacing:0.12em;color:#3a4252">No internet connection — check your network and reload.</div>'
+    + '<a href="javascript:location.reload()" style="margin-top:4px;color:#46aad9;text-decoration:none;border:1px solid #46aad933;border-radius:20px;padding:4px 14px;font-size:9px;letter-spacing:0.14em">↺ RELOAD</a>'
+    + '</div>';
+}
+</script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js" onerror="cdnFail('REACT')"></script>
+<script crossorigin src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js" onerror="cdnFail('REACT-DOM')"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js" onerror="cdnFail('BABEL')"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: var(--page-bg); }
+  * { box-sizing: border-box; }
+  @keyframes fadeUp { from { opacity:0; transform: translateY(10px);} to {opacity:1; transform:none;} }
+  @keyframes pulse { 0%,100%{opacity:0.4;} 50%{opacity:1;} }
+  .panel { animation: fadeUp .55s ease both; }
+  .tip-target { cursor: help; border-bottom: 1px dotted var(--bd3); }
+  #tip-box {
+    position: fixed; z-index: 9999; max-width: 340px; pointer-events: none;
+    background: var(--tip-bg); border: 1px solid var(--tip-bd);
+    border-radius: 10px; padding: 12px 14px;
+    box-shadow: 0 18px 50px rgba(0,0,0,0.28); opacity: 0; transition: opacity .14s ease;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  #tip-box.on { opacity: 1; }
+  #tip-box .tt { font-size: 11px; font-weight: 700; letter-spacing: .08em; margin-bottom: 5px; }
+  #tip-box .tb { font-size: 11.5px; line-height: 1.55; color: var(--tx2); }
+  .ld-dot { width:5px; height:5px; border-radius:50%; background:#46aad9; display:inline-block; animation:pulse 1.2s ease-in-out infinite; }
+  .row-hover:hover { filter: brightness(1.06); }
+  ::-webkit-scrollbar { height: 8px; width: 8px; }
+  ::-webkit-scrollbar-thumb { background: var(--bd2); border-radius: 8px; }
+  .barwrap { flex:1; height: 7px; border-radius: 4px; background: var(--bd); overflow: hidden; }
+  .barfill { height: 100%; border-radius: 4px; }
+  @media (max-width: 820px) {
+    .resp-2 { grid-template-columns: 1fr !important; }
+    .resp-3 { grid-template-columns: 1fr 1fr !important; }
+    .resp-summary { grid-template-columns: 1fr 1fr !important; }
+  }
+</style>
+</head>
+<body>
+<noscript>
+  <div style="display:flex;align-items:center;justify-content:center;height:100vh;background:#06080d;">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:20px;font-family:'JetBrains Mono',monospace;">
+      <div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230;">TH<span style="color:#46aad9">3</span>SIS</div>
+      <div style="font-size:11px;letter-spacing:0.18em;color:#dd817a;">JAVASCRIPT REQUIRED</div>
+    </div>
+  </div>
+</noscript>
+<div id="root" style="display:flex;align-items:safe center;justify-content:safe center;min-height:100vh;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:0.18em;color:#3a4252;">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:14px;">
+    <div style="font-size:22px;font-family:Georgia,serif;letter-spacing:0.35em;color:#1c2230;">TH<span style="color:#46aad9">3</span>SIS</div>
+    <div style="display:flex;gap:5px;"><span class="ld-dot" style="animation-delay:0s"></span><span class="ld-dot" style="animation-delay:.2s"></span><span class="ld-dot" style="animation-delay:.4s"></span></div>
+    <div>LOADING THE SCORECARD…</div>
+  </div>
+</div>
+<script>
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'th3sis-theme') {
+    document.documentElement.classList.toggle('light', !!e.data.light);
+    localStorage.setItem('th3sis_theme', e.data.light ? 'light' : 'dark');
+  }
+});
+(function() {
+  if (localStorage.getItem('th3sis_theme') !== 'dark') {
+    document.documentElement.classList.add('light');
+  }
+})();
+</script>
+<script src="portfolio-data.js"></script>
+<script src="scorecard-data.js"></script>
+<script type="text/babel">
+const FONT_MONO = "'JetBrains Mono', ui-monospace, 'SF Mono', Menlo, monospace";
+const FONT_DISPLAY = "'Spectral', Georgia, serif";
+
+const GAIN = "#3fd07a", LOSS = "#f1564b", WARN = "#e0a83b", BLUE = "#2f6dff";
+const ACCENT = "var(--blue-soft)";
+
+const ASOF = PF_ASOF, LIVE = PF_LIVE;
+const SCORE = PF_SCORECARD, PREDICTIONS = PF_PREDICTIONS, GRADED = PF_GRADED;
+const usd = (v, d=2) => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+
+// ── tooltip engine ───────────────────────────────────────────────────────────
+let tipEl = null;
+function tip(){ if(!tipEl){ tipEl=document.createElement("div"); tipEl.id="tip-box"; document.body.appendChild(tipEl);} return tipEl; }
+function showTip(e,title,body,color){ const el=tip(); el.innerHTML=`<div class="tt" style="color:${color||ACCENT}">${title}</div><div class="tb">${body}</div>`; el.classList.add("on"); moveTip(e); }
+function moveTip(e){ const el=tip(),p=16; let x=e.clientX+p,y=e.clientY+p; const r=el.getBoundingClientRect(); if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-p; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-p; el.style.left=x+"px"; el.style.top=y+"px"; }
+function hideTip(){ tip().classList.remove("on"); }
+
+// ── derived ──────────────────────────────────────────────────────────────────
+const totalQuarters = SCORE.length;
+const totalHits = SCORE.filter(r => r.bandHit).length;
+const overallHitRate = totalQuarters ? Math.round((totalHits / totalQuarters) * 100) : 0;
+const tickers = [...new Set(SCORE.map(r => r.t))].sort();
+const perTicker = tickers.map(t => {
+  const rows = SCORE.filter(r => r.t === t);
+  const hits = rows.filter(r => r.bandHit).length;
+  const confCounts = { high: 0, med: 0, low: 0 };
+  rows.forEach(r => { if (confCounts[r.conf] !== undefined) confCounts[r.conf]++; });
+  return { t, n: rows.length, hits, rate: rows.length ? Math.round((hits / rows.length) * 100) : 0, confCounts };
+});
+const predictedTickers = Object.keys(PREDICTIONS);
+const unpredictedTickers = tickers.filter(t => !predictedTickers.includes(t));
+
+// ── atoms ──────────────────────────────────────────────────────────────────
+const Panel = ({children, style, delay=0}) => (
+  <div className="panel" style={{ background:"var(--panel-bg)", border:"1px solid var(--bd)", borderRadius:14, padding:20, animationDelay:delay+"s", ...style }}>{children}</div>
+);
+const Eyebrow = ({children, note, color}) => (
+  <div style={{ display:"flex", alignItems:"baseline", justifyContent:"space-between", marginBottom:14, gap:12, flexWrap:"wrap" }}>
+    <div style={{ fontSize:10.5, letterSpacing:"0.2em", color:color||"var(--tx5)", textTransform:"uppercase", fontWeight:700 }}>{children}</div>
+    {note && <div style={{ fontSize:10, color:"var(--tx5)", letterSpacing:"0.04em" }}>{note}</div>}
+  </div>
+);
+
+// ── sections ──────────────────────────────────────────────────────────────
+function StatStrip() {
+  const cells = [
+    { n: totalQuarters, l: "historical quarters, all stocks", c: "var(--tx2)" },
+    { n: overallHitRate + "%", l: "landed inside some band", c: GAIN },
+    { n: tickers.length, l: "tickers with a backtest", c: "var(--tx2)" },
+    { n: GRADED.length, l: "prospectively graded predictions", c: GRADED.length ? GAIN : WARN },
+  ];
+  return (
+    <Panel style={{ padding:"16px 20px" }}>
+      <div className="resp-summary" style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:1, background:"var(--bd)", border:"1px solid var(--bd)", borderRadius:10, overflow:"hidden" }}>
+        {cells.map((c,i)=>(
+          <div key={i} style={{ background:"var(--panel-bg)", padding:"13px 15px" }}>
+            <div style={{ fontSize:22, fontWeight:700, color:c.c, fontFamily:FONT_MONO }}>{c.n}</div>
+            <div style={{ fontSize:9, color:"var(--tx5)", letterSpacing:"0.1em", marginTop:4, textTransform:"uppercase" }}>{c.l}</div>
+          </div>
+        ))}
+      </div>
+    </Panel>
+  );
+}
+
+function CaveatPanel() {
+  return (
+    <Panel delay={.04} style={{ border:`1px solid ${WARN}55`, background:"var(--inner-bg)" }}>
+      <Eyebrow color={WARN}>Read this before trusting the 100% — what "band coverage" actually measures</Eyebrow>
+      <div style={{ fontSize:11.5, color:"var(--tx2)", lineHeight:1.7 }}>
+        The {overallHitRate}% band-coverage rate above is <b>not</b> a forward-looking track record. Every one of
+        these {totalQuarters} quarters was <b>reconstructed after the fact</b> — the bear/base/bull bands were
+        chosen knowing what the price actually did, which is exactly why CLAUDE.md marks older backtest
+        quarters as lower-confidence. A band built to explain a known outcome will almost always contain
+        that outcome. High coverage here says the reconstruction was done honestly, not that the bands were
+        ever tested against the future.
+        <br/><br/>
+        The number that <i>would</i> mean something — whether a stated "most-likely case" made <u>before</u> a
+        quarter's results actually matched what happened — is the <b>prospectively graded</b> count above, and
+        it starts at zero on purpose. It only grows when <code>/scorecard</code> runs after a real
+        <code>/update-thesis</code>, comparing a prediction that was locked in beforehand against an outcome
+        that hadn't happened yet. That is the only honest calibration signal this system can produce.
+      </div>
+    </Panel>
+  );
+}
+
+function TickerTable() {
+  return (
+    <Panel delay={.08}>
+      <Eyebrow note="hover a row for the confidence mix">Band coverage by ticker — hindsight-reconstructed history</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+        {perTicker.map(row => {
+          const live = LIVE[row.t];
+          return (
+            <div key={row.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:14, padding:"10px 14px", border:"1px solid var(--bd)", borderRadius:9, background:"var(--inner-bg)", cursor:"help" }}
+              onMouseEnter={(e)=>showTip(e, `${row.t} · confidence mix`, `<b>High:</b> ${row.confCounts.high} &nbsp; <b>Med:</b> ${row.confCounts.med} &nbsp; <b>Low:</b> ${row.confCounts.low}<br/><br/>Lower-confidence quarters are older reconstructions per CLAUDE.md's data-freshness rules.`)}
+              onMouseMove={moveTip} onMouseLeave={hideTip}>
+              <span style={{ fontSize:12, fontWeight:700, color:"var(--tx1)", width:52, flexShrink:0 }}>{row.t}</span>
+              <span style={{ fontSize:10, color:"var(--tx5)", width:78, flexShrink:0 }}>{row.n} quarters</span>
+              <div className="barwrap"><div className="barfill" style={{ width: row.rate+"%", background: row.rate === 100 ? GAIN : row.rate >= 70 ? WARN : LOSS }} /></div>
+              <span style={{ fontSize:11, color:"var(--tx3)", width:40, textAlign:"right", flexShrink:0 }}>{row.rate}%</span>
+              {live && <span style={{ fontSize:10, color:"var(--tx5)", width:70, textAlign:"right", flexShrink:0 }}>{usd(live.px)}</span>}
+            </div>
+          );
+        })}
+      </div>
+    </Panel>
+  );
+}
+
+function StandingPredictions() {
+  return (
+    <Panel delay={.12}>
+      <Eyebrow note="these are what /scorecard will grade at each stock's next /update-thesis">Standing predictions — the current most-likely case per ticker</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+        {predictedTickers.map(t => {
+          const p = PREDICTIONS[t];
+          return (
+            <div key={t} style={{ display:"flex", gap:12, padding:"11px 14px", border:`1px solid ${BLUE}55`, borderLeft:`3px solid ${BLUE}`, borderRadius:9, background:"var(--inner-bg)" }}>
+              <span style={{ fontSize:12, fontWeight:700, color:"var(--tx1)", width:52, flexShrink:0 }}>{t}</span>
+              <span style={{ fontSize:11, fontWeight:700, color:BLUE, width:56, flexShrink:0 }}>{p.case}</span>
+              <span style={{ fontSize:10.5, color:"var(--tx3)", flex:1 }}>{p.note || "—"}</span>
+              <span style={{ fontSize:9.5, color:"var(--tx5)", flexShrink:0 }}>stated {p.asOf}</span>
+            </div>
+          );
+        })}
+        {unpredictedTickers.length > 0 && (
+          <div style={{ fontSize:10.5, color:"var(--tx5)", padding:"8px 4px", lineHeight:1.6 }}>
+            No standing prediction yet for: <b style={{color:"var(--tx3)"}}>{unpredictedTickers.join(", ")}</b> — populates automatically
+            once each has its first live entry in its own QUARTERLY-UPDATE-CHECKLIST.md.
+          </div>
+        )}
+      </div>
+    </Panel>
+  );
+}
+
+function GradedTransitions() {
+  return (
+    <Panel delay={.16}>
+      <Eyebrow color={GAIN}>Prospectively graded — the only real calibration number</Eyebrow>
+      {GRADED.length === 0 ? (
+        <div style={{ fontSize:11.5, color:"var(--tx3)", lineHeight:1.7, padding:"6px 2px" }}>
+          Empty on purpose. This fills in the first time a stock with a standing prediction (see above) gets
+          its next <code>/update-thesis</code> — <code>/scorecard</code> checks whether the case predicted
+          <i> before</i> that quarter's print matches where price actually landed, and logs it here. Nothing to
+          backfill honestly; this is where the real track record starts accumulating.
+        </div>
+      ) : (
+        <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+          {GRADED.map((g,i) => (
+            <div key={i} style={{ display:"flex", gap:12, padding:"10px 14px", border:"1px solid var(--bd)", borderLeft:`3px solid ${g.matched?GAIN:LOSS}`, borderRadius:9, background:"var(--inner-bg)" }}>
+              <span style={{ fontSize:12, fontWeight:700, color:"var(--tx1)" }}>{g.t}</span>
+              <span style={{ fontSize:10.5, color:"var(--tx3)" }}>predicted {g.predictedCase} on {g.predictedAt} → landed {g.landed} ({g.gradedQuarter})</span>
+              <span style={{ fontSize:10.5, fontWeight:700, color: g.matched?GAIN:LOSS, marginLeft:"auto" }}>{g.matched ? "MATCH" : "MISS"}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </Panel>
+  );
+}
+
+function App() {
+  return (
+    <div style={{ width:"100%", maxWidth:1000, margin:"0 auto", padding:"26px 22px 60px", fontFamily:FONT_MONO }}>
+      <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:20, flexWrap:"wrap", gap:14 }}>
+        <div>
+          <div style={{ fontFamily:FONT_DISPLAY, fontSize:26, fontWeight:600, letterSpacing:"0.3em", color:"var(--tx1)" }}>
+            TH<span style={{color:ACCENT}}>3</span>SIS · CALIBRATION
+          </div>
+          <div style={{ fontSize:9.5, color:"var(--tx5)", letterSpacing:"0.08em", marginTop:7 }}>
+            grading the machine's own bands — band coverage vs. real prospective accuracy · hover for detail
+          </div>
+        </div>
+        <div style={{ textAlign:"right" }}>
+          <div style={{ fontSize:9, color:"var(--tx5)", letterSpacing:"0.14em" }}>AS OF</div>
+          <div style={{ fontSize:12, color:"var(--tx2)", fontWeight:700 }}>{ASOF}</div>
+        </div>
+      </div>
+
+      <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
+        <StatStrip />
+        <CaveatPanel />
+        <TickerTable />
+        <StandingPredictions />
+        <GradedTransitions />
+      </div>
+
+      <div style={{ marginTop:22, padding:"14px 18px", border:"1px dashed var(--bd2)", borderRadius:10, fontSize:9.5, color:"var(--tx5)", lineHeight:1.7 }}>
+        ⚠ <b style={{color:"var(--tx4)"}}>Not financial advice.</b> This page grades the machine's own historical
+        calibration, not any individual stock's outlook — a low coverage number on one ticker means its bands
+        may be too narrow for how that stock actually trades, not that the business is broken. Source of truth
+        is <code>stocks/portfolio/scorecard-data.js</code>, generated by <code>tools/build-scorecard.js</code>{' '}
+        from every thesis's own <code>TRACK_ALL</code> and quarterly-checklist log — regenerate it after any{' '}
+        <code>/update-thesis</code> run, or via the <code>/scorecard</code> skill.
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
