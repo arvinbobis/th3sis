@@ -1,0 +1,24 @@
+{
+  "name": "thesis-builder",
+  "version": "1.0.0",
+  "description": "A reusable \"shell\" for building three-scenario investment theses (bear / base / bull) for any stock, rendered as an interactive HTML dashboard + a quarterly-update checklist. Built from the META reference project.",
+  "main": "index.js",
+  "scripts": {
+    "verify": "node tools/verify-thesis.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arvinbobis/th3sis.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/arvinbobis/th3sis/issues"
+  },
+  "homepage": "https://github.com/arvinbobis/th3sis#readme",
+  "devDependencies": {
+    "playwright": "^1.61.1"
+  }
+}

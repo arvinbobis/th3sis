@@ -1,6 +1,8 @@
 .DS_Store
 .claude/settings.local.json
 stocks/avg_q1fy26/
+node_modules/
+tools/.verify-output/
 
 # Excel lock files
 ~$*.xlsx

@@ -11,14 +11,23 @@ thesis-builder/
 ├── CLAUDE.md                      ← the methodology (loaded automatically every session)
 ├── README.md                      ← this file
 ├── bootstrap.sh                   ← scaffolds a fresh workspace in one command
+├── package.json                   ← pins playwright, used by tools/verify-thesis.js
+├── tools/
+│   └── verify-thesis.js           ← headless render + sync-lint check, see /verify-thesis
 ├── reference/                     ← the META build, as a quality benchmark to match
 │   ├── meta-thesis.html
 │   └── meta-QUARTERLY-CHECKLIST.md
 └── .claude/
     └── commands/
-        ├── thesis.md              ← /thesis TICKER     (build a new one)
-        └── update-thesis.md       ← /update-thesis TICKER (roll an existing one forward)
+        ├── thesis.md              ← /thesis TICKER         (build a new one)
+        ├── update-thesis.md       ← /update-thesis TICKER  (roll an existing one forward)
+        └── verify-thesis.md       ← /verify-thesis TICKER  (headless render + lint check)
 ```
+
+`tools/verify-thesis.js` assumes this repo's own layout — a `stocks/index.html` REGISTRY and
+a `stocks/portfolio/portfolio-data.js` — since that's what it cross-checks against. A freshly
+bootstrapped workspace (below) doesn't have those yet; the check is meant for a repo that has
+grown into having a portfolio layer, not a hard requirement for using `/thesis` on its own.
 
 ## Setup — the easy way (bootstrap)
 
@@ -73,6 +82,15 @@ cases, builds `NVDA-thesis.html`, and generates a tailored quarterly checklist.
 /update-thesis NVDA
 ```
 Refreshes the numbers AND re-audits whether the three cases themselves still hold.
+
+**Verify one renders clean (both `/thesis` and `/update-thesis` already run this as their
+last step):**
+```
+/verify-thesis NVDA
+```
+Headless render in both themes + a sync-lint pass (TRACK_ALL dedup, alert data drift,
+lowercase paths, stray hex colors, disk-vs-git casing). Screenshots land in
+`tools/.verify-output/`.
 
 **Tip:** if you just want it to build without pausing for your review of the reasoning,
 say "just build it" in the same message.

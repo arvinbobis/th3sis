@@ -35,6 +35,11 @@ For EACH of bear/base/bull, answer honestly:
 - **What surprised me this quarter?** The one thing not seen coming.
 Add both to the quarterly log in the checklist file.
 
-## Step 5 — Verify & close
-Confirm the HTML still compiles. Summarize what changed, the new most-probable case, and the
-key KPI to watch next. Remind: estimates, not advice; widen bands when uncertain.
+## Step 5 — Verify (REQUIRED, not optional)
+Run `/verify-thesis $ARGUMENTS`. Fix anything it fails on before closing out — this also
+catches the case where refreshing PF_ALERTS in `portfolio-data.js` (if this stock's buy floor
+or thesisIntact flag changed) fell out of sync with the local fallback ALERT block.
+
+## Step 6 — Close
+Summarize what changed, the new most-probable case, and the key KPI to watch next. Remind:
+estimates, not advice; widen bands when uncertain.

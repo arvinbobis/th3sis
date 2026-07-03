@@ -51,7 +51,7 @@ CLAUDE.md:
   reconstructed-bands-vs-actual overlay, reversion/timing element if applicable,
   plain-language hover tooltips on every data point.
 - ALL editable values in one top config block; append-only TRACK_ALL with fixed window.
-- Verify the JSX compiles before delivering.
+- Add the ticker's `path` to `REGISTRY` in `stocks/index.html` so it's reachable.
 
 ## Step 5 — Generate the quarterly checklist
 Create `stocks/$ARGUMENTS/$ARGUMENTS-QUARTERLY-CHECKLIST.md` tailored to this stock: Layer 1
@@ -59,6 +59,10 @@ Create `stocks/$ARGUMENTS/$ARGUMENTS-QUARTERLY-CHECKLIST.md` tailored to this st
 prove me wrong?" and "what surprised me?") + a copy-paste quarterly log. Use
 `reference/meta-QUARTERLY-CHECKLIST.md` as the template.
 
-## Step 6 — Close
+## Step 6 — Verify (REQUIRED, not optional)
+Run `/verify-thesis $ARGUMENTS`. Fix anything it fails on before moving to Step 7 — "the JSX
+compiles" is not the bar; a render check that actually ran is.
+
+## Step 7 — Close
 State plainly: the most-probable case, the single most important KPI to watch next, and
 a reminder that everything is an estimate, not advice.
