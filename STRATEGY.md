@@ -52,21 +52,21 @@ is the right move.
 All orders placed **manually** (not via automation), **Good-Til-Cancel**, sized as
 speculative slices. All sit **below market** — letting price come to me, not chasing.
 
-| Ticker | Plan | Limit | Size | Anchor / Rationale |
-|--------|------|-------|------|--------------------|
-| **GE** | Let ride to ~$1,600 (≈2x on $808 cost), then trim ~$600–800, let rest ride | — (no new capital) | existing ~$808 | Already own the thesis cheap ($295 basis). Don't add at record highs. |
-| **SPCX** | Starter position | **$100** | $500 | Anchored to Damodaran/Morningstar intrinsic (~$63 DCF floor). NOT the second $500 tranche — capped here. |
-| **TSLA** | Re-entry (previously 22x'd it: $18→$400) | **$250** | $500 | "Buy real fear" level. No valuation floor — sentiment/support anchor only. |
-| **MU** | Add to existing $150 nibble | **$900** | ~$850 new (→ $1,000 total) | ~7–8x fwd earnings at that price. Real cushion vs near-high entry. |
-| **TDG** | Watchlist only | ~$1,150 (if added) | small | Better-valued than GE but 5.9x leverage + rate risk. GE likely enough. |
-| **PLTR** | Watchlist only | — | — | Failed `/prescreen` 2026-07-02 (~80x trailing sales, no cushion; moat is enterprise/govt lock-in, not a hard chokepoint). Revisit only on real multiple compression, not on headline momentum (Nvidia/Army news). |
+The ladder itself (ticker, limit, size, anchor rationale) lives in `PF_STRAT.LIMITS` in
+`stocks/portfolio/portfolio-data.js` — rendered live on the ACTIONS page
+(`stocks/portfolio/action-items.html`) alongside current cash on hand. Not duplicated here
+as a table anymore; this section carries only the reasoning that doesn't fit in a JS config
+object. PLTR sits on the watchlist via `PF_PRESCREEN` (§7), not `LIMITS` — it failed
+`/prescreen` 2026-07-02 (~80x trailing sales, no cushion; moat is enterprise/govt lock-in,
+not a hard chokepoint). Revisit only on real multiple compression, not on headline momentum.
 
 **Musk-empire exposure capped:** SPCX + TSLA treated as ONE ~$1,000 bucket, not two
 independent bets — they're correlated (shared CEO, narrative, possible 12–18mo merger).
-Post-merger they could become a single ticker's worth of risk.
+Post-merger they could become a single ticker's worth of risk. Enforced via
+`MUSK_BUCKET_CAP` in `PF_STRAT`.
 
-**Capital note:** ~$1,250 cash available vs ~$1,850 in planned limits. Will need the
-planned trims of winners to free up capital, or fund more.
+**On chasing:** if a name bounces just above its limit, do NOT bump the limit up — see
+§5 rule 3. Patience is the position.
 
 ---
 
@@ -149,33 +149,23 @@ ratings / exchanges (SPGI, MCO, EFX, MSCI, CME, CBOE), INTU, and the payments pa
 the chokepoint+cushion rigor applied to ASML, MU, GE, etc. This section tracks what happens
 when that judgment gets checked against the same bar now used for new capital.
 
-**2026-07-03 retroactive `/prescreen` run — findata/platforms cluster (no existing thesis):**
+**2026-07-03 retroactive `/prescreen` run — findata/platforms cluster + payments duopoly:**
 
-| Ticker | Verdict | Why |
-|--------|---------|-----|
-| **SPGI** | PASS | Ratings duopoly (NRSRO status) is a real regulatory chokepoint. Fwd P/E ~20.8 vs 5-yr avg ~29.3 — trades at a real discount to its own history, and the Mobility spinoff (7/1/26) simplifies the story. Candidate for a full `/thesis` build. |
-| **MCO** | FAIL (cushion) | Same duopoly chokepoint as SPGI, but fwd P/E ~26.8, ~63% above the Capital Markets industry median — priced for perfection with no margin of safety. Redundant exposure if SPGI is held; don't add fresh capital here. |
-| **EFX** | PASS-WATCH | The Work Number is a genuinely hard-to-replicate asset, but Morningstar downgraded the moat to "narrow" from "wide" — a real erosion signal, not manufactured pessimism. Cushion is only fair (~19–20x fwd). Revisit if price falls further or the moat debate resolves either way; not a fresh build today. |
-| **MSCI** | FAIL (cushion) | Index-embeddedness moat is real but narrower than SPGI/MCO's, and fwd P/E ~30.5–31 is ~90% above the industry median — no cushion at all. |
-| **CME** | PASS | Deepest liquidity/clearing network of the group — genuine network-effect moat. Fwd P/E ~22–25 ("fairly valued"), and the ~9% Kalshi/perpetual-futures selloff gives real cushion. Kill-switch is trackable: outcome of CME's CFTC lawsuit and whether Kalshi captures institutional (not just retail) volume. |
-| **CBOE** | FAIL | Same Kalshi/crypto-derivatives threat as CME, but analysts flag Cboe as "most at risk" of the group — moat is concentrated in SPX/VIX options, not diversified. Even after a 25% drawdown, still ~7% above one estimate of fair value. Redundant with CME; would duplicate the same risk bucket. |
-| **INTU** | PASS | TurboTax/QuickBooks moat (data depth + tax-code complexity + switching costs) is real, if not airtight. Down 38% YTD — a genuine re-rating has already happened (fwd P/E ~20x vs ~16x sector average), and the "AI eats TurboTax" bear case is now the loud, mainstream narrative — meaning the fear is priced in rather than hidden. The most interesting name in the legacy cluster: real chokepoint + real cushion + a contrarian setup (everyone already sold). |
+Ticker-by-ticker verdicts, chokepoint, and cushion reasoning are **not duplicated here** —
+canonical source is `PF_PRESCREEN` in `stocks/portfolio/portfolio-data.js`, rendered live on
+the GATE page (`stocks/portfolio/strategy.html`). As of this run: PASS — SPGI, CME, INTU, V,
+MA. WATCH — EFX. FAIL — MCO, MSCI, CBOE. This section carries only the reasoning that doesn't
+fit in a JS note field.
 
 FICO already cleared this bar via a full thesis (see `stocks/fico/`) — not re-run here.
-
-**2026-07-03 retroactive `/prescreen` run — payments duopoly:**
-
-| Ticker | Verdict | Why |
-|--------|---------|-----|
-| **V** | PASS | Two-sided network (4B+ cards) + duopoly with MA — about as durable a chokepoint as exists in public markets, arguably unbreakable short of a government mandate. Cushion is fair-not-deep: fwd P/E ~21.5–24.4, no clean discount-to-own-history signal. Real, live bear case (stablecoins undermining the 2–3% fee model) is genuinely two-sided right now, not settled either way. |
-| **MA** | PASS | Identical moat character to Visa. Slightly better cushion: current P/E stated ~23% below its own historical average — a real discount-to-history signal, comparable in kind to SPGI's. Same stablecoin/Credit Card Competition Act regulatory risk as Visa. |
 
 **The catch:** V and MA individually clear the gate, but together they are the exact
 "one bucket" case §5 rule 5 and the GE/TDG lesson in §6 already warn about — same duopoly,
 same network moat, same regulatory risk, same stablecoin exposure. Owning both is not
 diversification; it's one payments-duopoly bet sized as two. Treat V+MA as a single bucket
 going forward (same logic as the SPCX+TSLA Musk bucket) rather than two independent PASSes —
-size any *future* incremental capital to the pair as a whole, not per ticker.
+size any *future* incremental capital to the pair as a whole, not per ticker. (Encoded as
+`bucket: "payments-duopoly"` on both rows in `PF_PRESCREEN`.)
 
 **What this changes, and what it doesn't:**
 - **Doesn't trigger a sell.** Existing losers stay 5–8yr holds per §2 — a FAIL here means
@@ -190,16 +180,18 @@ size any *future* incremental capital to the pair as a whole, not per ticker.
   but every new dollar and every legacy re-look going through the same prescreen/thesis
   discipline, whether the ticker is already owned or brand new.
 
-**2026-07-03 Scout-sourced `/prescreen` run — RKLB (not held, new candidate):**
-
-| Ticker | Verdict | Why |
-|--------|---------|-----|
-| **RKLB** | FAIL (cushion) | The Scout ([[project-x-scalper-scout]]) flagged the space/orbital-compute theme across 4 reports with the strongest reward score of any theme this cycle (7.8), driven by the $8B Iridium acquisition (spectrum + LEO network — a real, if second-tier, chokepoint behind SpaceX). But at ~89x trailing sales and still -27% margin, re-rated another +16% on the very deal being evaluated, the cushion problem §6 already flagged (~65–100x sales, no earnings) has gotten worse, not better. Duplicates existing SPCX space exposure — same "GE is enough for aerospace" logic applies. Re-confirms the prior informal pass in §6, not a reversal. |
+**2026-07-03 Scout-sourced `/prescreen` run — RKLB (not held, new candidate):** FAIL on
+cushion — see `PF_PRESCREEN` / the GATE page for the full chokepoint + cushion reasoning.
+Short version: the Scout (`grok-buy-side-scalper`) flagged the space/orbital-compute theme
+across 4 reports with the strongest reward score of the cycle, driven by the $8B Iridium
+acquisition — but the price re-rated another +16% on the very deal being evaluated, so the
+cushion problem §6 already flagged has gotten worse, not better. Duplicates existing SPCX
+space exposure.
 
 This is the first prescreen run sourced directly from the Scout rather than a legacy-holdings
-re-look — confirms the Scout → `/prescreen` → gate pipeline in
-`grok-buy-side-scalper`'s memory note works as intended even when the answer is FAIL: a real,
-Scout-validated chokepoint still gets gated on cushion like anything else.
+re-look — confirms the Scout → `/prescreen` → gate pipeline works as intended even when the
+answer is FAIL: a real, Scout-validated chokepoint still gets gated on cushion like anything
+else.
 
 ---
 
