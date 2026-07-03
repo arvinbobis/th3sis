@@ -181,12 +181,16 @@ const TICKER_META = { ticker: "ALAB", exchange: "NASDAQ", company: "Astera Labs,
 const AS_OF_DATE = "2026-06-25";
 
 // 10 ── Most recent dislocation. ALAB is near all-time highs (added to Nasdaq-100 Jun 22 2026),
-//   so there is no ACTIVE fear dislocation — the last real one was the Apr-2025 tariff selloff that
-//   hit every AI-semi name. Values approximate pending the Past chunk's real price history.
-const DISLOCATION_DATE = "2025-04-07";
-const REVERSION_TROUGH = 90;
+//   so there is no ACTIVE fear dislocation right now. The last real one, per the actual daily
+//   price history (stocks/alab/alab-10-year-history__Sheet1.csv): a sharp Jan 24→27, 2025
+//   AI-infrastructure-sector selloff (-28% in one session) that kept souring into a Mar 31,
+//   2025 trough of $59.67 — a -59% drawdown from the Dec 2024 high. Full recovery back above
+//   the $300 base floor took 417 days (first close ≥$300 was May 22, 2026) — much longer than
+//   a typical "sharp selloff, quick bounce" pattern; hold that precedent loosely.
+const DISLOCATION_DATE = "2025-03-31";
+const REVERSION_TROUGH = 59.67;
 const REVERSION_BASEFLOOR = 300;
-const REVERSION_PRECEDENT_DAYS = 60;
+const REVERSION_PRECEDENT_DAYS = 417;
 
 const CASES = {
   bear: {
@@ -359,34 +363,40 @@ const TRACK = Array.from(new Map(TRACK_ALL.map(t => [t.q, t])).values()).slice(-
 const TRACK_PRICE_MIN = 20, TRACK_PRICE_MAX = 640;
 
 // ── THE PAST — historical data (update annually) ──────────────────────────────
-// Astera Labs IPO'd March 20, 2024 — there is no 10-year history to show. Real, sourced
-// periods only: two full fiscal years plus the latest quarter (mixed cadence, clearly
-// labeled — do not compare the Q1 FY26 bar 1:1 against the two full-year bars).
-// Sources: Astera Labs Q4/FY2024 and Q4/FY2025 earnings releases, Q1 FY2026 10-Q.
-const PAST_YEARS       = ["FY2024", "FY2025", "Q1 FY26"];
-const PAST_REV         = [396, 853, 308];               // total revenue, $M (FY24/FY25 = full year, Q1'26 = one quarter)
-const PAST_GM          = [74.1, 75.8, 76.3];            // non-GAAP gross margin, %
-const PAST_OPM         = [34.3, 39.2, 36.2];            // non-GAAP operating margin, % (FY2024 figure is the Q4 FY24 print — full-year non-GAAP opex margin wasn't cleanly disclosed at this granularity pre-2025)
-const PAST_EPS         = [0.37, 1.84, 0.61];            // non-GAAP diluted EPS, $ (FY24/FY25 = full year, Q1'26 = one quarter)
-// Balance sheet — a single real snapshot (Q1 FY2026 / Mar 31, 2026), not a fabricated
-// multi-year trend. ALAB has made no acquisitions and carries no debt.
-const BALANCE_SHEET = { cashAndSecurities: 1.20, totalLiabilities: 0.165, netCash: 1.03, asOf: "Mar 31, 2026" }; // $B
-// Monthly price history since IPO: real anchor points (IPO price, all-time low, each
-// TRACK_ALL post-earnings print, all-time high, current), LINEARLY INTERPOLATED between
-// them — not exact daily/monthly closes. Treat month-to-month wiggles as illustrative;
-// the anchor points themselves are real and sourced.
-const PRICE_M_LABELS = ["2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07"];
-const PRICE_M = [36.0,36.04,36.09,36.13,36.18,36.22,42.48,48.74,55,61.67,68.33,75,82.5,90,70,80.0,90.0,100,120.0,140.0,160,178.33,196.67,215,243.33,271.67,300,499.48,399.92];
-const PRICE_M_DD = [0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-22.2,-11.1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,-19.9];
+// Astera Labs IPO'd March 20, 2024 — there is no 10-year history to show. All figures
+// below are real, sourced directly from Wisesheets exports of the actual SEC filings
+// (stocks/alab/alab-wise-q1fy26__ALAB_-_*.csv) and a full daily price history since IPO
+// (stocks/alab/alab-10-year-history__Sheet1.csv, misleadingly named — it's ~2.25 years).
+// GAAP figures throughout (not the non-GAAP numbers used elsewhere in this thesis) — GAAP
+// EPS/margins are meaningfully lower than non-GAAP here because stock-based comp is large
+// relative to revenue for a company 2 years past IPO; see the footnote for the reconciliation.
+const PAST_YEARS       = ["Q1 24","Q2 24","Q3 24","Q4 24","Q1 25","Q2 25","Q3 25","Q4 25","Q1 26"];
+const PAST_REV         = [65.3, 76.8, 113.1, 141.1, 159.4, 191.9, 230.6, 270.6, 308.4]; // total revenue, $M, GAAP
+const PAST_GM          = [77.4, 77.9, 77.7, 74.0, 74.9, 75.8, 76.2, 75.6, 76.3];        // gross margin, % GAAP
+const PAST_OPM         = [-127.1, -31.7, -7.9, 0.1, 7.1, 20.7, 24.0, 24.7, 20.1];       // operating margin, % GAAP — negative early on is real, not an error: SBC and opex scaled ahead of revenue right after IPO
+const PAST_EPS         = [-0.60, -0.05, -0.05, 0.14, 0.18, 0.29, 0.50, 0.25, 0.44];     // diluted EPS, $ GAAP
+// Balance sheet — real annual trend (FY2022–FY2025) plus the Q1 FY2026 snapshot used in
+// the summary text below. ALAB has made no acquisitions and carries no debt in any period.
+const BS_YEARS   = ["FY2022","FY2023","FY2024","FY2025"];
+const BS_CASH    = [163, 149, 914, 1189]; // $M cash + short-term investments
+const BS_LIAB    = [297, 39, 90, 168];    // $M total liabilities
+const BS_NETCASH = [74, 42, 78, 132];   // $M net cash — positive (net cash, no net debt) in every year shown
+const BALANCE_SHEET = { cashAndSecurities: 1.20, totalLiabilities: 0.165, netCash: 1.03, asOf: "Mar 31, 2026" }; // $B, Q1 FY2026 snapshot
+// Monthly price history since IPO: last trading day of each month, from the real daily
+// series. Two real facts this monthly grain can't show on the chart line itself (both
+// noted in tooltips instead): the actual all-time LOW was $36.37 intraday on Aug 7, 2024
+// (Aug's month-end close recovered to $43.06), and the actual all-time HIGH was $439.66
+// on Jun 22, 2026 (Nasdaq-100 inclusion day) — June's month-end close of $399.92 reflects
+// a pullback in the final two trading days of the month, not a lower peak.
+const PRICE_M_LABELS = ["2024-03","2024-04","2024-05","2024-06","2024-07","2024-08","2024-09","2024-10","2024-11","2024-12","2025-01","2025-02","2025-03","2025-04","2025-05","2025-06","2025-07","2025-08","2025-09","2025-10","2025-11","2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06"];
+const PRICE_M = [74.19,84.76,64.54,60.51,43.84,43.06,52.39,70.16,103.25,132.45,101.42,74.35,59.67,65.31,90.72,90.42,136.73,182.2,195.8,186.68,157.57,166.36,150.62,118.83,109.6,194.74,342.85,399.92];
+const PRICE_M_DD = [0.0,0.0,-23.9,-28.6,-48.3,-49.2,-38.2,-17.2,0.0,0.0,-23.4,-43.9,-54.9,-50.7,-31.5,-31.7,0.0,0.0,0.0,-4.7,-19.5,-15.0,-23.1,-39.3,-44.0,-0.5,0.0,0.0];
 // Key events for price chart annotations (index into PRICE_M_LABELS)
 // Each event has an idx (into PRICE_M monthly array), label, and note for tooltip
 const PAST_EVENTS = [
-  { idx: 0,  label: "IPO",       note: "Mar 20, 2024 — Astera Labs IPO'd on Nasdaq at $36.00/share, raising ~$534M. No prior public trading history exists before this point." },
-  { idx: 5,  label: "ATL",       note: "Aug 7, 2024 — all-time low of $36.22, essentially flat to the IPO price after the initial post-IPO settling period. The stock didn't meaningfully break out until Scorpio/Leo design wins started compounding revenue beats through late 2024." },
-  { idx: 13, label: "Tariff Selloff", note: "Apr 2025 — the broad tariff-driven selloff that hit every AI-semiconductor name pulled ALAB down toward the low-$90s before continuing to soften into the Q1 2025 print. The most recent real fear-driven dislocation on record for this stock." },
-  // Nasdaq-100 inclusion (Jun 22, 2026) isn't its own annotation — it lands in the same
-  // month as the all-time high, which the chart already labels separately (see the ATH
-  // marker below); a second dashed line at the same x-position just overlapped the label.
+  { idx: 0,  label: "IPO",         note: "Mar 20, 2024 — Astera Labs IPO'd on Nasdaq at $62.03 first-day close (offer price was $36.00). No prior public trading history exists before this point." },
+  { idx: 5,  label: "ATL",         note: "Aug 7, 2024 — intraday all-time low of $36.37, essentially round-tripping back to the IPO offer price after the initial post-IPO settling period. The stock didn't meaningfully break out until Scorpio/Leo design wins started compounding revenue beats through late 2024." },
+  { idx: 10, label: "AI Selloff",  note: "Jan 24→27, 2025 — a sharp single-session -28% crash ($115.55 → $83.16), part of the broader AI-infrastructure selloff that hit the whole sector that week. ALAB kept softening into the Q1 2025 print, bottoming at $59.67 on Mar 31, 2025 — a -59% drawdown from the Dec 2024 high. The most severe real dislocation on record for this stock." },
 ];
 
 
@@ -2278,12 +2288,12 @@ function ReversionClock() {
   return (
     <div style={{ marginTop: 12, padding: "12px 14px", background: "var(--panel-bg)", border: "1px solid var(--bd)", borderRadius: 8 }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "var(--tx5)" }}>REVERSION CLOCK · APR 2025 DISLOCATION</div>
+        <div style={{ fontSize: 10.5, letterSpacing: "0.14em", color: "var(--tx5)" }}>REVERSION CLOCK · MAR 2025 TROUGH</div>
         <div style={{ fontSize: 11, color: "var(--tx3)" }}><span style={{ color: "#c59542", fontWeight: 700 }}>{elapsed}d</span> elapsed / ~{REVERSION_PRECEDENT_DAYS}d precedent</div>
       </div>
-      <div style={{ marginBottom: 4, fontSize: 9.5, color: "var(--tx5)" }}>TIME SINCE DISLOCATION ({new Date(DISLOCATION_DATE).toLocaleDateString("en-US",{month:"short",day:"numeric"})})</div>
+      <div style={{ marginBottom: 4, fontSize: 9.5, color: "var(--tx5)" }}>TIME SINCE TROUGH ({new Date(DISLOCATION_DATE).toLocaleDateString("en-US",{month:"short",day:"numeric"})})</div>
       <div {...tip("How much time has passed",
-        "In April 2025, the broad tariff selloff that hit every AI-semiconductor name pushed ALAB down toward its post-IPO lows (~$90). This bar shows how far along the stock is in the recovery cycle vs. that ~60-day precedent — ALAB has since recovered well past this floor, but it's the most recent real fear-driven dislocation on record for a stock this young.",
+        "A sharp Jan 24→27, 2025 AI-infrastructure-sector selloff (-28% in one session) kept souring into a Mar 31, 2025 trough of $59.67 — a -59% drawdown from the Dec 2024 high. This bar shows how far along the stock is vs. that ~417-day recovery precedent (the first close back above $300 wasn't until May 22, 2026) — much slower than a typical sharp-drop-quick-bounce pattern. ALAB has since recovered well past this floor, but it's the most severe real dislocation on record for a stock this young.",
         "Filling up = getting closer to when recovery happened last time.", "#c59542")}
         style={{ position: "relative", height: 14, background: "var(--deep-bg)", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
         <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${Math.min(100,pct)}%`, background: "linear-gradient(90deg,#dd817a,#c59542)", borderRadius: 7 }} />
@@ -3515,7 +3525,7 @@ function FutureTab() {
         </div>
 
         {/* Dislocation signal */}
-        <div {...tip("Dislocation Signal", `A dislocation occurs when a short-term event (earnings miss, macro shock, sector rotation) causes a stock to trade materially below its intrinsic value for a temporary window. The April 2025 broad AI-semiconductor tariff selloff is the most recent real event for ALAB. ${dislocDays} days later, the stock is ${NOW_PRICE < REVERSION_BASEFLOOR ? "still below the base floor of $" + REVERSION_BASEFLOOR + " — the dislocation window is open." : "well past the base floor of $" + REVERSION_BASEFLOOR + " — the dislocation has resolved."}`, `Historical precedent: the April 2025 selloff took ~${REVERSION_PRECEDENT_DAYS} days to recover.`, dislocSignal.col)} style={{ padding: "10px 14px", borderRadius: 6, marginBottom: 12,
+        <div {...tip("Dislocation Signal", `A dislocation occurs when a short-term event (earnings miss, macro shock, sector rotation) causes a stock to trade materially below its intrinsic value for a temporary window. A sharp Jan 2025 AI-infrastructure selloff bottoming Mar 31, 2025 at $59.67 is the most recent real event for ALAB. ${dislocDays} days later, the stock is ${NOW_PRICE < REVERSION_BASEFLOOR ? "still below the base floor of $" + REVERSION_BASEFLOOR + " — the dislocation window is open." : "well past the base floor of $" + REVERSION_BASEFLOOR + " — the dislocation has resolved."}`, `Historical precedent: recovery back above $${REVERSION_BASEFLOOR} took ~${REVERSION_PRECEDENT_DAYS} days — much slower than a typical sharp-drop-quick-bounce pattern.`, dislocSignal.col)} style={{ padding: "10px 14px", borderRadius: 6, marginBottom: 12,
           background: `${dislocSignal.col}12`, border: `1px solid ${dislocSignal.col}44` }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <div>
@@ -3526,11 +3536,11 @@ function FutureTab() {
             </div>
             <div style={{ textAlign: "right" }}>
               <div style={{ fontSize: 18, fontWeight: 700, color: dislocSignal.col }}>{dislocDays}d</div>
-              <div style={{ fontSize: 8.5, color: "var(--tx7)" }}>SINCE APR 2025 SELLOFF</div>
+              <div style={{ fontSize: 8.5, color: "var(--tx7)" }}>SINCE MAR 2025 TROUGH</div>
             </div>
           </div>
           <div style={{ marginTop: 8, fontSize: 9.5, color: "var(--tx6)", lineHeight: 1.55 }}>
-            Historical precedent: the April 2025 tariff selloff resolved within ~{REVERSION_PRECEDENT_DAYS} days when the thesis remained intact. Base floor: ${REVERSION_BASEFLOOR}.
+            Historical precedent: recovery back above the ${REVERSION_BASEFLOOR} base floor took ~{REVERSION_PRECEDENT_DAYS} days from the Mar 2025 trough (first close ≥$300 wasn't until May 22, 2026) when the thesis remained intact.
           </div>
         </div>
 
@@ -4073,7 +4083,7 @@ function FutureTab() {
           />
           <ScoreCard
             tipTitle="Is today's price a gift or a trap?"
-            tipBody={`At ${currentPE}× NTM P/E, ALAB trades ${parseFloat(currentPE) <= VAL_CONFIG.pe_normal_lo ? `below its typical fair-value range (${VAL_CONFIG.pe_normal_lo}–${VAL_CONFIG.pe_normal_hi}×)` : parseFloat(currentPE) <= VAL_CONFIG.pe_normal_hi ? `inside its typical fair-value range (${VAL_CONFIG.pe_normal_lo}–${VAL_CONFIG.pe_normal_hi}×)` : `above its typical fair-value range (${VAL_CONFIG.pe_normal_lo}–${VAL_CONFIG.pe_normal_hi}×)`}. The most recent real dislocation was the April 2025 tariff selloff — ${dislocDays} days ago — since resolved; the stock has since compounded well past the base floor of $${REVERSION_BASEFLOOR}. That precedent resolved in ~${REVERSION_PRECEDENT_DAYS} days when the thesis stayed intact.`}
+            tipBody={`At ${currentPE}× NTM P/E, ALAB trades ${parseFloat(currentPE) <= VAL_CONFIG.pe_normal_lo ? `below its typical fair-value range (${VAL_CONFIG.pe_normal_lo}–${VAL_CONFIG.pe_normal_hi}×)` : parseFloat(currentPE) <= VAL_CONFIG.pe_normal_hi ? `inside its typical fair-value range (${VAL_CONFIG.pe_normal_lo}–${VAL_CONFIG.pe_normal_hi}×)` : `above its typical fair-value range (${VAL_CONFIG.pe_normal_lo}–${VAL_CONFIG.pe_normal_hi}×)`}. The most recent real dislocation was a Jan 2025 AI-sector selloff bottoming Mar 31, 2025 — ${dislocDays} days ago — long since resolved; the stock has compounded well past the base floor of $${REVERSION_BASEFLOOR}. That recovery took ~${REVERSION_PRECEDENT_DAYS} days when the thesis stayed intact — slower than a typical sharp-drop-quick-bounce pattern.`}
             question="IS TODAY'S PRICE A GIFT OR A TRAP?"
             answer={`${parseFloat(currentPE)}× NTM P/E — ${parseFloat(currentPE) <= VAL_CONFIG.pe_normal_lo ? "BELOW FAIR" : parseFloat(currentPE) <= VAL_CONFIG.pe_normal_hi ? "FAIR VALUE" : "ABOVE FAIR"}`}
             detail={`${dislocSignal.label}: ${dislocDays}d since Jun 3 drop · Base floor $${REVERSION_BASEFLOOR}`}
@@ -4195,25 +4205,26 @@ function PastTab() {
   const removeMetric = name => setPinned(p => p.filter(x => x !== name));
 
   // ── Derived verdicts ──────────────────────────────────────────────────────
-  // Only 2 full fiscal years exist (FY2024, FY2025) — this is YoY growth, not a CAGR.
-  // PAST_REV[2] (Q1 FY26) is a single quarter and deliberately excluded from this calc.
-  const revCAGR    = PAST_REV[1] / PAST_REV[0] - 1;
-  const latestGM   = PAST_GM[2];
-  const latestOPM  = PAST_OPM[2];
-  const latestEPS  = PAST_EPS[2];
+  // 9 real quarters exist (Q1 FY24 through Q1 FY26, indices 0–8). YoY growth compares
+  // the latest quarter to the same quarter a year earlier (index 8 vs index 4), not a
+  // multi-year CAGR — only ~2 years of public history exists.
+  const revCAGR    = PAST_REV[8] / PAST_REV[4] - 1;
+  const latestGM   = PAST_GM[8];
+  const latestOPM  = PAST_OPM[8];
+  const latestEPS  = PAST_EPS[8];
   const currentPE  = (NOW_PRICE / v.ntm_eps).toFixed(1);
 
   const durabilityStatus = revCAGR > 0.5 && latestGM > 65
-    ? { label: "STRONG",   desc: `${(revCAGR * 100).toFixed(0)}% FY24→FY25 REVENUE GROWTH · ${latestGM}% GROSS MARGIN`, col: "#66b278" }
+    ? { label: "STRONG",   desc: `${(revCAGR * 100).toFixed(0)}% YoY REVENUE GROWTH (Q1 FY26) · ${latestGM}% GROSS MARGIN`, col: "#66b278" }
     : revCAGR > 0.2
-    ? { label: "ADEQUATE", desc: `${(revCAGR * 100).toFixed(0)}% FY24→FY25 REVENUE GROWTH`,                              col: "#c59542" }
+    ? { label: "ADEQUATE", desc: `${(revCAGR * 100).toFixed(0)}% YoY REVENUE GROWTH (Q1 FY26)`,                              col: "#c59542" }
     : { label: "WEAK",     desc: "GROWTH DECELERATING",                                                                   col: "#dd817a" };
 
-  const valueStatus = latestOPM > 35
-    ? { label: "STRONG",   desc: `NON-GAAP OP MARGIN ${latestOPM}% · EPS $${latestEPS} (Q1 FY26)`,   col: "#66b278" }
-    : latestOPM > 20
-    ? { label: "ADEQUATE", desc: `NON-GAAP OP MARGIN ${latestOPM}% · SCALING`,                        col: "#c59542" }
-    : { label: "WATCH",    desc: `NON-GAAP OP MARGIN ${latestOPM}% · STILL RAMPING`,                  col: "#dd817a" };
+  const valueStatus = latestOPM > 18
+    ? { label: "STRONG",   desc: `GAAP OP MARGIN ${latestOPM}% · EPS $${latestEPS} (Q1 FY26)`,   col: "#66b278" }
+    : latestOPM > 8
+    ? { label: "ADEQUATE", desc: `GAAP OP MARGIN ${latestOPM}% · SCALING`,                        col: "#c59542" }
+    : { label: "WATCH",    desc: `GAAP OP MARGIN ${latestOPM}% · STILL RAMPING`,                  col: "#dd817a" };
 
   // ALAB has made no acquisitions and carries no debt — this is a real-time snapshot,
   // not a leverage-cycle history (there is no leverage cycle to show).
@@ -4255,8 +4266,8 @@ function PastTab() {
 
   const PANELS = [
     { key: "durability", label: "① DURABILITY",     sub: "revenue · margin",          tipBody: "Revenue and gross margin since the March 2024 IPO — only 2 full fiscal years exist, plus the latest quarter. Are the numbers growing consistently, or was FY2025 a one-time spike?" },
-    { key: "value",      label: "② VALUE CREATION", sub: "op margin · EPS",           tipBody: "Non-GAAP operating margin and EPS trajectory since IPO. ROIC isn't a meaningful lens yet — the balance sheet is still mostly IPO cash, not reinvested capital. Is growth actually converting to profit as the company scales?" },
-    { key: "leverage",   label: "③ BALANCE SHEET",  sub: "cash · no debt",            tipBody: "A snapshot, not a history — ALAB has made no acquisitions and carries no debt. Real question: how much dry powder does the balance sheet give it to keep funding growth without external capital?" },
+    { key: "value",      label: "② VALUE CREATION", sub: "op margin · EPS",           tipBody: "GAAP operating margin and EPS trajectory, every real quarter since IPO. ROIC isn't a meaningful lens yet — the balance sheet is still mostly IPO cash, not reinvested capital. Is growth actually converting to profit as the company scales?" },
+    { key: "leverage",   label: "③ BALANCE SHEET",  sub: "cash · no debt",            tipBody: "Real annual cash position, FY2022–FY2025 — ALAB has made no acquisitions and carries no debt in any period. Real question: how much dry powder does the balance sheet give it to keep funding growth without external capital?" },
     { key: "mood",       label: "④ MOOD HISTORY",   sub: "price · drawdown · P/E",    tipBody: "Monthly price and drawdown from rolling ATH since IPO, plus where today's forward P/E sits vs. its typical range. When has the market been too fearful or too greedy on this name — and what happened next?" },
     { key: "explorer",   label: "⑤ EXPLORER",       sub: "search · pin · dig deeper", tipBody: "Raw financials explorer. Real, sourced metrics only — deliberately smaller than a mature company's explorer since ALAB has ~2 years of public financial history, not 10. Pin any metric to see its trend." },
   ];
@@ -4356,23 +4367,14 @@ function PastTab() {
             </g>
           );
         })}
-        {/* NOW dot */}
+        {/* NOW dot — also carries the real ATH context, since at monthly resolution the
+            current point and the ATH month are the same bar (real intraday ATH of $439.66
+            was Jun 22, 2026; this month's close eased back to $399.92 by month-end). A
+            separate ATH marker would sit on top of this exact dot and just overlap it. */}
         <circle cx={xOf(nowIdx)} cy={yOf(PRICE_M[nowIdx])} r={3} fill="#46aad9"
-          {...tipSvg("Current price", `$${PRICE_M[nowIdx]} — where ALAB trades today. Since the March 2024 IPO ($36.00), the stock has compounded rapidly on repeated Scorpio/Leo revenue beats, with one sharp drawdown during the April 2025 tariff selloff and a pullback off the June 2026 all-time high ($499.48) set on Nasdaq-100 inclusion.`, null, "#46aad9")} />
+          {...tipSvg("Current price", `$${PRICE_M[nowIdx]} — where ALAB trades today, easing back slightly from the all-time intraday high of $439.66 hit Jun 22, 2026 on Nasdaq-100 inclusion. Since the March 2024 IPO ($62.03 first-day close), the stock has compounded rapidly on repeated Scorpio/Leo revenue beats, with one severe drawdown during the Jan–Mar 2025 AI-sector selloff.`, null, "#46aad9")} />
         <text x={xOf(nowIdx) - 6} y={yOf(PRICE_M[nowIdx]) - 6} textAnchor="end"
           fontSize={8} fill="#46aad9" fontWeight="700">${PRICE_M[nowIdx]}</text>
-        {/* ATH label */}
-        {(() => {
-          const athIdx = PRICE_M.indexOf(Math.max(...PRICE_M));
-          return (
-            <g>
-              <circle cx={xOf(athIdx)} cy={yOf(PRICE_M[athIdx])} r={2.5} fill="#c59542"
-                {...tipSvg("All-Time High", `$${PRICE_M[athIdx]} — reached Jun 30, 2026, days after Nasdaq-100 inclusion broadened the buyer base. The stock has since pulled back to around $${NOW_PRICE}.`, null, "#c59542")} />
-              <text x={xOf(athIdx) + 4} y={yOf(PRICE_M[athIdx]) - 4} fontSize={7.5}
-                fill="#c59542">ATH ${PRICE_M[athIdx]}</text>
-            </g>
-          );
-        })()}
         {/* Y-axis labels */}
         {[minP, (minP + maxP) / 2, maxP].map(val => (
           <text key={val} x={pad.l - 4} y={yOf(val) + 3} textAnchor="end"
@@ -4406,7 +4408,7 @@ function PastTab() {
           return (
             <text x={xOf(wIdx)} y={yOf(minDD) + 10} textAnchor="middle"
               fontSize={7.5} fill="#dd817a"
-              {...tipSvg("Maximum Drawdown", `${minDD}% — the deepest drop from a prior all-time high since the March 2024 IPO. This occurred in the aftermath of the April 2025 tariff selloff. ALAB recovered and went on to make new highs. Drawdown charts help you visualize what holding through a bad period actually felt like.`, null, "#dd817a")}>{minDD}%</text>
+              {...tipSvg("Maximum Drawdown", `${minDD}% — the deepest drop from a prior all-time high since the March 2024 IPO. This occurred at the Mar 31, 2025 trough, after a sharp Jan 2025 AI-sector selloff and months of continued softening. ALAB recovered and went on to make new highs, but it took 417 days to get back above the $300 level. Drawdown charts help you visualize what holding through a bad period actually felt like.`, null, "#dd817a")}>{minDD}%</text>
           );
         })()}
         <text x={pad.l - 4} y={pad.t + 3} textAnchor="end" fontSize={7} fill="var(--tx7)">0%</text>
@@ -4458,12 +4460,12 @@ function PastTab() {
             answer={durabilityStatus.label} desc={durabilityStatus.desc}
             col={durabilityStatus.col} panelKey="durability"
             tipTitle="Does it grow consistently?"
-            tipBody={`Revenue and gross margin since the March 2024 IPO — only 2 full fiscal years exist. ALAB grew revenue ${(revCAGR * 100).toFixed(0)}% from FY2024 ($${PAST_REV[0]}M) to FY2025 ($${PAST_REV[1]}M), and non-GAAP gross margin has held ${PAST_GM[0]}–${latestGM}% throughout — genuinely high for a semiconductor company. One data point of deceleration (Q1 FY26 growth was "only" 93% YoY vs FY25's 115%) is worth watching, not yet a trend.`} />
+            tipBody={`Revenue and gross margin for every real quarter since the March 2024 IPO (9 quarters — only ~2 years of public history exists). ALAB grew revenue ${(revCAGR * 100).toFixed(0)}% year-over-year in Q1 FY26 ($${PAST_REV[4]}M → $${PAST_REV[8]}M), and GAAP gross margin has held ${Math.min(...PAST_GM)}–${Math.max(...PAST_GM)}% throughout — genuinely high for a semiconductor company. Growth has decelerated from FY25's pace (115% for the full year) but remains well above 90%.`} />
           <ScoreCard question="IS GROWTH CONVERTING TO PROFIT?"
             answer={valueStatus.label} desc={valueStatus.desc}
             col={valueStatus.col} panelKey="value"
             tipTitle="Is growth converting to profit?"
-            tipBody={`Non-GAAP operating margin measures how much of each new revenue dollar falls to the bottom line as the business scales. ROIC isn't used here — the balance sheet is still mostly unspent IPO cash, which would make ROIC look artificially poor and isn't a meaningful signal yet. Operating margin expanded from ${PAST_OPM[0]}% (Q4 FY24) to ${PAST_OPM[1]}% (FY25) before easing to ${latestOPM}% in Q1 FY26 — non-GAAP EPS of $${latestEPS} is up from $${PAST_EPS[0]} for all of FY2024.`} />
+            tipBody={`GAAP operating margin measures how much of each new revenue dollar falls to the bottom line as the business scales. ROIC isn't used here — the balance sheet is still mostly unspent IPO cash, which would make ROIC look artificially poor and isn't a meaningful signal yet. Operating margin went from -127% (Q1 FY24, right after IPO) to +${latestOPM}% (Q1 FY26) — a real, dramatic operating-leverage story as fixed IPO-related costs got scaled over fast-growing revenue. Diluted EPS turned GAAP-profitable in Q4 FY24 and has grown to $${latestEPS} in Q1 FY26.`} />
           <ScoreCard question="IS THE BALANCE SHEET STRONG?"
             answer={leverageStatus.label} desc={leverageStatus.desc}
             col={leverageStatus.col} panelKey="leverage"
@@ -4491,7 +4493,7 @@ function PastTab() {
             <div style={{ fontSize: 9.5, color: "var(--tx5)", textAlign: "right", lineHeight: 1.8 }}>
               <div {...tip("Revenue since IPO", "Astera Labs grew total revenue from $396M (FY2024) to $853M (FY2025) — +115% — with Q1 FY2026 running at $308M for the quarter alone (+93% YoY). No acquisitions; this is entirely organic, driven by Scorpio/Leo/Aries design wins ramping at hyperscalers.", null, "#66b278")}>Revenue <span style={{ color: "#66b278", fontWeight: 700 }}>$396M → $853M</span> (FY24→FY25)</div>
               <div {...tip("Non-GAAP EPS since IPO", "Non-GAAP diluted EPS grew from $0.37 (all of FY2024) to $1.84 (all of FY2025) — roughly 5×. Q1 FY2026 alone printed $0.61, already a third of all of FY2025's total. This is the clearest single signal that scale is translating to real per-share profit, not just top-line growth.", null, "#66b278")}>EPS <span style={{ color: "#66b278", fontWeight: 700 }}>$0.37 → $1.84</span> (FY24→FY25)</div>
-              <div {...tip("Total price return since IPO", `From the $36.00 IPO price (Mar 2024) to ~$${NOW_PRICE} today = +${Math.round((NOW_PRICE/36-1)*100)}%, off an all-time high of $499.48 reached Jun 30, 2026 on Nasdaq-100 inclusion. Compounding at this rate over ~2 years is exceptional — but it's a very short track record for a single-digit-year-old public company, not a multi-cycle history.`, null, "#66b278")}>Price <span style={{ color: "#66b278", fontWeight: 700 }}>+{Math.round((NOW_PRICE/36-1)*100)}%</span> (Mar 2024 → now)</div>
+              <div {...tip("Total price return since IPO", `From the $36.00 IPO offer price (Mar 2024) to ~$${NOW_PRICE} today = +${Math.round((NOW_PRICE/36-1)*100)}%, off an all-time intraday high of $439.66 reached Jun 22, 2026 on Nasdaq-100 inclusion. Compounding at this rate over ~2 years is exceptional — but it's a very short track record for a single-digit-year-old public company, and it includes a real -59% peak-to-trough drawdown (Dec 2024 → Mar 2025) that took 417 days to fully recover from.`, null, "#66b278")}>Price <span style={{ color: "#66b278", fontWeight: 700 }}>+{Math.round((NOW_PRICE/36-1)*100)}%</span> (Mar 2024 → now)</div>
             </div>
           </div>
           <div style={{ fontSize: 11, color: "var(--tx4)", lineHeight: 1.75, marginTop: 10 }}>
@@ -4544,10 +4546,10 @@ function PastTab() {
             </div>
             <Banner status={durabilityStatus.label} desc={durabilityStatus.desc}
               col={durabilityStatus.col}
-              summary={`Revenue grew ${(revCAGR * 100).toFixed(0)}% from $${PAST_REV[0]}M (FY2024) to $${PAST_REV[1]}M (FY2025) — with Q1 FY2026 alone printing $${PAST_REV[2]}M (+93% YoY). Gross margin held ${PAST_GM[0]}–${latestGM}% throughout — a durability signal: pricing power holding as the company scales, not eroding. Only ~2 years of public data exists; there's no downturn in this record yet.`} />
+              summary={`Revenue grew ${(revCAGR * 100).toFixed(0)}% year-over-year in Q1 FY2026 ($${PAST_REV[4]}M → $${PAST_REV[8]}M) — decelerating a bit from FY2025's full-year pace (+115%) but still well above 90%. Gross margin has held ${Math.min(...PAST_GM)}–${Math.max(...PAST_GM)}% across all 9 quarters since IPO — a durability signal: pricing power holding as the company scales, not eroding. Only ~2 years of public data exists; there's no downturn in this revenue record yet (the stock itself has had one, covered in Mood History).`} />
 
             <div className="resp-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <ChartBox title="TOTAL REVENUE ($M) · SINCE IPO" sub="FY24/FY25 = full year · Q1 FY26 = one quarter, not annualized">
+              <ChartBox title="TOTAL REVENUE ($M) · EVERY QUARTER SINCE IPO" sub="9 real quarters, Q1 FY24 → Q1 FY26">
                 <BarChart
                   data={PAST_REV} labels={PAST_YEARS} unit="M"
                   colorFn={v => "#66b278"} height={110} />
@@ -4556,7 +4558,7 @@ function PastTab() {
                 </div>
               </ChartBox>
 
-              <ChartBox title="NON-GAAP GROSS MARGIN (%) · SINCE IPO" sub="Measures pricing power and product mix quality">
+              <ChartBox title="GROSS MARGIN (%) · EVERY QUARTER SINCE IPO" sub="GAAP — measures pricing power and product mix quality">
                 <BarChart
                   data={PAST_GM} labels={PAST_YEARS} unit="%"
                   colorFn={v => v > 65 ? "#66b278" : v > 55 ? "#c59542" : "#dd817a"}
@@ -4564,7 +4566,7 @@ function PastTab() {
               </ChartBox>
             </div>
 
-            <Footnote text="Only 2 full fiscal years of public data exist (Astera Labs IPO'd March 2024) — this is a short, strong track record, not a multi-cycle history. Revenue growth decelerated slightly from FY25's +115% to Q1 FY26's +93% YoY: worth watching as a trend, not yet a red flag. Sources: Q4/FY2024 and Q4/FY2025 earnings releases, Q1 FY2026 10-Q." />
+            <Footnote text="Only ~2 years of public data exist (Astera Labs IPO'd March 2024) — this is a short, strong track record, not a multi-cycle history. Source: Wisesheets export of the actual SEC-filed quarterly income statements (stocks/alab/alab-wise-q1fy26__ALAB_-_Income_Statement_Q.csv) — every number here is a real reported figure, not an estimate." />
           </div>
         )}
 
@@ -4577,31 +4579,31 @@ function PastTab() {
             </div>
             <Banner status={valueStatus.label} desc={valueStatus.desc}
               col={valueStatus.col}
-              summary={`Non-GAAP operating margin expanded from ${PAST_OPM[0]}% (Q4 FY2024) to ${PAST_OPM[1]}% (all of FY2025) before easing to ${latestOPM}% in Q1 FY2026 — a real signal of operating leverage as the business scales, with one recent data point of margin softening (Q2 FY26 guide of ~73% gross margin reflects a similar mix shift) worth watching. Non-GAAP EPS grew from $${PAST_EPS[0]} (FY2024) to $${PAST_EPS[1]} (FY2025) — roughly 5×.`} />
+              summary={`GAAP operating margin went from ${PAST_OPM[0]}% in Q1 FY2024 (right after IPO, heavy SBC and scaling costs against a small revenue base) to +${latestOPM}% in Q1 FY2026 — a real, dramatic operating-leverage story, not a smooth glide: it peaked at ${Math.max(...PAST_OPM)}% in Q4 FY2025 before easing back this quarter, worth watching as a trend. Diluted EPS turned GAAP-profitable in Q4 FY2024 ($${PAST_EPS[3]}) and has grown to $${latestEPS} in Q1 FY2026.`} />
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-              <ChartBox title="NON-GAAP OPERATING MARGIN (%) · SINCE IPO" sub="How much of each new revenue dollar reaches the bottom line">
+              <ChartBox title="OPERATING MARGIN (%) · EVERY QUARTER SINCE IPO" sub="GAAP — how much of each new revenue dollar reaches the bottom line">
                 <BarChart
                   data={PAST_OPM} labels={PAST_YEARS} unit="%"
-                  colorFn={v => v > 35 ? "#66b278" : v > 20 ? "#c59542" : "#dd817a"}
+                  colorFn={v => v > 15 ? "#66b278" : v > 0 ? "#c59542" : "#dd817a"}
                   height={110} />
                 <div style={{ fontSize: 9, color: "var(--tx6)", marginTop: 8 }}>
-                  ROIC isn't shown here — invested capital is still mostly unspent IPO cash, which would make it look artificially poor.
+                  ROIC isn't shown here — invested capital is still mostly unspent IPO cash, which would make it look artificially poor. Deep negative margins in the first 3 quarters are real, not an error: fixed post-IPO costs against a small revenue base.
                 </div>
               </ChartBox>
 
-              <ChartBox title="NON-GAAP DILUTED EPS ($) · SINCE IPO" sub="FY24/FY25 = full year · Q1 FY26 = one quarter">
+              <ChartBox title="DILUTED EPS ($) · EVERY QUARTER SINCE IPO" sub="GAAP — turned profitable Q4 FY2024">
                 <BarChart
                   data={PAST_EPS} labels={PAST_YEARS} unit=""
-                  colorFn={v => "#66b278"}
+                  colorFn={v => v >= 0 ? "#66b278" : "#dd817a"}
                   height={110} />
                 <div style={{ fontSize: 9, color: "var(--tx6)", marginTop: 8 }}>
-                  Q1 FY26's $0.61 alone is already a third of all of FY2025's $1.84.
+                  Non-GAAP EPS (used elsewhere in this thesis) is meaningfully higher — $0.61 in Q1 FY26 vs the ${latestEPS} GAAP figure shown here — because it excludes stock-based compensation, which is large relative to revenue this early post-IPO.
                 </div>
               </ChartBox>
             </div>
 
-            <Footnote text="Non-GAAP figures strip stock-based compensation, standard for a recently-IPO'd growth company — ALAB has made no acquisitions, so there's no amortization distortion to remove, unlike a serial-acquirer. FY2024 operating margin uses the Q4 FY24 print since a full-year figure at this detail wasn't cleanly disclosed pre-2025." />
+            <Footnote text="Non-GAAP figures used elsewhere in this thesis strip stock-based compensation — standard for a recently-IPO'd growth company, and ALAB has made no acquisitions, so there's no amortization distortion to remove, unlike a serial-acquirer. Source: Wisesheets export of the actual SEC-filed quarterly income statements." />
           </div>
         )}
 
@@ -4614,21 +4616,20 @@ function PastTab() {
             </div>
             <Banner status={leverageStatus.label} desc={leverageStatus.desc}
               col={leverageStatus.col}
-              summary={`As of ${BALANCE_SHEET.asOf}, ALAB holds $${BALANCE_SHEET.cashAndSecurities}B in cash and marketable securities against just $${BALANCE_SHEET.totalLiabilities}B in total liabilities — roughly $${BALANCE_SHEET.netCash}B in net cash, funded by the March 2024 IPO plus since-positive operating cash flow. No acquisitions, no borrowings. This is a real-time snapshot, not a leverage-cycle history — there's no debt story to tell yet.`} />
+              summary={`As of ${BALANCE_SHEET.asOf}, ALAB holds $${BALANCE_SHEET.cashAndSecurities}B in cash and marketable securities against just $${BALANCE_SHEET.totalLiabilities}B in total liabilities — roughly $${BALANCE_SHEET.netCash}B in net cash. ALAB has been net-cash-positive in every year shown, even pre-IPO (FY2022: $${BS_NETCASH[0]}M) — the March 2024 IPO then stepped cash+securities up from $${BS_CASH[1]}M (FY2023) to $${BS_CASH[2]}M (FY2024), and it's kept growing since on positive operating cash flow. No acquisitions, no borrowings in any period shown.`} />
 
-            <ChartBox title="CASH &amp; SECURITIES VS. TOTAL LIABILITIES ($B)" sub={`Single snapshot as of ${BALANCE_SHEET.asOf} — not a multi-year trend`}>
+            <ChartBox title="CASH &amp; SECURITIES VS. TOTAL LIABILITIES ($M) · FY2022–FY2025" sub="Real annual balance sheet — the IPO's cash injection is the FY2023→FY2024 jump">
               <BarChart
-                data={[BALANCE_SHEET.cashAndSecurities, BALANCE_SHEET.totalLiabilities]}
-                labels={["CASH + SECURITIES", "TOTAL LIABILITIES"]} unit="B"
-                colorFn={(v, i) => "#66b278"}
-                height={110} />
+                data={BS_CASH} labels={BS_YEARS} unit="M"
+                colorFn={v => "#66b278"} height={110} />
               <div style={{ display: "flex", gap: 20, marginTop: 8, fontSize: 9, color: "var(--tx6)" }}>
-                <span>Net cash: <span style={{ color: "#66b278" }}>${BALANCE_SHEET.netCash}B</span></span>
-                <span>Debt: <span style={{ color: "#66b278" }}>$0</span></span>
+                <span>FY2025 total liabilities: <span style={{ color: "var(--tx3)" }}>${BS_LIAB[3]}M</span></span>
+                <span>FY2025 net cash: <span style={{ color: "#66b278" }}>${BS_NETCASH[3]}M</span></span>
+                <span>Q1 FY26 (latest): <span style={{ color: "#66b278" }}>${BALANCE_SHEET.netCash}B net cash</span></span>
               </div>
             </ChartBox>
 
-            <Footnote text="Source: Astera Labs Q1 FY2026 10-Q (period ended March 31, 2026). This balance sheet gives ALAB real optionality — it can keep funding Scorpio/Leo/Aries R&D and capacity commitments entirely from its own cash, with no need to raise debt or dilute shareholders in a downturn." />
+            <Footnote text="Source: Wisesheets export of the actual SEC-filed annual balance sheets (stocks/alab/alab-wise-q1fy26__ALAB_-_Balance_Sheet_FY.csv), plus the Q1 FY2026 10-Q for the latest snapshot. This balance sheet gives ALAB real optionality — it can keep funding Scorpio/Leo/Aries R&D and capacity commitments entirely from its own cash, with no need to raise debt or dilute shareholders in a downturn." />
           </div>
         )}
 
@@ -4778,10 +4779,10 @@ function PastTab() {
             </div>
             <Banner status={moodStatus.label} desc={moodStatus.desc}
               col={moodStatus.col}
-              summary={`At ${currentPE}× NTM P/E, ALAB sits ${currentPE <= v.pe_normal_lo ? "below" : currentPE <= v.pe_normal_hi ? "inside" : "above"} its typical ${v.pe_normal_lo}–${v.pe_normal_hi}× range (trough ${v.pe_trough}× to peak ${v.pe_peak}× since IPO). The stock has had one major drawdown of 20%+ since going public (the Apr 2025 tariff selloff) — a real buying window in hindsight. Only ~2 years of trading history exists, so "cyclical" here means one cycle, not several.`} />
+              summary={`At ${currentPE}× NTM P/E, ALAB sits ${currentPE <= v.pe_normal_lo ? "below" : currentPE <= v.pe_normal_hi ? "inside" : "above"} its typical ${v.pe_normal_lo}–${v.pe_normal_hi}× range (trough ${v.pe_trough}× to peak ${v.pe_peak}× since IPO). The stock has had one severe drawdown since going public — a Jan 2025 AI-sector selloff that bottomed at -59% in March 2025 and took 417 days to fully recover — a real buying window in hindsight, but a much slower and deeper one than "buy the dip" framing usually implies. Only ~2 years of trading history exists, so "cyclical" here means one cycle, not several.`} />
 
             <ChartBox title="ALAB PRICE · MONTHLY SINCE IPO · MAR 2024–JUL 2026"
-              sub="Real anchor points (IPO, ATL, each earnings print, ATH, now), linearly interpolated between them">
+              sub="Real monthly closes from the actual daily price history since IPO — not interpolated">
               <PriceLineChart />
             </ChartBox>
 
@@ -4789,8 +4790,8 @@ function PastTab() {
               sub="How far below the peak at each point — shows entry windows">
               <DrawdownChart />
               <div style={{ display: "flex", gap: 16, marginTop: 8, fontSize: 9, color: "var(--tx6)" }}>
-                <span>Max drawdown: <span style={{ color: "#dd817a" }}>−22.2%</span> (May 2025, tariff-selloff aftermath)</span>
-                <span>Current: <span style={{ color: "#c59542" }}>−19.9%</span> from ATH</span>
+                <span>Max drawdown: <span style={{ color: "#dd817a" }}>−54.9%</span> (Mar 2025, post AI-sector selloff)</span>
+                <span>Current: <span style={{ color: "#66b278" }}>0.0%</span> from this monthly series' high (the real intraday ATH of $439.66, Jun 22, was ~9% above today's close)</span>
               </div>
             </ChartBox>
 
