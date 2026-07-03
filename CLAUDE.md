@@ -126,6 +126,35 @@ capital recommendation through it — never recommend adding at highs without a 
   not hindsight. Mark older/fuzzier quarters as lower-confidence.
 - Note the as-of date prominently. Re-verify anything time-sensitive each session.
 
+**Provenance snapshot (write this every time you build or update a thesis):** save the
+judgment inputs you just pulled/chose to `stocks/<ticker>/data/inputs-YYYY-QQ.json` — the
+quarter being built or refreshed, not the quarter reported. This is what lets a *future*
+backtest quarter be reconstructed from what you actually knew then, instead of from memory
+or hindsight. Minimal shape, one file per touch, never edited after the fact:
+
+```json
+{
+  "ticker": "TSM",
+  "asOf": "2026-07-16",
+  "quarter": "Q2 FY2026",
+  "inputs": {
+    "price":              { "value": 419.10, "src": "IBKR snapshot",              "pulled": "2026-07-16" },
+    "consensus_eps_ntm":  { "value": 12.84,  "src": "web search — analyst consensus", "pulled": "2026-07-16" },
+    "multiple_bear":      { "value": 18,     "src": "judgment — below 5yr avg (scared)",   "pulled": "2026-07-16" },
+    "multiple_base":      { "value": 24,     "src": "judgment — 5yr avg fwd P/E",          "pulled": "2026-07-16" },
+    "multiple_bull":      { "value": 30,     "src": "judgment — above 5yr avg (excited)",  "pulled": "2026-07-16" }
+  },
+  "notes": "anything about the regime this quarter that explains WHY these multiples, not just what they are"
+}
+```
+
+Include every number that would otherwise need to be re-derived from memory later: the
+metric driving the price bands, the three multiples, and the price itself. `src` distinguishes
+a sourced fact (analyst consensus, a filing, a live quote) from a judgment call (the multiple
+band) — both are fine, but say which. This rolls out per-stock at each stock's own next
+quarterly touch, not as a one-time backfill — a fabricated snapshot for a past quarter would
+defeat the entire point.
+
 ---
 
 ## Technical conventions for the HTML build

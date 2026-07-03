@@ -16,6 +16,11 @@ Search the web for current, real information on $ARGUMENTS before anything else:
 - The next scheduled earnings date
 Never rely on memory for any of these — they drift constantly.
 
+Once you've chosen the price/metric/multiples for Step 3, write them to
+`stocks/$ARGUMENTS/data/inputs-YYYY-QQ.json` per the provenance format in CLAUDE.md's data
+freshness rules — this is what lets a future backtest reconstruct what you actually knew at
+this date instead of guessing from memory.
+
 ## Step 2 — Resolve the three framing questions
 Answer explicitly (state them in your response):
 1. **Valuation ruler** — is P/E right for this business, or should it be P/S, P/B, FFO,

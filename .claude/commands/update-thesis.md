@@ -17,6 +17,10 @@ current price, history, forward-quarter labels, KPI tags/positions, KPI values, 
 the just-reported quarter to TRACK_ALL (the oldest auto-drops via the fixed window). Update
 the dislocation settings only if a new shock occurred.
 
+Write the inputs you just pulled to `stocks/$ARGUMENTS/data/inputs-YYYY-QQ.json` per the
+provenance format in CLAUDE.md's data freshness rules (one new file per update, never edit a
+past quarter's snapshot).
+
 ## Step 3 — Layer 2: AUDIT THE THESIS (do not skip)
 For EACH of bear/base/bull, answer honestly:
 - **A. Narrative still true?** Has the world overtaken the story? (e.g. a pending ruling that
