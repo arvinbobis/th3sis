@@ -224,6 +224,11 @@
       <span class="chip-ticker">TREE</span>
       <span class="chip-name">house-money generator</span>
     </button>
+    <button id="strategy-chip" class="chip pinned">
+      <span class="chip-dot quiet">◈</span>
+      <span class="chip-ticker">GATE</span>
+      <span class="chip-name">prescreen doctrine &amp; verdicts</span>
+    </button>
 
     <!-- Chip list -->
     <div id="chip-label">THESES ›</div>
@@ -282,6 +287,7 @@ const themeBtn   = document.getElementById('theme-btn');
 const portfolioChip = document.getElementById('portfolio-chip');
 const actionsChip   = document.getElementById('actions-chip');
 const generatorChip = document.getElementById('generator-chip');
+const strategyChip  = document.getElementById('strategy-chip');
 
 // ── Theme ────────────────────────────────────────────────────────────────────
 const THEME_KEY = 'th3sis_theme';
@@ -421,6 +427,16 @@ function loadGenerator() {
   loadFrame('portfolio/generator.html', 'GROWING THE TREE…');
 }
 generatorChip.addEventListener('click', loadGenerator);
+
+// ── Load the strategy (prescreen gate) page ───────────────────────────────────
+function loadStrategy() {
+  notFound.classList.remove('on');
+  if (activeChip) activeChip.classList.remove('active');
+  activeChip = strategyChip;
+  strategyChip.classList.add('active');
+  loadFrame('portfolio/strategy.html', 'LOADING THE GATE…');
+}
+strategyChip.addEventListener('click', loadStrategy);
 
 // ── Load a thesis ─────────────────────────────────────────────────────────────
 function loadTicker(ticker) {

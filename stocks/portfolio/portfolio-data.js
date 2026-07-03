@@ -1,5 +1,6 @@
 /* ───────────────────────────────────────────────────────────────────────────
- * portfolio-data.js — single source of truth for the FOLIO + ACTIONS pages.
+ * portfolio-data.js — single source of truth for the FOLIO + ACTIONS + TREE +
+ * STRATEGY pages.
  *
  * LIVE SNAPSHOT pulled from Interactive Brokers, as of 2026-07-02. Account-level
  * numbers come from the IBKR account summary; per-position rows are the open
@@ -119,3 +120,82 @@ const PF_STRAT = {
     "Manual execution always — stay deliberate at the one moment that matters.",
   ],
 };
+
+// ── The /prescreen gate (see STRATEGY.md §7 and .claude/commands/prescreen.md) ─
+// Six questions run before any full /thesis build. Q1–Q2 are unconditional: fail
+// either one → automatic FAIL, no exceptions. Q3–Q6 are judgment calls that can
+// offset each other.
+const PF_GATE = {
+  updated: "2026-07-03",
+  QUESTIONS: [
+    { n:1, key:"chokepoint",   label:"Chokepoint",       unconditional:true,
+      q:"State the bottleneck this company owns that competitors can't route around, in one sentence.",
+      fail:"No clean answer beyond “good company” or “growing market.”" },
+    { n:2, key:"cushion",      label:"Cushion",          unconditional:true,
+      q:"Does the price hold up under the right valuation ruler without a heroic multi-year narrative?",
+      fail:"Price only works if the bull case plays out perfectly." },
+    { n:3, key:"priced-in",    label:"Already priced-in?", unconditional:false,
+      q:"Is this still contrarian, or already found by the market / sell-side / media?",
+      fail:"Late discovery with no edge and no pullback." },
+    { n:4, key:"correlation",  label:"Correlation",      unconditional:false,
+      q:"Does this duplicate a risk cluster already in the portfolio?",
+      fail:"Adds nothing the existing position doesn't already cover." },
+    { n:5, key:"portfolio-fit", label:"Portfolio fit",   unconditional:false,
+      q:"Is there actual room under the core/satellite caps?",
+      fail:"A real thesis doesn't automatically earn a slot." },
+    { n:6, key:"kill-switch",  label:"Kill-switch",      unconditional:false,
+      q:"Name the one piece of evidence that would prove this wrong, right now.",
+      fail:"Nothing comes to mind — the thesis isn't sharp enough yet." },
+  ],
+};
+
+// Every ticker that has actually been run through /prescreen (not the full portfolio —
+// only add a row here once the six-question gate has really been applied to that name).
+// held = currently a live position; bucket = correlated-bet grouping (never re-add fresh
+// capital to two names in the same bucket as if they were independent ideas).
+const PF_PRESCREEN = [
+  { t:"PLTR", verdict:"FAIL",  date:"2026-07-02", held:false, bucket:null,
+    chokepoint:"Enterprise/govt workflow lock-in — sticky, not a hard bottleneck (Microsoft/Google gov-cloud AI stacks can route around it, just slower).",
+    cushion:"~80x trailing sales — each blowout quarter just maintains existing expectations, doesn't create upside.",
+    note:"Revisit only on real multiple compression, not on Nvidia/Army headline momentum." },
+  { t:"SPGI",  verdict:"PASS",  date:"2026-07-03", held:true, bucket:null,
+    chokepoint:"Ratings duopoly (NRSRO status) — a genuine regulatory bottleneck.",
+    cushion:"Fwd P/E ~20.8 vs its own 5-yr avg ~29.3 — a real discount to its own history.",
+    note:"Mobility spinoff (7/1/26) simplifies the story further. Candidate for a full /thesis." },
+  { t:"MCO",   verdict:"FAIL",  date:"2026-07-03", held:true, bucket:null,
+    chokepoint:"Same NRSRO ratings duopoly as SPGI.",
+    cushion:"Fwd P/E ~26.8, ~63% above the Capital Markets industry median — no margin of safety.",
+    note:"Redundant with SPGI — don't add fresh capital here." },
+  { t:"EFX",   verdict:"WATCH", date:"2026-07-03", held:true, bucket:null,
+    chokepoint:"The Work Number — a genuinely hard-to-replicate scale asset.",
+    cushion:"Fwd P/E ~19–20x — only fair.",
+    note:"Morningstar downgraded the moat to narrow from wide — a real erosion signal, not noise. Revisit on a further price drop or once the moat debate resolves either way." },
+  { t:"MSCI",  verdict:"FAIL",  date:"2026-07-03", held:true, bucket:null,
+    chokepoint:"Index-embeddedness moat — real, but narrower than SPGI/MCO's.",
+    cushion:"Fwd P/E ~30.5–31, ~90% above the industry median — no cushion at all.",
+    note:"Priced as a flawless compounder." },
+  { t:"CME",   verdict:"PASS",  date:"2026-07-03", held:true, bucket:null,
+    chokepoint:"Deepest liquidity/clearing network of the exchange group — a genuine network-effect moat.",
+    cushion:"Fwd P/E ~22–25 (“fairly valued”); the ~9% Kalshi/perpetual-futures selloff adds real cushion.",
+    note:"Kill-switch is trackable: outcome of CME's CFTC lawsuit and whether Kalshi captures institutional (not just retail) volume." },
+  { t:"CBOE",  verdict:"FAIL",  date:"2026-07-03", held:true, bucket:null,
+    chokepoint:"SPX/VIX options ecosystem — real, but narrower and analysts flag it as most exposed to Kalshi.",
+    cushion:"Still ~7% above one fair-value estimate even after a 25% drawdown.",
+    note:"Redundant with CME — same risk bucket, weaker/more concentrated moat." },
+  { t:"INTU",  verdict:"PASS",  date:"2026-07-03", held:true, bucket:null,
+    chokepoint:"TurboTax/QuickBooks data depth + tax-code complexity + switching costs.",
+    cushion:"Down 38% YTD — a real re-rating already happened (fwd P/E ~20x vs ~16x sector avg).",
+    note:"“AI eats TurboTax” fear is now the loud consensus view — priced in, not hidden. The most interesting name in the legacy cluster." },
+  { t:"V",     verdict:"PASS",  date:"2026-07-03", held:true, bucket:"payments-duopoly",
+    chokepoint:"Two-sided network, 4B+ cards — near-unbreakable without a government mandate.",
+    cushion:"Fwd P/E ~21.5–24.4 — fair, not deep.",
+    note:"Stablecoin threat to the 2–3% fee model is live and genuinely two-sided right now, not settled." },
+  { t:"MA",    verdict:"PASS",  date:"2026-07-03", held:true, bucket:"payments-duopoly",
+    chokepoint:"Identical moat character to Visa.",
+    cushion:"Current P/E ~23% below its own historical average — a real discount-to-history signal.",
+    note:"Same stablecoin/Credit Card Competition Act risk as Visa — treat V+MA as ONE bucket, not two independent bets." },
+  { t:"RKLB",  verdict:"FAIL",  date:"2026-07-03", held:false, bucket:null,
+    chokepoint:"Launch cadence (Electron/Neutron) +, post-Iridium, exclusive L-band spectrum licensing and a 66-satellite LEO network — real, but a second-tier bottleneck behind SpaceX.",
+    cushion:"~89x trailing sales, still -27% margin, re-rated another +16% on the very $8B Iridium deal being evaluated — no margin of safety if the space-datacenter narrative slips.",
+    note:"Scout (grok-buy-side-scalper) flagged the space/orbital-compute theme across 4 reports (reward 7.8), but the valuation problem STRATEGY.md §6 already noted (~65–100x sales, no cushion) has gotten worse, not better. Duplicates existing SPCX space exposure. Re-confirms the prior pass, not a reversal." },
+];
