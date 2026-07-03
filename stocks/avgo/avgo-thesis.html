@@ -97,6 +97,16 @@ window.addEventListener('message', function(e) {
     document.documentElement.classList.toggle('light', !!e.data.light);
     localStorage.setItem('th3sis_theme', e.data.light ? 'light' : 'dark');
   }
+  // Deep-link tab (e.g. #AVGO:future): parent posts this right after frame.onload,
+  // which can fire well before Babel finishes transpiling ~250KB of JSX and React
+  // mounts. Capturing it here (a plain script, parsed near-instantly) instead of
+  // only in a React useEffect means the value is ready and waiting by the time
+  // the component's useState initializer reads window.__pendingTab on first render
+  // — same reasoning as why theme sync above is reliable and a React-only listener
+  // wouldn't be.
+  if (e.data && e.data.type === 'th3sis-goto' && e.data.tab) {
+    window.__pendingTab = e.data.tab;
+  }
 });
 // Apply saved theme immediately so first React render sees the right vars
 (function() {
@@ -5040,7 +5050,17 @@ function MetricCard({ metric, period, onRemove }) {
 // ── Main Component ─────────────────────────────────────────────────────────
 function AvgoThesis() {
   const [active, setActive]       = useState("base");
-  const [activeTab, setActiveTab] = useState("the-current");
+  // Deep-link support: window.__pendingTab is set by the plain pre-Babel script above
+  // if stocks/index.html's hash router sent { type:'th3sis-goto', tab:'the-future' }
+  // (e.g. for a URL like #AVGO:future) before this component ever mounted. The
+  // useEffect below also covers the rarer case where the message arrives AFTER mount.
+  // Both no-op harmlessly if this file is opened directly — nothing ever sets either.
+  const [activeTab, setActiveTab] = useState(() => window.__pendingTab || "the-current");
+  useEffect(() => {
+    const onGoto = (e) => { if (e.data && e.data.type === 'th3sis-goto' && e.data.tab) setActiveTab(e.data.tab); };
+    window.addEventListener('message', onGoto);
+    return () => window.removeEventListener('message', onGoto);
+  }, []);
   const [isLight, setIsLight]     = useState(() => document.documentElement.classList.contains('light'));
   // Live-price prototype: fetch once on mount, upgrade NOW_PRICE in place, force one
   // re-render so every NOW_PRICE reader (returns, P/E, band position, charts) picks up

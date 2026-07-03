@@ -106,6 +106,15 @@ function showTip(e,title,body,color){ const el=tip(); el.innerHTML=`<div class="
 function moveTip(e){ const el=tip(),p=16; let x=e.clientX+p,y=e.clientY+p; const r=el.getBoundingClientRect(); if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-p; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-p; el.style.left=x+"px"; el.style.top=y+"px"; }
 function hideTip(){ tip().classList.remove("on"); }
 
+// ── cross-page nav ───────────────────────────────────────────────────────────
+// Ask the parent (stocks/index.html) to load a ticker's thesis. No-ops harmlessly if
+// this file is opened directly (no parent frame) or if the ticker has no thesis built
+// yet (the parent's existing not-found flow handles that exactly like a bad search).
+function navigateToTicker(e, ticker) {
+  e.stopPropagation();
+  try { window.parent.postMessage({ type: "th3sis-nav", target: ticker }, "*"); } catch (_) {}
+}
+
 // ── derived ──────────────────────────────────────────────────────────────────
 const counts = { PASS:0, WATCH:0, FAIL:0 };
 SCREENED.forEach(s => counts[s.verdict]++);
@@ -191,7 +200,8 @@ function VerdictBoard() {
               <div style={{ flex:1, minWidth:0 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", gap:10, alignItems:"baseline", flexWrap:"wrap" }}>
                   <span style={{ fontSize:12.5, fontWeight:700, color:"var(--tx1)", letterSpacing:"0.02em" }}>
-                    {s.t}{live ? ` — ${live.name}` : ""}
+                    <span data-nav-ticker={s.t} onClick={(e)=>navigateToTicker(e, s.t)} style={{ cursor:"pointer", borderBottom:"1px dotted currentColor" }} title={`Open ${s.t}'s thesis, if one is built`}>{s.t}</span>
+                    {live ? ` — ${live.name}` : ""}
                     {s.bucket && <span style={{ marginLeft:8, fontSize:8.5, color:ACCENT, border:`1px solid ${ACCENT}`, borderRadius:4, padding:"2px 6px", letterSpacing:"0.06em" }}>BUCKET: {s.bucket}</span>}
                     {!s.held && <span style={{ marginLeft:8, fontSize:8.5, color:"var(--tx5)", border:"1px solid var(--bd3)", borderRadius:4, padding:"2px 6px", letterSpacing:"0.06em" }}>NOT HELD</span>}
                   </span>

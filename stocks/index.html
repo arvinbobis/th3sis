@@ -335,7 +335,7 @@ function makeChip(ticker, target) {
   el.dataset.ticker = ticker;
   const dot = info.alert ? `<span class="chip-dot unknown" title="checking last close…">○</span>` : `<span class="chip-dot"></span>`;
   el.innerHTML = `${dot}<span class="chip-ticker">${ticker}</span><span class="chip-name">${info.name}</span>`;
-  el.addEventListener('click', () => loadTicker(ticker));
+  el.addEventListener('click', () => navigate(ticker));
   target.appendChild(el);
   return el;
 }
@@ -347,7 +347,7 @@ Object.keys(REGISTRY).sort().forEach(t => {
   const el = document.createElement('button');
   el.className = 'empty-chip';
   el.textContent = t;
-  el.addEventListener('click', () => loadTicker(t));
+  el.addEventListener('click', () => navigate(t));
   emptyChips.appendChild(el);
 });
 
@@ -400,7 +400,9 @@ async function runRadar() {
 runRadar();
 
 // ── Generic frame loader (shared by theses + portfolio) ───────────────────────
-function loadFrame(path, label) {
+// pendingTab: optional tab id (e.g. "the-future") to deep-link into once the child
+// page has loaded — see the th3sis-goto postMessage below and route() further down.
+function loadFrame(path, label, pendingTab) {
   empty.classList.add('hidden');
   frame.classList.remove('on');
   if (loadingTxt) loadingTxt.textContent = label || 'LOADING…';
@@ -411,94 +413,112 @@ function loadFrame(path, label) {
     frame.classList.add('on');
     // Send theme to iframe — postMessage works on file:// unlike contentDocument
     try { frame.contentWindow.postMessage({ type: 'th3sis-theme', light: isLight }, '*'); } catch (_) {}
+    if (pendingTab) {
+      // Retry burst, not a single send: a thesis is ~250KB of JSX that Babel transpiles
+      // client-side, and React's useEffect (where the tab-switch listener attaches) is
+      // scheduled as a deferred "passive effect" — it does NOT run synchronously with
+      // mount. Measured in practice: frame.onload can fire, and this message can arrive,
+      // in the exact gap AFTER the component's initial render already read its starting
+      // tab but BEFORE useEffect has attached its listener — missing a single send
+      // entirely with no error. setActiveTab is idempotent, so resending the identical
+      // message a few times over ~1.2s is harmless and closes that race reliably.
+      [0, 150, 400, 800, 1200].forEach(delay => {
+        setTimeout(() => {
+          try { frame.contentWindow.postMessage({ type: 'th3sis-goto', tab: pendingTab }, '*'); } catch (_) {}
+        }, delay);
+      });
+    }
     frame.onload = null;
   };
-  frame.src = path;
+  // contentWindow.location.replace() instead of frame.src = path: setting .src
+  // directly makes the iframe's navigation join the TOP-level document's session
+  // history as its own back/forward step — on top of the hash change navigate()
+  // already pushed, doubling every step and desyncing hash from displayed content
+  // after one "back" press. .replace() navigates the iframe without adding a step;
+  // the hash is the only thing that should move the back/forward stack.
+  try { frame.contentWindow.location.replace(path); }
+  catch (_) { frame.src = path; } // fallback if contentWindow is ever inaccessible
 }
 
-// ── Load the portfolio overview ───────────────────────────────────────────────
-function loadPortfolio() {
-  notFound.classList.remove('on');
+function setActiveChip(el) {
   if (activeChip) activeChip.classList.remove('active');
-  activeChip = portfolioChip;
-  portfolioChip.classList.add('active');
-  loadFrame('portfolio/positions.html', 'LOADING PORTFOLIO…');
+  activeChip = el || null;
+  if (activeChip) activeChip.classList.add('active');
 }
-portfolioChip.addEventListener('click', loadPortfolio);
 
-// ── Load the action-items page ────────────────────────────────────────────────
-function loadActions() {
-  notFound.classList.remove('on');
-  if (activeChip) activeChip.classList.remove('active');
-  activeChip = actionsChip;
-  actionsChip.classList.add('active');
-  loadFrame('portfolio/action-items.html', 'LOADING ACTION ITEMS…');
-}
-actionsChip.addEventListener('click', loadActions);
+// ── Hash routing ───────────────────────────────────────────────────────────────
+// The hash is the single source of navigation truth: every load path (chip click,
+// ticker search, or a th3sis-nav message from a child page) goes through navigate(),
+// which sets location.hash; the hashchange listener is what actually loads the frame.
+// This gives every view a shareable URL and a working back/forward button for free.
+const PAGE_ROUTES = {
+  folio:   { chip: portfolioChip,   path: 'portfolio/positions.html',    label: 'LOADING PORTFOLIO…' },
+  actions: { chip: actionsChip,     path: 'portfolio/action-items.html', label: 'LOADING ACTION ITEMS…' },
+  tree:    { chip: generatorChip,   path: 'portfolio/generator.html',    label: 'GROWING THE TREE…' },
+  gate:    { chip: strategyChip,    path: 'portfolio/strategy.html',     label: 'LOADING THE GATE…' },
+  score:   { chip: calibrationChip, path: 'portfolio/calibration.html',  label: 'LOADING THE SCORECARD…' },
+  radar:   { chip: radarChip,       path: 'portfolio/radar.html',        label: 'SCANNING THE FRONTIER…' },
+};
+// Deep-link suffix (e.g. #AVGO:future) → the TabNav id a current-convention thesis
+// expects. Legacy-convention theses without TabNav simply ignore the th3sis-goto
+// message (see the fallback rule each thesis's message listener already has).
+const TAB_SUFFIX = { past: 'the-past', current: 'the-current', future: 'the-future' };
 
-// ── Load the generator (house-money tree) page ────────────────────────────────
-function loadGenerator() {
-  notFound.classList.remove('on');
-  if (activeChip) activeChip.classList.remove('active');
-  activeChip = generatorChip;
-  generatorChip.classList.add('active');
-  loadFrame('portfolio/generator.html', 'GROWING THE TREE…');
-}
-generatorChip.addEventListener('click', loadGenerator);
+function route(hashRaw) {
+  const hash = (hashRaw || '').replace(/^#/, '');
+  if (!hash) return;
+  const [keyRaw, tabSuffix] = hash.split(':');
+  const key = (keyRaw || '').trim();
 
-// ── Load the strategy (prescreen gate) page ───────────────────────────────────
-function loadStrategy() {
-  notFound.classList.remove('on');
-  if (activeChip) activeChip.classList.remove('active');
-  activeChip = strategyChip;
-  strategyChip.classList.add('active');
-  loadFrame('portfolio/strategy.html', 'LOADING THE GATE…');
-}
-strategyChip.addEventListener('click', loadStrategy);
-
-// ── Load the calibration (scorecard) page ─────────────────────────────────────
-function loadCalibration() {
-  notFound.classList.remove('on');
-  if (activeChip) activeChip.classList.remove('active');
-  activeChip = calibrationChip;
-  calibrationChip.classList.add('active');
-  loadFrame('portfolio/calibration.html', 'LOADING THE SCORECARD…');
-}
-calibrationChip.addEventListener('click', loadCalibration);
-
-// ── Load the radar (frontier themes) page ─────────────────────────────────────
-function loadRadar() {
-  notFound.classList.remove('on');
-  if (activeChip) activeChip.classList.remove('active');
-  activeChip = radarChip;
-  radarChip.classList.add('active');
-  loadFrame('portfolio/radar.html', 'SCANNING THE FRONTIER…');
-}
-radarChip.addEventListener('click', loadRadar);
-
-// ── Load a thesis ─────────────────────────────────────────────────────────────
-function loadTicker(ticker) {
-  const t = ticker.trim().toUpperCase();
-  notFound.classList.remove('on');
-
-  if (!REGISTRY[t]) {
-    notFound.classList.add('on');
-    setTimeout(() => notFound.classList.remove('on'), 3000);
+  const page = PAGE_ROUTES[key.toLowerCase()];
+  if (page) {
+    notFound.classList.remove('on');
+    setActiveChip(page.chip);
+    loadFrame(page.path, page.label);
     return;
   }
 
-  if (activeChip) activeChip.classList.remove('active');
-  activeChip = headerChips[t] || null;
-  if (activeChip) activeChip.classList.add('active');
+  const t = key.toUpperCase();
+  if (REGISTRY[t]) {
+    notFound.classList.remove('on');
+    setActiveChip(headerChips[t] || null);
+    input.value = t;
+    const pendingTab = tabSuffix && TAB_SUFFIX[tabSuffix.toLowerCase()];
+    loadFrame(REGISTRY[t].path, 'LOADING THESIS…', pendingTab);
+    return;
+  }
 
-  input.value = t;
-  loadFrame(REGISTRY[t].path, 'LOADING THESIS…');
+  notFound.classList.add('on');
+  setTimeout(() => notFound.classList.remove('on'), 3000);
 }
+
+function navigate(hash) {
+  // Setting an unchanged hash doesn't fire 'hashchange' — route directly in that case
+  // (e.g. clicking the already-active chip again, or a child re-posting the same nav).
+  if (location.hash === '#' + hash) { route(hash); return; }
+  location.hash = hash;
+}
+
+window.addEventListener('hashchange', () => route(location.hash));
+
+// A child page (FOLIO row, GATE verdict, RADAR ticker chip, etc.) can request
+// navigation with { type: 'th3sis-nav', target: 'AVGO' } or 'AVGO:future'. Any page
+// not sending this just doesn't — no wiring needed on pages that don't opt in.
+window.addEventListener('message', (e) => {
+  if (e.data && e.data.type === 'th3sis-nav' && e.data.target) navigate(e.data.target);
+});
+
+portfolioChip.addEventListener('click', () => navigate('folio'));
+actionsChip.addEventListener('click', () => navigate('actions'));
+generatorChip.addEventListener('click', () => navigate('tree'));
+strategyChip.addEventListener('click', () => navigate('gate'));
+calibrationChip.addEventListener('click', () => navigate('score'));
+radarChip.addEventListener('click', () => navigate('radar'));
 
 // ── Search events ─────────────────────────────────────────────────────────────
 function handleSearch() {
   const val = input.value.trim();
-  if (val) loadTicker(val);
+  if (val) navigate(val);
 }
 
 btn.addEventListener('click', handleSearch);
@@ -513,6 +533,11 @@ input.addEventListener('input', () => {
 });
 
 input.focus();
+
+// Load whatever the URL already pointed at (a shared link, a bookmark, or a
+// back/forward navigation landing here on first paint) — hashchange doesn't fire for
+// a hash that was already in the URL before any listener was attached.
+if (location.hash) route(location.hash);
 </script>
 </body>
 </html>

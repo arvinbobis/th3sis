@@ -105,6 +105,12 @@ function tip(){ if(!tipEl){ tipEl=document.createElement("div"); tipEl.id="tip-b
 function showTip(e,title,body,color){ const el=tip(); el.innerHTML=`<div class="tt" style="color:${color||ACCENT}">${title}</div><div class="tb">${body}</div>`; el.classList.add("on"); moveTip(e); }
 function moveTip(e){ const el=tip(),p=16; let x=e.clientX+p,y=e.clientY+p; const r=el.getBoundingClientRect(); if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-p; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-p; el.style.left=x+"px"; el.style.top=y+"px"; }
 function hideTip(){ tip().classList.remove("on"); }
+
+// ── cross-page nav ───────────────────────────────────────────────────────────
+function navigateToTicker(e, ticker) {
+  e.stopPropagation();
+  try { window.parent.postMessage({ type: "th3sis-nav", target: ticker }, "*"); } catch (_) {}
+}
 const usd = (v, d=2) => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 
 const gapThemes = THEMES.filter(t => t.coverage === "thesis-gap");
@@ -178,7 +184,8 @@ function ThemeCards() {
               <div style={{ fontSize:10.5, color:"var(--tx3)", lineHeight:1.6, marginBottom:6 }}>{t.evidence}</div>
               <div style={{ display:"flex", gap:6, flexWrap:"wrap" }}>
                 {t.holdings.length ? t.holdings.map(h => (
-                  <span key={h} style={{ fontSize:9.5, fontWeight:700, color:"var(--tx2)", background:"var(--deep-bg)", borderRadius:4, padding:"2px 7px" }}>
+                  <span key={h} data-nav-ticker={h} onClick={(e)=>navigateToTicker(e, h)} title={`Open ${h}'s thesis, if one is built`}
+                    style={{ fontSize:9.5, fontWeight:700, color:"var(--tx2)", background:"var(--deep-bg)", borderRadius:4, padding:"2px 7px", cursor:"pointer" }}>
                     {h}{LIVE[h] ? ` · ${usd(LIVE[h].px)}` : ""}
                   </span>
                 )) : <span style={{ fontSize:9.5, color:"var(--tx5)" }}>no current holding</span>}
@@ -200,7 +207,8 @@ function HoldingsSnapshot() {
           const themes = THEMES.filter(th => th.holdings.includes(t));
           const worst = themes.some(th=>th.coverage==="thesis-gap") ? LOSS : themes.some(th=>th.coverage==="prescreen-only") ? WARN : GAIN;
           return (
-            <div key={t} className="row-hover" style={{ border:`1px solid ${worst}`, borderRadius:8, padding:"6px 11px", cursor:"help" }}
+            <div key={t} className="row-hover" data-nav-ticker={t} onClick={(e)=>navigateToTicker(e, t)}
+              style={{ border:`1px solid ${worst}`, borderRadius:8, padding:"6px 11px", cursor:"pointer" }}
               onMouseEnter={(e)=>showTip(e, t, themes.map(th=>`<b>${th.label}</b> (${th.direction})`).join("<br/>"), worst)}
               onMouseMove={moveTip} onMouseLeave={hideTip}>
               <span style={{ fontSize:11, fontWeight:700, color:"var(--tx1)" }}>{t}</span>

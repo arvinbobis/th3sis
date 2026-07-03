@@ -3018,6 +3018,14 @@ function PastTab() {
 function TsmThesis() {
   const [active, setActive]       = useState("base");
   const [activeTab, setActiveTab] = useState("the-current");
+  // Deep-link support: stocks/index.html's hash router sends { type:'th3sis-goto',
+  // tab:'the-future' } for a URL like #TSM:future once this iframe finishes loading.
+  // No-ops harmlessly if this file is opened directly (no parent ever posts anything).
+  useEffect(() => {
+    const onGoto = (e) => { if (e.data && e.data.type === 'th3sis-goto' && e.data.tab) setActiveTab(e.data.tab); };
+    window.addEventListener('message', onGoto);
+    return () => window.removeEventListener('message', onGoto);
+  }, []);
   const [isLight, setIsLight]     = useState(() => document.documentElement.classList.contains('light'));
   // Live-price prototype: fetch once on mount, upgrade NOW_PRICE in place, force one
   // re-render so every NOW_PRICE reader (returns, P/E, band position, charts) picks up

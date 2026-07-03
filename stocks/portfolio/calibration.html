@@ -103,6 +103,12 @@ function showTip(e,title,body,color){ const el=tip(); el.innerHTML=`<div class="
 function moveTip(e){ const el=tip(),p=16; let x=e.clientX+p,y=e.clientY+p; const r=el.getBoundingClientRect(); if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-p; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-p; el.style.left=x+"px"; el.style.top=y+"px"; }
 function hideTip(){ tip().classList.remove("on"); }
 
+// ── cross-page nav ───────────────────────────────────────────────────────────
+function navigateToTicker(e, ticker) {
+  e.stopPropagation();
+  try { window.parent.postMessage({ type: "th3sis-nav", target: ticker }, "*"); } catch (_) {}
+}
+
 // ── derived ──────────────────────────────────────────────────────────────────
 const totalQuarters = SCORE.length;
 const totalHits = SCORE.filter(r => r.bandHit).length;
@@ -184,7 +190,8 @@ function TickerTable() {
             <div key={row.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:14, padding:"10px 14px", border:"1px solid var(--bd)", borderRadius:9, background:"var(--inner-bg)", cursor:"help" }}
               onMouseEnter={(e)=>showTip(e, `${row.t} · confidence mix`, `<b>High:</b> ${row.confCounts.high} &nbsp; <b>Med:</b> ${row.confCounts.med} &nbsp; <b>Low:</b> ${row.confCounts.low}<br/><br/>Lower-confidence quarters are older reconstructions per CLAUDE.md's data-freshness rules.`)}
               onMouseMove={moveTip} onMouseLeave={hideTip}>
-              <span style={{ fontSize:12, fontWeight:700, color:"var(--tx1)", width:52, flexShrink:0 }}>{row.t}</span>
+              <span data-nav-ticker={row.t} onClick={(e)=>navigateToTicker(e, row.t)} title={`Open ${row.t}'s thesis`}
+                style={{ fontSize:12, fontWeight:700, color:"var(--tx1)", width:52, flexShrink:0, cursor:"pointer", borderBottom:"1px dotted currentColor" }}>{row.t}</span>
               <span style={{ fontSize:10, color:"var(--tx5)", width:78, flexShrink:0 }}>{row.n} quarters</span>
               <div className="barwrap"><div className="barfill" style={{ width: row.rate+"%", background: row.rate === 100 ? GAIN : row.rate >= 70 ? WARN : LOSS }} /></div>
               <span style={{ fontSize:11, color:"var(--tx3)", width:40, textAlign:"right", flexShrink:0 }}>{row.rate}%</span>
