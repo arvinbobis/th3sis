@@ -120,6 +120,12 @@ function tip() { if(!tipEl){ tipEl=document.createElement("div"); tipEl.id="tip-
 function showTip(e,title,body,color){ const el=tip(); el.innerHTML=`<div class="tt" style="color:${color||ACCENT}">${title}</div><div class="tb">${body}</div>`; el.classList.add("on"); moveTip(e); }
 function moveTip(e){ const el=tip(),p=16; let x=e.clientX+p,y=e.clientY+p; const r=el.getBoundingClientRect(); if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-p; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-p; el.style.left=x+"px"; el.style.top=y+"px"; }
 function hideTip(){ tip().classList.remove("on"); }
+
+// ── cross-page nav ───────────────────────────────────────────────────────────
+function navigateToTicker(e, ticker) {
+  e.stopPropagation();
+  try { window.parent.postMessage({ type: "th3sis-nav", target: ticker }, "*"); } catch (_) {}
+}
 function Tip({ title, body, color, children, style }) {
   return <span className="tip-target" style={style}
     onMouseEnter={(e)=>showTip(e,title,body,color)} onMouseMove={moveTip} onMouseLeave={hideTip}>{children}</span>;
@@ -334,8 +340,9 @@ function Scoreboard({ s }) {
           const w = Math.abs(p.up)/maxAbs*50; // % of half-width
           const gain = p.up>=0;
           return (
-            <div key={p.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:8, padding:"2px 6px", borderRadius:5,
-                 cursor:"help" }}
+            <div key={p.t} className="row-hover" data-nav-ticker={p.t} style={{ display:"flex", alignItems:"center", gap:8, padding:"2px 6px", borderRadius:5,
+                 cursor:"pointer" }}
+                 onClick={(e)=>navigateToTicker(e, p.t)}
                  onMouseEnter={(e)=>showTip(e, `${p.t} · ${p.name}`, `${usd(p.up,0)} unrealized (${pct(p.ret)}). Cost ${usd(p.avg)} → now ${usd(p.px)}. Position ${usd(p.mv,0)}.`, pc(p.up))}
                  onMouseMove={moveTip} onMouseLeave={hideTip}>
               <span style={{ width:46, fontSize:10.5, fontWeight:700, color:"var(--tx2)", letterSpacing:"0.06em", flexShrink:0 }}>{p.t}</span>
@@ -391,7 +398,8 @@ function PositionsTable({ s, showDaily }) {
         </tr></thead>
         <tbody>
           {rows.map(p=>(
-            <tr key={p.t} className="row-hover" style={{ borderBottom:"1px solid var(--bd)" }}>
+            <tr key={p.t} className="row-hover" data-nav-ticker={p.t} style={{ borderBottom:"1px solid var(--bd)", cursor:"pointer" }}
+              onClick={(e)=>navigateToTicker(e, p.t)} title={`Open ${p.t}'s thesis, if one is built`}>
               <td style={{ padding:"9px 10px", textAlign:"left" }}>
                 <div style={{ fontSize:11.5, fontWeight:700, color:"var(--tx1)", letterSpacing:"0.05em" }}>{p.t}</div>
                 <div style={{ fontSize:9, color:"var(--tx5)", marginTop:1 }}>{p.name}</div>
@@ -468,7 +476,8 @@ function Generator({ s }) {
           const fill = Math.min(p.prog, 100);
           const tx = TRIMMED[p.t];
           return (
-            <div key={p.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:10, padding:"3px 6px", borderRadius:5, cursor:"help" }}
+            <div key={p.t} className="row-hover" data-nav-ticker={p.t} style={{ display:"flex", alignItems:"center", gap:10, padding:"3px 6px", borderRadius:5, cursor:"pointer" }}
+              onClick={(e)=>navigateToTicker(e, p.t)}
               onMouseEnter={(e)=>showTip(e, `${p.t} · ${p.name}`, p.trimmed
                 ? `TRIMMED ${tx.date}: sold ${tx.soldQty} sh @ ${usd(tx.soldPx)}, banked ${usd(tx.realized,0)} and recovered your original capital. The remaining ${p.qty.toFixed(4)} sh (~${usd(p.mv,0)}, ${(p.px/p.avg).toFixed(2)}× cost) now rides as house money — not a trim candidate (never re-trim on price alone).`
                 : p.past
@@ -511,7 +520,8 @@ function LimitLadder() {
             else { status = `live ${usd(live.px)} · at/below limit — would fill`; sc = GAIN; }
           } else { status = l.watch ? "watchlist — not armed" : "awaiting — not held"; }
           return (
-            <div key={l.t} className="row-hover" style={{ display:"flex", alignItems:"center", gap:12, padding:"8px 10px", border:"1px solid var(--bd)", borderRadius:8, cursor:"help" }}
+            <div key={l.t} className="row-hover" data-nav-ticker={l.t} style={{ display:"flex", alignItems:"center", gap:12, padding:"8px 10px", border:"1px solid var(--bd)", borderRadius:8, cursor:"pointer" }}
+              onClick={(e)=>navigateToTicker(e, l.t)}
               onMouseEnter={(e)=>showTip(e, `${l.t} — ${l.size}`, l.anchor, l.musk?WARN:ACCENT)} onMouseMove={moveTip} onMouseLeave={hideTip}>
               <span style={{ width:54, fontSize:12, fontWeight:700, color:"var(--tx1)", flexShrink:0 }}>{l.t}</span>
               <span style={{ width:78, fontSize:11, color: l.limit?ACCENT:"var(--tx5)", fontWeight:700, flexShrink:0 }}>{l.limit?usd(l.limit,0):"—"}</span>

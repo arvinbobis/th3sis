@@ -104,6 +104,12 @@ function showTip(e,title,body,color){ const el=tip(); el.innerHTML=`<div class="
 function moveTip(e){ const el=tip(),p=16; let x=e.clientX+p,y=e.clientY+p; const r=el.getBoundingClientRect(); if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-p; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-p; el.style.left=x+"px"; el.style.top=y+"px"; }
 function hideTip(){ tip().classList.remove("on"); }
 
+// ── cross-page nav ───────────────────────────────────────────────────────────
+function navigateToTicker(e, ticker) {
+  e.stopPropagation();
+  try { window.parent.postMessage({ type: "th3sis-nav", target: ticker }, "*"); } catch (_) {}
+}
+
 // ── derive house-money branches from the generator ledger ──────────────────────
 const branches = Object.keys(TRIMMED).map(t => {
   const x = TRIMMED[t], live = LIVE[t] || {};
@@ -236,7 +242,8 @@ function SankeyFlow() {
           <text x={u.x} y={canopyY+12} textAnchor="middle" style={{ fill:"var(--tx6)", fontSize:8.5 }}>(future)</text>
         </g>
       ) : (
-        <g key={"c"+i} style={{cursor:"help"}}
+        <g key={"c"+i} data-nav-ticker={u.s.t} style={{cursor:"pointer"}}
+           onClick={(e)=>navigateToTicker(e, u.s.t)}
            onMouseEnter={(e)=>showTip(e, `${u.s.t} · house money`, `${usd(u.s.freeMV,0)} riding free, ${usd(u.s.freeUp,0)} unrealized. Rides until the thesis breaks.`, GAIN)} onMouseMove={moveTip} onMouseLeave={hideTip}>
           <rect x={u.x-68} y={canopyY-25} width={136} height={50} rx={10} style={{ fill:GAIN, fillOpacity:0.1, stroke:GAIN, strokeOpacity:0.5 }} />
           <text x={u.x} y={canopyY-8} textAnchor="middle" style={{ fill:"var(--tx1)", fontSize:10.5, fontWeight:700 }}>{u.s.t} house money</text>
@@ -253,7 +260,8 @@ function SankeyFlow() {
           <text x={X(i)} y={base+14} textAnchor="middle" style={{ fill:"var(--tx5)", fontSize:9.5 }}>~$1,000 in</text>
         </g>
       ) : (
-        <g key={"n"+i} style={{cursor:"help"}}
+        <g key={"n"+i} data-nav-ticker={s.t} style={{cursor:"pointer"}}
+           onClick={(e)=>navigateToTicker(e, s.t)}
            onMouseEnter={(e)=>showTip(e, `${s.t} · ${s.name}`, `Seed deployed ≈ ${usd(s.origCost,0)} → grew to ${s.mult?s.mult.toFixed(2)+"× cost":"its trim trigger"}. Trimmed ${s.date}: sold ${s.soldQty} sh @ ${usd(s.soldPx)}, pulling ${usd(s.proceeds,0)} back out (banked ${usd(s.banked,0)}). The rest rides as house money above.`, ACCENT)} onMouseMove={moveTip} onMouseLeave={hideTip}>
           <rect x={X(i)-NW/2} y={base-NH/2} width={NW} height={NH} rx={11} style={{ fill:"var(--panel-bg)", stroke:ACCENT }} />
           <text x={X(i)} y={base-7} textAnchor="middle" style={{ fill:"var(--tx1)", fontSize:19, fontWeight:600, fontFamily:FONT_DISPLAY }}>{s.t}</text>

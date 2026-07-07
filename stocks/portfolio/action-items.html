@@ -106,6 +106,12 @@ function showTip(e,title,body,color){ const el=tip(); el.innerHTML=`<div class="
 function moveTip(e){ const el=tip(),p=16; let x=e.clientX+p,y=e.clientY+p; const r=el.getBoundingClientRect(); if(x+r.width>window.innerWidth-8)x=e.clientX-r.width-p; if(y+r.height>window.innerHeight-8)y=e.clientY-r.height-p; el.style.left=x+"px"; el.style.top=y+"px"; }
 function hideTip(){ tip().classList.remove("on"); }
 
+// ── cross-page nav ───────────────────────────────────────────────────────────
+function navigateToTicker(e, ticker) {
+  e.stopPropagation();
+  try { window.parent.postMessage({ type: "th3sis-nav", target: ticker }, "*"); } catch (_) {}
+}
+
 // ── derived ──────────────────────────────────────────────────────────────────
 const investedMV = POS.reduce((s,p)=>s+p.mv,0);
 const corePct    = POS.filter(p=>CORE_TICKERS.includes(p.t)).reduce((s,p)=>s+p.mv,0) / investedMV * 100;
@@ -131,9 +137,10 @@ const Eyebrow = ({children, note, color}) => (
     {note && <div style={{ fontSize:10, color:"var(--tx5)", letterSpacing:"0.04em" }}>{note}</div>}
   </div>
 );
-function Item({ tag, color, head, right, body, tipTitle, tipBody, dot }) {
+function Item({ tag, color, head, right, body, tipTitle, tipBody, dot, navTicker }) {
   return (
-    <div className="row-hover" style={{ display:"flex", gap:13, padding:"13px 14px", border:"1px solid var(--bd)", borderLeft:`3px solid ${color}`, borderRadius:9, background:"var(--inner-bg)", cursor: tipBody?"help":"default" }}
+    <div className="row-hover" data-nav-ticker={navTicker || undefined} style={{ display:"flex", gap:13, padding:"13px 14px", border:"1px solid var(--bd)", borderLeft:`3px solid ${color}`, borderRadius:9, background:"var(--inner-bg)", cursor: navTicker?"pointer":(tipBody?"help":"default") }}
+      onClick={navTicker?(e)=>navigateToTicker(e, navTicker):undefined}
       onMouseEnter={tipBody?(e)=>showTip(e,tipTitle,tipBody,color):undefined} onMouseMove={tipBody?moveTip:undefined} onMouseLeave={tipBody?hideTip:undefined}>
       <span style={{ flexShrink:0, alignSelf:"flex-start", marginTop:1, fontSize:8, fontWeight:700, letterSpacing:"0.12em", color:color, border:`1px solid ${color}`, borderRadius:4, padding:"3px 7px", whiteSpace:"nowrap" }}>
         {dot && <span className="dot-armed" style={{ marginRight:5 }}>●</span>}{tag}
@@ -178,7 +185,7 @@ function DecideNow() {
       <Eyebrow color={ACCENT} note="generator trim · thesis-gated">① Decide now</Eyebrow>
       <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
         {pastTrim.map(p=>(
-          <Item key={p.t} dot tag="TRIM?" color={ACCENT}
+          <Item key={p.t} navTicker={p.t} dot tag="TRIM?" color={ACCENT}
             head={`${p.t} — past your 2× trigger (${pct(p.ret)})`}
             right={`recover ${usd(p.orig,0)}`}
             body={<>The generator move, <i>only if the {p.t} thesis still holds</i>: trim ~<b>{usd(p.orig,0)}</b> (≈{(p.orig/p.px).toFixed(2)} sh) to recover your original capital, let ~<b>{usd(p.mv-p.orig,0)}</b> ride free as house money. Then redeploy into the next idea. <b>Gate first:</b> is the chokepoint intact and is the bull case <i>not</i> already fully in the multiple?</>}
@@ -203,7 +210,7 @@ function TrimLog() {
         {trimmedPos.map(p=>{
           const x = TRIMMED[p.t];
           return (
-            <Item key={p.t} tag="BANKED" color={GAIN}
+            <Item key={p.t} navTicker={p.t} tag="BANKED" color={GAIN}
               head={`${p.t} — trimmed ${x.date}, original capital recovered`}
               right={`+${usd(x.realized,0)} banked`}
               body={<>Sold <b>{x.soldQty}</b> sh @ <b>{usd(x.soldPx)}</b> → <b>{usd(x.proceeds,0)}</b> proceeds, realizing <b>{usd(x.realized,0)}</b>. The remaining <b>{p.qty.toFixed(4)} sh</b> (~<b>{usd(p.mv,0)}</b>, {(p.px/p.avg).toFixed(2)}× cost) now rides as <b>house money</b> — <i>no longer a trim candidate</i> (never re-trim on price alone). Proceeds recycle into the deployment ladder below.</>}
@@ -230,7 +237,7 @@ function Orders() {
           else if (l.watch) { tag="WATCH"; color=BLUE; right=`@ ${usd(l.limit,0)}`; status="Watchlist only — not armed."; }
           else { tag="AWAITING"; color=BLUE; right=`@ ${usd(l.limit,0)}`; status="Order resting below market — awaiting a fill."; }
           return (
-            <Item key={l.t} tag={tag} color={color}
+            <Item key={l.t} navTicker={l.t} tag={tag} color={color}
               head={<>{l.t} <span style={{ color:"var(--tx5)", fontWeight:400, fontSize:11 }}>· {l.size}{l.musk && " · Musk bucket"}</span></>}
               right={right} body={status}
               tipTitle={`${l.t} — ${l.size}`} tipBody={l.anchor} />
@@ -273,7 +280,7 @@ function Gates() {
         {REVIEW_GATES.slice().sort((a,b)=>new Date(a.date)-new Date(b.date)).map(g=>{
           const days = Math.round((new Date(g.date)-today)/86400000);
           return (
-            <Item key={g.t} tag={`${g.date}`} color={BLUE}
+            <Item key={g.t} navTicker={g.t} tag={`${g.date}`} color={BLUE}
               head={<>{g.t} <span style={{ color:"var(--tx5)", fontWeight:400, fontSize:11 }}>· in {days} days</span></>}
               body={g.note} />
           );
