@@ -57,6 +57,10 @@ Look at this case's `SIGNALS` / `MARGIN` rows. Are these still the *right things
 Which case is most likely *now*? Be willing to say it changed. If base was the favorite last quarter but a shock made bear more live, say so.
 → Note it in the log below.
 
+**E. What's the four-call tone trend?**
+Don't just read this quarter's call — line up management's commentary on the thesis-critical topics across the **last 3–4 calls** and ask: more or less confident? Watch for hedging creep: dropped specifics, new qualifiers on guidance, "we continue to believe…" where there used to be numbers. A single call can read fine while the trend quietly deteriorates — and the tone trend often turns before the KPIs do. If the trend contradicts the BEAT/MATCH tags, write that tension down.
+→ Note the trend (improving / stable / eroding) in the log below.
+
 ---
 
 ## THE TWO HABITS THAT MAKE THIS WORTH DOING
@@ -86,6 +90,9 @@ THESIS AUDIT (one line each):
   Bull  — narrative still true? ___  bands moved? ___  why: __________
 
 PROBABILITY shift this quarter: ____________________________
+
+TONE TREND (last 3–4 calls): improving / stable / eroding
+  Evidence: _______________________________________________
 
 WHAT WOULD PROVE ME WRONG (for my favored case):
   ________________________________________________________

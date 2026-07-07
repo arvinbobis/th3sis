@@ -19,7 +19,8 @@ the dislocation settings only if a new shock occurred.
 
 Write the inputs you just pulled to `stocks/$ARGUMENTS/data/inputs-YYYY-QQ.json` per the
 provenance format in CLAUDE.md's data freshness rules (one new file per update, never edit a
-past quarter's snapshot).
+past quarter's snapshot). Include `multiple_peer_median` with the comps named in `src` — the
+peer anchor is what catches a whole-group re-rating that own-history anchoring would miss.
 
 ## Step 3 — Layer 2: AUDIT THE THESIS (do not skip)
 For EACH of bear/base/bull, answer honestly:
@@ -29,6 +30,13 @@ For EACH of bear/base/bull, answer honestly:
   with market mood — don't anchor out of habit.
 - **C. Triggers moved?** Are these still the right KPIs, or has the real risk relocated?
 - **D. Probability shifted?** Which case is most likely NOW? Be willing to say it changed.
+- **E. Tone trend (multi-quarter, not just this call).** Compare management's commentary on
+  the thesis-critical topics across the last 3–4 earnings calls: more or less confident?
+  Hedging language creeping in ("we continue to believe…", guidance qualifiers, dropped
+  specifics)? A single call can read fine while the four-call trend deteriorates — grade the
+  trend, and if it contradicts the KPI tags, say so in the log. For stocks riding a demand
+  boom, also apply CLAUDE.md's pull-forward test here: is management describing demand that
+  extends the runway, or demand being pulled forward from it?
 
 ## Step 4 — The two habits
 - **What would prove me wrong?** Name the kill-switch for the currently-favored case.

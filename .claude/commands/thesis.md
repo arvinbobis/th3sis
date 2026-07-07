@@ -11,6 +11,8 @@ Search the web for current, real information on $ARGUMENTS before anything else:
 - Current share price and recent price history (last ~6 quarters)
 - Latest earnings results and the most recent quarter's prints
 - Forward analyst consensus (EPS or the relevant metric) and price targets
+- Forward multiples for 3–5 named peer comparables (the peer-median anchor for the multiple
+  judgment — record it as `multiple_peer_median` in the provenance snapshot)
 - Forward guidance, capex plans, and any major spending cycle
 - Regulatory, competitive, or macro factors specific to this company
 - The next scheduled earnings date
@@ -26,7 +28,8 @@ Answer explicitly (state them in your response):
 1. **Valuation ruler** — is P/E right for this business, or should it be P/S, P/B, FFO,
    normalized earnings, pipeline value, etc.?
 2. **The 5–6 KPIs** that actually move THIS story (not generic ones). If there's a big
-   capex/AI build-out, frame it by monetization, not just cost.
+   capex/AI build-out, frame it by monetization, not just cost. If demand looks unusually
+   strong, apply CLAUDE.md's pull-forward test: does it extend the runway or front-load it?
 3. **Earnings-driven or multiple-driven?** — what do the three cases really argue about?
 
 ## Step 3 — Draft the three cases
@@ -55,8 +58,10 @@ CLAUDE.md:
 
 ## Step 5 — Generate the quarterly checklist
 Create `stocks/$ARGUMENTS/$ARGUMENTS-QUARTERLY-CHECKLIST.md` tailored to this stock: Layer 1
-(the numbers to refresh) + Layer 2 (the per-case thesis audit) + the two habits ("what would
-prove me wrong?" and "what surprised me?") + a copy-paste quarterly log. Use
+(the numbers to refresh) + Layer 2 (the per-case thesis audit, including the multi-quarter
+management-tone question: compare commentary on the thesis-critical topics across the last
+3–4 calls — is confidence rising or eroding?) + the two habits ("what would prove me wrong?"
+and "what surprised me?") + a copy-paste quarterly log. Use
 `reference/meta-QUARTERLY-CHECKLIST.md` as the template.
 
 ## Step 6 — Verify (REQUIRED, not optional)

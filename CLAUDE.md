@@ -58,6 +58,13 @@ If a major capex/AI build-out is underway, **frame it by whether it MONETIZES, n
 what it costs** — the cost framing is what makes markets panic; the payoff framing is the
 real question. This was central to the META build and should generalize.
 
+**The pull-forward test (especially semis/cyclicals):** when demand looks strong, ask
+whether it *extends* the growth runway or *front-loads* it — demand pulled forward (sovereign
+AI buildouts, pre-tariff ordering, double-ordering in a shortage) looks identical to durable
+demand in the current print, but it borrows from future quarters instead of adding to them.
+If a case's runway assumption can't distinguish the two, say so and name the KPI that would
+(e.g. customer mix shift, order-to-shipment gap, inventory at the buyer).
+
 ### 3. Is the bear/base/bull gap driven by EARNINGS or by the MULTIPLE?
 - Mood-driven (e.g. big-cap tech): EPS barely moves across cases; the **multiple** swings.
 - Earnings-driven (cyclicals): the **earnings** boom/bust; multiple may be steadier.
@@ -70,7 +77,10 @@ Knowing which tells you what the scenarios are really arguing about.
 Always: **Price = (earnings or chosen metric) × (multiple)**.
 - The metric (e.g. consensus EPS) is the firmer input — source it from analyst consensus.
 - The multiple is a **judgment call** anchored to: the stock's own history, where it trades
-  now, and the high/low extremes markets have paid. Bear = below-normal multiple ("scared"),
+  now, the high/low extremes markets have paid, **and a peer-group comp** (the median forward
+  multiple of 3–5 named comparables). The peer anchor is the check against anchoring on a
+  stock's own history when the whole group has re-rated — record it in the provenance
+  snapshot alongside the three multiples. Bear = below-normal multiple ("scared"),
   Base = normal, Bull = above-normal ("excited").
 - Because the multiple reflects crowd psychology, **bands should be wide and held loosely.**
   Do not imply dollar precision.
@@ -142,14 +152,17 @@ or hindsight. Minimal shape, one file per touch, never edited after the fact:
     "consensus_eps_ntm":  { "value": 12.84,  "src": "web search — analyst consensus", "pulled": "2026-07-16" },
     "multiple_bear":      { "value": 18,     "src": "judgment — below 5yr avg (scared)",   "pulled": "2026-07-16" },
     "multiple_base":      { "value": 24,     "src": "judgment — 5yr avg fwd P/E",          "pulled": "2026-07-16" },
-    "multiple_bull":      { "value": 30,     "src": "judgment — above 5yr avg (excited)",  "pulled": "2026-07-16" }
+    "multiple_bull":      { "value": 30,     "src": "judgment — above 5yr avg (excited)",  "pulled": "2026-07-16" },
+    "multiple_peer_median": { "value": 27,   "src": "web search — fwd P/E median of AVGO, NVDA, ASML (named comps)", "pulled": "2026-07-16" }
   },
   "notes": "anything about the regime this quarter that explains WHY these multiples, not just what they are"
 }
 ```
 
 Include every number that would otherwise need to be re-derived from memory later: the
-metric driving the price bands, the three multiples, and the price itself. `src` distinguishes
+metric driving the price bands, the three multiples, the peer-group median multiple (with
+the comps named in `src` — this is the second anchor for the multiple judgment), and the
+price itself. `src` distinguishes
 a sourced fact (analyst consensus, a filing, a live quote) from a judgment call (the multiple
 band) — both are fine, but say which. This rolls out per-stock at each stock's own next
 quarterly touch, not as a one-time backfill — a fabricated snapshot for a past quarter would
