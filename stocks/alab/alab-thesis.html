@@ -374,7 +374,7 @@ const PAST_YEARS       = ["Q1 24","Q2 24","Q3 24","Q4 24","Q1 25","Q2 25","Q3 25
 const PAST_REV         = [65.3, 76.8, 113.1, 141.1, 159.4, 191.9, 230.6, 270.6, 308.4]; // total revenue, $M, GAAP
 const PAST_GM          = [77.4, 77.9, 77.7, 74.0, 74.9, 75.8, 76.2, 75.6, 76.3];        // gross margin, % GAAP
 const PAST_OPM         = [-127.1, -31.7, -7.9, 0.1, 7.1, 20.7, 24.0, 24.7, 20.1];       // operating margin, % GAAP — negative early on is real, not an error: SBC and opex scaled ahead of revenue right after IPO
-const PAST_EPS         = [-0.60, -0.05, -0.05, 0.14, 0.18, 0.29, 0.50, 0.25, 0.44];     // diluted EPS, $ GAAP
+const PAST_EPS         = [-1.77, -0.05, -0.05, 0.14, 0.18, 0.29, 0.50, 0.25, 0.44];     // diluted EPS, $ GAAP — Q1 24 is a real one-time IPO-vesting SBC charge ($92.995M net loss / 52.532M weighted diluted shares per the 10-Q), not a typo
 // Balance sheet — real annual trend (FY2022–FY2025) plus the Q1 FY2026 snapshot used in
 // the summary text below. ALAB has made no acquisitions and carries no debt in any period.
 const BS_YEARS   = ["FY2022","FY2023","FY2024","FY2025"];
@@ -421,11 +421,19 @@ const VAL_CONFIG = {
 };
 
 // ── FINANCIALS DATA CONFIG ──────────────────────────────────────────────────
-// Source: Wise Financials as of Q2 FY2026. Update each quarter.
-// Values: B = billions USD, % = percent, x = multiple, $ = per-share dollars
+// Source: SEC EDGAR XBRL company facts (CIK 0001736297) — 10-K filed 2026-02-20 (FY2025),
+// 10-K filed 2025-02-14 (FY2024, with FY2022/FY2023 comparatives), 10-Q filings 2024-05-08
+// through 2026-05-06, and the Feb 2024 S-1 (audited FY2022/FY2023 financial statements,
+// pre-IPO). Cross-checked against stockanalysis.com where noted. GAAP figures throughout.
+// Astera Labs IPO'd March 20, 2024 — only ~2 public fiscal years exist, so this explorer is
+// deliberately narrower than a mature company's: 4 annual points (FY2022–FY2025, the last 2
+// pre-IPO from the S-1) and 9 real public quarters (Q1 FY2024–Q1 FY2026). No fabricated
+// padding to a longer history. Metrics ALAB doesn't disclose (Intangible Assets breakout,
+// Interest Coverage — no debt/interest expense exists to cover) are left as real nulls
+// rather than guessed. Values: B = billions USD, % = percent, x = multiple, $ = per-share.
 const FIN_LABELS = {
-  annual:    ["FY16", "FY17", "FY18", "FY19", "FY20", "FY21", "FY22", "FY23", "FY24", "FY25"],
-  quarterly: ["Q3 FY21", "Q4 FY21", "Q1 FY22", "Q2 FY22", "Q3 FY22", "Q4 FY22", "Q1 FY23", "Q2 FY23", "Q3 FY23", "Q4 FY23", "Q1 FY24", "Q2 FY24", "Q3 FY24", "Q4 FY24", "Q1 FY25", "Q2 FY25", "Q3 FY25", "Q4 FY25", "Q1 FY26", "Q2 FY26"]
+  annual:    ["FY22", "FY23", "FY24", "FY25"],
+  quarterly: ["Q1 FY24", "Q2 FY24", "Q3 FY24", "Q4 FY24", "Q1 FY25", "Q2 FY25", "Q3 FY25", "Q4 FY25", "Q1 FY26"]
 };
 const FIN_METRICS = [
   {
@@ -433,1642 +441,520 @@ const FIN_METRICS = [
     "group": "Income Statement",
     "fmt": "B",
     "desc": "Total net revenue",
-    "annual": [
-      13.24,
-      17.64,
-      20.85,
-      22.6,
-      23.89,
-      27.45,
-      33.2,
-      35.82,
-      51.57,
-      63.89
-    ],
-    "quarterly": [
-      6.78,
-      7.41,
-      7.71,
-      8.1,
-      8.46,
-      8.93,
-      8.91,
-      8.73,
-      8.88,
-      9.29,
-      11.96,
-      12.49,
-      13.07,
-      14.05,
-      14.92,
-      15.0,
-      15.95,
-      18.02,
-      19.31,
-      22.19
-    ]
+    "annual": [0.08, 0.116, 0.396, 0.853],
+    "quarterly": [0.065, 0.077, 0.113, 0.141, 0.159, 0.192, 0.231, 0.271, 0.308]
   },
   {
     "name": "Gross Profit",
     "group": "Income Statement",
     "fmt": "B",
     "desc": "Revenue minus cost of goods sold",
-    "annual": [
-      5.94,
-      8.51,
-      10.73,
-      12.48,
-      13.52,
-      16.84,
-      22.09,
-      24.69,
-      32.51,
-      43.29
-    ],
-    "quarterly": [
-      4.2,
-      4.64,
-      5.05,
-      5.44,
-      5.68,
-      5.93,
-      6.0,
-      6.12,
-      6.16,
-      6.41,
-      7.38,
-      7.78,
-      8.36,
-      9.0,
-      10.14,
-      10.2,
-      10.7,
-      12.25,
-      12.66,
-      14.92
-    ]
+    "annual": [0.059, 0.08, 0.303, 0.645],
+    "quarterly": [0.051, 0.06, 0.088, 0.104, 0.119, 0.146, 0.176, 0.204, 0.235]
   },
   {
     "name": "Gross Margin",
     "group": "Income Statement",
     "fmt": "%",
-    "desc": "Gross profit as % of revenue",
-    "annual": [
-      44.9,
-      48.2,
-      51.5,
-      55.2,
-      56.6,
-      61.4,
-      66.5,
-      68.9,
-      63.0,
-      67.8
-    ],
-    "quarterly": [
-      61.9,
-      62.6,
-      65.5,
-      67.1,
-      67.1,
-      66.4,
-      67.3,
-      70.0,
-      69.4,
-      68.9,
-      61.7,
-      62.3,
-      63.9,
-      64.1,
-      68.0,
-      68.0,
-      67.1,
-      68.0,
-      65.6,
-      67.2
-    ]
+    "desc": "Gross profit as a percentage of revenue",
+    "annual": [73.5, 68.9, 76.4, 75.7],
+    "quarterly": [77.4, 77.9, 77.7, 74.0, 74.9, 75.8, 76.2, 75.6, 76.3]
   },
   {
     "name": "EBITDA",
     "group": "Income Statement",
     "fmt": "B",
-    "desc": "Earnings before interest, tax, D&A",
-    "annual": [
-      2.52,
-      7.0,
-      9.23,
-      9.45,
-      11.12,
-      14.69,
-      19.16,
-      20.55,
-      23.88,
-      34.71
-    ],
-    "quarterly": [
-      3.64,
-      4.1,
-      4.38,
-      4.57,
-      4.96,
-      5.24,
-      5.28,
-      5.06,
-      4.91,
-      5.3,
-      4.61,
-      5.58,
-      6.39,
-      7.29,
-      6.26,
-      10.19,
-      8.03,
-      9.86,
-      10.83,
-      13.03
-    ]
+    "desc": "Earnings before interest, taxes, depreciation & amortization",
+    "annual": [-0.059, -0.028, -0.113, 0.18],
+    "quarterly": [-0.082, -0.024, -0.008, 0.001, 0.012, 0.041, 0.057, 0.07, 0.066]
   },
   {
     "name": "EBITDA Margin",
     "group": "Income Statement",
     "fmt": "%",
-    "desc": "EBITDA as % of revenue",
-    "annual": [
-      19.0,
-      39.7,
-      44.3,
-      41.8,
-      46.6,
-      53.5,
-      57.7,
-      57.4,
-      46.3,
-      54.3
-    ],
-    "quarterly": [
-      53.8,
-      55.4,
-      56.9,
-      56.4,
-      58.6,
-      58.7,
-      59.2,
-      57.9,
-      55.3,
-      57.1,
-      38.6,
-      44.7,
-      48.9,
-      51.9,
-      42.0,
-      67.9,
-      50.3,
-      54.7,
-      56.1,
-      58.7
-    ]
+    "desc": "EBITDA as a percentage of revenue",
+    "annual": [-74.4, -23.9, -28.5, 21.1],
+    "quarterly": [-126.2, -30.7, -7.1, 0.8, 7.8, 21.4, 24.7, 25.8, 21.3]
   },
   {
     "name": "Operating Income",
     "group": "Income Statement",
     "fmt": "B",
-    "desc": "Profit from core operations",
-    "annual": [
-      -0.41,
-      2.37,
-      5.13,
-      3.44,
-      4.01,
-      8.52,
-      14.22,
-      16.21,
-      13.46,
-      25.48
-    ],
-    "quarterly": [
-      2.13,
-      2.58,
-      3.13,
-      3.41,
-      3.74,
-      3.99,
-      4.1,
-      4.01,
-      3.86,
-      4.24,
-      2.08,
-      2.96,
-      3.79,
-      4.63,
-      6.26,
-      5.83,
-      5.89,
-      7.51,
-      8.68,
-      10.87
-    ]
+    "desc": "Revenue minus operating expenses",
+    "annual": [-0.06, -0.029, -0.116, 0.173],
+    "quarterly": [-0.083, -0.024, -0.009, 0, 0.011, 0.04, 0.055, 0.067, 0.062]
   },
   {
     "name": "Operating Margin",
     "group": "Income Statement",
     "fmt": "%",
-    "desc": "Operating income as % of revenue",
-    "annual": [
-      -3.1,
-      13.4,
-      24.6,
-      15.2,
-      16.8,
-      31.0,
-      42.8,
-      45.2,
-      26.1,
-      39.9
-    ],
-    "quarterly": [
-      31.4,
-      34.8,
-      40.6,
-      42.1,
-      44.2,
-      44.6,
-      46.0,
-      45.9,
-      43.4,
-      45.6,
-      17.4,
-      23.7,
-      29.0,
-      32.9,
-      42.0,
-      38.8,
-      36.9,
-      41.7,
-      45.0,
-      49.0
-    ]
+    "desc": "Operating income as a percentage of revenue",
+    "annual": [-75.4, -25.5, -29.3, 20.3],
+    "quarterly": [-127.1, -31.7, -7.9, 0.1, 7.1, 20.7, 24.0, 24.7, 20.1]
   },
   {
     "name": "Net Income",
     "group": "Income Statement",
     "fmt": "B",
-    "desc": "Bottom-line profit after all expenses & taxes",
-    "annual": [
-      -1.74,
-      1.69,
-      12.26,
-      2.72,
-      2.96,
-      6.74,
-      11.49,
-      14.08,
-      5.89,
-      23.13
-    ],
-    "quarterly": [
-      1.88,
-      1.99,
-      2.47,
-      2.59,
-      3.07,
-      3.36,
-      3.77,
-      3.48,
-      3.3,
-      3.52,
-      1.32,
-      2.12,
-      -1.88,
-      4.32,
-      5.5,
-      4.96,
-      4.14,
-      8.52,
-      7.35,
-      9.31
-    ]
+    "desc": "Bottom-line profit after all expenses and taxes",
+    "annual": [-0.058, -0.026, -0.083, 0.219],
+    "quarterly": [-0.093, -0.008, -0.008, 0.025, 0.032, 0.051, 0.091, 0.045, 0.08]
   },
   {
     "name": "Net Margin",
     "group": "Income Statement",
     "fmt": "%",
-    "desc": "Net income as % of revenue",
-    "annual": [
-      -13.1,
-      9.6,
-      58.8,
-      12.1,
-      12.4,
-      24.5,
-      34.6,
-      39.3,
-      11.4,
-      36.2
-    ],
-    "quarterly": [
-      27.7,
-      26.9,
-      32.1,
-      32.0,
-      36.3,
-      37.6,
-      42.3,
-      39.9,
-      37.2,
-      37.9,
-      11.1,
-      17.0,
-      -14.3,
-      30.8,
-      36.9,
-      33.1,
-      26.0,
-      47.3,
-      38.1,
-      42.0
-    ]
+    "desc": "Net income as a percentage of revenue",
+    "annual": [-73.0, -22.7, -21.1, 25.7],
+    "quarterly": [-142.5, -9.8, -6.7, 17.5, 20.0, 26.7, 39.5, 16.6, 26.0]
   },
   {
     "name": "EPS Diluted",
     "group": "Income Statement",
     "fmt": "$",
-    "desc": "Earnings per diluted share",
-    "annual": [
-      -0.44,
-      0.42,
-      2.84,
-      0.64,
-      0.63,
-      1.5,
-      2.65,
-      3.3,
-      1.23,
-      4.77
-    ],
-    "quarterly": [
-      0.42,
-      0.45,
-      0.56,
-      0.59,
-      0.7,
-      0.77,
-      0.88,
-      0.82,
-      0.77,
-      0.83,
-      0.28,
-      0.44,
-      -0.4,
-      0.9,
-      1.14,
-      1.03,
-      0.85,
-      1.74,
-      1.5,
-      1.91
-    ]
+    "desc": "Diluted earnings per share",
+    "annual": [-1.71, -0.71, -0.64, 1.22],
+    "quarterly": [-1.77, -0.05, -0.05, 0.15, 0.18, 0.29, 0.5, 0.27, 0.44]
   },
   {
     "name": "R&D Expenses",
     "group": "Income Statement",
     "fmt": "B",
-    "desc": "Research & development spend",
-    "annual": [
-      2.67,
-      3.29,
-      3.77,
-      4.7,
-      4.97,
-      4.85,
-      4.92,
-      5.25,
-      9.31,
-      10.98
-    ],
-    "quarterly": [
-      1.21,
-      1.2,
-      1.21,
-      1.26,
-      1.25,
-      1.2,
-      1.2,
-      1.31,
-      1.36,
-      1.39,
-      2.31,
-      2.42,
-      2.35,
-      2.23,
-      2.25,
-      2.69,
-      3.05,
-      2.98,
-      2.96,
-      3.0
-    ]
+    "desc": "Research and development spending",
+    "annual": [0.074, 0.073, 0.201, 0.304],
+    "quarterly": [0.054, 0.04, 0.051, 0.057, 0.065, 0.067, 0.079, 0.094, 0.126]
   },
   {
     "name": "Operating Cash Flow",
     "group": "Cash Flow",
     "fmt": "B",
-    "desc": "Cash generated from operations",
-    "annual": [
-      3.41,
-      6.55,
-      8.88,
-      9.7,
-      12.06,
-      13.76,
-      16.74,
-      18.09,
-      19.96,
-      27.54
-    ],
-    "quarterly": [
-      3.54,
-      3.54,
-      3.49,
-      4.24,
-      4.42,
-      4.58,
-      4.04,
-      4.5,
-      4.72,
-      4.83,
-      4.82,
-      4.58,
-      4.96,
-      5.6,
-      6.11,
-      6.55,
-      7.17,
-      7.7,
-      8.26,
-      10.49
-    ]
+    "desc": "Cash generated from core business operations",
+    "annual": [-0.036, -0.013, 0.137, 0.319],
+    "quarterly": [0.004, 0.03, 0.064, 0.04, 0.011, 0.135, 0.078, 0.095, 0.075]
   },
   {
     "name": "Free Cash Flow",
     "group": "Cash Flow",
     "fmt": "B",
-    "desc": "Operating cash flow minus capex",
-    "annual": [
-      2.69,
-      5.48,
-      8.24,
-      9.27,
-      11.6,
-      13.32,
-      16.31,
-      17.63,
-      19.41,
-      26.91
-    ],
-    "quarterly": [
-      3.43,
-      3.45,
-      3.38,
-      4.16,
-      4.31,
-      4.46,
-      3.93,
-      4.38,
-      4.6,
-      4.72,
-      4.69,
-      4.45,
-      4.79,
-      5.48,
-      6.01,
-      6.41,
-      7.02,
-      7.47,
-      8.01,
-      10.26
-    ]
+    "desc": "Operating cash flow minus capital expenditures",
+    "annual": [-0.04, -0.015, 0.102, 0.282],
+    "quarterly": [0, 0.031, 0.047, 0.024, 0.006, 0.133, 0.066, 0.077, 0.067]
   },
   {
     "name": "Capital Expenditure",
     "group": "Cash Flow",
     "fmt": "B",
-    "desc": "Cash spent on property, plant & equipment",
-    "annual": [
-      -0.72,
-      -1.07,
-      -0.64,
-      -0.43,
-      -0.46,
-      -0.44,
-      -0.42,
-      -0.45,
-      -0.55,
-      -0.62
-    ],
-    "quarterly": [
-      -0.12,
-      -0.09,
-      -0.1,
-      -0.09,
-      -0.12,
-      -0.12,
-      -0.1,
-      -0.12,
-      -0.12,
-      -0.1,
-      -0.12,
-      -0.13,
-      -0.17,
-      -0.12,
-      -0.1,
-      -0.14,
-      -0.14,
-      -0.24,
-      -0.25,
-      -0.23
-    ]
+    "desc": "Spending on property, plant and equipment",
+    "annual": [0.004, 0.003, 0.034, 0.038],
+    "quarterly": [0.003, -0.001, 0.017, 0.015, 0.005, 0.002, 0.012, 0.019, 0.008]
   },
   {
     "name": "Stock Buybacks",
     "group": "Cash Flow",
     "fmt": "B",
-    "desc": "Cash returned via share repurchases",
-    "annual": [
-      0.0,
-      0.0,
-      -7.26,
-      -6.41,
-      -0.77,
-      -1.3,
-      -8.46,
-      -7.68,
-      -12.39,
-      -6.31
-    ],
-    "quarterly": [
-      -0.35,
-      -0.27,
-      -3.1,
-      -3.29,
-      -1.79,
-      -0.27,
-      -1.52,
-      -3.42,
-      -2.17,
-      -0.58,
-      -8.29,
-      -1.55,
-      -1.35,
-      -1.2,
-      -2.04,
-      -4.22,
-      -0.06,
-      0.0,
-      -7.85,
-      -0.6
-    ]
+    "desc": "Cash spent repurchasing shares",
+    "annual": [0, 0, 0.001, 0],
+    "quarterly": [null, null, null, null, null, null, null, null, null]
   },
   {
     "name": "Dividends Paid",
     "group": "Cash Flow",
     "fmt": "B",
-    "desc": "Cash returned via dividends",
-    "annual": [
-      -0.75,
-      -1.65,
-      -3.0,
-      -4.24,
-      -5.53,
-      -6.21,
-      -7.03,
-      -7.64,
-      -9.81,
-      -11.14
-    ],
-    "quarterly": [
-      -1.56,
-      -1.56,
-      -1.76,
-      -1.75,
-      -1.74,
-      -1.78,
-      -1.93,
-      -1.91,
-      -1.9,
-      -1.9,
-      -2.44,
-      -2.44,
-      -2.45,
-      -2.48,
-      -2.77,
-      -2.79,
-      -2.79,
-      -2.8,
-      -3.09,
-      -3.09
-    ]
+    "desc": "Cash paid out as dividends",
+    "annual": [0, 0, 0, 0],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   {
     "name": "Cash & Equivalents",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Liquid cash on hand",
-    "annual": [
-      3.1,
-      11.2,
-      4.29,
-      5.05,
-      7.62,
-      12.16,
-      12.42,
-      14.19,
-      9.35,
-      16.18
-    ],
-    "quarterly": [
-      11.11,
-      12.16,
-      10.22,
-      9.01,
-      9.98,
-      12.42,
-      12.65,
-      11.55,
-      12.05,
-      14.19,
-      11.86,
-      9.81,
-      9.95,
-      9.35,
-      9.31,
-      9.47,
-      10.72,
-      16.18,
-      14.17,
-      19.63
-    ]
+    "desc": "Cash and cash equivalents on hand",
+    "annual": [0.076, 0.045, 0.08, 0.168],
+    "quarterly": [0.696, 0.421, 0.126, 0.08, 0.086, 0.162, 0.14, 0.168, 0.148]
   },
   {
     "name": "Total Debt",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Short-term + long-term debt",
-    "annual": [
-      13.64,
-      17.55,
-      17.49,
-      32.8,
-      41.69,
-      40.27,
-      39.98,
-      39.65,
-      67.57,
-      65.14
-    ],
-    "quarterly": [
-      40.46,
-      40.27,
-      39.51,
-      39.47,
-      39.49,
-      39.98,
-      39.28,
-      39.31,
-      39.34,
-      39.65,
-      75.9,
-      74.02,
-      69.96,
-      67.57,
-      66.58,
-      67.28,
-      64.23,
-      65.14,
-      66.06,
-      64.91
-    ]
+    "desc": "Total interest-bearing debt",
+    "annual": [0, 0, 0, 0],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   {
     "name": "Net Debt",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Total debt minus cash",
-    "annual": [
-      10.54,
-      6.34,
-      13.2,
-      27.74,
-      34.07,
-      28.11,
-      27.56,
-      25.46,
-      58.22,
-      48.96
-    ],
-    "quarterly": [
-      29.35,
-      28.11,
-      29.29,
-      30.46,
-      29.52,
-      27.56,
-      26.64,
-      27.76,
-      27.29,
-      25.46,
-      64.04,
-      64.21,
-      60.01,
-      58.22,
-      57.27,
-      57.81,
-      53.51,
-      48.96,
-      51.88,
-      45.28
-    ]
+    "desc": "Total debt minus cash and short-term investments",
+    "annual": [-0.163, -0.149, -0.914, -1.189],
+    "quarterly": [-0.801, -0.831, -0.887, -0.914, -0.925, -1.065, -1.134, -1.189, -1.184]
   },
   {
     "name": "Total Assets",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Everything the company owns",
-    "annual": [
-      49.97,
-      54.42,
-      50.12,
-      67.49,
-      75.93,
-      75.57,
-      73.25,
-      72.86,
-      165.65,
-      171.09
-    ],
-    "quarterly": [
-      75.88,
-      75.57,
-      73.22,
-      71.72,
-      71.33,
-      73.25,
-      72.98,
-      71.67,
-      71.59,
-      72.86,
-      177.87,
-      175.21,
-      167.97,
-      165.65,
-      165.36,
-      164.63,
-      165.62,
-      171.09,
-      169.9,
-      179.16
-    ]
+    "desc": "Sum of all assets on the balance sheet",
+    "annual": [0.212, 0.196, 1.055, 1.532],
+    "quarterly": [0.865, 0.916, 0.983, 1.055, 1.122, 1.271, 1.401, 1.532, 1.659]
   },
   {
     "name": "Total Equity",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Assets minus liabilities (book value)",
-    "annual": [
-      18.89,
-      20.29,
-      26.66,
-      24.97,
-      23.9,
-      24.99,
-      22.71,
-      23.99,
-      67.68,
-      81.29
-    ],
-    "quarterly": [
-      24.37,
-      24.99,
-      22.99,
-      20.99,
-      20.9,
-      22.71,
-      23.31,
-      22.01,
-      22.08,
-      23.99,
-      70.28,
-      69.96,
-      65.65,
-      67.68,
-      69.79,
-      69.59,
-      73.28,
-      81.29,
-      79.87,
-      87.69
-    ]
+    "desc": "Total shareholders' equity",
+    "annual": [-0.085, -0.098, 0.965, 1.364],
+    "quarterly": [0.809, 0.845, 0.89, 0.965, 1.042, 1.136, 1.272, 1.364, 1.494]
   },
   {
     "name": "P/E Ratio",
     "group": "Valuation",
     "fmt": "x",
-    "desc": "Price divided by trailing earnings",
-    "annual": [
-      -35.84,
-      63.17,
-      7.5,
-      44.56,
-      47.71,
-      32.14,
-      16.73,
-      24.79,
-      132.21,
-      73.87
-    ],
-    "quarterly": [
-      26.61,
-      27.42,
-      24.41,
-      22.76,
-      17.71,
-      14.38,
-      16.1,
-      19.02,
-      28.09,
-      24.65,
-      106.02,
-      71.82,
-      -88.34,
-      45.6,
-      46.44,
-      47.57,
-      84.75,
-      50.35,
-      53.4,
-      53.21
-    ]
+    "desc": "Price divided by trailing earnings per share (via market cap / trailing net income)",
+    "annual": [null, null, null, 129.2],
+    "quarterly": [null, null, null, null, 237.7, 150.1, 166.3, 129.2, 70.1]
   },
   {
     "name": "EV / EBITDA",
     "group": "Valuation",
     "fmt": "x",
-    "desc": "Enterprise value relative to EBITDA",
-    "annual": [
-      28.96,
-      16.16,
-      11.39,
-      15.78,
-      15.76,
-      16.65,
-      11.48,
-      18.23,
-      35.08,
-      50.62
-    ],
-    "quarterly": [
-      62.86,
-      60.0,
-      61.78,
-      58.23,
-      49.86,
-      42.12,
-      51.1,
-      57.81,
-      81.12,
-      70.31,
-      135.69,
-      120.66,
-      113.0,
-      116.17,
-      172.45,
-      98.35,
-      181.49,
-      178.91,
-      149.68,
-      155.5
-    ]
+    "desc": "Enterprise value divided by trailing EBITDA",
+    "annual": [null, null, null, 150.5],
+    "quarterly": [null, null, null, null, null, 299.3, 286.3, 150.5, 75.4]
   },
   {
     "name": "Price / FCF",
     "group": "Valuation",
     "fmt": "x",
-    "desc": "Market cap divided by free cash flow",
-    "annual": [
-      23.19,
-      19.5,
-      11.16,
-      13.1,
-      12.18,
-      16.25,
-      11.79,
-      19.8,
-      40.15,
-      63.47
-    ],
-    "quarterly": [
-      58.29,
-      63.17,
-      71.31,
-      56.7,
-      50.55,
-      43.31,
-      61.8,
-      60.45,
-      80.74,
-      73.57,
-      119.73,
-      136.98,
-      138.28,
-      143.86,
-      170.01,
-      147.37,
-      199.81,
-      229.79,
-      195.98,
-      193.09
-    ]
+    "desc": "Market cap divided by trailing free cash flow",
+    "annual": [null, null, 209.5, 100.5],
+    "quarterly": [null, 217.0, 90.7, 209.5, 91.0, 71.4, 144.1, 100.5, 54.8]
   },
   {
     "name": "FCF Yield",
     "group": "Valuation",
     "fmt": "%",
-    "desc": "Free cash flow divided by market cap",
-    "annual": [
-      4.3,
-      5.1,
-      9.0,
-      7.6,
-      8.2,
-      6.2,
-      8.5,
-      5.1,
-      2.5,
-      1.6
-    ],
-    "quarterly": [
-      1.7,
-      1.6,
-      1.4,
-      1.8,
-      2.0,
-      2.3,
-      1.6,
-      1.7,
-      1.2,
-      1.4,
-      0.8,
-      0.7,
-      0.7,
-      0.7,
-      0.6,
-      0.7,
-      0.5,
-      0.4,
-      0.5,
-      0.5
-    ]
+    "desc": "Trailing free cash flow as a percentage of market cap",
+    "annual": [null, null, 0.5, 1.0],
+    "quarterly": [-0.1, 0.5, 1.1, 0.5, 1.1, 1.4, 0.7, 1.0, 1.8]
   },
   {
     "name": "Dividend Yield",
     "group": "Valuation",
     "fmt": "%",
-    "desc": "Annual dividend divided by share price",
-    "annual": [
-      1.2,
-      1.5,
-      3.3,
-      3.5,
-      3.9,
-      2.9,
-      3.7,
-      2.2,
-      1.3,
-      0.7
-    ],
-    "quarterly": [
-      0.8,
-      0.7,
-      0.7,
-      0.7,
-      0.8,
-      0.9,
-      0.8,
-      0.7,
-      0.5,
-      0.5,
-      0.4,
-      0.4,
-      0.4,
-      0.3,
-      0.3,
-      0.3,
-      0.2,
-      0.2,
-      0.2,
-      0.2
-    ]
+    "desc": "Annual dividends per share as a percentage of price",
+    "annual": [0, 0, 0, 0],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   {
     "name": "ROE",
     "group": "Returns",
     "fmt": "%",
-    "desc": "Net income divided by shareholders equity",
-    "annual": [
-      -9.2,
-      8.3,
-      46.0,
-      10.9,
-      12.4,
-      27.0,
-      50.6,
-      58.7,
-      8.7,
-      28.4
-    ],
-    "quarterly": [
-      7.7,
-      8.0,
-      10.8,
-      12.3,
-      14.7,
-      14.8,
-      16.2,
-      15.8,
-      15.0,
-      14.7,
-      1.9,
-      3.0,
-      -2.9,
-      6.4,
-      7.9,
-      7.1,
-      5.6,
-      10.5,
-      9.2,
-      10.6
-    ]
+    "desc": "Net income as a percentage of shareholders' equity",
+    "annual": [null, null, -8.6, 16.1],
+    "quarterly": [-12.6, -10.6, -10.5, -8.6, 4.0, 8.8, 15.6, 16.1, 17.9]
   },
   {
     "name": "ROIC",
     "group": "Returns",
     "fmt": "%",
     "desc": "Return on invested capital",
-    "annual": [
-      -0.9,
-      4.5,
-      10.7,
-      5.4,
-      5.7,
-      12.2,
-      19.7,
-      22.5,
-      5.6,
-      16.4
-    ],
-    "quarterly": [
-      3.1,
-      3.4,
-      4.3,
-      4.9,
-      5.3,
-      5.5,
-      6.1,
-      5.7,
-      5.4,
-      5.6,
-      1.2,
-      1.9,
-      -1.3,
-      3.1,
-      4.2,
-      3.8,
-      3.1,
-      4.8,
-      5.0,
-      6.1
-    ]
+    "annual": [null, null, null, null],
+    "quarterly": [null, null, null, null, null, null, null, null, null]
   },
   {
     "name": "Debt / Equity",
     "group": "Leverage",
     "fmt": "x",
-    "desc": "Total debt relative to equity",
-    "annual": [
-      0.72,
-      0.87,
-      0.66,
-      1.31,
-      1.74,
-      1.61,
-      1.76,
-      1.65,
-      1.0,
-      0.8
-    ],
-    "quarterly": [
-      1.66,
-      1.61,
-      1.72,
-      1.88,
-      1.89,
-      1.76,
-      1.69,
-      1.79,
-      1.78,
-      1.65,
-      1.08,
-      1.06,
-      1.07,
-      1.0,
-      0.95,
-      0.97,
-      0.88,
-      0.8,
-      0.83,
-      0.74
-    ]
+    "desc": "Total debt divided by total equity",
+    "annual": [0, 0, 0, 0],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   {
     "name": "Net Debt / EBITDA",
     "group": "Leverage",
     "fmt": "x",
-    "desc": "Leverage multiple on EBITDA",
-    "annual": [
-      4.19,
-      0.91,
-      1.43,
-      2.94,
-      3.06,
-      1.91,
-      1.44,
-      1.24,
-      2.44,
-      1.41
-    ],
-    "quarterly": [
-      8.05,
-      6.85,
-      6.68,
-      6.66,
-      5.95,
-      5.26,
-      5.05,
-      5.49,
-      5.55,
-      4.8,
-      13.88,
-      11.5,
-      9.38,
-      7.99,
-      9.15,
-      5.67,
-      6.67,
-      4.96,
-      4.79,
-      3.47
-    ]
+    "desc": "Net debt divided by trailing EBITDA",
+    "annual": [null, null, null, -6.6],
+    "quarterly": [null, null, null, null, null, -22.8, -10.2, -6.6, -5.1]
   },
   {
     "name": "Revenue Growth",
     "group": "Growth",
     "fmt": "%",
-    "desc": "Year-over-year revenue growth rate",
-    "annual": [
-      94.0,
-      33.2,
-      18.2,
-      8.4,
-      5.7,
-      14.9,
-      21.0,
-      7.9,
-      44.0,
-      23.9
-    ],
-    "quarterly": [
-      2.5,
-      9.3,
-      4.0,
-      5.2,
-      4.5,
-      5.5,
-      -0.2,
-      -2.0,
-      1.6,
-      4.7,
-      28.7,
-      4.4,
-      4.7,
-      7.5,
-      6.1,
-      0.6,
-      6.3,
-      12.9,
-      7.2,
-      14.9
-    ]
+    "desc": "Year-over-year revenue growth",
+    "annual": [null, 45.0, 242.2, 115.1],
+    "quarterly": [269.4, 619.0, 206.2, 179.3, 144.3, 149.7, 103.9, 91.8, 93.4]
   },
   {
     "name": "EPS Growth",
     "group": "Growth",
     "fmt": "%",
     "desc": "Year-over-year diluted EPS growth",
-    "annual": [
-      -189.8,
-      195.5,
-      576.2,
-      -77.5,
-      -1.6,
-      138.1,
-      76.7,
-      24.5,
-      -62.7,
-      287.8
-    ],
-    "quarterly": [
-      27.3,
-      7.1,
-      24.4,
-      5.4,
-      18.6,
-      10.0,
-      14.3,
-      -6.8,
-      -6.1,
-      7.8,
-      -66.3,
-      57.1,
-      -190.9,
-      325.0,
-      26.7,
-      -9.6,
-      -17.5,
-      104.7,
-      -13.8,
-      27.3
-    ]
+    "annual": [null, 58.5, 9.9, 290.6],
+    "quarterly": [-261.2, 90.9, 37.5, null, 110.2, 680.0, 1100.0, null, 144.4]
   },
   {
     "name": "FCF Growth",
     "group": "Growth",
     "fmt": "%",
     "desc": "Year-over-year free cash flow growth",
-    "annual": [
-      55.8,
-      103.9,
-      50.4,
-      12.4,
-      25.2,
-      14.9,
-      22.5,
-      8.1,
-      10.1,
-      38.6
-    ],
-    "quarterly": [
-      -0.5,
-      0.8,
-      -2.0,
-      22.8,
-      3.6,
-      3.6,
-      -11.8,
-      11.4,
-      5.0,
-      2.7,
-      -0.6,
-      -5.2,
-      7.7,
-      14.4,
-      9.7,
-      6.6,
-      9.6,
-      6.3,
-      7.3,
-      28.1
-    ]
+    "annual": [null, 61.1, 761.8, 175.1],
+    "quarterly": [105.4, 232.3, null, 81.2, null, 328.2, 40.7, 215.7, 1023.4]
   },
   {
     "name": "Operating Income Growth",
     "group": "Growth",
     "fmt": "%",
     "desc": "Year-over-year operating income growth",
-    "annual": [
-      -125.1,
-      679.7,
-      116.6,
-      -32.9,
-      16.6,
-      112.2,
-      67.0,
-      13.9,
-      -16.9,
-      89.3
-    ],
-    "quarterly": [
-      7.6,
-      21.4,
-      21.2,
-      9.1,
-      9.5,
-      6.7,
-      2.9,
-      -2.3,
-      -3.8,
-      10.0,
-      -50.9,
-      42.3,
-      27.8,
-      22.1,
-      35.3,
-      -6.9,
-      1.0,
-      27.5,
-      15.6,
-      25.2
-    ]
+    "annual": [null, 51.0, -293.5, 249.4],
+    "quarterly": [-338.4, -38.2, null, -98.4, 113.6, 263.4, 722.8, null, 447.9]
   },
   {
     "name": "Net Income Growth",
     "group": "Growth",
     "fmt": "%",
     "desc": "Year-over-year net income growth",
-    "annual": [
-      -227.5,
-      197.3,
-      624.5,
-      -77.8,
-      8.7,
-      127.6,
-      70.7,
-      22.5,
-      -58.1,
-      292.3
-    ],
-    "quarterly": [
-      25.7,
-      6.0,
-      24.3,
-      4.8,
-      18.7,
-      9.3,
-      12.4,
-      -7.8,
-      -5.1,
-      6.7,
-      -62.4,
-      60.1,
-      -188.4,
-      330.6,
-      27.3,
-      -9.8,
-      -16.6,
-      105.7,
-      -13.7,
-      26.7
-    ]
-  }
-,
+    "annual": [null, 55.0, -217.7, 362.7],
+    "quarterly": [-432.8, 62.3, -143.1, 72.5, 134.2, 778.8, 1300.0, 82.0, 152.4]
+  },
   {
     "name": "Cost of Revenue",
     "group": "Income Statement",
     "fmt": "B",
-    "desc": "Direct cost of goods sold",
-    "annual": [7.3, 9.13, 10.12, 10.11, 10.37, 10.61, 11.11, 11.13, 19.07, 20.59],
-    "quarterly": [2.58, 2.77, 2.66, 2.66, 2.78, 3.0, 2.91, 2.62, 2.71, 2.89, 4.59, 4.71, 4.72, 5.05, 4.77, 4.81, 5.25, 5.77, 6.65, 7.27]
+    "desc": "Direct cost of producing goods sold",
+    "annual": [0.021, 0.036, 0.094, 0.207],
+    "quarterly": [0.015, 0.017, 0.025, 0.037, 0.04, 0.046, 0.055, 0.066, 0.073]
   },
   {
     "name": "SG&A Expenses",
     "group": "Income Statement",
     "fmt": "B",
-    "desc": "Selling, general & admin costs",
-    "annual": [0.81, 0.79, 1.06, 1.71, 1.94, 1.35, 1.38, 1.59, 4.96, 4.21],
-    "quarterly": [0.35, 0.34, 0.32, 0.37, 0.32, 0.37, 0.35, 0.44, 0.39, 0.42, 1.57, 1.28, 1.1, 1.01, 0.95, 1.08, 1.07, 1.11, 1.02, 1.06]
+    "desc": "Selling, general and administrative expenses",
+    "annual": [0.045, 0.036, 0.218, 0.168],
+    "quarterly": [0.08, 0.044, 0.046, 0.048, 0.044, 0.039, 0.041, 0.044, 0.048]
   },
   {
     "name": "R&D as % Revenue",
     "group": "Income Statement",
     "fmt": "%",
-    "desc": "R&D spend as % of revenue",
-    "annual": [20.2, 18.7, 18.1, 20.8, 20.8, 17.7, 14.8, 14.7, 18.1, 17.2],
-    "quarterly": [17.8, 16.2, 15.7, 15.6, 14.8, 13.4, 13.4, 15.0, 15.3, 14.9, 19.3, 19.3, 18.0, 15.9, 15.1, 17.9, 19.1, 16.5, 15.4, 13.5]
+    "desc": "R&D spending as a percentage of revenue",
+    "annual": [92.3, 63.4, 50.7, 35.7],
+    "quarterly": [82.1, 52.2, 44.8, 40.1, 40.5, 34.8, 34.2, 34.7, 40.7]
   },
   {
     "name": "Interest Expense",
     "group": "Income Statement",
     "fmt": "B",
-    "desc": "Interest cost on debt",
-    "annual": [0.59, 0.45, 0.63, 1.44, 1.78, 1.89, 1.74, 1.62, 3.95, 3.21],
-    "quarterly": [0.42, 0.41, 0.41, 0.52, 0.41, 0.41, 0.41, 0.41, 0.41, 0.41, 0.93, 1.05, 1.06, 0.86, 0.87, 0.77, 0.75, 0.76, 0.75, 0.74]
+    "desc": "Interest paid on debt",
+    "annual": [0, 0, 0, 0],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   {
     "name": "Depreciation & Amortization",
     "group": "Income Statement",
     "fmt": "B",
-    "desc": "D&A — key driver of GAAP vs non-GAAP gap",
-    "annual": [3.04, 4.73, 4.06, 5.78, 6.91, 6.04, 4.98, 3.84, 10.01, 8.78],
-    "quarterly": [1.5, 1.5, 1.29, 1.26, 1.22, 1.22, 1.03, 0.94, 0.93, 0.93, 2.35, 2.53, 2.52, 2.61, -0.1, 4.34, 2.2, 2.23, 2.15, 2.17]
+    "desc": "Non-cash charge for asset wear and intangible amortization",
+    "annual": [0.001, 0.002, 0.003, 0.007],
+    "quarterly": [0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.003, 0.004]
   },
   {
     "name": "Stock Based Compensation",
     "group": "Cash Flow",
     "fmt": "B",
-    "desc": "Equity comp — dilution signal",
-    "annual": [0.68, 0.92, 1.23, 2.19, 1.98, 1.7, 1.53, 2.17, 5.74, 7.57],
-    "quarterly": [0.42, 0.41, 0.39, 0.39, 0.37, 0.39, 0.39, 0.51, 0.63, 0.64, 1.58, 1.46, 1.39, 1.31, 1.28, 1.77, 2.32, 2.2, 2.18, 2.09]
+    "desc": "Non-cash compensation expense paid in equity",
+    "annual": [0.03, 0.011, 0.235, 0.16],
+    "quarterly": [0.098, 0.043, 0.046, 0.048, 0.042, 0.035, 0.041, 0.041, 0.049]
   },
   {
     "name": "Net Receivables",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Accounts receivable — collection quality",
-    "annual": [2.18, 2.45, 3.33, 3.26, 2.3, 2.07, 2.96, 3.15, 6.33, 12.15],
-    "quarterly": [2.23, 2.07, 2.54, 3.08, 2.71, 2.96, 3.23, 3.03, 2.91, 3.65, 4.97, 5.5, 6.22, 6.33, 7.68, 8.8, 10.65, 12.15, 14.0, 10.83]
+    "desc": "Amounts owed by customers, net of allowances",
+    "annual": [0.011, 0.008, 0.039, 0.083],
+    "quarterly": [0.017, 0.022, 0.025, 0.039, 0.07, 0.024, 0.043, 0.083, 0.135]
   },
   {
     "name": "Inventory",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Raw materials & finished goods",
-    "annual": [1.4, 1.45, 1.12, 0.87, 1.0, 1.3, 1.93, 1.9, 1.76, 2.27],
-    "quarterly": [1.16, 1.3, 1.52, 1.67, 1.84, 1.93, 1.9, 1.89, 1.84, 1.9, 1.92, 1.84, 1.89, 1.76, 1.91, 2.02, 2.18, 2.27, 2.96, 4.33]
+    "desc": "Value of unsold goods on hand",
+    "annual": [0.029, 0.024, 0.043, 0.059],
+    "quarterly": [0.03, 0.029, 0.024, 0.043, 0.051, 0.059, 0.052, 0.059, 0.06]
   },
   {
     "name": "Total Current Assets",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Assets convertible to cash within 1 year",
-    "annual": [7.12, 15.82, 9.11, 9.92, 11.9, 16.59, 18.5, 20.85, 19.6, 31.57],
-    "quarterly": [15.64, 16.59, 15.34, 14.81, 15.56, 18.5, 18.84, 17.87, 18.33, 20.85, 27.19, 25.3, 19.95, 19.6, 20.99, 22.18, 25.0, 31.57, 32.06, 42.21]
+    "desc": "Assets expected to convert to cash within a year",
+    "annual": [0.206, 0.186, 1.013, 1.362],
+    "quarterly": [0.854, 0.891, 0.946, 1.013, 1.076, 1.181, 1.29, 1.362, 1.413]
   },
   {
     "name": "Property Plant & Equipment",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Net PP&E — physical asset base",
-    "annual": [2.51, 2.6, 2.64, 2.56, 2.51, 2.35, 2.22, 2.62, 2.52, 2.53],
-    "quarterly": [2.37, 2.35, 2.3, 2.26, 2.25, 2.22, 2.2, 2.21, 2.18, 2.15, 2.66, 2.67, 2.6, 2.52, 2.47, 2.46, 2.45, 2.53, 2.6, 2.79]
+    "desc": "Net value of physical operating assets",
+    "annual": [0.004, 0.005, 0.036, 0.092],
+    "quarterly": [0.008, 0.022, 0.035, 0.036, 0.039, 0.062, 0.072, 0.092, 0.097]
   },
   {
     "name": "Goodwill",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Acquisition premium — impairment risk if deal fails",
-    "annual": [24.73, 24.71, 26.91, 36.71, 43.45, 43.45, 43.61, 43.65, 97.87, 97.8],
-    "quarterly": [43.46, 43.45, 43.45, 43.6, 43.61, 43.61, 43.61, 43.61, 43.62, 43.65, 97.59, 97.87, 97.87, 97.87, 97.87, 97.8, 97.8, 97.8, 97.8, 97.8]
+    "desc": "Premium paid over fair value in acquisitions",
+    "annual": [0, 0, 0, 0.019],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0.019, 0.088]
   },
   {
     "name": "Intangible Assets",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "IP, patents, customer lists — amortises over time",
-    "annual": [15.07, 10.83, 10.76, 17.55, 16.78, 11.37, 7.11, 3.87, 40.58, 32.27],
-    "quarterly": [12.72, 11.37, 10.24, 9.24, 8.17, 7.11, 6.23, 5.43, 4.65, 3.87, 47.19, 45.41, 43.03, 40.58, 38.58, 36.39, 34.34, 32.27, 30.3, 28.33]
+    "desc": "Non-physical assets such as patents and trademarks",
+    "annual": [null, null, null, null],
+    "quarterly": [null, null, null, null, null, null, null, null, null]
   },
   {
     "name": "Short Term Debt",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Debt due within 12 months",
-    "annual": [0.45, 0.12, 0.0, 2.79, 0.95, 0.37, 0.51, 1.67, 1.27, 3.15],
-    "quarterly": [0.3, 0.37, 0.3, 0.3, 0.3, 0.51, 1.11, 1.16, 1.16, 1.67, 2.49, 2.48, 3.21, 1.27, 5.65, 5.53, 1.4, 3.15, 2.25, 2.25]
+    "desc": "Debt due within one year",
+    "annual": [0, 0, 0, 0],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   {
     "name": "Long Term Debt",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Debt due beyond 12 months",
-    "annual": [13.19, 17.43, 17.49, 30.01, 40.81, 39.9, 39.46, 37.98, 66.31, 61.98],
-    "quarterly": [40.21, 39.9, 39.24, 39.19, 39.19, 39.46, 38.17, 38.21, 38.23, 37.98, 73.47, 71.59, 66.8, 66.31, 60.93, 61.75, 62.84, 61.98, 63.81, 62.66]
+    "desc": "Debt due beyond one year",
+    "annual": [0, 0, 0, 0],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   {
     "name": "Total Current Liabilities",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Obligations due within 1 year",
-    "annual": [3.08, 2.53, 2.34, 6.9, 6.37, 6.28, 7.05, 7.41, 16.7, 18.51],
-    "quarterly": [6.5, 6.28, 6.29, 6.91, 6.7, 7.05, 7.48, 7.51, 7.35, 7.41, 20.37, 20.17, 19.22, 16.7, 20.91, 20.6, 16.7, 18.51, 16.86, 18.86]
+    "desc": "Obligations due within one year",
+    "annual": [0.04, 0.035, 0.087, 0.133],
+    "quarterly": [0.046, 0.064, 0.088, 0.087, 0.077, 0.106, 0.101, 0.133, 0.125]
   },
   {
     "name": "Retained Earnings",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Cumulative profits kept in the business",
-    "annual": [-0.22, -0.13, 3.49, 0.0, 0.0, 0.75, 1.6, 2.68, 0.0, 9.76],
-    "quarterly": [0.32, 0.75, 0.0, 0.0, 0.0, 1.6, 2.37, 1.36, 1.18, 2.68, 0.0, 0.0, -1.88, 0.0, 2.73, 2.69, 4.04, 9.76, 6.52, 12.17]
+    "desc": "Cumulative earnings (or accumulated deficit) since inception",
+    "annual": [-0.099, -0.125, -0.209, 0.01],
+    "quarterly": [-0.218, -0.226, -0.234, -0.209, -0.177, -0.126, -0.035, 0.01, 0.091]
   },
   {
     "name": "Acquisitions",
     "group": "Cash Flow",
     "fmt": "B",
-    "desc": "M&A spend — negative = cash out",
-    "annual": [-9.16, -0.03, -4.03, -15.08, -10.65, 0.04, -0.25, -0.05, -25.98, 0.0],
-    "quarterly": [-0.01, 0.05, 0.0, -0.23, -0.01, -0.01, 0.0, 0.0, -0.02, -0.04, -25.42, -0.56, 3.48, -3.49, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+    "desc": "Cash spent acquiring other businesses",
+    "annual": [0, 0, 0, 0.029],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0.029, 0.065]
   },
   {
     "name": "Debt Repayment",
     "group": "Cash Flow",
     "fmt": "B",
-    "desc": "Principal repaid on debt — negative = cash out",
-    "annual": [8.19, 3.72, -0.97, 13.23, 7.7, -1.59, -0.43, -0.4, 20.35, -2.81],
-    "quarterly": [0.0, -0.76, -0.26, -0.16, 0.0, -0.01, -0.26, 0.0, 0.0, -0.14, 29.08, -2.0, -4.23, -2.5, -1.12, 0.63, -3.16, 0.85, 0.82, -1.25]
+    "desc": "Cash used to repay debt principal",
+    "annual": [0, 0, 0, 0],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   {
     "name": "Market Cap",
     "group": "Valuation",
     "fmt": "B",
-    "desc": "Total market value of equity",
-    "annual": [62.33, 106.88, 92.0, 121.39, 141.22, 216.52, 192.27, 349.14, 779.38, 1708.34],
-    "quarterly": [199.71, 218.12, 241.39, 235.76, 217.79, 193.21, 243.07, 264.77, 371.16, 347.46, 561.88, 609.29, 662.52, 788.65, 1022.24, 944.79, 1403.45, 1715.59, 1569.79, 1981.54]
+    "desc": "Share price multiplied by shares outstanding",
+    "annual": [null, null, 21.46, 28.31],
+    "quarterly": [11.53, 9.479, 8.307, 21.46, 9.84, 15.03, 33.07, 28.31, 18.77]
   },
   {
     "name": "Enterprise Value",
     "group": "Valuation",
     "fmt": "B",
-    "desc": "Mkt cap + debt − cash — total business value",
-    "annual": [72.87, 113.22, 105.2, 149.13, 175.29, 244.63, 219.83, 374.6, 837.59, 1757.29],
-    "quarterly": [229.06, 246.23, 270.68, 266.22, 247.3, 220.77, 269.7, 292.53, 398.45, 372.92, 625.92, 673.5, 722.53, 846.86, 1079.51, 1002.6, 1456.96, 1764.54, 1621.68, 2026.82]
+    "desc": "Market cap plus net debt",
+    "annual": [null, null, 20.54, 27.12],
+    "quarterly": [10.73, 8.648, 7.42, 20.54, 8.915, 13.96, 31.94, 27.12, 17.59]
   },
   {
     "name": "Price / Sales",
     "group": "Valuation",
     "fmt": "x",
-    "desc": "Market cap divided by annual revenue",
-    "annual": [4.7, 6.1, 4.4, 5.4, 5.9, 7.9, 5.8, 9.7, 15.1, 26.7],
-    "quarterly": [29.5, 29.4, 31.3, 29.1, 25.7, 21.6, 27.3, 30.3, 41.8, 37.4, 47.0, 48.8, 50.7, 56.1, 68.5, 63.0, 88.0, 95.2, 81.3, 89.3]
+    "desc": "Market cap divided by trailing revenue",
+    "annual": [null, null, 54.2, 33.2],
+    "quarterly": [70.6, 41.3, 27.2, 54.2, 20.1, 24.8, 45.7, 33.2, 18.7]
   },
   {
     "name": "SBC / Revenue",
     "group": "Income Statement",
     "fmt": "%",
-    "desc": "Stock comp as % of revenue — dilution intensity",
-    "annual": [5.1, 5.2, 5.9, 9.7, 8.3, 6.2, 4.6, 6.1, 11.1, 11.8],
-    "quarterly": [6.2, 5.6, 5.0, 4.8, 4.4, 4.3, 4.4, 5.9, 7.1, 6.9, 13.2, 11.7, 10.6, 9.3, 8.6, 11.8, 14.6, 12.2, 11.3, null]
+    "desc": "Stock-based compensation as a percentage of revenue",
+    "annual": [37.9, 9.2, 59.2, 18.8],
+    "quarterly": [149.8, 56.0, 40.3, 34.2, 26.6, 18.5, 17.7, 15.3, 15.9]
   },
   {
     "name": "Debt / Assets",
     "group": "Leverage",
     "fmt": "%",
-    "desc": "Total debt as % of assets — solvency signal",
-    "annual": [27.3, 32.2, 34.9, 48.6, 54.9, 53.3, 54.6, 54.4, 40.8, 38.1],
-    "quarterly": [53.3, 53.3, 54.0, 55.0, 55.4, 54.6, 53.8, 54.9, 54.9, 54.4, 42.7, 42.2, 41.7, 40.8, 40.3, 40.9, 38.8, 38.1, 38.9, 36.2]
+    "desc": "Total debt as a percentage of total assets",
+    "annual": [0, 0, 0, 0],
+    "quarterly": [0, 0, 0, 0, 0, 0, 0, 0, 0]
   },
   {
     "name": "Current Ratio",
     "group": "Leverage",
     "fmt": "x",
-    "desc": "Current assets / current liabilities — liquidity",
-    "annual": [2.31, 6.26, 3.9, 1.44, 1.87, 2.64, 2.62, 2.82, 1.17, 1.71],
-    "quarterly": [2.41, 2.64, 2.44, 2.14, 2.32, 2.62, 2.52, 2.38, 2.5, 2.82, 1.33, 1.25, 1.04, 1.17, 1.0, 1.08, 1.5, 1.71, 1.9, 2.24]
+    "desc": "Current assets divided by current liabilities",
+    "annual": [5.1, 5.3, 11.7, 10.2],
+    "quarterly": [18.7, 13.9, 10.7, 11.7, 13.9, 11.1, 12.8, 10.2, 11.3]
   },
   {
     "name": "Interest Coverage",
     "group": "Leverage",
     "fmt": "x",
-    "desc": "EBITDA / interest expense — debt safety margin",
-    "annual": [-0.7, 5.2, 8.2, 2.4, 2.3, 4.5, 8.2, 10.0, 3.4, 7.9],
-    "quarterly": [5.1, 6.3, 7.7, 6.6, 9.2, 9.8, 10.1, 9.9, 9.5, 10.5, 2.2, 2.8, 3.6, 5.4, 7.2, 7.6, 7.8, 9.9, 11.6, 14.6]
+    "desc": "Operating income divided by interest expense",
+    "annual": [null, null, null, null],
+    "quarterly": [null, null, null, null, null, null, null, null, null]
   },
   {
     "name": "Gross Profit Growth",
     "group": "Growth",
     "fmt": "%",
-    "desc": "YoY gross profit growth",
-    "annual": [67.2, 43.2, 26.1, 16.3, 8.3, 24.6, 31.2, 11.7, 31.7, 33.2],
-    "quarterly": [3.5, 10.5, 8.9, 7.7, 4.4, 4.3, 1.3, 1.8, 0.8, 3.9, 15.1, 5.4, 7.5, 7.7, 12.7, 0.5, 5.0, 14.4, 3.4, 17.8]
+    "desc": "Year-over-year gross profit growth",
+    "annual": [null, 36.0, 279.2, 113.2],
+    "quarterly": [1086.5, 609.3, 212.7, 167.6, 136.4, 143.2, 100.1, 95.8, 96.9]
   },
   {
     "name": "OCF Growth",
     "group": "Growth",
     "fmt": "%",
-    "desc": "YoY operating cash flow growth",
-    "annual": [47.2, 92.1, 35.6, 9.2, 24.4, 14.1, 21.6, 8.1, 10.4, 37.9],
-    "quarterly": [-0.8, 0.0, -1.6, 21.7, 4.3, 3.6, -11.9, 11.5, 4.8, 2.3, -0.3, -4.9, 8.4, 12.9, 9.1, 7.2, 9.3, 7.5, 7.2, 27.0]
+    "desc": "Year-over-year operating cash flow growth",
+    "annual": [null, 64.6, 1174.8, 133.6],
+    "quarterly": [195.6, 229.8, null, 175.7, 187.6, 354.1, 23.1, 139.9, 610.2]
   },
   {
     "name": "Debt Growth",
     "group": "Growth",
     "fmt": "%",
-    "desc": "YoY change in total debt",
-    "annual": [252.3, 28.6, -0.3, 87.5, 27.1, -3.4, -0.7, -0.8, 70.4, -3.6],
-    "quarterly": [0.0, -0.5, -1.9, -0.1, 0.1, 1.2, -1.7, 0.1, 0.1, 0.8, 91.4, -2.5, -5.5, -3.4, -1.5, 1.1, -4.5, 1.4, 1.4, -1.7]
+    "desc": "Year-over-year total debt growth",
+    "annual": [null, null, null, null],
+    "quarterly": [null, null, null, null, null, null, null, null, null]
   },
   {
     "name": "Working Capital",
     "group": "Balance Sheet",
     "fmt": "B",
-    "desc": "Current assets minus current liabilities — short-term financial health",
-    "annual": [4.04, 13.29, 6.77, 3.02, 5.53, 10.31, 11.45, 13.44, 2.9, 13.06],
-    "quarterly": [9.14, 10.31, 9.05, 7.9, 8.86, 11.45, 11.36, 10.36, 10.98, 13.44, 6.82, 5.13, 0.73, 2.9, 0.08, 1.58, 8.3, 13.06, 15.2, 23.35]
-  }
-,
+    "desc": "Current assets minus current liabilities \u2014 short-term financial health",
+    "annual": [0.166, 0.151, 0.926, 1.229],
+    "quarterly": [0.809, 0.827, 0.858, 0.926, 0.999, 1.074, 1.189, 1.229, 1.288]
+  },
   {
     "name": "Stock Price",
     "group": "Valuation",
     "fmt": "$",
     "desc": "Closing price on fiscal period end date",
-    "annual": [17.03, 26.39, 22.08, 29.66, 34.96, 53.17, 47.29, 83.84, 168.92, 369.63],
-    "quarterly": [48.54, 53.17, 56.01, 55.44, 53.55, 47.29, 59.1, 62.65, 89.98, 83.84, 122.43, 127.81, 143.82, 168.92, 221.27, 203.64, 288.64, 369.63, 331.3, 417.43]
+    "annual": [null, null, 132.45, 166.36],
+    "quarterly": [74.19, 60.51, 52.39, 132.45, 59.67, 90.42, 195.8, 166.36, 109.6]
   }
 ];
 
@@ -3009,16 +1895,16 @@ function CurrentTab() {
                 </thead>
                 <tbody>
                   {v.peers.map((p) => {
-                    const isAvgo = p.t === TICKER_META.ticker;
-                    const col = isAvgo ? "var(--blue-soft)" : "var(--tx5)";
+                    const isSelf = p.t === TICKER_META.ticker;
+                    const col = isSelf ? "var(--blue-soft)" : "var(--tx5)";
                     return (
-                      <tr key={p.t} {...tip(p.t, `${p.note}. FWD P/E: ${p.fpe}× · EV/EBITDA: ${p.ev_eb}× · FCF yield: ${p.fcf_y}%`, isAvgo ? "Your holding" : null, col)}
-                        style={{ borderBottom: "1px solid var(--bd)", background: isAvgo ? "var(--row-hl)" : "transparent",
+                      <tr key={p.t} {...tip(p.t, `${p.note}. FWD P/E: ${p.fpe}× · EV/EBITDA: ${p.ev_eb}× · FCF yield: ${p.fcf_y}%`, isSelf ? "Your holding" : null, col)}
+                        style={{ borderBottom: "1px solid var(--bd)", background: isSelf ? "var(--row-hl)" : "transparent",
                           transition: "background .1s" }}>
-                        <td style={{ padding: "7px 8px", color: isAvgo ? "var(--title)" : "var(--tx4)", fontWeight: isAvgo ? 700 : 400 }}>{p.t}</td>
-                        <td style={{ padding: "7px 8px", textAlign: "right", color: col, fontWeight: isAvgo ? 700 : 400 }}>{p.fpe}×</td>
-                        <td style={{ padding: "7px 8px", textAlign: "right", color: col, fontWeight: isAvgo ? 700 : 400 }}>{p.ev_eb}×</td>
-                        <td style={{ padding: "7px 8px", textAlign: "right", color: col, fontWeight: isAvgo ? 700 : 400 }}>{p.fcf_y}%</td>
+                        <td style={{ padding: "7px 8px", color: isSelf ? "var(--title)" : "var(--tx4)", fontWeight: isSelf ? 700 : 400 }}>{p.t}</td>
+                        <td style={{ padding: "7px 8px", textAlign: "right", color: col, fontWeight: isSelf ? 700 : 400 }}>{p.fpe}×</td>
+                        <td style={{ padding: "7px 8px", textAlign: "right", color: col, fontWeight: isSelf ? 700 : 400 }}>{p.ev_eb}×</td>
+                        <td style={{ padding: "7px 8px", textAlign: "right", color: col, fontWeight: isSelf ? 700 : 400 }}>{p.fcf_y}%</td>
                         <td style={{ padding: "7px 8px", color: "var(--tx7)", fontSize: 9.5 }}>{p.note}</td>
                       </tr>
                     );
@@ -4640,7 +3526,7 @@ function PastTab() {
             <div style={{ display: "flex", alignItems: "center", flexWrap: "wrap", gap: 10, marginBottom: 16 }}>
               <div style={{ fontSize: 9, fontWeight: 700, letterSpacing: "0.2em",
                 color: "var(--tx5)", paddingBottom: 0, flex: 1 }}>
-                DIG DEEPER · 35 METRICS · SOURCE: WISE Q2 FY2026
+                DIG DEEPER · {FIN_METRICS.length} METRICS · SOURCE: SEC EDGAR (10-K/10-Q/S-1)
               </div>
               <div style={{ display: "flex", gap: 4 }}>
                 {["annual", "quarterly"].map(p => (
