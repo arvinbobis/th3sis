@@ -12,10 +12,17 @@
  * distributed 1:1 — hence the matching 5.8357 share count. No thesis built yet.
  * 2026-07-02: MBGL share count trimmed 5.8357 → 5 — likely an odd-lot/fractional
  * cleanup on the spinoff distribution, not a manual trade. Watch next snapshot.
+ * 2026-07-07: AXP, V, and MSCI no longer appear in IBKR positions — closed since the
+ * 2026-07-02 snapshot (cash jumped 2,124.82 → 5,694.94, consistent with 3 exits, not
+ * a data-fetch gap). Flipped `held:false` on V/MSCI in PF_PRESCREEN below and dropped
+ * V from PF_RADAR's "stablecoins" theme holdings (MA is still held, kept). AXP never
+ * had a PF_PRESCREEN/PF_RADAR entry, nothing else to update for it. No thesis existed
+ * for any of the three. MBGL's avgCost also moved 22.05 → 21.19 per IBKR's cost-basis
+ * recalculation — not touched manually, just reflecting the live figure.
  * ─────────────────────────────────────────────────────────────────────────── */
 
-const PF_ASOF = "2026-07-02";
-const PF_ACCT = { netLiq: 35152.71, cash: 2124.82, dividends: 2.09, buyingPower: 2124.82 };
+const PF_ASOF = "2026-07-07";
+const PF_ACCT = { netLiq: 35270.64, cash: 5694.94, dividends: 2.99, buyingPower: 5694.94 };
 
 // ── Buy-alert pre-commitment (single source of truth for every armed ticker) ──
 // Previously hand-mirrored in three places: each thesis's own `const ALERT`,
@@ -43,42 +50,40 @@ const PF_THEMES = {
 };
 
 // ticker, name, qty, avgCost, lastPx, mktVal, unrealPnl, dayPnl, theme, hasThesis
+// AXP, MSCI, and V dropped 2026-07-07 — closed positions per live IBKR pull, see header note.
 const PF_RAW = [
-  ["ALAB","Astera Labs",          0.3484, 289.87,  405.00,  141.10,   40.11,  -9.01, "semis",        true ],
-  ["AMZN","Amazon.com",           8.1653, 202.74,  242.72, 1981.88,  326.48,   8.33, "platforms",    true ],
-  ["ANET","Arista Networks",      0.6839, 147.66,  159.98,  109.41,    8.42,  -4.54, "semis",        false],
-  ["ARM","Arm Holdings",          0.2558, 283.82,  316.02,   80.84,    8.24,  -5.49, "semis",        false],
-  ["ASML","ASML Holding",         0.5986, 730.61, 1779.78, 1065.38,  628.04, -37.87, "semis",        true ],
-  ["AVGO","Broadcom",             1.1432, 351.63,  360.97,  412.66,   10.68,  -9.57, "semis",        true ],
-  ["AXP","American Express",      1.5881, 315.47,  351.95,  558.94,   57.95,   7.79, "payments",     false],
-  ["BKNG","Booking Holdings",    10.7000, 188.61,  184.20, 1970.94,  -47.13,  16.69, "diversifiers", false],
-  ["BN","Brookfield",            11.0450,  45.36,   43.50,  480.46,  -20.54,   8.06, "diversifiers", false],
-  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  248.70,  260.86,  -40.12,   1.03, "findata",      false],
-  ["CME","CME Group",             0.9659, 311.60,  236.00,  227.95,  -73.02,   4.83, "findata",      false],
-  ["EFX","Equifax",               4.9299, 253.60,  168.70,  831.67, -418.57,  32.19, "findata",      false],
-  ["EQIX","Equinix",              0.0936,1078.41, 1002.02,   93.79,   -7.15,  -1.09, "power",        false],
-  ["ETN","Eaton",                 0.2627, 384.38,  399.98,  105.07,    4.10,  -3.24, "power",        false],
-  ["FICO","Fair Isaac",           1.8783,1407.84, 1270.29, 2385.99, -258.36, 119.54, "findata",      true ],
-  ["GE","GE Aerospace",           2.7332, 295.44,  377.89, 1032.85,  225.35,   8.06, "power",        false],
-  ["GEV","GE Vernova",            0.2719,1106.68, 1114.00,  302.90,    1.99,  -5.53, "power",        false],
-  ["GOOG","Alphabet",             3.0338, 227.50,  355.30, 1077.91,  387.72,  -7.86, "platforms",    true ],
-  ["INTU","Intuit",               2.3960, 642.94,  275.97,  661.22, -879.25,  21.30, "platforms",    false],
-  ["IUSG","iShares S&P US Growth",11.0836,163.04,  185.39, 2054.79,  247.69, -21.39, "index",        false],
-  ["LRCX","Lam Research",         0.3395, 297.47,  352.92,  119.82,   18.83, -13.02, "semis",        false],
-  ["MA","Mastercard",             5.2499, 532.50,  538.42, 2826.65,   31.05,  83.89, "payments",     false],
-  ["MBGL","Mobility Global",      5.0000,  22.05,   19.80,   99.00,  -11.25,  -7.64, "findata",      false],
-  ["MCO","Moody's",               5.1545, 484.90,  490.51, 2528.33,   28.90, 114.07, "findata",      false],
-  ["META","Meta Platforms",       2.9644, 610.47,  584.45, 1732.54,  -77.14, -84.37, "platforms",    true ],
-  ["MRVL","Marvell Technology",   0.3694, 194.44,  247.20,   91.32,   19.49,  -9.18, "semis",        true ],
-  ["MSCI","MSCI",                 1.7176, 567.03,  602.82, 1035.40,   61.47,  35.71, "findata",      false],
-  ["MSFT","Microsoft",            5.8559, 434.43,  390.33, 2285.73, -258.24,  35.43, "platforms",    true ],
-  ["MU","Micron Technology",      0.1323, 762.87,  986.95,  130.57,   29.65,  -6.00, "semis",        true ],
-  ["NVDA","NVIDIA",               2.1852, 183.96,  194.60,  425.24,   23.25,  -6.51, "semis",        true ],
-  ["PWR","Quanta Services",       0.4109, 732.43,  668.90,  274.85,  -26.11,  -9.25, "power",        false],
-  ["QQQ","Invesco QQQ",           0.9735, 722.02,  714.01,  695.09,   -7.80, -10.86, "index",        false],
-  ["SPGI","S&P Global",           5.8357, 504.01,  432.99, 2526.80, -414.42, 105.16, "findata",      false],
-  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  436.98,  313.84,   12.84,  -5.21, "semis",        true ],
-  ["V","Visa",                    5.6834, 306.90,  361.71, 2055.74,  311.49,  60.41, "payments",     false],
+  ["ALAB","Astera Labs",          0.3484, 289.87,  413.50,  144.06,   43.07,  -6.70, "semis",        true ],
+  ["AMZN","Amazon.com",           8.1653, 202.74,  245.70, 2006.21,  350.81,  12.57, "platforms",    true ],
+  ["ANET","Arista Networks",      0.6839, 147.66,  169.00,  115.58,   14.59,  -2.93, "semis",        false],
+  ["ARM","Arm Holdings",          0.2558, 283.82,  308.10,   78.81,    6.21,  -3.62, "semis",        false],
+  ["ASML","ASML Holding",         0.5986, 730.61, 1745.15, 1044.65,  607.31, -47.84, "semis",        true ],
+  ["AVGO","Broadcom",             1.1432, 351.63,  364.26,  416.42,   14.44, -11.02, "semis",        true ],
+  ["BKNG","Booking Holdings",    10.7000, 188.61,  182.50, 1952.75,  -65.32,  15.73, "diversifiers", false],
+  ["BN","Brookfield",            11.0450,  45.36,   44.00,  485.98,  -15.02,   0.44, "diversifiers", false],
+  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  246.00,  258.03,  -42.95,   0.96, "findata",      false],
+  ["CME","CME Group",             0.9659, 311.60,  236.00,  227.95,  -73.02,   1.20, "findata",      false],
+  ["EFX","Equifax",               4.9299, 253.60,  171.94,  847.65, -402.60,   0.00, "findata",      false],
+  ["EQIX","Equinix",              0.0936,1078.41,  998.84,   93.49,   -7.45,   0.00, "power",        false],
+  ["ETN","Eaton",                 0.2627, 384.38,  408.49,  107.31,    6.33,  -1.30, "power",        false],
+  ["FICO","Fair Isaac",           1.8783,1407.84, 1299.94, 2441.68, -202.68,  25.23, "findata",      true ],
+  ["GE","GE Aerospace",           2.7332, 295.44,  379.45, 1037.11,  229.61,   2.10, "power",        false],
+  ["GEV","GE Vernova",            0.2719,1106.68, 1119.00,  304.26,    3.35,  -8.98, "power",        false],
+  ["GOOG","Alphabet",             3.0338, 227.50,  365.25, 1108.10,  417.90,   1.06, "platforms",    true ],
+  ["INTU","Intuit",               2.3960, 642.94,  279.09,  668.70, -871.77,  16.65, "platforms",    false],
+  ["IUSG","iShares S&P US Growth",11.0836,163.04,  187.59, 2079.17,  272.07,   0.00, "index",        false],
+  ["LRCX","Lam Research",         0.3395, 297.47,  327.00,  111.02,   10.03,  -7.88, "semis",        false],
+  ["MA","Mastercard",             5.2499, 532.50,  526.23, 2762.65,  -32.94, -36.07, "payments",     false],
+  ["MBGL","Mobility Global",      5.0000,  21.19,   19.08,   95.40,  -10.55,  -0.90, "findata",      false],
+  ["MCO","Moody's",               5.1545, 484.90,  500.00, 2577.25,   77.82,   6.29, "findata",      false],
+  ["META","Meta Platforms",       2.9644, 610.47,  602.50, 1786.05,  -23.63,   6.55, "platforms",    true ],
+  ["MRVL","Marvell Technology",   0.3694, 194.44,  236.33,   87.30,   15.48,  -4.78, "semis",        true ],
+  ["MSFT","Microsoft",            5.8559, 434.43,  392.31, 2297.33, -246.65,  32.62, "platforms",    true ],
+  ["MU","Micron Technology",      0.1323, 762.87,  935.02,  123.70,   22.78,  -6.58, "semis",        true ],
+  ["NVDA","NVIDIA",               2.1852, 183.96,  192.36,  420.35,   18.36,  -6.97, "semis",        true ],
+  ["PWR","Quanta Services",       0.4109, 732.43,  666.00,  273.66,  -27.30,  -3.30, "power",        false],
+  ["QQQ","Invesco QQQ",           0.9735, 722.02,  715.21,  696.26,   -6.63,  -7.41, "index",        false],
+  ["SPGI","S&P Global",           5.8357, 504.01,  451.99, 2637.68, -303.55,  27.84, "findata",      false],
+  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  442.07,  317.50,   16.50,  -6.98, "semis",        true ],
 ];
 const PF_POS = PF_RAW.map(r => ({
   t:r[0], name:r[1], qty:r[2], avg:r[3], px:r[4], mv:r[5], up:r[6], day:r[7], theme:r[8], thesis:r[9],
@@ -185,7 +190,7 @@ const PF_PRESCREEN = [
     chokepoint:"The Work Number — a genuinely hard-to-replicate scale asset.",
     cushion:"Fwd P/E ~19–20x — only fair.",
     note:"Morningstar downgraded the moat to narrow from wide — a real erosion signal, not noise. Revisit on a further price drop or once the moat debate resolves either way." },
-  { t:"MSCI",  verdict:"FAIL",  date:"2026-07-03", held:true, bucket:null,
+  { t:"MSCI",  verdict:"FAIL",  date:"2026-07-03", held:false, bucket:null,
     chokepoint:"Index-embeddedness moat — real, but narrower than SPGI/MCO's.",
     cushion:"Fwd P/E ~30.5–31, ~90% above the industry median — no cushion at all.",
     note:"Priced as a flawless compounder." },
@@ -201,7 +206,7 @@ const PF_PRESCREEN = [
     chokepoint:"TurboTax/QuickBooks data depth + tax-code complexity + switching costs.",
     cushion:"Down 38% YTD — a real re-rating already happened (fwd P/E ~20x vs ~16x sector avg).",
     note:"“AI eats TurboTax” fear is now the loud consensus view — priced in, not hidden. The most interesting name in the legacy cluster." },
-  { t:"V",     verdict:"PASS",  date:"2026-07-03", held:true, bucket:"payments-duopoly",
+  { t:"V",     verdict:"PASS",  date:"2026-07-03", held:false, bucket:"payments-duopoly",
     chokepoint:"Two-sided network, 4B+ cards — near-unbreakable without a government mandate.",
     cushion:"Fwd P/E ~21.5–24.4 — fair, not deep.",
     note:"Stablecoin threat to the 2–3% fee model is live and genuinely two-sided right now, not settled." },
@@ -230,7 +235,7 @@ const PF_RADAR = {
   updated: "2026-07-03",
   THEMES: [
     { id:"stablecoins", label:"Stablecoins vs. card-network fees", direction:"threatens",
-      holdings:["V","MA"], coverage:"prescreen-only",
+      holdings:["MA"], coverage:"prescreen-only",
       evidence:"GATE prescreen (2026-07-03) already names this as live and genuinely two-sided — stablecoin checkout threatens the 2–3% card fee model that is V/MA's entire moat.",
       tripwire:"A top-10 US retailer offers a stablecoin checkout discount, or V/MA disclose stablecoin volume cannibalization in a 10-Q." },
     { id:"kalshi", label:"Prediction markets vs. regulated exchanges", direction:"threatens",
