@@ -193,6 +193,14 @@ re-look — confirms the Scout → `/prescreen` → gate pipeline works as inten
 answer is FAIL: a real, Scout-validated chokepoint still gets gated on cushion like anything
 else.
 
+**2026-07-09 Scout-sourced `/prescreen` run — INTC (not held, new candidate):** FAIL on
+cushion — see `PF_PRESCREEN` / the GATE page for the full reasoning. Short version: the
+packaging-second-source chokepoint is real (it's the same EMIB-T evidence behind the
+`packaging-multivendor` radar row threatening TSM), but at ~$109 after a 450% twelve-month
+run with Foundry still losing billions per quarter, the price already assumes the thesis
+succeeds — RKLB's pattern again, discovered the week the stock topped. Re-entry condition
+logged in the gate entry: a deep derate with the Google/NVIDIA design wins intact.
+
 ---
 
 *This document is a personal strategy snapshot, not investment advice. All entries are
