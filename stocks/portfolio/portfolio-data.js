@@ -19,10 +19,19 @@
  * had a PF_PRESCREEN/PF_RADAR entry, nothing else to update for it. No thesis existed
  * for any of the three. MBGL's avgCost also moved 22.05 → 21.19 per IBKR's cost-basis
  * recalculation — not touched manually, just reflecting the live figure.
+ * 2026-07-09: full resync from live IBKR positions + trades. THE GENERATOR RESEEDED:
+ * the MU GTC limit filled 2026-07-07 @ 899.80 (0.9446 sh ≈ $850.95 incl. commission —
+ * almost exactly the $851.81 ASML trim proceeds). MU moves from LIMITS to the new
+ * PF_STRAT.SEEDED ledger and becomes the second station on the TREE. Also in this
+ * sync: IUSG fully sold (11.08 sh) and replaced with QQQM + SPMO buys — CORE_TICKERS
+ * updated to match reality (doctrine change from "IUSG + QQQ" made by the user's own
+ * trades, not by this file); GEV added to ~$1,015 (0.9451 sh, avg now 1,060.05);
+ * new DRAM (Roundhill Memory ETF, ~$1,050) — sits in the semis theme, no thesis;
+ * MBGL trimmed a 0.8357 fractional 2026-07-02 (matches the earlier odd-lot guess).
  * ─────────────────────────────────────────────────────────────────────────── */
 
-const PF_ASOF = "2026-07-07";
-const PF_ACCT = { netLiq: 35270.64, cash: 5694.94, dividends: 2.99, buyingPower: 5694.94 };
+const PF_ASOF = "2026-07-09";
+const PF_ACCT = { netLiq: 34877.00, cash: 4789.38, dividends: 2.99, buyingPower: 4789.38 };
 
 // ── Buy-alert pre-commitment (single source of truth for every armed ticker) ──
 // Previously hand-mirrored in three places: each thesis's own `const ALERT`,
@@ -52,38 +61,40 @@ const PF_THEMES = {
 // ticker, name, qty, avgCost, lastPx, mktVal, unrealPnl, dayPnl, theme, hasThesis
 // AXP, MSCI, and V dropped 2026-07-07 — closed positions per live IBKR pull, see header note.
 const PF_RAW = [
-  ["ALAB","Astera Labs",          0.3484, 289.87,  413.50,  144.06,   43.07,  -6.70, "semis",        true ],
-  ["AMZN","Amazon.com",           8.1653, 202.74,  245.70, 2006.21,  350.81,  12.57, "platforms",    true ],
-  ["ANET","Arista Networks",      0.6839, 147.66,  169.00,  115.58,   14.59,  -2.93, "semis",        false],
-  ["ARM","Arm Holdings",          0.2558, 283.82,  308.10,   78.81,    6.21,  -3.62, "semis",        false],
-  ["ASML","ASML Holding",         0.5986, 730.61, 1745.15, 1044.65,  607.31, -47.84, "semis",        true ],
-  ["AVGO","Broadcom",             1.1432, 351.63,  364.26,  416.42,   14.44, -11.02, "semis",        true ],
-  ["BKNG","Booking Holdings",    10.7000, 188.61,  182.50, 1952.75,  -65.32,  15.73, "diversifiers", false],
-  ["BN","Brookfield",            11.0450,  45.36,   44.00,  485.98,  -15.02,   0.44, "diversifiers", false],
-  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  246.00,  258.03,  -42.95,   0.96, "findata",      false],
-  ["CME","CME Group",             0.9659, 311.60,  236.00,  227.95,  -73.02,   1.20, "findata",      false],
-  ["EFX","Equifax",               4.9299, 253.60,  171.94,  847.65, -402.60,   0.00, "findata",      false],
-  ["EQIX","Equinix",              0.0936,1078.41,  998.84,   93.49,   -7.45,   0.00, "power",        false],
-  ["ETN","Eaton",                 0.2627, 384.38,  408.49,  107.31,    6.33,  -1.30, "power",        false],
-  ["FICO","Fair Isaac",           1.8783,1407.84, 1299.94, 2441.68, -202.68,  25.23, "findata",      true ],
-  ["GE","GE Aerospace",           2.7332, 295.44,  379.45, 1037.11,  229.61,   2.10, "power",        false],
-  ["GEV","GE Vernova",            0.2719,1106.68, 1119.00,  304.26,    3.35,  -8.98, "power",        false],
-  ["GOOG","Alphabet",             3.0338, 227.50,  365.25, 1108.10,  417.90,   1.06, "platforms",    true ],
-  ["INTU","Intuit",               2.3960, 642.94,  279.09,  668.70, -871.77,  16.65, "platforms",    false],
-  ["IUSG","iShares S&P US Growth",11.0836,163.04,  187.59, 2079.17,  272.07,   0.00, "index",        false],
-  ["LRCX","Lam Research",         0.3395, 297.47,  327.00,  111.02,   10.03,  -7.88, "semis",        false],
-  ["MA","Mastercard",             5.2499, 532.50,  526.23, 2762.65,  -32.94, -36.07, "payments",     false],
-  ["MBGL","Mobility Global",      5.0000,  21.19,   19.08,   95.40,  -10.55,  -0.90, "findata",      false],
-  ["MCO","Moody's",               5.1545, 484.90,  500.00, 2577.25,   77.82,   6.29, "findata",      false],
-  ["META","Meta Platforms",       2.9644, 610.47,  602.50, 1786.05,  -23.63,   6.55, "platforms",    true ],
-  ["MRVL","Marvell Technology",   0.3694, 194.44,  236.33,   87.30,   15.48,  -4.78, "semis",        true ],
-  ["MSFT","Microsoft",            5.8559, 434.43,  392.31, 2297.33, -246.65,  32.62, "platforms",    true ],
-  ["MU","Micron Technology",      0.1323, 762.87,  935.02,  123.70,   22.78,  -6.58, "semis",        true ],
-  ["NVDA","NVIDIA",               2.1852, 183.96,  192.36,  420.35,   18.36,  -6.97, "semis",        true ],
-  ["PWR","Quanta Services",       0.4109, 732.43,  666.00,  273.66,  -27.30,  -3.30, "power",        false],
-  ["QQQ","Invesco QQQ",           0.9735, 722.02,  715.21,  696.26,   -6.63,  -7.41, "index",        false],
-  ["SPGI","S&P Global",           5.8357, 504.01,  451.99, 2637.68, -303.55,  27.84, "findata",      false],
-  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  442.07,  317.50,   16.50,  -6.98, "semis",        true ],
+  ["ALAB","Astera Labs",          0.3484, 289.87,  394.51,  137.45,   36.46,   4.05, "semis",        true ],
+  ["AMZN","Amazon.com",           8.1653, 202.74,  243.00, 1984.17,  328.76, -24.33, "platforms",    true ],
+  ["ANET","Arista Networks",      0.6839, 147.66,  181.17,  123.90,   22.92,  10.06, "semis",        false],
+  ["ARM","Arm Holdings",          0.2558, 283.82,  298.75,   76.42,    3.82,  -0.43, "semis",        false],
+  ["ASML","ASML Holding",         0.5986, 730.61, 1774.20, 1062.04,  624.69,  16.11, "semis",        true ],
+  ["AVGO","Broadcom",             1.1432, 351.63,  388.70,  444.36,   42.38,  20.49, "semis",        true ],
+  ["BKNG","Booking Holdings",    10.7000, 188.61,  174.50, 1867.15, -150.92, -79.72, "diversifiers", false],
+  ["BN","Brookfield",            11.0450,  45.36,   42.80,  472.73,  -28.27, -10.93, "diversifiers", false],
+  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  266.00,  279.01,  -21.97,   7.72, "findata",      false],
+  ["CME","CME Group",             0.9659, 311.60,  245.00,  236.65,  -64.33,   4.11, "findata",      false],
+  ["DRAM","Roundhill Memory ETF",16.9247,  59.14,   62.03, 1049.84,   48.84,  24.37, "semis",        false],
+  ["EFX","Equifax",               4.9299, 253.60,  167.09,  823.74, -426.51, -36.92, "findata",      false],
+  ["EQIX","Equinix",              0.0936,1078.41, 1016.54,   95.15,   -5.79,  -0.60, "power",        false],
+  ["ETN","Eaton",                 0.2627, 384.38,  399.56,  104.96,    3.99,   1.02, "power",        false],
+  ["FICO","Fair Isaac",           1.8783,1407.84, 1262.00, 2370.41, -273.94, -71.88, "findata",      true ],
+  ["GE","GE Aerospace",           2.7332, 295.44,  355.94,  972.86,  165.36, -30.17, "power",        false],
+  ["GEV","GE Vernova",            0.9451,1060.05, 1074.00, 1015.04,   13.19,  -2.91, "power",        false],
+  ["GOOG","Alphabet",             3.0338, 227.50,  358.83, 1088.62,  398.42, -14.53, "platforms",    true ],
+  ["INTU","Intuit",               2.3960, 642.94,  273.47,  655.23, -885.24, -18.45, "platforms",    false],
+  ["LRCX","Lam Research",         0.3395, 297.47,  331.50,  112.54,   11.55,   1.82, "semis",        false],
+  ["MA","Mastercard",             5.2499, 532.50,  520.00, 2729.95,  -65.65, -61.00, "payments",     false],
+  ["MBGL","Mobility Global",      5.0000,  21.19,   21.01,  105.05,   -0.90,  -0.95, "findata",      false],
+  ["MCO","Moody's",               5.1545, 484.90,  485.10, 2500.45,    1.02, -79.33, "findata",      false],
+  ["META","Meta Platforms",       2.9644, 610.47,  603.86, 1790.08,  -19.61, -34.75, "platforms",    true ],
+  ["MRVL","Marvell Technology",   0.3694, 194.44,  233.60,   86.29,   14.47,   1.07, "semis",        true ],
+  ["MSFT","Microsoft",            5.8559, 434.43,  383.34, 2244.80, -299.18, -32.21, "platforms",    true ],
+  ["MU","Micron Technology",      1.0769, 883.91,  950.87, 1023.99,   72.11,  13.45, "semis",        true ],
+  ["NVDA","NVIDIA",               2.1852, 183.96,  203.27,  444.19,   42.20,  13.85, "semis",        true ],
+  ["PWR","Quanta Services",       0.4109, 732.43,  665.21,  273.33,  -27.62,   3.46, "power",        false],
+  ["QQQ","Invesco QQQ",           0.9735, 722.02,  711.11,  692.27,  -10.62,   1.64, "index",        false],
+  ["QQQM","Invesco Nasdaq 100",   0.6868, 292.65,  292.81,  201.10,    0.11,   0.46, "index",        false],
+  ["SPGI","S&P Global",           5.8357, 504.01,  431.00, 2515.19, -426.04, -72.71, "findata",      false],
+  ["SPMO","Invesco S&P 500 Momentum", 1.3592, 147.87, 150.56, 204.64, 3.65,   1.55, "index",        false],
+  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  436.76,  313.68,   12.68,   3.01, "semis",        true ],
 ];
 const PF_POS = PF_RAW.map(r => ({
   t:r[0], name:r[1], qty:r[2], avg:r[3], px:r[4], mv:r[5], up:r[6], day:r[7], theme:r[8], thesis:r[9],
@@ -93,7 +104,10 @@ const PF_LIVE = Object.fromEntries(PF_POS.map(p => [p.t, p]));
 
 // ── Capital-allocation strategy ("$1,000 generator" — see STRATEGY.md) ────────
 const PF_STRAT = {
-  CORE_TICKERS:    ["IUSG", "QQQ"],   // broad-market core, weekly DCA
+  // 2026-07-07: user sold IUSG entirely and bought QQQM + SPMO — core is now these
+  // three (doctrine drift from "IUSG + QQQ" in STRATEGY.md §2; reflected here so the
+  // core-% math stays honest, flagged for the next STRATEGY.md review).
+  CORE_TICKERS:    ["QQQ", "QQQM", "SPMO"],
   TARGET_CORE_PCT: 70,                // simplify/focus target
   GEN_MULTIPLE:    2,                 // double = trim trigger (thesis-gated)
   GEN_MIN_PROG:    15,                // hide deep laggards far from trigger
@@ -107,13 +121,20 @@ const PF_STRAT = {
     ASML: { date:"2026-06-29", soldQty:0.46, soldPx:1851.77, proceeds:851.81, realized:514.72, freeMV:1142.13 },
   },
 
+  // Seeds DEPLOYED but not yet harvested — the recycled ~$1,000 living in its next
+  // idea. A ticker graduates from here to TRIMMED on its own thesis-gated 2× harvest.
+  // planted = actual fill cost incl. commission; from = which harvest funded it.
+  SEEDED: {
+    MU: { date:"2026-07-07", from:"ASML", planted:850.95, fillPx:899.80, fillQty:0.9446,
+          note:"GTC limit @900 filled — the ASML trim proceeds ($851.81) replanted almost to the dollar. Prior $101 nibble (0.1323 sh @762.87) folds into the same position: 1.0769 sh @ avg 883.91. 2× trigger ≈ $1,768 (thesis-gated: AI/HBM supercycle per stocks/MU thesis; kill-switch = cycle turn, see checklist)." },
+  },
+
   // Active manual GTC limit ladder — all below market, speculative slices.
   // cap = planned new dollars (0 = no fresh capital / watchlist only).
   LIMITS: [
     { t:"GE",   limit:null, cap:0,   size:"ride → 2×",     musk:false, watch:false,
       anchor:"Own it cheap ($295 basis). Let ride to ~$1,600 position value (≈2× on $808), then trim ~$600–800 and let the rest ride. Don't add at record highs." },
-    { t:"MU",   limit:900,  cap:850, size:"~$850 → $1k",   musk:false, watch:false,
-      anchor:"Add to the $150 nibble toward ~$1,000 total. ~7–8× fwd earnings at $900 = real cushion vs a near-high entry." },
+    // MU removed 2026-07-09: the 900 GTC limit FILLED 2026-07-07 → see SEEDED above.
     { t:"TSLA", limit:250,  cap:500, size:"$500",          musk:true,  watch:false,
       anchor:"Re-entry at a 'buy real fear' level. No valuation floor (312× earnings) — sentiment/support anchor only. Size accordingly." },
     { t:"SPCX", limit:100,  cap:500, size:"$500",          musk:true,  watch:false,
@@ -218,6 +239,10 @@ const PF_PRESCREEN = [
     chokepoint:"Launch cadence (Electron/Neutron) +, post-Iridium, exclusive L-band spectrum licensing and a 66-satellite LEO network — real, but a second-tier bottleneck behind SpaceX.",
     cushion:"~89x trailing sales, still -27% margin, re-rated another +16% on the very $8B Iridium deal being evaluated — no margin of safety if the space-datacenter narrative slips.",
     note:"Scout (grok-buy-side-scalper) flagged the space/orbital-compute theme across 4 reports (reward 7.8), but the valuation problem STRATEGY.md §6 already noted (~65–100x sales, no cushion) has gotten worse, not better. Duplicates existing SPCX space exposure. Re-confirms the prior pass, not a reversal." },
+  { t:"GE",    verdict:"FAIL",  date:"2026-07-09", held:true, bucket:null,
+    chokepoint:"Half the narrow-body engine duopoly (CFM/LEAP with Safran): every 737 MAX + ~60% of A320neos, engines certified with the airframe (no supplier switch on an existing fleet), >70% of commercial engine revenue is locked-in aftermarket on a decades-long installed base.",
+    cushion:"~$379 = ~50x 2026 guided EPS ($7.10–7.40), ~2x the industry avg multiple, ABOVE the consensus target ($358–363) at record highs — the cushion lives entirely in the $295 cost basis, none in today's price.",
+    note:"MCO pattern: genuine moat, held, no margin of safety for fresh capital — confirms the ladder's 'don't add at record highs'. This prescreen also defines the previously-undefined gate for the ride→2× trim plan: thesis-intact = LEAP duopoly holding AND aftermarket services growth staying double-digit (kill-switch: services deceleration below ~10%, or a LEAP durability directive / airline aftermarket-pricing revolt denting margins)." },
   { t:"INTC",  verdict:"FAIL",  date:"2026-07-09", held:false, bucket:null,
     chokepoint:"Only leading-edge logic + advanced packaging (EMIB-T ~90% yields, 18A) outside Taiwan, and hyperscalers now demonstrably want a second source (Google 3M-TPU order, NVIDIA evaluating 18A/14A for Feynman) — real, but conditional on yields holding at scale: a chokepoint being built, not owned yet.",
     cushion:"~$109 after a 450% 12-month run (52wk $18.97–$142.35), ~$0.80/yr run-rate EPS, Foundry still losing ~$2.5–3.2B PER QUARTER, avg analyst target ($101) below the price — the market pre-paid the bull case; the cushion was spent by whoever bought at $20–40.",

@@ -93,6 +93,7 @@ const ACCENT = "var(--blue-soft)";
 // shared snapshot + strategy (single source of truth — portfolio-data.js)
 const ASOF = PF_ASOF, LIVE = PF_LIVE, GEN_MULTIPLE = PF_STRAT.GEN_MULTIPLE;
 const TRIMMED = PF_STRAT.TRIMMED || {};
+const SEEDED  = PF_STRAT.SEEDED  || {};
 
 const usd = (v, d=2) => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 const pct = (v, d=0) => (v>=0?"+":"") + v.toFixed(d) + "%";
@@ -123,10 +124,23 @@ const branches = Object.keys(TRIMMED).map(t => {
   };
 }).sort((a,b)=>b.freeMV-a.freeMV);
 
+// deployed-but-not-yet-harvested seeds (the recycled ~$1,000 living in its next idea)
+const seededStations = Object.keys(SEEDED).map(t => {
+  const x = SEEDED[t], live = LIVE[t] || {};
+  return {
+    seeded:true, t, name: live.name || t, date: x.date, from: x.from,
+    planted: x.planted, fillPx: x.fillPx, fillQty: x.fillQty, note: x.note,
+    mv: live.mv, up: live.up,
+    mult: (live.px && live.avg) ? live.px/live.avg : null,
+    trigger: (live.avg != null) ? live.avg*GEN_MULTIPLE : null,
+  };
+});
+
 const totalBanked = branches.reduce((s,b)=>s+b.banked,0);
 const totalRiding = branches.reduce((s,b)=>s+b.freeMV,0);
 const totalFreeUp = branches.reduce((s,b)=>s+(b.freeUp||0),0);
 const latestProceeds = branches.length ? branches[branches.length-1].proceeds : 0;
+const activeSeed = seededStations.length ? seededStations[seededStations.length-1] : null;
 
 // ── Sankey "link" band: a filled bezier ribbon from (x0,y0) of thickness w0 to
 //    (x1,y1) of thickness w1. Ribbon THICKNESS encodes dollars. Used for the
@@ -160,7 +174,9 @@ function StatStrip() {
     { n: branches.length, l: "harvested ideas · root nodes", c: ACCENT },
     { n: usd(totalRiding,0), l: `house money riding · ${(totalFreeUp>=0?"+":"")}${usd(totalFreeUp,0)} unrealized`, c: GAIN },
     { n: usd(totalBanked,0), l: "capital banked · recovered to cash", c: GAIN },
-    { n: usd(latestProceeds,0), l: "seed recycling → next idea", c: WARN },
+    activeSeed
+      ? { n: usd(activeSeed.mv!=null?activeSeed.mv:activeSeed.planted,0), l: `seed deployed → ${activeSeed.t} (${String(activeSeed.date).slice(5)})${activeSeed.mult?` · ${activeSeed.mult.toFixed(2)}× → ${GEN_MULTIPLE}×`:""}`, c: WARN }
+      : { n: usd(latestProceeds,0), l: "seed recycling → next idea", c: WARN },
   ];
   return (
     <Panel style={{ padding:"16px 20px" }}>
@@ -186,12 +202,14 @@ function SankeyFlow() {
     real:true, ...b,
     origCost:(b.avg!=null && b.qty!=null && b.soldQty!=null) ? b.avg*(b.qty+b.soldQty) : b.proceeds,
   }));
-  const ghosts = [{ghost:true,label:"next stock #1"},{ghost:true,label:"next stock #2"}];
-  const stations = [...real, ...ghosts];
+  const ghosts = seededStations.length
+    ? [{ghost:true,label:"next stock"}]
+    : [{ghost:true,label:"next stock #1"},{ghost:true,label:"next stock #2"}];
+  const stations = [...real, ...seededStations, ...ghosts];
   const n = stations.length;
   const X = i => n===1 ? Math.round((nodeX0+nodeX1)/2) : Math.round(nodeX0 + i*(nodeX1-nodeX0)/(n-1));
-  const inW  = s => wpx(s.real ? s.origCost : IDEAL);
-  const outW = s => wpx(s.real ? s.proceeds : IDEAL);
+  const inW  = s => wpx(s.real ? s.origCost : s.seeded ? s.planted : IDEAL);
+  const outW = s => wpx(s.real ? s.proceeds : s.seeded ? s.planted : IDEAL);
 
   // trunk: seed source → each station → trailing edge
   const segs = [];
@@ -235,7 +253,16 @@ function SankeyFlow() {
       ) : null)}
 
       {/* canopy pills */}
-      {ups.map((u,i)=> u.ghost ? (
+      {ups.map((u,i)=> u.s && u.s.seeded ? (
+        <g key={"c"+i} data-nav-ticker={u.s.t} style={{cursor:"pointer"}}
+           onClick={(e)=>navigateToTicker(e, u.s.t)}
+           onMouseEnter={(e)=>showTip(e, `${u.s.t} · seed growing`, `${usd(u.s.planted,0)} planted from ${u.s.from}${u.s.mv!=null?`, now ${usd(u.s.mv,0)}`:""}${u.s.up!=null?` (${u.s.up>=0?"+":""}${usd(u.s.up,0)} unrealized on the whole position)`:""}. Still seed capital, not house money — the branch detaches only at ${GEN_MULTIPLE}× with the thesis intact.`, WARN)} onMouseMove={moveTip} onMouseLeave={hideTip}>
+          <rect x={u.x-68} y={canopyY-25} width={136} height={50} rx={10} style={{ fill:WARN, fillOpacity:0.08, stroke:WARN, strokeOpacity:0.45, strokeDasharray:"4 4" }} />
+          <text x={u.x} y={canopyY-8} textAnchor="middle" style={{ fill:"var(--tx1)", fontSize:10.5, fontWeight:700 }}>{u.s.t} seed growing</text>
+          <text x={u.x} y={canopyY+8} textAnchor="middle" style={{ fill:WARN, fontSize:13, fontWeight:700 }}>{u.s.mv!=null?usd(u.s.mv,0):usd(u.s.planted,0)}{u.s.up!=null?` · ${u.s.up>=0?"+":""}${usd(u.s.up,0)}`:""}</text>
+          <text x={u.x} y={canopyY+19} textAnchor="middle" style={{ fill:"var(--tx5)", fontSize:7.5, letterSpacing:"0.4px" }}>{u.s.mult?`${u.s.mult.toFixed(2)}× · `:""}branch at {GEN_MULTIPLE}× (thesis-gated)</text>
+        </g>
+      ) : u.ghost ? (
         <g key={"c"+i}>
           <rect x={u.x-50} y={canopyY-20} width={100} height={40} rx={9} style={{ fill:"var(--inner-bg)", stroke:"var(--bd3)", strokeDasharray:"4 4" }} />
           <text x={u.x} y={canopyY-2} textAnchor="middle" style={{ fill:"var(--tx5)", fontSize:9.5 }}>rides free</text>
@@ -253,7 +280,16 @@ function SankeyFlow() {
       ))}
 
       {/* station nodes */}
-      {stations.map((s,i)=> s.ghost ? (
+      {stations.map((s,i)=> s.seeded ? (
+        <g key={"n"+i} data-nav-ticker={s.t} style={{cursor:"pointer"}}
+           onClick={(e)=>navigateToTicker(e, s.t)}
+           onMouseEnter={(e)=>showTip(e, `${s.t} · ${s.name} — the seed lives here`, `Reseeded from ${s.from} ${s.date}: ${usd(s.planted,0)} planted (${s.fillQty} sh @ ${usd(s.fillPx)})${s.mv!=null?`, now worth ${usd(s.mv,0)}`:""}${s.mult?` (${s.mult.toFixed(2)}× avg cost)`:""}. Harvest at ${GEN_MULTIPLE}×${s.trigger?` (≈${usd(s.trigger,0)}/sh)`:""} AND thesis intact — then this node peels its own house-money branch and the seed moves on.`, WARN)} onMouseMove={moveTip} onMouseLeave={hideTip}>
+          <rect x={X(i)-NW/2} y={base-NH/2} width={NW} height={NH} rx={11} style={{ fill:"var(--panel-bg)", stroke:WARN }} />
+          <text x={X(i)} y={base-7} textAnchor="middle" style={{ fill:"var(--tx1)", fontSize:19, fontWeight:600, fontFamily:FONT_DISPLAY }}>{s.t}</text>
+          <text x={X(i)} y={base+9} textAnchor="middle" style={{ fill:"var(--tx4)", fontSize:8.5 }}>{s.mult?s.mult.toFixed(2)+"× · ":""}seeded {String(s.date).slice(5)}</text>
+          <text x={X(i)} y={base+NH/2+14} textAnchor="middle" style={{ fill:WARN, fontSize:9, fontWeight:700 }}>growing → {GEN_MULTIPLE}×</text>
+        </g>
+      ) : s.ghost ? (
         <g key={"n"+i}>
           <rect x={X(i)-NW/2} y={base-NH/2} width={NW} height={NH} rx={11} style={{ fill:"var(--inner-bg)", stroke:"var(--bd3)", strokeDasharray:"5 4" }} />
           <text x={X(i)} y={base-2} textAnchor="middle" style={{ fill:"var(--tx4)", fontSize:10.5, fontWeight:700 }}>{s.label}</text>
@@ -284,7 +320,7 @@ function SankeyPanel() {
         <div style={{ minWidth:660 }}><SankeyFlow/></div>
       </div>
       <div style={{ fontSize:9.5, color:"var(--tx6)", marginTop:6, lineHeight:1.6 }}>
-        The <b style={{color:WARN}}>amber trunk</b> is your ~$1,000 seed — recovered whole at each trim and replanted in the next stock. Every stock it passes through peels off a <b style={{color:GAIN}}>green house-money branch</b> that rises and keeps riding until its thesis breaks. Ribbon thickness scales with dollars. Only <b style={{color:"var(--tx3)"}}>ASML</b> is real today; the dashed stations are the plan. (The node is where the money <i>grows</i> — so out-flow &gt; in-flow; this isn't a conserved Sankey, it's a compounding one.)
+        The <b style={{color:WARN}}>amber trunk</b> is your ~$1,000 seed — recovered whole at each trim and replanted in the next stock. Every stock it passes through peels off a <b style={{color:GAIN}}>green house-money branch</b> that rises and keeps riding until its thesis breaks. Ribbon thickness scales with dollars. <b style={{color:"var(--tx3)"}}>ASML</b> is harvested; the seed now lives in <b style={{color:WARN}}>MU</b> (solid amber node — growing toward its {GEN_MULTIPLE}×); dashed stations are the plan. (The node is where the money <i>grows</i> — so out-flow &gt; in-flow; this isn't a conserved Sankey, it's a compounding one.)
       </div>
     </Panel>
   );

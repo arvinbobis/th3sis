@@ -193,6 +193,16 @@ re-look — confirms the Scout → `/prescreen` → gate pipeline works as inten
 answer is FAIL: a real, Scout-validated chokepoint still gets gated on cushion like anything
 else.
 
+**2026-07-09 `/prescreen` run — GE (held, first of the un-gated legacy queue):** FAIL on
+cushion for fresh capital — see `PF_PRESCREEN` / the GATE page. The chokepoint is the
+cleanest in the legacy book (CFM/LEAP narrow-body duopoly + >70% locked-in aftermarket),
+but at ~50× guided EPS above the consensus target, the cushion lives entirely in the $295
+basis. Confirms §3's "don't add at record highs" and — the actual point of the run — gives
+the ride→2× trim plan its missing thesis-gate: LEAP duopoly intact AND double-digit
+services growth. Remaining un-gated queue: MBGL (spinoff orphan), the power cluster
+(ETN/GEV/PWR/EQIX), small semi satellites (ANET/ARM/LRCX), BKNG/BN, and the Musk bucket
+(TSLA/SPCX) + TDG.
+
 **2026-07-09 Scout-sourced `/prescreen` run — INTC (not held, new candidate):** FAIL on
 cushion — see `PF_PRESCREEN` / the GATE page for the full reasoning. Short version: the
 packaging-second-source chokepoint is real (it's the same EMIB-T evidence behind the
