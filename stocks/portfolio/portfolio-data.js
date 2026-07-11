@@ -19,19 +19,29 @@
  * had a PF_PRESCREEN/PF_RADAR entry, nothing else to update for it. No thesis existed
  * for any of the three. MBGL's avgCost also moved 22.05 → 21.19 per IBKR's cost-basis
  * recalculation — not touched manually, just reflecting the live figure.
- * 2026-07-09: full resync from live IBKR positions + trades. THE GENERATOR RESEEDED:
- * the MU GTC limit filled 2026-07-07 @ 899.80 (0.9446 sh ≈ $850.95 incl. commission —
- * almost exactly the $851.81 ASML trim proceeds). MU moves from LIMITS to the new
- * PF_STRAT.SEEDED ledger and becomes the second station on the TREE. Also in this
- * sync: IUSG fully sold (11.08 sh) and replaced with QQQM + SPMO buys — CORE_TICKERS
- * updated to match reality (doctrine change from "IUSG + QQQ" made by the user's own
- * trades, not by this file); GEV added to ~$1,015 (0.9451 sh, avg now 1,060.05);
- * new DRAM (Roundhill Memory ETF, ~$1,050) — sits in the semis theme, no thesis;
- * MBGL trimmed a 0.8357 fractional 2026-07-02 (matches the earlier odd-lot guess).
+ * 2026-07-09 (earlier same day): full resync from live IBKR positions + trades. THE
+ * GENERATOR RESEEDED: the MU GTC limit filled 2026-07-07 @ 899.80 (0.9446 sh ≈ $850.95
+ * incl. commission — almost exactly the $851.81 ASML trim proceeds). MU moves from
+ * LIMITS to the new PF_STRAT.SEEDED ledger and becomes the second station on the TREE.
+ * Also in this sync: IUSG fully sold (11.08 sh) and replaced with QQQM + SPMO buys —
+ * CORE_TICKERS updated to match reality (doctrine change from "IUSG + QQQ" made by the
+ * user's own trades, not by this file); GEV added to ~$1,015 (0.9451 sh, avg now
+ * 1,060.05); new DRAM (Roundhill Memory ETF, ~$1,050) — sits in the semis theme, no
+ * thesis; MBGL trimmed a 0.8357 fractional 2026-07-02 (matches the earlier odd-lot guess).
+ * 2026-07-09 (later same day, caught in this 07-11 resync): ANET, ARM, ALAB, LRCX, and
+ * MRVL all FULLY SOLD within one minute of each other (13:35–13:37 UTC) — a deliberate
+ * small-semi-satellite cleanup, not a data gap (total realized gain ~$126 across the
+ * five: ANET +$26.80, MRVL +$19.38, ARM +$9.82, ALAB +$46.84, LRCX +$22.98). ALAB and
+ * MRVL both had full built theses — this is a real exit from named, researched
+ * positions, not just closing untracked legacy satellites. Dropped all five from
+ * PF_RAW. Left PF_ALERTS.ALAB and STRATEGY.md's Aug-11 ALAB REVIEW_GATES entry in
+ * place for now (a sold position can still be a re-entry watch item) but flagging
+ * both as now watching a CLOSED position, not a held one — worth a deliberate call
+ * on whether to keep, retarget, or drop them, not decided here.
  * ─────────────────────────────────────────────────────────────────────────── */
 
-const PF_ASOF = "2026-07-09";
-const PF_ACCT = { netLiq: 34877.00, cash: 4789.38, dividends: 2.99, buyingPower: 4789.38 };
+const PF_ASOF = "2026-07-11";
+const PF_ACCT = { netLiq: 35352.24, cash: 5363.53, dividends: 2.99, buyingPower: 5363.53 };
 
 // ── Buy-alert pre-commitment (single source of truth for every armed ticker) ──
 // Previously hand-mirrored in three places: each thesis's own `const ALERT`,
@@ -59,42 +69,39 @@ const PF_THEMES = {
 };
 
 // ticker, name, qty, avgCost, lastPx, mktVal, unrealPnl, dayPnl, theme, hasThesis
-// AXP, MSCI, and V dropped 2026-07-07 — closed positions per live IBKR pull, see header note.
+// AXP, MSCI, and V dropped 2026-07-07; ALAB, ANET, ARM, LRCX, and MRVL dropped
+// 2026-07-09 (later same day than that sync) — all closed positions per live IBKR
+// pull, see header note. ALAB and MRVL both had full built theses.
 const PF_RAW = [
-  ["ALAB","Astera Labs",          0.3484, 289.87,  394.51,  137.45,   36.46,   4.05, "semis",        true ],
-  ["AMZN","Amazon.com",           8.1653, 202.74,  243.00, 1984.17,  328.76, -24.33, "platforms",    true ],
-  ["ANET","Arista Networks",      0.6839, 147.66,  181.17,  123.90,   22.92,  10.06, "semis",        false],
-  ["ARM","Arm Holdings",          0.2558, 283.82,  298.75,   76.42,    3.82,  -0.43, "semis",        false],
-  ["ASML","ASML Holding",         0.5986, 730.61, 1774.20, 1062.04,  624.69,  16.11, "semis",        true ],
-  ["AVGO","Broadcom",             1.1432, 351.63,  388.70,  444.36,   42.38,  20.49, "semis",        true ],
-  ["BKNG","Booking Holdings",    10.7000, 188.61,  174.50, 1867.15, -150.92, -79.72, "diversifiers", false],
-  ["BN","Brookfield",            11.0450,  45.36,   42.80,  472.73,  -28.27, -10.93, "diversifiers", false],
-  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  266.00,  279.01,  -21.97,   7.72, "findata",      false],
-  ["CME","CME Group",             0.9659, 311.60,  245.00,  236.65,  -64.33,   4.11, "findata",      false],
-  ["DRAM","Roundhill Memory ETF",16.9247,  59.14,   62.03, 1049.84,   48.84,  24.37, "semis",        false],
-  ["EFX","Equifax",               4.9299, 253.60,  167.09,  823.74, -426.51, -36.92, "findata",      false],
-  ["EQIX","Equinix",              0.0936,1078.41, 1016.54,   95.15,   -5.79,  -0.60, "power",        false],
-  ["ETN","Eaton",                 0.2627, 384.38,  399.56,  104.96,    3.99,   1.02, "power",        false],
-  ["FICO","Fair Isaac",           1.8783,1407.84, 1262.00, 2370.41, -273.94, -71.88, "findata",      true ],
-  ["GE","GE Aerospace",           2.7332, 295.44,  355.94,  972.86,  165.36, -30.17, "power",        false],
-  ["GEV","GE Vernova",            0.9451,1060.05, 1074.00, 1015.04,   13.19,  -2.91, "power",        false],
-  ["GOOG","Alphabet",             3.0338, 227.50,  358.83, 1088.62,  398.42, -14.53, "platforms",    true ],
-  ["INTU","Intuit",               2.3960, 642.94,  273.47,  655.23, -885.24, -18.45, "platforms",    false],
-  ["LRCX","Lam Research",         0.3395, 297.47,  331.50,  112.54,   11.55,   1.82, "semis",        false],
-  ["MA","Mastercard",             5.2499, 532.50,  520.00, 2729.95,  -65.65, -61.00, "payments",     false],
-  ["MBGL","Mobility Global",      5.0000,  21.19,   21.01,  105.05,   -0.90,  -0.95, "findata",      false],
-  ["MCO","Moody's",               5.1545, 484.90,  485.10, 2500.45,    1.02, -79.33, "findata",      false],
-  ["META","Meta Platforms",       2.9644, 610.47,  603.86, 1790.08,  -19.61, -34.75, "platforms",    true ],
-  ["MRVL","Marvell Technology",   0.3694, 194.44,  233.60,   86.29,   14.47,   1.07, "semis",        true ],
-  ["MSFT","Microsoft",            5.8559, 434.43,  383.34, 2244.80, -299.18, -32.21, "platforms",    true ],
-  ["MU","Micron Technology",      1.0769, 883.91,  950.87, 1023.99,   72.11,  13.45, "semis",        true ],
-  ["NVDA","NVIDIA",               2.1852, 183.96,  203.27,  444.19,   42.20,  13.85, "semis",        true ],
-  ["PWR","Quanta Services",       0.4109, 732.43,  665.21,  273.33,  -27.62,   3.46, "power",        false],
-  ["QQQ","Invesco QQQ",           0.9735, 722.02,  711.11,  692.27,  -10.62,   1.64, "index",        false],
-  ["QQQM","Invesco Nasdaq 100",   0.6868, 292.65,  292.81,  201.10,    0.11,   0.46, "index",        false],
-  ["SPGI","S&P Global",           5.8357, 504.01,  431.00, 2515.19, -426.04, -72.71, "findata",      false],
-  ["SPMO","Invesco S&P 500 Momentum", 1.3592, 147.87, 150.56, 204.64, 3.65,   1.55, "index",        false],
-  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  436.76,  313.68,   12.68,   3.01, "semis",        true ],
+  ["AMZN","Amazon.com",           8.1653, 202.74,  245.34, 2003.27,  347.87, -13.88, "platforms",    true ],
+  ["ASML","ASML Holding",         0.5986, 730.61, 1797.32, 1075.88,  638.53,  -4.15, "semis",        true ],
+  ["AVGO","Broadcom",             1.1432, 351.63,  400.39,  457.73,   55.74,  -0.82, "semis",        true ],
+  ["BKNG","Booking Holdings",    10.7000, 188.61,  178.50, 1909.93, -108.15,  31.86, "diversifiers", false],
+  ["BN","Brookfield",            11.0450,  45.36,   43.73,  483.00,  -18.00,   7.07, "diversifiers", false],
+  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  268.07,  281.18,  -19.80,   0.23, "findata",      false],
+  ["CME","CME Group",             0.9659, 311.60,  240.80,  232.59,  -68.38,   1.06, "findata",      false],
+  ["DRAM","Roundhill Memory ETF",16.9247,  59.14,   63.00, 1066.26,   65.26, -23.02, "semis",        false],
+  ["EFX","Equifax",               4.9299, 253.60,  166.44,  820.53, -429.71,  -1.08, "findata",      false],
+  ["EQIX","Equinix",              0.0936,1078.41, 1051.21,   98.39,   -2.55,   1.53, "power",        false],
+  ["ETN","Eaton",                 0.2627, 384.38,  407.28,  106.99,    6.02,   0.38, "power",        false],
+  ["FICO","Fair Isaac",           1.8783,1407.84, 1250.90, 2349.57, -294.79, -53.55, "findata",      true ],
+  ["GE","GE Aerospace",           2.7332, 295.44,  359.27,  981.96,  174.46,   0.63, "power",        false],
+  ["GEV","GE Vernova",            0.9451,1060.05, 1091.57, 1031.64,   29.79,  15.41, "power",        false],
+  ["GOOG","Alphabet",             3.0338, 227.50,  355.05, 1077.15,  386.96,  -3.61, "platforms",    true ],
+  ["INTU","Intuit",               2.3960, 642.94,  274.52,  657.75, -882.72,   2.73, "platforms",    false],
+  ["MA","Mastercard",             5.2499, 532.50,  526.74, 2765.33,  -30.26,  18.58, "payments",     false],
+  ["MBGL","Mobility Global",      5.0000,  21.19,   20.80,  104.00,   -1.95,  -7.30, "findata",      false],
+  ["MCO","Moody's",               5.1545, 484.90,  487.28, 2511.68,   12.25,   1.34, "findata",      false],
+  ["META","Meta Platforms",       2.9644, 610.47,  669.21, 1983.81,  174.12, 111.85, "platforms",    true ],
+  ["MSFT","Microsoft",            5.8559, 434.43,  385.36, 2256.63, -287.35,   5.86, "platforms",    true ],
+  ["MU","Micron Technology",      1.0769, 883.91,  982.98, 1058.57,  106.69,  -9.32, "semis",        true ],
+  ["NVDA","NVIDIA",               2.1852, 183.96,  210.58,  460.16,   58.17,  17.04, "semis",        true ],
+  ["PWR","Quanta Services",       0.4109, 732.43,  658.56,  270.60,  -30.35,  -3.95, "power",        false],
+  ["QQQ","Invesco QQQ",           0.9735, 722.02,  726.30,  707.05,    4.17,   2.94, "index",        false],
+  ["QQQM","Invesco Nasdaq 100",   0.6868, 292.65,  298.98,  205.34,    4.35,   0.82, "index",        false],
+  ["SPGI","S&P Global",           5.8357, 504.01,  430.50, 2512.27, -428.95, -14.36, "findata",      false],
+  ["SPMO","Invesco S&P 500 Momentum", 1.3592, 147.87, 153.75, 208.98, 7.99,   0.91, "index",        false],
+  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  435.80,  312.99,   11.99,  -0.83, "semis",        true ],
 ];
 const PF_POS = PF_RAW.map(r => ({
   t:r[0], name:r[1], qty:r[2], avg:r[3], px:r[4], mv:r[5], up:r[6], day:r[7], theme:r[8], thesis:r[9],
