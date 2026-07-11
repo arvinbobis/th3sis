@@ -31,10 +31,35 @@ discipline over time, one prescreen/thesis pass at a time, not a single rebalanc
 ## 2. Portfolio Direction
 
 **Simplify and focus.** Moving from ~33 scattered positions toward:
-- **Core (~70%):** IUSG + QQQ — broad market, weekly DCA, "don't miss the ride."
-  - Note: IUSG and QQQ overlap heavily (both large-cap US growth). Doubling down
-    on a theme, not truly diversifying. Intentional, but worth knowing.
-- **Satellite (~30%):** 1–3 high-conviction names only.
+- **Core (~70%):** QQQ + QQQM + SPMO — broad market, weekly DCA, "don't miss the ride."
+  (Was IUSG + QQQ at original writing; IUSG fully exited 2026-07-07 and replaced with
+  QQQM + SPMO — doctrine unchanged, `PF_STRAT.CORE_TICKERS` updated to match.)
+- **Satellite (~30%):** 1–3 high-conviction names only, run through the "$1,000 generator"
+  (§1) — this mechanism is unaffected by the core build-out below; it's the dedicated
+  vehicle for the satellite sleeve regardless of what % of the total book that sleeve is.
+
+**Where this actually stands (2026-07-11):** Core is currently **3.7%** of the book
+(~$1,121) — nowhere near the 70% target. This isn't a new problem or a change in
+direction; it's the honest, long-standing gap between the plan and its execution. The
+2026-07-09 close-out of the small semi satellites (ANET, ARM, ALAB, LRCX, MRVL — see §7)
+is explicitly **part of closing that gap**: proceeds from position closures are now
+prioritized toward core DCA rather than automatically recycled into new satellite bets.
+ALAB and MRVL remain live re-entry watches (`PF_ALERTS`, buyFloor = each thesis's own
+base-case floor) should a high-conviction re-entry open up later — but that re-entry, if
+it happens, draws on a *future* recycled seed from the generator/tree (§1), not a reversal
+of the core consolidation.
+
+**The tech-correlation caveat (stated explicitly, not just implied):** "moving into the
+index" is not the same as diversifying away from the book's dominant risk. QQQ (Nasdaq-100)
+is itself >50% tech-weighted; QQQM tracks the same index. Layered on top of AI Semis &
+Hardware (~15% of the book, including DRAM — a direct memory-cycle bet) and Mega-Cap
+Platforms (~27%), the honest look-through picture is that a large majority of the
+portfolio is one correlated AI/tech cycle wearing different labels. The core build-out
+genuinely reduces **single-name blowup risk** (no more ALAB-specific news wiping out a
+concentrated position) — it does **not** reduce **sector-cycle risk** the same way true
+asset-class diversification would. Worth remembering when sizing whatever satellite the
+generator/tree seeds next: favor something that actually diverges from the AI/tech cycle,
+not another name inside it.
 
 **Existing winners** — let ride, thesis-gated quarter by quarter (e.g. ASML +154%, GE +25%).
 **Existing losers** — held with 5–8 year horizon, not touched. Note the cluster is
@@ -44,6 +69,15 @@ CME, CBOE) — losses are thematic, not random.
 **Reality check:** portfolio is roughly net flat (~$33.7K in, ~$33.5K value).
 Spectacular winners offset by the financial-data cluster. This is *why* simplify/focus
 is the right move.
+
+**Checked against the machine audit (2026-07-03 through 07-11, Phases 0–8): no
+deviation.** The audit's phases are all machine-infrastructure (provenance snapshots,
+`/verify-thesis`, scorecard, radar, nav wiring, the engine split) — none prescribe a
+portfolio allocation target, so a core-consolidation direction doesn't conflict with any
+of it. The 70/30 core/satellite split itself predates the audit entirely (original June
+2026 strategy doc) and the audit never touched it. The one genuinely relevant audit
+artifact is `PF_ALERTS` (Phase 1's single-source-of-truth fix) — it's exactly what makes
+ALAB/MRVL's "sold but tracked" status possible without any new machinery.
 
 ---
 
