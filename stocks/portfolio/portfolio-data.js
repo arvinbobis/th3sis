@@ -277,7 +277,7 @@ const PF_PRESCREEN = [
 //   "thesis-gap" (a thesis exists but doesn't mention this risk yet — the actionable ones) ·
 //   "prescreen-only" (no full thesis built; tracked only at the GATE level) · "n/a" (not held).
 const PF_RADAR = {
-  updated: "2026-07-03",
+  updated: "2026-07-11",
   THEMES: [
     { id:"stablecoins", label:"Stablecoins vs. card-network fees", direction:"threatens",
       holdings:["MA"], coverage:"prescreen-only",
@@ -297,10 +297,10 @@ const PF_RADAR = {
       tripwire:"A second hyperscaler discloses a non-TSMC advanced-packaging design win (a real allocation, not a pilot).",
       note:"GAP: TSM's thesis currently frames CoWoS capacity as an expanding bottleneck/moat (bullish framing) with no kill-switch for multi-vendor erosion. Add at TSM's next /update-thesis." },
     { id:"neocloud", label:"Hyperscalers becoming neoclouds (selling excess AI compute externally)", direction:"enables",
-      holdings:["MSFT","AMZN","GOOGL"], coverage:"thesis-gap",
-      evidence:"Scout (SemiAnalysis, 2026-07-03): 'Meta Compute: Everyone Wants To Be A Neocloud' — Bedrock 2.0 / Azure Foundry / Vertex all monetizing spare capacity as a routing tollbooth.",
-      tripwire:"Any of the three discloses a material new external-compute revenue line in a 10-Q (not a press-release pilot).",
-      note:"Upside optionality, not a kill-switch — none of MSFT/AMZN/GOOGL's theses currently name this as a bull-case accelerant. Consider adding at each stock's next /update-thesis." },
+      holdings:["META","MSFT","AMZN","GOOGL"], coverage:"thesis-gap",
+      evidence:"Scout (SemiAnalysis, 2026-07-03): 'Meta Compute: Everyone Wants To Be A Neocloud' — Bedrock 2.0 / Azure Foundry / Vertex all monetizing spare capacity as a routing tollbooth. Corroborated 2026-07-09/10: SemiAnalysis's Meta Superintelligence 1-year update (~670k views) adds concrete infra specificity — 2000km+ scale-across networking, RL-environment-layer scarcity as a new private-market tollbooth — moving this from narrative to infrastructure detail. Third Point's Q1 13F shows a new (silent) META position.",
+      tripwire:"Any of the four discloses a material new external-compute revenue line in a 10-Q (not a press-release pilot).",
+      note:"Upside optionality, not a kill-switch. META was added to holdings 2026-07-11 — it's the row's own namesake example ('Meta Compute') and had a real, larger gap than the other three: its thesis doesn't mention this angle AT ALL, not even as background. Consider adding at each stock's next /update-thesis, META's especially." },
     { id:"orbital-compute", label:"Orbital / space-based compute", direction:"watch",
       holdings:[], coverage:"n/a",
       evidence:"Scout flagged this across 4 reports with the highest reward score of the cycle (RKLB/Iridium deal, Coatue naming space datacenters in SpaceX's own valuation framework).",
