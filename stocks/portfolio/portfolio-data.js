@@ -33,11 +33,14 @@
  * small-semi-satellite cleanup, not a data gap (total realized gain ~$126 across the
  * five: ANET +$26.80, MRVL +$19.38, ARM +$9.82, ALAB +$46.84, LRCX +$22.98). ALAB and
  * MRVL both had full built theses — this is a real exit from named, researched
- * positions, not just closing untracked legacy satellites. Dropped all five from
- * PF_RAW. Left PF_ALERTS.ALAB and STRATEGY.md's Aug-11 ALAB REVIEW_GATES entry in
- * place for now (a sold position can still be a re-entry watch item) but flagging
- * both as now watching a CLOSED position, not a held one — worth a deliberate call
- * on whether to keep, retarget, or drop them, not decided here.
+ * positions, not just closing untracked legacy satellites. Dropped all five from PF_RAW.
+ * 2026-07-11 (later same day): user resolved the ALAB/MRVL flag — deliberately NOT held,
+ * tracked only via PF_ALERTS as re-entry watches. Existing QQQ/QQQM core already carries
+ * passive exposure to both (Marvell is a Nasdaq-100 constituent) in the meantime; the
+ * plan is to reseed a direct/concentrated position once valuation turns attractive again,
+ * not to hold both a passive stake and a full satellite position at today's prices. Added
+ * PF_ALERTS.MRVL (buyFloor 195 = its own base-case floor, matching the ALAB convention);
+ * ALAB's existing entry kept as-is, no change needed there.
  * ─────────────────────────────────────────────────────────────────────────── */
 
 const PF_ASOF = "2026-07-11";
@@ -52,8 +55,13 @@ const PF_ACCT = { netLiq: 35352.24, cash: 5363.53, dividends: 2.99, buyingPower:
 // thesisIntact is the one judgement software can't make: flip it to false the
 // moment a kill-switch KPI breaches, which disarms the buy alert so you never
 // add into a broken thesis. (See each stock's QUARTERLY checklist for the flip step.)
+// ALAB and MRVL: NOT currently held (sold 2026-07-09) — these two are re-entry
+// watches, not active-position alerts. Passive QQQ/QQQM exposure covers the gap
+// until valuation looks attractive again; buyFloor = each thesis's own base-case
+// floor (the same convention used for held names).
 const PF_ALERTS = {
-  ALAB: { buyFloor: 300, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-08-11" },
+  ALAB: { buyFloor: 300, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-08-11", held: false },
+  MRVL: { buyFloor: 195, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "~2026-08-28", held: false },
   AVGO: { buyFloor: 390, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-09-04" },
   TSM:  { buyFloor: 415, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-07-16" },
 };
@@ -154,7 +162,8 @@ const PF_STRAT = {
   REVIEW_GATES: [
     { t:"AVGO", date:"2026-09-04", note:"VMware ARR = WATCH (software missed Q2). Gates any AVGO add AND the generator math." },
     { t:"TSM",  date:"2026-07-16", note:"Next print; thesis intact, holding small." },
-    { t:"ALAB", date:"2026-08-11", note:"Leo CXL ramp is the key variable." },
+    { t:"ALAB", date:"2026-08-11", note:"NOT HELD (sold 2026-07-09) — this now gates the re-entry buyFloor ($300 in PF_ALERTS), not an add to an existing position. Leo CXL ramp is still the key variable to re-check before re-underwriting." },
+    { t:"MRVL", date:"~2026-08-28", note:"NOT HELD (sold 2026-07-09) — gates the re-entry buyFloor ($195 in PF_ALERTS, its own base-case floor). Passive QQQ/QQQM exposure covers the gap until then." },
   ],
 
   RULES: [
