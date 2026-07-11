@@ -522,15 +522,6 @@ const PF_SCORECARD = [
   },
   {
     "t": "MU",
-    "quarter": "Q1 FY25",
-    "date": "2024-12",
-    "post": 105,
-    "landed": "base",
-    "conf": "med",
-    "bandHit": true
-  },
-  {
-    "t": "MU",
     "quarter": "Q2 FY25",
     "date": "2025-03",
     "post": 108,
@@ -571,6 +562,15 @@ const PF_SCORECARD = [
     "date": "2026-03",
     "post": 620,
     "landed": "bull",
+    "conf": "high",
+    "bandHit": true
+  },
+  {
+    "t": "MU",
+    "quarter": "Q3 FY26",
+    "date": "2026-06",
+    "post": 979,
+    "landed": "base",
     "conf": "high",
     "bandHit": true
   },
@@ -690,6 +690,12 @@ const PF_PREDICTIONS = {
     "asOf": "2026-06-06",
     "case": "BASE",
     "note": "probability tail toward BEAR elevated"
+  },
+  "MU": {
+    "quarter": "Q3 FY2026",
+    "asOf": "2026-07-11",
+    "case": "BASE, tracking toward BULL on fundamentals",
+    "note": ""
   }
 };
 

@@ -1,0 +1,26 @@
+{
+  "ticker": "MU",
+  "asOf": "2026-07-11",
+  "quarter": "Q4 FY2026",
+  "inputs": {
+    "price": { "value": 979.30, "src": "web search — stockanalysis.com/CNBC, Jul 10-11 2026 quotes", "pulled": "2026-07-11" },
+    "q3_fy26_revenue_actual": { "value": 41.46, "src": "Micron 8-K / investor press release, reported 2026-06-24", "pulled": "2026-07-11" },
+    "q3_fy26_gross_margin_actual_pct": { "value": 84.9, "src": "Micron 8-K / investor press release, non-GAAP, reported 2026-06-24", "pulled": "2026-07-11" },
+    "q3_fy26_eps_non_gaap": { "value": 25.11, "src": "Micron 8-K / investor press release, reported 2026-06-24", "pulled": "2026-07-11" },
+    "q4_fy26_revenue_guide": { "value": "50.0 +/- 1.0", "unit": "$B", "src": "Micron Q3 FY26 earnings call, 2026-06-24", "pulled": "2026-07-11" },
+    "q4_fy26_gross_margin_guide_pct": { "value": 86, "src": "Micron Q3 FY26 earnings call, 2026-06-24", "pulled": "2026-07-11" },
+    "q4_fy26_eps_guide_non_gaap": { "value": "31.00 +/- 1.00", "src": "Micron Q3 FY26 earnings call, 2026-06-24", "pulled": "2026-07-11" },
+    "sca_total_value_b": { "value": 100, "src": "web search — 16 Strategic Customer Agreements, 5-yr term 2026-2030, ~20% DRAM/~33% NAND volume, $22B customer commitments incl ~$18B cash; multiple outlets (Tom's Hardware, Yahoo Finance, Investing.com) citing Q3 FY26 earnings call slides", "pulled": "2026-07-11" },
+    "forward_pe_reported": { "value": 6.41, "src": "web search — GuruFocus, as of 2026-07-09", "pulled": "2026-07-11" },
+    "implied_ntm_eps_backed_out": { "value": 152.7, "src": "judgment — derived from price $979.30 / forward P/E 6.41x; not a directly-sourced consensus figure", "pulled": "2026-07-11" },
+    "q4_annualized_eps_estimate": { "value": 124, "src": "judgment — Q4 guide midpoint EPS $31.00 x 4, a simple annualized proxy, not a full-year build", "pulled": "2026-07-11" },
+    "blended_ntm_eps_working_estimate": { "value": 135, "src": "judgment — midpoint blend of implied_ntm_eps_backed_out and q4_annualized_eps_estimate, held loosely", "pulled": "2026-07-11" },
+    "multiple_bear": { "value": 8, "src": "judgment — trough-ish multiple applied to a lower, non-SCA-covered EPS assumption (~$85)", "pulled": "2026-07-11" },
+    "multiple_base": { "value": 9, "src": "judgment — modest re-rate from today's compressed 6.4x as SCA thesis partially validates", "pulled": "2026-07-11" },
+    "multiple_bull": { "value": 12, "src": "judgment — re-rate toward 'AI-infrastructure supplier' multiple, roughly matching analyst consensus", "pulled": "2026-07-11" },
+    "multiple_peer_median": { "value": null, "src": "not pulled this touch — MU's own cyclical-memory ruler doesn't use a peer-multiple anchor the way TSM's does; consider adding SK Hynix / Samsung memory-segment multiples at a future touch", "pulled": "2026-07-11" },
+    "analyst_consensus_target_avg": { "value": 1486, "src": "web search — 45-analyst consensus per public.com/stockanalysis.com, Jul 2026", "pulled": "2026-07-11" },
+    "analyst_consensus_target_high": { "value": 1600, "src": "web search — cited 'five-star analyst' target per public.com forecast page, Jul 2026", "pulled": "2026-07-11" }
+  },
+  "notes": "This update was triggered ~17 days after Q3 FY26 earnings (June 24) had already reported and the thesis had gone stale (AS_OF_DATE was still 2026-06-03, pre-print). Q3 actuals blew past the OLD bull case on every metric (revenue, margin, Q4 guide). The single most important new fact is the $100B in 16 Strategic Customer Agreements — 5-year, binding, take-or-pay contracts running 2026-2030 with floor margins 'well beyond historical peaks' — which is direct evidence AGAINST the pull-forward interpretation of AI memory demand (management is signing 5-year commitments, not selling into a spot panic). Despite the blowout print, the stock is actually BELOW its pre-earnings level (from $1,059 to $979, roughly -8% net over 3 weeks) — a 'sell the news' / persistent cyclical-skepticism pattern worth tracking. New competitive risk surfaced this quarter: Samsung passed NVIDIA/AMD HBM4 certification and started mass production FIRST, ahead of Micron — the old bull case's 'HBM4 share gains vs SK Hynix' framing needs to now also account for Samsung. multiple_peer_median intentionally left null this touch (see inputs) rather than fabricated."
+}

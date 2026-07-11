@@ -73,11 +73,11 @@ function moveTip(e) {
 function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
 
 const SIGNAL_HELP = {
-  "Q3 Revenue vs $33.5B Guide": "Micron guided Q3 FY2026 (March–May 2026) revenue at $33.5B ±$750M — a 40% jump from Q2's record $23.9B, driven by HBM demand from AI training clusters. This is the single most watched semiconductor number on June 24. A beat confirms the cycle; a miss at $1,059 stock price would be severe. Note: the stock is largely pricing in a Q3 meet-or-beat already.",
-  "Q4 FY2026 Revenue Guidance": "What management says on June 24 about the June–August quarter. This is arguably MORE important than Q3 itself — the stock already prices $33.5B for Q3. Where the NEXT quarter is headed is what the $1,059 stock is actually debating. A Q4 guide above $35B = incrementally bullish; below $30B = major re-rating trigger regardless of how well Q3 printed.",
-  "Gross Margin vs 81% Guide": "Out of every dollar of revenue, how much Micron keeps after manufacturing costs. Q2 was 74.4%; Q3 is guided at 81%. If achieved, it confirms HBM pricing power is still intact. Memory gross margins historically averaged 30–40% in normal cycles — 81% implies structural pricing, not just cycle volume. The direction from Q3 to Q4 guidance tells you whether the peak has arrived.",
-  "HBM Mix % of Revenue": "The fraction of total revenue from High Bandwidth Memory — the AI training chip Micron sells to NVIDIA, AMD, and cloud providers. Higher HBM % = more revenue from the premium-priced, supply-constrained product and less from commodity DRAM and NAND. This is the structural health indicator: a rising HBM mix is the 'this cycle is different' argument made visible.",
-  "NAND Gross Margin Recovery": "NAND flash memory (SSDs, phones, enterprise storage) is Micron's second major business, and it's been in a prolonged oversupply cycle that depresses overall margins. If NAND gross margins recover to positive, it adds a second tailwind on top of HBM. If NAND stays weak, it limits total-company margin expansion even if HBM pricing holds.",
+  "Q3 FY26 Revenue (Actual)": "Micron's Q3 FY2026 actual result, reported June 24, 2026: $41.46B — a 24% beat vs the $33.5B guide, +346% YoY, +74% sequentially, the largest dollar increase in company history. This single quarter exceeded even the OLD bull case's ≥$35B threshold by $6.5B. DRAM revenue alone hit a record $31.3B (76% of total).",
+  "Q4 FY26 Revenue Guide": "Management's guidance (issued on the June 24 call) for the June–August quarter: $50.0B ±$1.0B — another ~20% sequential jump on top of Q3's already-record print. This guide alone exceeds the OLD bull case's ≥$38B threshold. Reports (actual results) in late September 2026.",
+  "Gross Margin (Actual + Guide)": "Q3 FY26 actual non-GAAP gross margin: 84.9%, a company record, beating even the 81% guide. Q4 FY26 is guided to ~86% — margin is still expanding, not just holding. Memory gross margins historically averaged 30–40% in normal cycles; 86% is unprecedented and is the clearest evidence HBM pricing power, not just volume, is driving this cycle.",
+  "$100B Strategic Customer Agreements": "16 binding, multi-year take-or-pay contracts signed with major customers, covering ~20% of DRAM and ~1/3 of NAND volume, running 2026–2030 (5-year term), with ceiling prices and floor margins 'well beyond historical peaks.' Backed by $22B in customer commitments (incl. ~$18B cash deposits). This is the single most important new fact this quarter — it's direct, contractual evidence against the pull-forward interpretation: customers are locking in supply and price for FIVE YEARS, not panic-buying into a spot shortage.",
+  "HBM4 Competitive Position": "Samsung has already passed NVIDIA and AMD certification for 16-layer HBM4 and started mass production FIRST — ahead of Micron. SK Hynix still leads overall HBM share. Micron's own HBM4 ramp is tracking twice as fast as HBM3E did and has already shipped $1B+ in HBM4 revenue, but the 'Micron wins share on HBM4' bull thread from last quarter now has a real, named competitive challenge, not just a tailwind.",
 };
 const TAG_HELP = {
   BEAT: "doing better than expected — a good sign.",
@@ -113,9 +113,20 @@ function tipSvg(title, body, note, color, extraClass) {
    ╚══════════════════════════════════════════════════════════════════════════╝ */
 
 // 1 ── DATE
-const AS_OF_DATE = "2026-06-03";
+const AS_OF_DATE = "2026-07-11";
 
-// 10 ── Jun 2025 memory down-cycle / tariff panic (52-wk low ~$102)
+// THESIS_HISTORY — archive of the prior (pre-Q3-print) vintage, before this update
+// rewrote CASES. Same discipline as TSM's thesis-data.js: never edit a past entry.
+const THESIS_HISTORY = [
+  { asOf: "2026-06-03", quarter: "Q2 FY26", cases: {
+    bear: { target12: "$320 — $520", op: "HBM demand peaks as NVIDIA Blackwell deployments complete and Samsung resolves HBM3E qualification with major customers. Q4 FY2026 guidance (given June 24) comes in below $30B, signaling the cycle has peaked. Gross margins guide lower, NAND remains oversupplied, and the market applies a cyclical trough multiple. Every prior memory cycle has seen 50–70% peak-to-trough stock declines — the bear case argues AI HBM is not immune to the economics of semiconductor oversupply.", breaks: "Q3 meets $33.5B AND Q4 is guided at $34B+ on June 24, proving the cycle has at minimum two more strong quarters ahead.", requires01: "Q3 misses $33.5B guide OR Q4 guided below $30B", requires02: "Gross margin fails to hold above 75% for Q4" },
+    base: { target12: "$900 — $1,100", op: "Q3 FY2026 meets $33.5B with 81% gross margins. Q4 is guided at $34–37B as HBM4 volumes begin ramping alongside HBM3E production. NAND margins gradually recover. The cycle extends through FY2027 at still-elevated margins of 60–70%, and the market continues to pay 13–15× on exceptionally high earnings. HBM manufacturing complexity (3× wafer consumption vs. DDR5) keeps supply disciplined for another year. Stock trades sideways around current levels with high volatility into each print.", breaks: "Q4 FY2026 guided below $30B on June 24 — that single data point collapses the base case entirely.", requires01: "Q3 meets $33.5B; Q4 guided ≥$34B; cycle extending", requires02: "Gross margin ≥78% in Q3; Q4 guided similarly" },
+    bull: { target12: "$1,200 — $1,500", op: "Q3 materially beats ($35B+ on $33.5B guide), Q4 is guided above $38B, and management raises full-year FY2027 outlook. HBM4 ramping 'twice as fast as HBM3E' becomes a competitive wedge against SK Hynix as NVIDIA diversifies HBM sourcing. The market begins re-rating MU from 'cyclical memory company' toward 'AI infrastructure critical supplier' as it did for AVGO — moving from 13× toward 17–18× FY2027 earnings. FY2027 EPS estimates rise to $85–90+.", breaks: "Q3 gross margins fail to hit 81% guidance — that single miss would break the pricing-power narrative the bull case rests on.", requires01: "Q3 beats $35B+; Q4 guided ≥$38B", requires02: "GM 82%+ in Q3; HBM4 share gains vs SK Hynix confirmed" },
+  } },
+];
+
+// 10 ── Jun 2025 memory down-cycle / tariff panic (52-wk low ~$102). No new shock
+// this quarter — Q3 was a blowout beat, not a dislocation — so left unchanged.
 const DISLOCATION_DATE = "2025-06-01";
 const REVERSION_TROUGH = 102;
 const REVERSION_BASEFLOOR = 310;
@@ -124,97 +135,97 @@ const REVERSION_PRECEDENT_DAYS = 180;
 const CASES = {
   bear: {
     key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
-    target12: "$320 — $520",
-    op: "HBM demand peaks as NVIDIA Blackwell deployments complete and Samsung resolves HBM3E qualification with major customers. Q4 FY2026 guidance (given June 24) comes in below $30B, signaling the cycle has peaked. Gross margins guide lower, NAND remains oversupplied, and the market applies a cyclical trough multiple. Every prior memory cycle has seen 50–70% peak-to-trough stock declines — the bear case argues AI HBM is not immune to the economics of semiconductor oversupply.",
-    breaks: "Q3 meets $33.5B AND Q4 is guided at $34B+ on June 24, proving the cycle has at minimum two more strong quarters ahead.",
-    requires01: "Q3 misses $33.5B guide OR Q4 guided below $30B",
-    requires02: "Gross margin fails to hold above 75% for Q4",
+    target12: "$550 — $750",
+    op: "Q3 FY2026 blew past every prior threshold ($41.46B vs $33.5B guide, 84.9% GM, Q4 guided to $50B±$1B), and the $100B in 16 strategic customer agreements (SCAs, 2026–2030, floor margins 'well beyond historical peaks') meaningfully de-risks ~20% of DRAM and ~1/3 of NAND volume. The bear case is narrower than it used to be, but not gone: it now rests on the ~70–80% of volume NOT covered by SCAs. Samsung has already passed NVIDIA/AMD HBM4 certification and started mass production FIRST — ahead of Micron — a real, named competitive threat the old bull thread didn't have to answer. If HBM4 share losses to Samsung compound, or FY2027 guidance (first given with Q4 results, ~Sept 2026) disappoints on non-contracted volume, the market's already-skeptical 6.4× forward multiple compresses further even without an SCA breach.",
+    breaks: "Q4 FY2026 actual results (reports ~late Sept 2026) land within guide AND FY2027 initial guidance confirms the cycle extending — the SCAs alone would need to be shown as fictional or reneged-on to break this case harder than that.",
+    requires01: "Q4 FY26 actual misses the $50B±$1B guide, OR FY2027 initial guidance signals deceleration on non-SCA volume",
+    requires02: "Samsung/CXMT visibly take HBM4 share from Micron in named design wins, not just qualification timing",
   },
   base: {
     key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
-    target12: "$900 — $1,100",
-    op: "Q3 FY2026 meets $33.5B with 81% gross margins. Q4 is guided at $34–37B as HBM4 volumes begin ramping alongside HBM3E production. NAND margins gradually recover. The cycle extends through FY2027 at still-elevated margins of 60–70%, and the market continues to pay 13–15× on exceptionally high earnings. HBM manufacturing complexity (3× wafer consumption vs. DDR5) keeps supply disciplined for another year. Stock trades sideways around current levels with high volatility into each print.",
-    breaks: "Q4 FY2026 guided below $30B on June 24 — that single data point collapses the base case entirely.",
-    requires01: "Q3 meets $33.5B; Q4 guided ≥$34B; cycle extending",
-    requires02: "Gross margin ≥78% in Q3; Q4 guided similarly",
+    target12: "$1,100 — $1,350",
+    op: "Q4 FY2026 lands within the $50B±$1B guide and ~86% GM, confirming Q3's blowout wasn't a one-off. The $100B in SCAs — 5-year, binding, take-or-pay, backed by $22B in customer cash/commitments — is real evidence the demand is contracted, not pulled forward: management itself says it has 'no idea when the RAM crisis will end' and expects tight supply-demand through 2027, gradual improvement only in 2028. HBM4 continues ramping twice as fast as HBM3E did. The market's forward P/E, currently a historically compressed ~6.4× despite record earnings, drifts modestly higher (toward 8–9×) as more quarters validate the SCA thesis over cyclical skepticism — but doesn't fully re-rate, since Samsung's HBM4 mass-production lead keeps a real competitive question open.",
+    breaks: "Q4 FY2026 actual misses the $50B±$1B guide, or FY2027 initial guidance (given with Q4 results) signals the cycle peaking rather than extending.",
+    requires01: "Q4 FY26 actual lands within $50B±$1B guide; GM holds ~85–87%",
+    requires02: "FY2027 initial guidance (with Q4 print) signals continued tightness, consistent with the SCA visibility",
   },
   bull: {
     key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
-    target12: "$1,200 — $1,500",
-    op: "Q3 materially beats ($35B+ on $33.5B guide), Q4 is guided above $38B, and management raises full-year FY2027 outlook. HBM4 ramping 'twice as fast as HBM3E' becomes a competitive wedge against SK Hynix as NVIDIA diversifies HBM sourcing. The market begins re-rating MU from 'cyclical memory company' toward 'AI infrastructure critical supplier' as it did for AVGO — moving from 13× toward 17–18× FY2027 earnings. FY2027 EPS estimates rise to $85–90+.",
-    breaks: "Q3 gross margins fail to hit 81% guidance — that single miss would break the pricing-power narrative the bull case rests on.",
-    requires01: "Q3 beats $35B+; Q4 guided ≥$38B",
-    requires02: "GM 82%+ in Q3; HBM4 share gains vs SK Hynix confirmed",
+    target12: "$1,500 — $1,800",
+    op: "Q4 FY2026 beats the $50B guide high end and FY2027 initial guidance gets raised meaningfully above run-rate, confirming the cycle is still accelerating, not just extending. Micron holds or grows HBM4 share despite Samsung's head start — the 'twice as fast as HBM3E' ramp claim proves out in named design wins, not just internal metrics. The market fully re-rates MU from 'cyclical memory company' to 'contractually de-risked AI-infrastructure supplier' — the same re-rating AVGO got for its networking/VMware mix — moving the forward multiple from today's skeptical ~6.4× toward 12–13×. This is close to where 45-analyst consensus already sits (avg 12-month target ~$1,486, high $1,600) — the bull case here is largely 'the market's own published optimism actually shows up in the price,' not a more aggressive forecast than Wall Street's.",
+    breaks: "Q4 FY2026 actual misses guide, or Samsung/SK Hynix visibly close the HBM4 gap in named customer wins rather than just certification timing.",
+    requires01: "Q4 FY26 beats $50B+$1B (i.e. ≥$51B); FY2027 guidance raised above the implied run-rate",
+    requires02: "Micron HBM4 design wins hold vs Samsung's mass-production head start; GM sustains ≥86%",
   },
 };
 
 // 2 ── Current price
-const NOW_PRICE = 1059;
+const NOW_PRICE = 979;
 
 // 3 ── Historical price line (approximate quarter-end close)
 const HISTORY = [
-  { q: "Q3 FY25", p: 101  },
   { q: "Q4 FY25", p: 135  },
   { q: "Q1 FY26", p: 310  },
   { q: "Q2 FY26", p: 620  },
+  { q: "Q3 FY26", p: 1059 },
   { q: "NOW",     p: NOW_PRICE },
 ];
 
 // 6 ── Price targets
-const PROJ_END = { bear: 420, base: 1000, bull: 1350 };
+const PROJ_END = { bear: 650, base: 1225, bull: 1650 };
 
-// 4 ── Forward quarter labels  (Q3 FY26 reports Jun 24)
-const FUTURE_Q = ["Q3 FY26*", "Q4 FY26", "Q1 FY27", "Q2 FY27"];
+// 4 ── Forward quarter labels (Q4 FY26 reports ~late Sept 2026)
+const FUTURE_Q = ["Q4 FY26", "Q1 FY27", "Q2 FY27", "Q3 FY27"];
 
-// 7 ── Signal bars (pos: 0=far bear, 1=far bull). All WATCH until Jun 24.
+// 7 ── Signal bars (pos: 0=far bear, 1=far bull). Q3 resolved; Q4 is the next watch.
 const SIGNALS = {
   bear: [
-    { name: "Q3 Revenue vs $33.5B Guide", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BEAR ≤ $31B",       guide: "GUIDE $33.5B ±$750M", pos: 0.18 },
-    { name: "Q4 FY2026 Revenue Guidance", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BEAR ≤ $28B guided", guide: "implied $34B+",         pos: 0.15 },
-    { name: "Gross Margin vs 81% Guide",  unit: "%",   tag: "WATCH", next: "Jun 24 2026", val: "BEAR <75%",          guide: "GUIDE ~81%",              pos: 0.20 },
+    { name: "Q3 FY26 Revenue (Actual)", unit: "$B", tag: "BEAT",  next: "~Sep 2026 (Q4)", val: "ACTUAL $41.46B (+24% vs guide)", guide: "GUIDE was $33.5B ±$750M", pos: 0.95 },
+    { name: "Q4 FY26 Revenue Guide",    unit: "$B", tag: "WATCH", next: "~Sep 2026",       val: "GUIDED $50.0B ±$1.0B",           guide: "actual reports ~late Sep", pos: 0.15 },
+    { name: "Gross Margin (Actual + Guide)", unit: "%", tag: "BEAT", next: "~Sep 2026", val: "ACTUAL 84.9% / GUIDE ~86%", guide: "GUIDE was ~81%", pos: 0.90 },
   ],
   base: [
-    { name: "Q3 Revenue vs $33.5B Guide", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BASE $33–35B",        guide: "GUIDE $33.5B ±$750M", pos: 0.58 },
-    { name: "Q4 FY2026 Revenue Guidance", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BASE $34–37B guided",  guide: "implied $34B+",         pos: 0.58 },
-    { name: "Gross Margin vs 81% Guide",  unit: "%",   tag: "WATCH", next: "Jun 24 2026", val: "BASE ~78–82%",         guide: "GUIDE ~81%",              pos: 0.57 },
+    { name: "Q3 FY26 Revenue (Actual)", unit: "$B", tag: "BEAT",  next: "~Sep 2026 (Q4)", val: "ACTUAL $41.46B (+24% vs guide)", guide: "GUIDE was $33.5B ±$750M", pos: 0.95 },
+    { name: "Q4 FY26 Revenue Guide",    unit: "$B", tag: "WATCH", next: "~Sep 2026",       val: "GUIDED $50.0B ±$1.0B",           guide: "actual reports ~late Sep", pos: 0.60 },
+    { name: "Gross Margin (Actual + Guide)", unit: "%", tag: "BEAT", next: "~Sep 2026", val: "ACTUAL 84.9% / GUIDE ~86%", guide: "GUIDE was ~81%", pos: 0.90 },
   ],
   bull: [
-    { name: "Q3 Revenue vs $33.5B Guide", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BULL ≥ $35B beat",    guide: "GUIDE $33.5B ±$750M", pos: 0.86 },
-    { name: "Q4 FY2026 Revenue Guidance", unit: "$B",  tag: "WATCH", next: "Jun 24 2026", val: "BULL ≥ $38B guided",  guide: "implied $34B+",         pos: 0.88 },
-    { name: "Gross Margin vs 81% Guide",  unit: "%",   tag: "WATCH", next: "Jun 24 2026", val: "BULL 82%+ confirmed", guide: "GUIDE ~81%",              pos: 0.85 },
+    { name: "Q3 FY26 Revenue (Actual)", unit: "$B", tag: "BEAT",  next: "~Sep 2026 (Q4)", val: "ACTUAL $41.46B (+24% vs guide)", guide: "GUIDE was $33.5B ±$750M", pos: 0.95 },
+    { name: "Q4 FY26 Revenue Guide",    unit: "$B", tag: "WATCH", next: "~Sep 2026",       val: "GUIDED $50.0B ±$1.0B",           guide: "actual reports ~late Sep", pos: 0.88 },
+    { name: "Gross Margin (Actual + Guide)", unit: "%", tag: "BEAT", next: "~Sep 2026", val: "ACTUAL 84.9% / GUIDE ~86%", guide: "GUIDE was ~81%", pos: 0.92 },
   ],
 };
 const MARGIN = {
   bear: [
-    { name: "HBM Mix % of Revenue",     tag: "WATCH", next: "Jun 24 2026", pos: 0.22 },
-    { name: "NAND Gross Margin Recovery", tag: "WATCH", next: "Jun 24 2026", pos: 0.18 },
+    { name: "$100B Strategic Customer Agreements", tag: "MATCH", next: "Ongoing / each print", pos: 0.55 },
+    { name: "HBM4 Competitive Position",            tag: "WATCH", next: "Ongoing",              pos: 0.30 },
   ],
   base: [
-    { name: "HBM Mix % of Revenue",     tag: "WATCH", next: "Jun 24 2026", pos: 0.57 },
-    { name: "NAND Gross Margin Recovery", tag: "WATCH", next: "Jun 24 2026", pos: 0.52 },
+    { name: "$100B Strategic Customer Agreements", tag: "MATCH", next: "Ongoing / each print", pos: 0.60 },
+    { name: "HBM4 Competitive Position",            tag: "WATCH", next: "Ongoing",              pos: 0.52 },
   ],
   bull: [
-    { name: "HBM Mix % of Revenue",     tag: "WATCH", next: "Jun 24 2026", pos: 0.85 },
-    { name: "NAND Gross Margin Recovery", tag: "WATCH", next: "Jun 24 2026", pos: 0.80 },
+    { name: "$100B Strategic Customer Agreements", tag: "MATCH", next: "Ongoing / each print", pos: 0.65 },
+    { name: "HBM4 Competitive Position",            tag: "WATCH", next: "Ongoing",              pos: 0.75 },
   ],
 };
 
 // 8 ── KPI chart: Quarterly Revenue ($B)
-const KPI_HIST = 23.9;   // Q2 FY2026 actual
+const KPI_HIST = 41.46;   // Q3 FY2026 actual (new baseline)
 const KPI_PROJ = {
-  bear: [30.0, 24.0, 19.0, 15.0],
-  base: [33.5, 35.0, 33.0, 34.5],
-  bull: [36.5, 41.0, 46.0, 50.5],
+  bear: [49.0, 42.0, 33.0, 26.0],
+  base: [50.0, 51.0, 49.0, 52.0],
+  bull: [51.0, 56.0, 62.0, 68.0],
 };
 
 // 9 ── TRACK RECORD. Append newest to end; dashboard keeps last 6.
 const TRACK_ALL = [
-  { q: "Q1 FY25", date: "2024-12", post: 105, reaction: "+",  bear: [50,68],   base: [80,108],  bull: [118,152], landed: "base",      conf: "med"  },
   { q: "Q2 FY25", date: "2025-03", post: 108, reaction: "+",  bear: [55,72],   base: [85,115],  bull: [126,165], landed: "base",      conf: "med"  },
   { q: "Q3 FY25", date: "2025-06", post: 112, reaction: "+",  bear: [60,82],   base: [90,122],  bull: [136,175], landed: "base",      conf: "high" },
   { q: "Q4 FY25", date: "2025-09", post: 148, reaction: "++", bear: [78,106],  base: [118,158], bull: [172,222], landed: "base→bull", conf: "high" },
   { q: "Q1 FY26", date: "2025-12", post: 340, reaction: "++", bear: [95,130],  base: [155,208], bull: [232,298], landed: "bull",      conf: "high" },
   { q: "Q2 FY26", date: "2026-03", post: 620, reaction: "++", bear: [242,322], base: [382,502], bull: [545,682], landed: "bull",      conf: "high" },
+  { q: "Q3 FY26", date: "2026-06", post: 979, reaction: "-",  bear: [320,520], base: [900,1100], bull: [1200,1500], landed: "base",   conf: "high" },
 ];
 const TRACK_WINDOW = 6;
 const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
@@ -265,11 +276,11 @@ function FanChart({ c }) {
       ))}
       <line x1={nowX} y1={PAD_T} x2={nowX} y2={CH_H - PAD_B} stroke="#2f6dff" strokeWidth="1" strokeDasharray="3 4" opacity="0.7" />
       <path d={bandPath} fill={`url(#fan-${c.key})`} {...tipSvg(
-        "The forecast 'cone'", "This shaded fan shows where the price could go in this scenario. The bear cone drops sharply — that's what a memory cycle reversal from 81% gross margins looks like. The bull cone climbs modestly — the stock is already near full value even in the bull case.",
-        "Wider = more uncertainty. The bear drop is steep because memory cycle reversals are fast.", c.accent, "fan-band")} />
+        "The forecast 'cone'", "This shaded fan shows where the price could go in this scenario. The bear cone reflects a real but narrower drawdown now that $100B in 5-year contracted revenue (the Strategic Customer Agreements, or SCAs) floor-protects part of the business — this isn't the same open-ended cyclical-collapse risk as before.",
+        "Wider = more uncertainty.", c.accent, "fan-band")} />
       <path d={midPath} fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="6 5" className="fan-mid" style={{ filter: "url(#softglow)" }} />
       <path d={histPath} fill="none" stroke="#cdd5e3" strokeWidth="2" {...tipSvg(
-        "Price history", "MU's actual share price. The parabolic rise — from $101 in May 2025 to $1,059 now in 12 months — is one of the most dramatic runs for a trillion-dollar company. Every dollar of that gain represents the AI memory supercycle repricing Micron from 'commodity' to 'critical AI infrastructure.'",
+        "Price history", "MU's actual share price. The parabolic rise from $101 (May 2025) to $1,059 (pre-Q3-earnings, June 2026) was one of the most dramatic runs for a trillion-dollar company. Then, despite Q3 FY2026 results blowing past even the old bull case ($41.46B vs a $35B+ bull threshold), the stock gave back ~8% over the following three weeks to $979 — the fundamentals ran ahead of what the market was willing to pay.",
         "This part already happened — it's real, not a forecast.", "#cdd5e3", "hist-line")} />
       {HISTORY.map((d, i) => (
         <g key={i}>
@@ -278,8 +289,8 @@ function FanChart({ c }) {
             stroke={i === nHist - 1 ? "#fff" : "#8a93a6"} strokeWidth="1.5"
             {...tipSvg(i === nHist - 1 ? "Where we are today" : d.q,
               i === nHist - 1
-                ? `MU is at $${NOW_PRICE} — near its all-time high. Q3 FY2026 earnings report in 21 days (June 24). The $33.5B revenue guide and 81% gross margin guide for Q3 are already largely in the stock price.`
-                : `At the end of ${d.q}, MU was around $${d.p}. ${d.q === "Q3 FY25" ? "This was the 52-week low — the May 2025 tariff/macro panic before the AI memory supercycle was priced in." : ""}`,
+                ? `MU is at $${NOW_PRICE} — below where it traded going INTO the Q3 print ($1,059), even though Q3 actual results ($41.46B revenue, 84.9% GM) blew past every prior scenario band. Q4 FY2026 (guided to $50B±$1B) reports ~late September 2026. The market hasn't yet decided whether the $100B in 5-year customer contracts breaks the historical memory cycle, or is still discounting mean reversion.`
+                : `At the end of ${d.q}, MU was around $${d.p}. ${d.q === "Q3 FY26" ? "This is the post-earnings level, after the stock popped ~15% after-hours on the print then gave most of it back over the following three weeks." : ""}`,
               null, i === nHist - 1 ? "#9fb4ff" : "#cdd5e3")} />
           {i === nHist - 1 && <text x={histPts[i][0] - 6} y={histPts[i][1] - 12} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="end">NOW ${NOW_PRICE}</text>}
         </g>
@@ -290,7 +301,7 @@ function FanChart({ c }) {
             fill="#0a0d14" stroke={c.accent} strokeWidth="1.6"
             {...tipSvg(`Forecast: ${FUTURE_Q[i]}`,
               i === 0
-                ? `${FUTURE_Q[i]} results are due June 24 — 21 days away. This is not a far-out forecast; it's an imminent catalyst.`
+                ? `${FUTURE_Q[i]} results (already guided to $50B±$1B revenue, ~86% GM) report ~late September 2026 — the next real catalyst, and the first quarter to also disclose initial FY2027 guidance.`
                 : `A milestone on the most-likely price path for the ${c.label} scenario. Each diamond is roughly one quarter further into the future.`,
               "Hover the shaded cone around it for the uncertainty range.", c.accent)} />
           <text x={x} y={y - 12} fill={i === 0 ? "#e0a83b" : c.accent} fontSize="10.5" fontFamily={FONT_MONO} textAnchor="middle">{FUTURE_Q[i]}</text>
@@ -325,9 +336,9 @@ function tagColor(tag) {
 // ── Segmented Control ──────────────────────────────────────────────────────
 function Segmented({ active, setActive, small }) {
   const explain = {
-    bear: ["The pessimistic scenario", "Click to see MU if the HBM cycle peaks and mean-reverts. Q4 guidance on June 24 comes in below $30B, Samsung qualifies HBM3E with NVIDIA, and gross margins begin declining. The stock re-rates to cyclical-hardware multiples — that's a $320–520 range."],
-    base: ["The most-likely scenario", "Click for the base view — Q3 meets guide, Q4 guided at $34B+, and the HBM cycle extends through FY2027 at elevated margins. Stock trades sideways around $900–1,100 as 'great business with uncertainty priced in.'"],
-    bull: ["The optimistic scenario", "Click to see the upside — Q3 beats $35B, Q4 guided above $38B, and the market begins re-rating Micron from cyclical to AI infrastructure. Price reaches $1,200–1,500."],
+    bear: ["The pessimistic scenario", "Click to see MU if Q4 FY2026 (reports ~Sept) misses the already-issued $50B±$1B guide, or Samsung's HBM4 mass-production lead compounds into real share losses. The $100B in 5-year SCAs floor-protects part of the business now, so this is a narrower drawdown than a classic memory-cycle collapse — a $550–750 range."],
+    base: ["The most-likely scenario", "Click for the base view — Q4 lands within the $50B±$1B / ~86% GM guide, FY2027 initial guidance (given alongside Q4) confirms the cycle extending per the $100B SCA visibility, and the market's currently-compressed ~6.4× forward multiple drifts modestly higher. Stock moves toward $1,100–1,350."],
+    bull: ["The optimistic scenario", "Click to see the upside — Q4 beats $50B+$1B, FY2027 guidance gets raised, and the market fully re-rates MU toward the multiple 45-analyst consensus already implies (avg target ~$1,486, high $1,600). Price reaches $1,500–1,800."],
   };
   return (
     <div style={{ display: "flex", gap: 5 }}>
@@ -355,15 +366,15 @@ const KPI_MIN = 8, KPI_MAX = 56;
 function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
   const h = Math.max(4, Math.min(92, ((val - KPI_MIN) / (KPI_MAX - KPI_MIN)) * 100));
   const tp = baseline
-    ? tip("Starting point (Q2 FY26)", `This is the most recent real number: Micron earned $${val}B in quarterly revenue — itself a record at the time. The Q3 FY2026 guide ($33.5B) is 40% higher still.`, "The grey dot = where we are. Bars to the right are scenario forecasts.", "#9aa4b8")
-    : tip(`Forecast: ${label}`, `In this scenario, quarterly revenue reaches ~$${val}B by ${label}. For context: Micron's entire FY2022 annual revenue was ~$30.8B — they now guide a single quarter at $33.5B.`, "Switch BEAR/BASE/BULL up top to see how scenarios diverge.", accentColor);
+    ? tip("Starting point (Q3 FY26, actual)", `This is the most recent real number: Micron reported $${val}B in Q3 FY2026 revenue on June 24 — a 24% beat vs the $33.5B guide, +346% YoY. Q4 is already guided to $50B±$1B.`, "The grey dot = where we are. Bars to the right are scenario forecasts.", "#9aa4b8")
+    : tip(`Forecast: ${label}`, `In this scenario, quarterly revenue reaches ~$${val}B by ${label}. For context: Micron's entire FY2022 annual revenue was ~$30.8B — a single quarter now guides above that.`, "Switch BEAR/BASE/BULL up top to see how scenarios diverge.", accentColor);
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
       <div style={{ fontSize: 11, color: accentColor, fontWeight: 700, marginBottom: 4 }}>${val}B</div>
       {baseline
         ? <div style={{ width: 9, height: 9, borderRadius: "50%", background: "#3a4252", border: "1.5px solid #7b86a0", marginBottom: `${h}%` }} />
         : <div style={{ width: "62%", height: `${h}%`, background: `linear-gradient(180deg, ${accentColor}, ${accentColor}44)`, border: `1px solid ${accentColor}`, borderRadius: 2, animation: `fadeUp .5s ease ${delay}s both`, boxShadow: `0 0 12px ${accentColor}55` }} />}
-      <div style={{ fontSize: 9.5, color: label === "Q3 FY26*" ? "#e0a83b" : "#5a6477", marginTop: 6, fontWeight: label === "Q3 FY26*" ? 700 : 400 }}>{label}</div>
+      <div style={{ fontSize: 9.5, color: label === "Q4 FY26" ? "#e0a83b" : "#5a6477", marginTop: 6, fontWeight: label === "Q4 FY26" ? 700 : 400 }}>{label}</div>
     </div>
   );
 }
@@ -396,7 +407,7 @@ function SignalRow({ s, accent }) {
       <div>
         <SignalBar pos={s.pos} accent={accent} tipProps={tip(
           "Where this scenario sits",
-          "Red (left) is bad, green (right) is good. The dot shows where THIS scenario expects the number to land. All signals are WATCH until June 24.",
+          "Red (left) is bad, green (right) is good. The dot shows where THIS scenario expects the number to land. Q3 signals are resolved (actual); Q4 signals are WATCH until ~Sep 2026.",
           "It's a visual gauge, not an exact measurement.", accent)} />
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
           <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
@@ -418,7 +429,7 @@ function MarginRow({ s, accent }) {
       </div>
       <div>
         <SignalBar pos={s.pos} accent={accent} tipProps={tip(
-          "Where this scenario sits", "Red = bad, green = good. All WATCH until June 24.", null, accent)} />
+          "Where this scenario sits", "Red = bad, green = good. Tracking ongoing — SCA execution and HBM4 competitive position are watched every quarter, not just at earnings.", null, accent)} />
         <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4, fontSize: 9.5 }}>
           <span style={{ color: "#5a6477" }}>NEXT: {s.next}</span>
         </div>
@@ -468,7 +479,7 @@ function ReversionClock() {
         <span>${baseFloor}</span>
       </div>
       <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
-        The June 2025 dislocation has <span style={{ color: "#3fd07a", fontWeight: 700 }}>completely resolved</span> — stock at ${now} is <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{recPct}%</span> of the way from trough to the first recovery target, an unprecedented overshoot. The AI memory supercycle drove a <span style={{ color: "#fff", fontWeight: 700 }}>10× return in 12 months</span>. The open question is not "will it recover?" — it's whether the <span style={{ color: "#e0a83b", fontWeight: 700 }}>cycle extends beyond 2026</span>. Watch <span style={{ color: "#e0a83b", fontWeight: 700 }}>June 24</span>.
+        The June 2025 dislocation has <span style={{ color: "#3fd07a", fontWeight: 700 }}>completely resolved</span> — stock at ${now} is <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{recPct}%</span> of the way from trough to the first recovery target, an unprecedented overshoot (roughly a <span style={{ color: "#fff", fontWeight: 700 }}>9–10× return</span> in 13 months). Q3 FY2026 already answered "will the cycle extend into FY2027?" with a resounding yes — $41.46B revenue, $100B in 5-year customer contracts. The open question now is whether the <span style={{ color: "#e0a83b", fontWeight: 700 }}>market's multiple</span> (still a skeptical ~6.4×) catches up to what the SCAs imply. Watch <span style={{ color: "#e0a83b", fontWeight: 700 }}>Q4 FY26 + initial FY2027 guidance, ~Sep 2026</span>.
       </div>
     </div>
   );
@@ -494,7 +505,7 @@ function TrackRecord() {
         <div style={{ fontSize: 11, color: "#7b86a0" }}>BASE-OR-BETTER LANDINGS: <span style={{ color: "#3fd07a", fontWeight: 700 }}>{hits}/{TRACK.length}</span></div>
       </div>
       <div style={{ fontSize: 10.5, color: "#5a6477", marginBottom: 10 }}>
-        Each column = one earnings date. Stacked zones are the scenario bands as they would have been drawn at that time. Note: Q1 FY26 and Q2 FY26 each blew completely past the bull band — the supercycle was more powerful than any reasonable ex-ante forecast.
+        Each column = one earnings date. Stacked zones are the scenario bands as they would have been drawn at that time. Note: Q1 FY26 and Q2 FY26 each blew completely past the bull band on PRICE; Q3 FY26 is different — fundamentals ($41.46B revenue, $100B in SCAs) blew past the old bull band too, but price landed back in the base zone. The stock, not just the story, finally paused.
       </div>
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: "100%", height: "auto", display: "block" }}>
         {grid.map((p) => (
@@ -534,11 +545,11 @@ function TrackRecord() {
           return (
             <g key={t.q} style={{ animation: `pop .4s cubic-bezier(.2,1.4,.4,1) ${0.3 + i * 0.08}s both` }}>
               <circle cx={x(i)} cy={y(t.post)} r={isLast ? 6 : 4} fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
-                {...tipSvg(isLast ? "Most recent quarter (Q2 FY26)" : `${t.q}: actual price`,
-                  isLast ? `After Q2 FY2026 earnings (March 2026), MU traded around $${t.post}. The stock has since run from $620 to $1,059 in anticipation of the Q3 FY2026 print on June 24. Note: $${t.post} is already above the bull band drawn at the time of the Q2 report.`
+                {...tipSvg(isLast ? `Most recent quarter (${t.q})` : `${t.q}: actual price`,
+                  isLast ? `After Q3 FY2026 earnings (June 24, 2026) — a blowout beat ($41.46B vs $33.5B guide) — MU settled around $${t.post}, actually BELOW the $1,059 it traded at going into the print. The fundamentals landed above the old bull band; the price landed in the base zone. Next print (Q4 FY26, ~Sep 2026) is what tells you whether the market's skepticism resolves.`
                     : `After ${t.q} earnings, MU actually traded around $${t.post}. Compare this dot to the colored bars behind it.`,
                   null, isLast ? "#9fb4ff" : "#cdd5e3")} />
-              {isLast && <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">Q2 FY26 ${t.post}</text>}
+              {isLast && <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">{t.q} ${t.post}</text>}
             </g>
           );
         })}
@@ -546,7 +557,7 @@ function TrackRecord() {
       <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
         <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
         <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
-          Tracked <span style={{ color: "#3fd07a", fontWeight: 700 }}>base-or-better all {hits} of {TRACK.length} quarters</span>. More striking: the last two quarters (<span style={{ color: "#3fd07a" }}>Q1 FY26 and Q2 FY26</span>) each printed <span style={{ color: "#fff", fontWeight: 700 }}>above the bull band</span> — the AI memory supercycle was more powerful than any reasonable forecast could have anticipated. Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> is above the chart's own scale — it's being driven by anticipation of the Q3 FY2026 print on <span style={{ color: "#e0a83b", fontWeight: 700 }}>June 24</span>. That print will either validate or challenge the current multiple.
+          Tracked <span style={{ color: "#3fd07a", fontWeight: 700 }}>base-or-better all {hits} of {TRACK.length} quarters</span>. Q1 FY26 and Q2 FY26 each printed <span style={{ color: "#fff", fontWeight: 700 }}>above the bull band on price</span> — the supercycle outran any reasonable forecast. Q3 FY26 broke that pattern: fundamentals ($41.46B revenue, 84.9% GM, $100B in 5-year SCAs) again blew past the old bull case, but price ($979) landed back in the <span style={{ color: "#e0a83b", fontWeight: 700 }}>base zone</span> — the first quarter where the market didn't simply chase the print. Next real test: <span style={{ color: "#e0a83b", fontWeight: 700 }}>Q4 FY26 + initial FY2027 guidance, ~Sep 2026</span>.
         </div>
       </div>
       <ReversionClock />
@@ -575,7 +586,7 @@ function MuThesis() {
               ⓘ hover anything to learn what it means
             </div>
             <div className="blink" style={{ fontSize: 10, color: "#e0a83b", border: "1px solid #3a2800", borderRadius: 20, padding: "3px 10px" }}>
-              ⚡ Q3 EARNINGS · JUN 24 · 21 DAYS
+              ⚡ NEXT: Q4 FY26 + FY27 GUIDE · ~SEP 2026
             </div>
           </div>
           <div style={{ display: "flex", gap: 18, alignItems: "center", fontSize: 12.5, color: "#7b86a0" }}>
@@ -583,7 +594,7 @@ function MuThesis() {
             <span style={{ color: "#cdd5e3" }}>NASDAQ:MU</span>
             <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "#9aa4b8" }}>Micron Technology</span>
             <span {...tip("Today's share price",
-              `One share of MU costs about $${NOW_PRICE} — near its all-time high. Q2 FY2026 printed $23.9B revenue at 74.4% gross margins. Q3 (reporting June 24) is guided at $33.5B and 81% GM. The debate: does the cycle extend or peak?`,
+              `One share of MU costs about $${NOW_PRICE} — actually below the $1,059 it traded at going into Q3 earnings. Q3 FY2026 printed $41.46B revenue (+346% YoY) at 84.9% gross margin, blowing past even the old bull case; Q4 is guided to $50B±$1B at ~86% GM. The debate has shifted from 'will Q3 beat?' (resolved: yes, hugely) to 'does the $100B in 5-year customer contracts mean the market's ~6.4× forward multiple is simply wrong?'`,
               null, "#fff")}
               style={{ color: "#fff", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}.00</span>
           </div>
@@ -603,7 +614,7 @@ function MuThesis() {
             </div>
             <div className="panel" key={active + "-chart"}><FanChart c={c} /></div>
             <div style={{ marginTop: 6, display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#5a6477" }}>
-              <span><span style={{ color: c.accent }}>━━</span> {c.label.toLowerCase()} mid &nbsp; <span style={{ color: "#2f6dff" }}>┊</span> now &nbsp; <span style={{ color: "#cdd5e3" }}>━</span> history &nbsp; <span style={{ color: "#e0a83b" }}>◆</span> Q3 FY26* = Jun 24</span>
+              <span><span style={{ color: c.accent }}>━━</span> {c.label.toLowerCase()} mid &nbsp; <span style={{ color: "#2f6dff" }}>┊</span> now &nbsp; <span style={{ color: "#cdd5e3" }}>━</span> history &nbsp; <span style={{ color: "#e0a83b" }}>◆</span> Q4 FY26* = ~Sep 2026</span>
               <span>12M TARGET <span style={{ color: c.accent, fontWeight: 700 }}>{c.target12}</span></span>
             </div>
 
@@ -611,30 +622,30 @@ function MuThesis() {
             <div style={{ marginTop: 18, borderTop: "1px solid #161c28", paddingTop: 14 }}>
               <div style={{ fontSize: 11.5, letterSpacing: "0.16em", color: "#7b86a0", marginBottom: 4 }}
                 {...tip("The single most important number",
-                  "Quarterly revenue tells you where Micron is in the memory cycle. The guidance of $33.5B for Q3 is 40% above Q2's record $23.9B. For reference, Micron's entire FY2022 annual revenue was ~$30.8B. If the $33.5B/quarter rate is sustainable, $1,059 is cheap. If it's cycle-peak, the stock is expensive.",
+                  "Quarterly revenue tells you where Micron is in the memory cycle. Q3 FY2026 actual ($41.46B) was 24% above its own $33.5B guide; Q4 is now guided to $50B±$1B. For reference, Micron's entire FY2022 annual revenue was ~$30.8B. If this run-rate is sustainable through FY2027 as management suggests, $979 looks cheap; if this is cycle-peak, the stock is expensive.",
                   "This KPI drives everything — gross margin, EPS, and the multiple all follow revenue trajectory.", "#9fb4ff")}>
                 <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>KPI · K01</span>
                 Quarterly Revenue
                 <span style={{ color: "#5a6477", marginLeft: 8 }}>$B  ·  HIGHER BETTER</span>
-                <span style={{ color: "#e0a83b", marginLeft: 8, fontSize: 10 }}>* = reports Jun 24</span>
+                <span style={{ color: "#e0a83b", marginLeft: 8, fontSize: 10 }}>* = reports ~Sep 2026</span>
               </div>
               <div className="panel" key={active + "-kpi"} style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 120, padding: "12px 4px 0" }}>
-                <KpiCol label="Q2 FY26" val={KPI_HIST} baseline accentColor="#7b86a0" />
+                <KpiCol label="Q3 FY26" val={KPI_HIST} baseline accentColor="#7b86a0" />
                 {kpiVals.map((v, i) => <KpiCol key={i} label={FUTURE_Q[i]} val={v} accentColor={c.accent} delay={i * 0.08} />)}
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
                 <div>
                   <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THIS MEASURES</div>
-                  <div style={{ color: "#9aa4b8" }}>Total quarterly revenue across DRAM, HBM, and NAND. The $33.5B Q3 guide implies HBM for AI training is the dominant driver. Bull case shows continued acceleration; bear case shows the classic memory cycle peak-and-crash pattern.</div>
+                  <div style={{ color: "#9aa4b8" }}>Total quarterly revenue across DRAM, HBM, and NAND. Q3 FY2026 actual was $41.46B (76% DRAM), already confirming HBM/AI training demand as the dominant driver. Bull case shows continued acceleration toward the SCA-implied run-rate; bear case shows deceleration on the ~70–80% of volume the $100B in contracts doesn't cover.</div>
                 </div>
                 <div>
                   <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THE <span style={{ color: c.accent }}>{c.label}</span> CASE REQUIRES</div>
                   <div style={{ color: c.accent }}>
                     {active === "bull"
-                      ? "Q3 beats $33.5B ($35B+), Q4 guided above $38B, and quarterly revenue continues compounding toward $50B as HBM4 ramps and HBM TAM expands toward $100B by 2028."
+                      ? "Q4 beats $50B+$1B, FY2027 initial guidance (given alongside Q4) gets raised above run-rate, and Micron holds HBM4 share despite Samsung's mass-production head start."
                       : active === "base"
-                      ? "Q3 meets the $33.5B guide; Q4 guided at $34–37B showing cycle durability; revenue holds at $33–35B through FY2027 as HBM manufacturing complexity keeps supply disciplined."
-                      : "Q3 meets guide but Q4 is guided below $30B, signaling the peak. Revenue then declines toward $15–20B as new HBM supply from Samsung and SK Hynix closes the gap and pricing softens."}
+                      ? "Q4 lands within the $50B±$1B guide at ~86% GM; FY2027 initial guidance confirms the cycle extending, consistent with the $100B SCA visibility through 2030."
+                      : "Q4 misses the $50B±$1B guide, or FY2027 initial guidance signals deceleration on the non-SCA-covered volume; Samsung/CXMT visibly take named HBM4 design wins."}
                   </div>
                 </div>
               </div>
@@ -657,7 +668,7 @@ function MuThesis() {
               {SIGNALS[active].map((s, i) => <SignalRow key={i} s={s} accent={c.accent} />)}
             </SignalGroup>
 
-            <SignalGroup id="SN02" title="Margin Structure &amp; Product Mix" requires={c.requires02} accent={c.accent} evidence={2}>
+            <SignalGroup id="SN02" title="Structural De-risking &amp; Competitive Position" requires={c.requires02} accent={c.accent} evidence={2}>
               {MARGIN[active].map((s, i) => <MarginRow key={i} s={s} accent={c.accent} />)}
             </SignalGroup>
 
@@ -670,10 +681,10 @@ function MuThesis() {
             <div style={{ marginTop: 14, padding: "10px 12px", background: "#0a0d14", border: "1px solid #161c28", borderRadius: 6 }}>
               <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 4 }}>VALUATION RULER</div>
               <div {...tip("How we price this stock",
-                "For a cyclical company like Micron, using peak-cycle P/E is dangerous — it always looks 'cheap' right before margins collapse. The bear case uses trough normalized EPS × 10× (cyclical floor). The base and bull cases use FY2027 sustained EPS × 13–17×. At $1,059: 13.8× annualized Q3 guide — the market is already applying a cyclical discount.",
-                "Bear: $25 × 10× = $250 (floor $320–520). Base: $65 × 15× = $975. Bull: $88 × 17× = $1,496. Bands are wide — cycles move fast.", "#9aa4b8")}
+                "For a cyclical company like Micron, using peak-cycle P/E is dangerous — it always looks 'cheap' right before margins collapse, which is exactly why the market is currently applying a historically compressed ~6.4× forward P/E even after a record-blowout quarter. Metric is a judgment blend of two real anchors: Q4 FY26 guide ($31 non-GAAP EPS) annualized (~$124), and the NTM EPS the market itself implies by backing out today's reported 6.4× forward P/E at $979 (~$153) — roughly $135 blended, held loosely.",
+                "Bear: ~$85 (degraded, non-SCA volume) × 8× ≈ $680 (band $550–750, narrower than before given $100B in floor-margin-protected SCA revenue). Base: ~$135 × 9× ≈ $1,215 (band $1,100–1,350). Bull: ~$150+ × 12× ≈ $1,800 (band $1,500–1,800, roughly where 45-analyst consensus — avg $1,486, high $1,600 — already sits).", "#9aa4b8")}
                 style={{ fontSize: 11, color: "#9aa4b8", lineHeight: 1.5 }}>
-                Cyclical normalized EPS × P/E. At $1,059: 13.8× annualized Q3 guide — already discounting mean reversion. Bear: ~$25 trough × 10× = $250 (floor $320). Base: ~$65 FY2027 × 15× = $975. Bull: ~$88 × 17× = $1,496.
+                Cyclical normalized EPS × P/E. At $979: ~6.4× forward P/E — a historically compressed multiple despite record earnings, meaning the market is still discounting mean reversion even after Q3 blew past the old bull case. Bear: ~$85 (non-SCA volume, degraded) × 8× ≈ $680 (band $550–750). Base: ~$135 blended run-rate × 9× ≈ $1,215 (band $1,100–1,350). Bull: ~$150+ × 12× ≈ $1,800 (band $1,500–1,800, near the 45-analyst consensus average of $1,486 / high $1,600).
               </div>
             </div>
 
@@ -681,9 +692,9 @@ function MuThesis() {
             <div style={{ marginTop: 10, padding: "10px 12px", background: "#0a0d14", border: "1px solid #2a1a1a", borderRadius: 6 }}>
               <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 8 }}>RISK / REWARD AT ${NOW_PRICE}</div>
               {[
-                { label: "BEAR", color: "#f1564b", lo: 320,  hi: 520  },
-                { label: "BASE", color: "#e0a83b", lo: 900,  hi: 1100 },
-                { label: "BULL", color: "#3fd07a", lo: 1200, hi: 1500 },
+                { label: "BEAR", color: "#f1564b", lo: 550,  hi: 750  },
+                { label: "BASE", color: "#e0a83b", lo: 1100, hi: 1350 },
+                { label: "BULL", color: "#3fd07a", lo: 1500, hi: 1800 },
               ].map(({ label, color, lo, hi }) => {
                 const mid = Math.round((lo + hi) / 2);
                 const pct = Math.round(((mid - NOW_PRICE) / NOW_PRICE) * 100);
@@ -706,9 +717,9 @@ function MuThesis() {
               })}
               <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #161c28", fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55 }}
                 {...tip("What this asymmetry means",
-                  `At $${NOW_PRICE.toLocaleString()}, the base is roughly flat and the bear case is a ~−60% drawdown if the memory cycle peaks. Memory cycle reversals are historically fast and severe — the 2022–2023 downcycle took DRAM pricing down 70%+ in 18 months. The bull case (+27%) requires the cycle to extend AND the multiple to hold.`,
-                  "Cyclical stocks at peak look cheap on current earnings and expensive on normalized earnings — simultaneously. That's the trap.", "#9aa4b8")}>
-                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−60%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>−6%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+27%</span> — <span style={{ color: "#f1564b" }}>asymmetric downside.</span> The cycle reversal risk is large and fast; bull upside is modest from here.
+                  `At $${NOW_PRICE.toLocaleString()}, base case is +25% and bull is +69% from here — both ABOVE where the stock traded going into Q3 earnings ($1,059), despite Q3 actual results already exceeding the old bull case. The $100B in 5-year SCAs is a real structural change from the classic memory-cycle setup: it floor-protects ~20% of DRAM/33% of NAND volume through 2030, which is why the bear case (−34%) is a real but narrower drawdown than a historical cyclical collapse, not a repeat of 2022–2023's 70%+ DRAM pricing crash.`,
+                  "The market's ~6.4× forward P/E on record earnings shows it hasn't yet decided whether the SCAs actually break the cycle, or are still just insurance against a cycle it expects to turn.", "#9aa4b8")}>
+                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−34%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>+25%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+69%</span> — <span style={{ color: "#3fd07a" }}>favorable asymmetry from here,</span> a real change from the pre-earnings setup. The $100B SCA visibility narrows (doesn't eliminate) the downside case.
               </div>
             </div>
           </div>
@@ -716,15 +727,15 @@ function MuThesis() {
 
         {/* ── Footer ── */}
         <div style={{ padding: "10px 22px", borderTop: "1px solid #161c28", display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#4a5366" }}>
-          <span>OBSERVABLE NOW: Samsung HBM3E NVIDIA qualification · SK Hynix 2027 capacity data · DRAM spot pricing indices · industry supply reports</span>
-          <span style={{ color: "#e0a83b", fontWeight: 700 }}>CONFIRMS JUN 24: Q3 revenue vs $33.5B · Q4 guidance · gross margin · FY2027 outlook</span>
+          <span>OBSERVABLE NOW: Samsung HBM4 mass-production ramp progress · SK Hynix capacity data · DRAM/NAND spot pricing indices · SCA-linked customer capex announcements</span>
+          <span style={{ color: "#e0a83b", fontWeight: 700 }}>CONFIRMS ~SEP 2026: Q4 actual vs $50B±$1B guide · initial FY2027 guidance · GM vs ~86% guide · HBM4 share vs Samsung</span>
         </div>
 
         <TrackRecord />
       </div>
 
       <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "#3d4555", lineHeight: 1.5 }}>
-        Illustrative scenario framing built on public consensus &amp; estimates as of June 2026 — not a prediction and not financial advice. Valuation ruler: cyclical normalized EPS × P/E — using peak-cycle P/E for a memory company is misleading; the bear case uses trough EPS × trough multiple. Q3 FY2026 results on June 24, 2026 are the next major catalyst. Memory cycles move fast in both directions.
+        Illustrative scenario framing built on public consensus &amp; estimates as of {AS_OF_DATE} — not a prediction and not financial advice. Valuation ruler: cyclical normalized EPS × P/E — using peak-cycle P/E for a memory company is misleading; the bear case uses a lower, non-SCA-covered EPS assumption. Q4 FY2026 results (~late September 2026), alongside initial FY2027 guidance, are the next major catalyst. Memory cycles move fast in both directions — the $100B in 5-year customer contracts is new evidence this one may be structurally different, held loosely until it's proven across more than one quarter.
       </div>
     </div>
   );

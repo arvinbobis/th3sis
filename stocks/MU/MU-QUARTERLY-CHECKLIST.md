@@ -3,8 +3,8 @@
 *A pre-flight checklist for your TH3SIS dashboard. Run it every quarter, right after Micron's earnings report. Micron's fiscal year ends August 31.*
 
 **Earnings calendar:**
-- **Q3 FY2026:** June 24, 2026 (after close) ← IMMINENT — 21 days away
-- **Q4 FY2026:** ~late September 2026
+- **Q3 FY2026:** June 24, 2026 (after close) ✓ REPORTED — see log below
+- **Q4 FY2026:** ~late September 2026 ← NEXT
 - **Q1 FY2027:** ~mid-December 2026
 - **Q2 FY2027:** ~late March 2027
 
@@ -104,7 +104,7 @@ After June 24, the Q3/Q4 signals are answered. New questions for Q4 (September):
 ## THE TWO HABITS THAT MAKE THIS WORTH DOING
 
 ### Habit 1 — "What would prove me wrong?"
-For the current base case: **A Q4 FY2026 guidance below $30B on June 24 would prove me wrong immediately.** That single data point would mean the cycle peak has arrived, not extended. No hedging, no "let's see another quarter" — update the thesis to bear.
+For the current base case (updated 2026-07-11, post-Q3): **Q4 FY2026 actual missing the $50B±$1B guide, or FY2027 initial guidance (given alongside Q4, ~Sept 2026) signaling deceleration on non-SCA volume, would prove me wrong.** Either alone is enough — no hedging, no "let's see another quarter." (The original June-24 trigger is resolved — Q3 answered it decisively bullish.)
 
 ### Habit 2 — "What surprised me?"
 Write the one thing this quarter you didn't see coming. Memory cycle surprises tend to be:
@@ -115,7 +115,7 @@ Write the one thing this quarter you didn't see coming. Memory cycle surprises t
 
 ---
 
-> **The cyclical trap, restated every quarter:** Micron at $1,059 looks "cheap" at 13.8× annualized Q3 guidance. This is exactly how cyclicals look at peak. In a true cycle reversal, the EPS the multiple is applied to will halve or worse, compressing the stock far more than the multiple decline alone. The dashboard's bear case ($320–520) is not a tail event — it's the base case of every prior memory cycle downturn. The structural AI/HBM thesis argues this cycle is different. That argument must be re-validated every quarter, not assumed.
+> **The cyclical trap, restated every quarter:** Micron at $979 trades at a historically compressed ~6.4× forward P/E despite RECORD earnings (84.9% GM, $41.46B Q3 revenue). This is the mirror image of the old warning — instead of "cheap at peak," the risk now is dismissing genuinely structural evidence (the $100B in 5-year contracts) as just another cyclical head-fake because the multiple still looks skeptical. Both traps are real: don't assume the cycle is different just because this quarter was extraordinary, AND don't assume it's the same old cycle just because the market hasn't re-rated yet. The SCAs are the one piece of hard evidence that would have been unavailable in any prior memory downturn — weigh it accordingly, but re-validate every quarter, not once.
 
 ---
 
@@ -148,8 +148,74 @@ WHAT SURPRISED ME THIS QUARTER:
 ────────────────────────────────────────────
 ```
 
-### Q3 FY2026 — June 24, 2026 (fill in after the report — do this within 48 hours)
-*(your first live entry goes here)*
+### Q3 FY2026 — June 24, 2026
+
+```
+────────────────────────────────────────────
+QUARTER: Q3  FY2026          UPDATED ON: 2026-07-11
+Price at update: $979   Most-likely case: BASE, tracking toward BULL on fundamentals
+  (Note: this update ran 17 days late — Q3 reported June 24, thesis wasn't touched
+  until July 11. Caught while reviewing what to do "while waiting on TSM's Jul 16
+  print" and finding MU's own catalyst had already passed unaddressed.)
+
+Q3 revenue: $41.46B   vs guide $33.5B: BEAT (+24%, +346% YoY, +74% QoQ — largest
+  dollar increase in company history)
+Q4 revenue guide: $50.0B ±$1.0B   Gross margin Q3: 84.9% (non-GAAP, record)
+Q4 gross margin guide: ~86%   HBM still sold out: Y (HBM4 demand exceeds supply
+  through at least CY2028 per management)
+Samsung HBM4 (not HBM3E) qualified at NVIDIA + AMD, MASS PRODUCTION FIRST: Y — this
+  is a materially bigger deal than the old checklist's "HBM3E qualification" framing
+  anticipated; Samsung is ahead of Micron on HBM4 specifically, not just catching up
+  on HBM3E.
+Management language on FY2027: BULLISH — "no idea when the RAM crisis will end,"
+  tight supply-demand expected through 2027, gradual improvement only in 2028.
+NEW THIS QUARTER (not in old template): 16 Strategic Customer Agreements signed,
+  $100B minimum contracted revenue, 5-year term (2026-2030), ~20% DRAM / ~1/3 NAND
+  volume, floor margins "well beyond historical peaks," backed by $22B in customer
+  commitments (~$18B cash deposits).
+
+THESIS AUDIT (one line each):
+  Bear  — narrative still true? PARTIALLY  bands moved? YES (narrower, $320-520 →
+    $550-750)  why: the $100B SCAs floor-protect a real chunk of volume through
+    2030, so a classic full-cycle collapse is less plausible than before — but the
+    ~70-80% of volume NOT covered by SCAs is still exposed, and Samsung's HBM4
+    mass-production lead is a real new competitive risk the old bear case didn't
+    have to name.
+  Base  — narrative still true? YES, EXCEEDED  bands moved? YES ($900-1,100 →
+    $1,100-1,350)  why: Q3 already beat what the OLD base case required; the new
+    base case is anchored to Q4 guide + FY2027 visibility from the SCAs, not just
+    "does Q3 meet guide" (already answered).
+  Bull  — narrative still true? YES, EXCEEDED  bands moved? YES ($1,200-1,500 →
+    $1,500-1,800)  why: actual Q3 results + Q4 guide already blew past the OLD
+    bull thresholds entirely. New bull case requires FY2027 guidance to be RAISED
+    further and Micron to hold HBM4 share despite Samsung, not just "Q3 beats."
+
+PROBABILITY shift this quarter: Fundamentals shifted decisively toward bull (results
+  exceeded the old bull case on every metric). But PRICE didn't follow — MU is
+  actually below its pre-earnings level three weeks later ($1,059 → $979), so this
+  is genuinely a "fundamentals-ahead-of-price" setup, not a straightforward
+  probability-shift-to-bull call. Calling it BASE (tracking bull) reflects that the
+  market's skepticism (still ~6.4x forward P/E on record earnings) hasn't resolved
+  yet, not that the fundamental case weakened.
+Did cycle direction change? (Y/N): N — cycle extended per guide, no reversal signal.
+
+WHAT WOULD PROVE ME WRONG (for my favored case):
+  Q4 FY26 actual misses the $50B±$1B guide, OR initial FY2027 guidance (given
+  alongside Q4, ~Sep 2026) signals deceleration rather than continued tightness on
+  the non-SCA-covered volume. Either one alone is enough — no "both must happen."
+
+WHAT SURPRISED ME THIS QUARTER:
+  Two things. (1) The magnitude — Q3 beat by 24% on revenue on top of Q4 guide
+  another ~20% above THAT, with GM at 84.9%/86% guided — numbers that would have
+  seemed absurd even six months ago. (2) More interesting: the stock's reaction.
+  A quarter that blew past the OLD bull case entirely did NOT re-rate the stock —
+  MU sits below where it traded before the print. The market's skepticism about
+  cycle durability is apparently stronger than I'd modeled; the $100B SCAs are
+  real, sourced, and structurally different from prior cycles, but the market
+  hasn't decided to believe it yet. That gap (fundamentals vs. price) is now the
+  actual thesis, more than "will the cycle extend."
+────────────────────────────────────────────
+```
 
 ---
 
