@@ -31,6 +31,9 @@ const REQUIRED_GLOBALS = [
   "TRACK_ALL", "TRACK_WINDOW", "VAL_CONFIG", "SIGNAL_HELP", "TAG_HELP",
   "THESIS_ITEMS", "PRICE_ZONES", "GEOM", "TEXT",
 ];
+// Rolling out per-touch (not required yet on every stock) but read back and
+// checked when present.
+const OPTIONAL_GLOBALS = ["THESIS_HISTORY"];
 const REQUIRED_CASE_FIELDS = ["key", "label", "accent", "glow", "target12", "op", "breaks", "requires01", "requires02"];
 
 function findDataFile(ticker) {
@@ -68,7 +71,7 @@ function loadThesisData(dataPath) {
   const context = vm.createContext({});
   vm.runInContext(src, context);
   const out = { __src: src };
-  for (const name of REQUIRED_GLOBALS) {
+  for (const name of [...REQUIRED_GLOBALS, ...OPTIONAL_GLOBALS]) {
     out[name] = vm.runInContext(`typeof ${name} !== "undefined" ? ${name} : undefined`, context);
   }
   return out;
@@ -102,6 +105,27 @@ function checkTickerIdentity(data, ticker, folder, results) {
   } else {
     results.push({ ok: true, msg: `${ticker}: TICKER_META.ticker matches its own folder` });
   }
+}
+
+// THESIS_HISTORY is optional (a convention rolling out per-touch, like TRACK_ALL
+// once was) — warn if absent, but if present it must be a real append-only log:
+// no duplicate quarter, and each entry actually carries all three cases' content.
+function checkThesisHistory(data, ticker, results) {
+  const hist = data.THESIS_HISTORY;
+  if (hist === undefined) {
+    results.push({ ok: null, msg: `${ticker}: no THESIS_HISTORY archive yet — recommended so a future /update-thesis touch never silently overwrites the current bear/base/bull narrative with no record of what it said before` });
+    return;
+  }
+  if (!Array.isArray(hist) || !hist.length) {
+    results.push({ ok: false, msg: `${ticker}: THESIS_HISTORY exists but is empty or not an array` });
+    return;
+  }
+  const quarters = hist.map((h) => h.quarter);
+  const dupes = quarters.filter((q, i) => quarters.indexOf(q) !== i);
+  if (dupes.length) { results.push({ ok: false, msg: `${ticker}: THESIS_HISTORY has duplicate quarter(s): ${[...new Set(dupes)].join(", ")} — a past entry was overwritten instead of appended` }); return; }
+  const malformed = hist.filter((h) => !h.asOf || !h.quarter || !h.cases || !h.cases.bear || !h.cases.base || !h.cases.bull);
+  if (malformed.length) results.push({ ok: false, msg: `${ticker}: THESIS_HISTORY has ${malformed.length} entr(y/ies) missing asOf/quarter/cases.{bear,base,bull}` });
+  else results.push({ ok: true, msg: `${ticker}: THESIS_HISTORY has ${hist.length} archived vintage(s), no duplicates, all well-formed` });
 }
 
 function checkTrackAllDedup(data, ticker, results) {
@@ -192,6 +216,7 @@ function runDataLint(ticker) {
   checkCaseFields(data, ticker, results);
   checkTickerIdentity(data, ticker, folder, results);
   checkTrackAllDedup(data, ticker, results);
+  checkThesisHistory(data, ticker, results);
   checkAlertDrift(data, ticker, results);
   checkStrayHex(data, ticker, results);
   if (htmlSrc) {

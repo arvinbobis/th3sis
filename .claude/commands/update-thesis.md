@@ -33,6 +33,17 @@ past quarter's snapshot). Include `multiple_peer_median` with the comps named in
 peer anchor is what catches a whole-group re-rating that own-history anchoring would miss.
 
 ## Step 3 — Layer 2: AUDIT THE THESIS (do not skip)
+
+**Before rewriting anything: archive the outgoing version.** If this stock has
+`thesis-data.js` with a `THESIS_HISTORY` array, push a new entry with the CURRENT (about to
+be superseded) `CASES.{bear,base,bull}.{target12,op,breaks,requires01,requires02}` — tagged
+`{ asOf: <today>, quarter: <the quarter that just reported> }` — before Step A below touches
+any of that text. If `THESIS_HISTORY` doesn't exist yet on this stock, create it with that
+one entry now (see `stocks/tsm/thesis-data.js` for the shape). Never edit a past
+`THESIS_HISTORY` entry after the fact — same append-only discipline as `TRACK_ALL` and the
+`inputs-YYYY-QQ.json` provenance snapshots. This is what lets "what did I actually believe
+last quarter" be answered by reading the file, not by digging through git log.
+
 For EACH of bear/base/bull, answer honestly:
 - **A. Narrative still true?** Has the world overtaken the story? (e.g. a pending ruling that
   resolved, a risk that migrated.) Rewrite if stale.

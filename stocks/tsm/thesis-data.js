@@ -54,6 +54,22 @@ const CASES = {
   },
 };
 
+// THESIS_HISTORY — append-only archive of the full CASES set as it stood at each
+// touch, captured BEFORE that touch's Layer-2 audit rewrites it. Answers "what did
+// I actually believe last quarter" directly from this file, without digging through
+// git log. NEVER edit a past entry after the fact — that would defeat the point,
+// same discipline as TRACK_ALL and the inputs-YYYY-QQ.json provenance snapshots.
+// Workflow (see .claude/commands/update-thesis.md Step 3): right before rewriting
+// any of CASES.{bear,base,bull}.{target12,op,breaks,requires01,requires02}, push
+// the OUTGOING values here first, tagged with the quarter/asOf that's ending.
+const THESIS_HISTORY = [
+  { asOf: "2026-06-16", quarter: "Q1 2026", cases: {
+    bear: { target12: CASES.bear.target12, op: CASES.bear.op, breaks: CASES.bear.breaks, requires01: CASES.bear.requires01, requires02: CASES.bear.requires02 },
+    base: { target12: CASES.base.target12, op: CASES.base.op, breaks: CASES.base.breaks, requires01: CASES.base.requires01, requires02: CASES.base.requires02 },
+    bull: { target12: CASES.bull.target12, op: CASES.bull.op, breaks: CASES.bull.breaks, requires01: CASES.bull.requires01, requires02: CASES.bull.requires02 },
+  } },
+];
+
 const FALLBACK_PRICE = 423.93;
 
 const LIVE_PRICE = {

@@ -242,7 +242,14 @@ GATE pages, applied to the stock dashboards.
   code — for a migrated stock, this block **is** `thesis-data.js` in full; for a not-yet-
   migrated stock it's still the inline block at the top of the JSX.
 - Backtest uses a **fixed rolling window** (default 6 quarters): keep an append-only
-  `TRACK_ALL` array and `.slice(-N)` it, so the oldest quarter auto-drops.
+  `TRACK_ALL` array and `.slice(-N)` it, so the oldest quarter auto-drops. This is
+  price/band history, not the narrative — see `THESIS_HISTORY` below for that.
+- **`THESIS_HISTORY`** (migrated stocks, rolling out per-touch): an append-only archive, in
+  `thesis-data.js`, of each past vintage of `CASES.{bear,base,bull}.{target12,op,breaks,
+  requires01,requires02}` — pushed right before `/update-thesis`'s Layer-2 audit rewrites
+  that text, tagged `{ asOf, quarter }`. Never edit a past entry. Unlike `TRACK_ALL` this has
+  **no rolling window** — the point is that a past narrative is never silently lost the way
+  it would be if the only record were git log. A new stock starts with `THESIS_HISTORY = []`.
 - Aesthetic: dark "terminal" theme, monospace + a display serif, restrained animation.
   Match or exceed the META reference; avoid generic AI styling.
 - After writing, run the tiered verify (see Engine split above) before delivering — for a

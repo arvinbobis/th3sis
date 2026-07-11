@@ -55,7 +55,10 @@ renders every chart, tab, and tooltip. You're writing two small files:
    `KPI_PROJ`, `TRACK_ALL` (append-only, fixed rolling window), `VAL_CONFIG`, `ALERT`,
    `THESIS_ITEMS`, `PRICE_ZONES`, `GEOM` (chart axis ranges), and `TEXT` (every narrative/
    tooltip string the engine renders — this is the file that carries the CLAUDE.md quality
-   bar, since the engine itself has zero company-specific content by design).
+   bar, since the engine itself has zero company-specific content by design). Also add
+   `THESIS_HISTORY = []` — an empty append-only archive of past CASES vintages; nothing to
+   archive yet on a brand-new build, but `/update-thesis` needs it to exist so the FIRST
+   future rewrite has somewhere to push the outgoing narrative before overwriting it.
 2. **`stocks/$ARGUMENTS/$ARGUMENTS-thesis.html`** — a thin shell. Copy
    `stocks/tsm/tsm-thesis.html` and swap only the `<title>` and the theme-color literals in
    the loading-state fallback markup; it already wires `thesis-data.js` + the shared engine.
