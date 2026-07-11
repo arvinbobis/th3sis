@@ -138,13 +138,35 @@ analyst-data reasoning), not a cap that quietly drifted.
   has shown. GTC entry resized 2026-07-11 from $100 (a level below any observed trading,
   set 2026-06-27) to **$120** — a genuine break below the IPO-price floor, still well above
   the Morningstar bear case.
+- **`/prescreen` run 2026-07-12 — PASS** (chokepoint: Starlink/reusability cost-cadence
+  advantage, materially cleaner than TSLA's contested FSD-vs-Waymo case; cushion: $152.16
+  sits in a defensible middle of the real analyst spread, not requiring the bull case).
+  Companion TSLA prescreen FAILed the same day — the two Musk-bucket legs are not
+  equivalent bets; see `PF_PRESCREEN` for both full records.
 
 ### TSLA (physical-AI: data moat → autonomy + robotics)
-- Real moat = **FSD/autonomy data** (8.4B+ miles vs Waymo ~200M)
-- Optimus = call option, NOT a moat yet (crowded: Figure, OpenAI re-entry)
+- Real moat = **FSD/autonomy data** (8.4B+ miles vs Waymo ~200M) — but this is a
+  data-*volume* claim, not commercial-*execution*. Waymo runs ~3,000 vehicles /
+  11 metros / ~500K paid rides per week TODAY; Tesla's unsupervised robotaxi fleet
+  is ~20 vehicles despite the 2026-07-03 Miami launch (first market outside TX/CA).
+  Real scale is tied to the FSD v15 rewrite, late 2026/early 2027 — still a forward
+  promise, not present reality. One report also flags Tesla winding down unsupervised
+  ops in the original Austin/Dallas/Houston cities even as Miami launches — an
+  unresolved contradiction, not noise.
+- Optimus = call option, NOT a moat yet (crowded: 150+ Chinese humanoid competitors).
+  Production TARGET raised 50K→70K annualized, but actual 2026 SHIPMENT forecast is
+  only ~25K±10K — a real, wide target-vs-delivery gap.
 - The bull case = shared AI brain (AI5 chip) feeds both cars AND robots
-- **No valuation floor** — 312x earnings; auto business alone can't support price.
+- **No valuation floor** — ~182–396x earnings (forward vs trailing, $407.59 as of
+  2026-07-11); auto business alone can't support price, and China EV competition is
+  compressing its margins further even as Q2 deliveries beat (480,126, +25% YoY).
   Buying belief, not value. Size accordingly.
+- **`/prescreen` run 2026-07-12 — FAIL on cushion** (unconditional; see `PF_PRESCREEN`
+  for the full six-question record). This wasn't new information — it formalizes what
+  this section already said. No `/thesis` build warranted for the same reason: a
+  dollar-precise 3-scenario dashboard would overstate precision this name doesn't have.
+  Next earnings **2026-07-22** — a real catalyst before the $250 GTC limit (still
+  unplaced as of 2026-07-12) could realistically fill.
 
 ---
 
