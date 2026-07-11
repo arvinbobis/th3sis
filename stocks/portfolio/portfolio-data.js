@@ -126,7 +126,11 @@ const PF_STRAT = {
   TARGET_CORE_PCT: 70,                // simplify/focus target
   GEN_MULTIPLE:    2,                 // double = trim trigger (thesis-gated)
   GEN_MIN_PROG:    15,                // hide deep laggards far from trigger
-  MUSK_BUCKET_CAP: 1000,              // SPCX + TSLA sized as ONE correlated ~$1,000 bet
+  MUSK_BUCKET_CAP: 1580,              // SPCX + TSLA sized as ONE correlated bet — raised
+                                       // 2026-07-11 from $1,000 (deliberate, not a drift:
+                                       // user resized the live SPCX GTC order to 9 sh @
+                                       // $120 = $1,080 after reviewing real post-IPO
+                                       // analyst data; $500 TSLA plan unchanged; see LIMITS)
 
   // Executed generator trims — original capital already recovered; the remainder
   // rides free as "house money". These are NO LONGER trim candidates: never
@@ -152,8 +156,8 @@ const PF_STRAT = {
     // MU removed 2026-07-09: the 900 GTC limit FILLED 2026-07-07 → see SEEDED above.
     { t:"TSLA", limit:250,  cap:500, size:"$500",          musk:true,  watch:false,
       anchor:"Re-entry at a 'buy real fear' level. No valuation floor (312× earnings) — sentiment/support anchor only. Size accordingly." },
-    { t:"SPCX", limit:100,  cap:500, size:"$500",          musk:true,  watch:false,
-      anchor:"Starter anchored to ~$63 DCF floor (Damodaran/Morningstar). Capped here — NOT a 2nd tranche." },
+    { t:"SPCX", limit:120,  cap:1080, size:"9 sh ($1,080)", musk:true,  watch:false,
+      anchor:"SpaceX IPO'd 2026-06-12 ($135 IPO px, ATH $225.64, ~$152 as of 2026-07-11). $120 = a real break below its only observed trading floor (the $135 IPO price itself), not an abstract guess — still well above Morningstar's own current bear-case fair value ($63) and a ~45–50% discount to the ~$210–242 consensus average (30 analysts, Buy). Replaced the original two $100-limit orders (placed 2026-06-27, pre-dating this real-data review) 2026-07-11 after confirming the entry mechanism was live but the $63 anchor, while a real current Morningstar figure, wasn't the right trigger level for a name that's never traded anywhere near it." },
     { t:"TDG",  limit:1150, cap:0,   size:"small",         musk:false, watch:true,
       anchor:"Watchlist only. Better-valued than GE but 5.9× leverage + rate risk. GE is likely enough for aerospace." },
   ],

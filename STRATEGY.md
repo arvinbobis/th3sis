@@ -94,10 +94,14 @@ object. PLTR sits on the watchlist via `PF_PRESCREEN` (§7), not `LIMITS` — it
 `/prescreen` 2026-07-02 (~80x trailing sales, no cushion; moat is enterprise/govt lock-in,
 not a hard chokepoint). Revisit only on real multiple compression, not on headline momentum.
 
-**Musk-empire exposure capped:** SPCX + TSLA treated as ONE ~$1,000 bucket, not two
-independent bets — they're correlated (shared CEO, narrative, possible 12–18mo merger).
-Post-merger they could become a single ticker's worth of risk. Enforced via
-`MUSK_BUCKET_CAP` in `PF_STRAT`.
+**Musk-empire exposure capped:** SPCX + TSLA treated as ONE bucket, not two independent
+bets — they're correlated (shared CEO, narrative, possible 12–18mo merger). Post-merger
+they could become a single ticker's worth of risk. Enforced via `MUSK_BUCKET_CAP` in
+`PF_STRAT` — **raised from $1,000 to $1,580 on 2026-07-11**, deliberately, after reviewing
+real post-IPO SpaceX trading data (see §4) and resizing the SPCX GTC order to 9 sh @ $120
+(~$1,080) + the existing $500 TSLA plan. Not scope creep — a conscious re-sizing of the
+correlated bet with a real reason (see the SPCX entry in `PF_STRAT.LIMITS` for the full
+analyst-data reasoning), not a cap that quietly drifted.
 
 **On chasing:** if a name bounces just above its limit, do NOT bump the limit up — see
 §5 rule 3. Patience is the position.
@@ -125,6 +129,15 @@ Post-merger they could become a single ticker's worth of risk. Enforced via
 - Watch: Sept 2, 2026 first earnings print; ~Dec 2026 180-day lockup expiry (both could
   crack the artificial price support from 4% float + index-inclusion buying)
 - Risk: Starship execution; aggressive $10T-by-2035 TAM narrative = no cushion if it slips
+- **Real data as of 2026-07-11** (SpaceX IPO'd 2026-06-12, not "pending" — two Scout-fed
+  podcast transcripts said otherwise that day and were wrong, corrected in Scout memory):
+  IPO $135, ATH $225.64 (Jun 16), last $152.16. Analyst spread is genuinely wide: Morningstar
+  bear case $63 fair value (a real, current figure, not stale) vs. ~$210–242 consensus
+  average (30 analysts, Buy) vs. bull cases $200–300+ (Goldman/Citi/BofA/Morgan Stanley).
+  The stock has never traded below its own $135 IPO price — that's the only real floor it
+  has shown. GTC entry resized 2026-07-11 from $100 (a level below any observed trading,
+  set 2026-06-27) to **$120** — a genuine break below the IPO-price floor, still well above
+  the Morningstar bear case.
 
 ### TSLA (physical-AI: data moat → autonomy + robotics)
 - Real moat = **FSD/autonomy data** (8.4B+ miles vs Waymo ~200M)
@@ -140,9 +153,9 @@ Post-merger they could become a single ticker's worth of risk. Enforced via
 1. **Buy chokepoints with a cushion.** Both must be true.
 2. **A fill is not automatically a gift.** If a limit fills, check *why* the price
    dropped before celebrating — a fill near the limit often means the thesis got rattled.
-3. **Don't chase.** If a name bounces just above the limit (TSLA $260, SPCX $108,
-   GE $369), do NOT bump the limit up. Patience IS the position. The IUSG/QQQ core
-   does the real work anyway.
+3. **Don't chase.** If a name bounces just above the limit (TSLA $260, SPCX $130,
+   GE $369), do NOT bump the limit up. Patience IS the position. The core index
+   funds (QQQ/QQQM/SPMO) do the real work anyway.
 4. **Don't add fresh capital just to round a number.** Mechanical top-ups at highs
    violate the cushion rule. Let positions *earn* their way to the next action.
 5. **Size correlated bets as one bucket.** (SPCX + TSLA = one Musk bet.)
