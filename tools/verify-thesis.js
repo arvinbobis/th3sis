@@ -16,6 +16,7 @@ const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
 const { execSync } = require("child_process");
+const { runDataLint, findDataFile } = require("./lint-thesis-data");
 
 const ROOT = path.join(__dirname, "..");
 const SCREENSHOT_DIR = path.join(ROOT, "tools", ".verify-output");
@@ -219,11 +220,20 @@ async function main() {
   const src = fs.readFileSync(absPath, "utf8");
   const pf = loadPortfolioData();
 
-  checkTrackAllDedup(src, ticker);
-  checkAlertMatchesPfAlerts(src, ticker, pf);
-  checkLowercasePaths(src, ticker);
-  checkDiskVsGitCasing(ticker, registryPath);
-  checkStrayHex(src, ticker);
+  // Migrated stocks (engine split — see CLAUDE.md's ENGINE SPLIT note) keep all
+  // content in thesis-data.js, not inline in the HTML — the regex-based checks
+  // below would silently find nothing there. Delegate to the tier-1 data lint
+  // instead, which reads the same facts from their real location. Legacy stocks
+  // (no thesis-data.js yet) keep the original inline-HTML checks unchanged.
+  if (findDataFile(ticker)) {
+    for (const r of runDataLint(ticker)) results.push(r);
+  } else {
+    checkTrackAllDedup(src, ticker);
+    checkAlertMatchesPfAlerts(src, ticker, pf);
+    checkLowercasePaths(src, ticker);
+    checkDiskVsGitCasing(ticker, registryPath);
+    checkStrayHex(src, ticker);
+  }
   checkRootSafeCenter(src, ticker);
   await checkRenderBothThemes(absPath, ticker);
 

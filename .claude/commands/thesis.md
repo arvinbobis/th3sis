@@ -46,15 +46,26 @@ Pause here and share the reasoning with me in chat before building, unless I've 
 "just build it."
 
 ## Step 4 — Build the dashboard
-First open `reference/meta-thesis.html` and pattern-match against it — it is the quality
-floor. Then create `stocks/$ARGUMENTS/$ARGUMENTS-thesis.html` (create the folder if needed),
-matching that reference's structure and quality and following all technical conventions in
-CLAUDE.md:
-- Bear/Base/Bull toggle, price fan chart, KPI signal bars, 6-quarter backtest with
-  reconstructed-bands-vs-actual overlay, reversion/timing element if applicable,
-  plain-language hover tooltips on every data point.
-- ALL editable values in one top config block; append-only TRACK_ALL with fixed window.
+Since the engine split (see CLAUDE.md's "Engine split" note), building a new stock does
+**not** mean writing JSX — the shared engine (`stocks/engine/thesis-engine.js`) already
+renders every chart, tab, and tooltip. You're writing two small files:
+1. **`stocks/$ARGUMENTS/thesis-data.js`** — all the content. Use `stocks/tsm/thesis-data.js`
+   as the template for the required shape: `TICKER_META`, `CASES` (bear/base/bull, each with
+   a real 3–4 sentence narrative + kill-switch), `HISTORY`, `SIGNALS`/`MARGIN`, `KPI_HIST`/
+   `KPI_PROJ`, `TRACK_ALL` (append-only, fixed rolling window), `VAL_CONFIG`, `ALERT`,
+   `THESIS_ITEMS`, `PRICE_ZONES`, `GEOM` (chart axis ranges), and `TEXT` (every narrative/
+   tooltip string the engine renders — this is the file that carries the CLAUDE.md quality
+   bar, since the engine itself has zero company-specific content by design).
+2. **`stocks/$ARGUMENTS/$ARGUMENTS-thesis.html`** — a thin shell. Copy
+   `stocks/tsm/tsm-thesis.html` and swap only the `<title>` and the theme-color literals in
+   the loading-state fallback markup; it already wires `thesis-data.js` + the shared engine.
+Also open `reference/meta-thesis.html` once to internalize the quality bar the *content*
+(narratives, KPIs, kill-switches) needs to hit — that reference predates the engine split
+and is a content/structure model, not a JSX template to copy from anymore.
 - Add the ticker's `path` to `REGISTRY` in `stocks/index.html` so it's reachable.
+- Do not edit `stocks/engine/thesis-engine.jsx` for a normal build — if the story genuinely
+  needs a new chart type the engine doesn't have, that's a deliberate, separate decision
+  (it affects every stock), not something to reach for mid-build.
 
 ## Step 5 — Generate the quarterly checklist
 Create `stocks/$ARGUMENTS/$ARGUMENTS-QUARTERLY-CHECKLIST.md` tailored to this stock: Layer 1
@@ -65,8 +76,10 @@ and "what surprised me?") + a copy-paste quarterly log. Use
 `reference/meta-QUARTERLY-CHECKLIST.md` as the template.
 
 ## Step 6 — Verify (REQUIRED, not optional)
-Run `/verify-thesis $ARGUMENTS`. Fix anything it fails on before moving to Step 7 — "the JSX
-compiles" is not the bar; a render check that actually ran is.
+While drafting `thesis-data.js`, `node tools/lint-thesis-data.js $ARGUMENTS` is a no-browser,
+sub-second schema check you can run after every edit. Before closing out, run the full
+`/verify-thesis $ARGUMENTS` — it runs that same lint automatically plus a headless Playwright
+render in both themes. Fix anything it fails on before moving to Step 7.
 
 ## Step 7 — Close
 State plainly: the most-probable case, the single most important KPI to watch next, and

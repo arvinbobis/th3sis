@@ -172,9 +172,54 @@ defeat the entire point.
 
 ## Technical conventions for the HTML build
 
+### Engine split (2026-07-11 — the current convention; rolls out per-touch)
+
+Before this, every stock's dashboard was its own fork of the entire rendering engine —
+~3,000 lines of chart/tab/tooltip JSX with the data braided in. A quarterly update meant
+JSX surgery inside that file, and a copy-paste-residue bug (ALAB shipping with Broadcom's
+data still inside it) was the direct result of that structure. The fix: one shared engine,
+many small data files — the same split `portfolio-data.js` already uses for the FOLIO/TREE/
+GATE pages, applied to the stock dashboards.
+
+- **`stocks/engine/thesis-engine.jsx`** is the single shared implementation — every chart,
+  tab, tooltip, and verdict calculation. **Zero company-specific content is allowed here**:
+  no ticker names, no narrative strings, no guide numbers. Every such value is read from
+  globals the data file defines (`TICKER_META`, `CASES`, `TEXT`, `GEOM`, …). This rule is
+  what makes the engine safe to share — the ALAB bug class becomes structurally impossible.
+- **`stocks/<t>/thesis-data.js`** is the per-stock content file — the promoted, first-class
+  version of the old "EDIT EVERYTHING IN THIS BLOCK EACH QUARTER" config block. This is
+  where a quarterly touch happens: `CASES`, `HISTORY`, `SIGNALS`, `TRACK_ALL`, `TEXT` (every
+  narrative/tooltip string), `VAL_CONFIG`, `ALERT`. Use `stocks/tsm/thesis-data.js` as the
+  template for the required shape.
+- **`stocks/<t>/<t>-thesis.html`** is a thin shell (~60 lines): theme bootstrap, font/theme
+  links, a `<script src="thesis-data.js">` then `<script src="../engine/thesis-engine.js">`.
+  No JSX lives here. Use `stocks/tsm/tsm-thesis.html` as the template.
+- **The compiled engine is checked in, not built on demand.** `thesis-engine.js` is
+  precompiled from the `.jsx` source via `npx esbuild stocks/engine/thesis-engine.jsx
+  --outfile=stocks/engine/thesis-engine.js --target=es2019` — plain `React.createElement`
+  calls, no runtime Babel. This is deliberate: `<script type="text/babel" src="...">`
+  requires an XHR fetch that browsers block under `file://` (origin `null`), which would
+  break opening a thesis by double-clicking it. **Any edit to the `.jsx` source must be
+  followed by that recompile command before committing** — the `.js` file is the one every
+  stock's HTML actually loads.
+- **Verify is tiered accordingly.** `node tools/lint-thesis-data.js <TICKER>` is a
+  no-browser, millisecond schema lint (required globals present, `CASES` narratives are
+  real, `TRACK_ALL` has no dup quarter, `ALERT` matches `PF_ALERTS`, no stray hex, and a
+  ticker-identity check that catches the exact ALAB copy-paste bug class). Use it while
+  iterating on a data file. `node tools/verify-thesis.js <TICKER>` remains the mandatory
+  last step of `/thesis` and `/update-thesis` — for a migrated stock it runs the same lint
+  automatically *and* the full Playwright render pass in both themes, so nothing is skipped,
+  it's just that the expensive half no longer blocks a data-only edit loop.
+- **Rollout is per-touch, like provenance snapshots and the legacy-hex list** — no big-bang
+  backfill. TSM migrated 2026-07-11 as the pilot; the other 11 stocks migrate at their own
+  next `/update-thesis`, keeping their existing inline-JSX build valid until then.
+- **Self-containment loosens from "one file" to "one folder + shared engine + theme.css"** —
+  already true in spirit (`theme.css` was always external); this just makes it explicit.
+
 - Each stock lives in `stocks/<TICKER>/`. The file links to `../theme.css` for all color
   variables — **do not embed `:root` / `:root.light` blocks inline**. Theme is centralized.
-- React + Babel via CDN is acceptable (needs internet on first load).
+- React + Babel via CDN is acceptable for **legacy** (not-yet-migrated) stocks; migrated
+  stocks load the precompiled engine and need no runtime Babel at all (see above).
 - **No hardcoded hex colors in JSX inline styles.** Every color must use `var(--...)` from
   `theme.css`. Semantic chart colors (bear red `#f1564b`, base amber `#e0a83b`, bull green
   `#3fd07a`, accent blue `#2f6dff`) are the only permitted exceptions.
@@ -193,15 +238,23 @@ defeat the entire point.
   plain `center`. Plain `center` pushes a tall thesis's top above the scroll origin, clipping the
   header/first verdict row unreachably; `safe` centers short content but top-aligns when it overflows.
 - Put ALL per-quarter editable values in ONE clearly-marked config block at the top
-  ("EDIT EVERYTHING IN THIS BLOCK EACH QUARTER") so updates never require hunting through code.
+  ("EDIT EVERYTHING IN THIS BLOCK EACH QUARTER") so updates never require hunting through
+  code — for a migrated stock, this block **is** `thesis-data.js` in full; for a not-yet-
+  migrated stock it's still the inline block at the top of the JSX.
 - Backtest uses a **fixed rolling window** (default 6 quarters): keep an append-only
   `TRACK_ALL` array and `.slice(-N)` it, so the oldest quarter auto-drops.
 - Aesthetic: dark "terminal" theme, monospace + a display serif, restrained animation.
   Match or exceed the META reference; avoid generic AI styling.
-- After writing, verify the JSX compiles before delivering.
-- **⚠ Legacy stocks** (built before June 2026): ALAB, AMZN, ASML, FICO, GOOGL, META, MRVL,
-  MSFT, MU, NVDA, TSM use hardcoded hex in JSX — light mode will not render correctly for
-  them until each is refactored. Refactor at the stock's next quarterly update, not before.
+- After writing, run the tiered verify (see Engine split above) before delivering — for a
+  migrated stock that's `node tools/verify-thesis.js <TICKER>`; "the JSX compiles" was never
+  the bar.
+- **⚠ Legacy stocks** (built before June 2026, hardcoded hex in JSX — light mode won't render
+  correctly until each is refactored): ALAB, AMZN, ASML, FICO, GOOGL, META, MRVL, MSFT, MU,
+  NVDA, TSM. This list is about the **hex-color debt**, independent of engine-split status —
+  TSM migrated to the engine split 2026-07-11 but *inherited* this exemption rather than
+  fixing it (its `#dd817a`/`#c59542`/`#66b278` palette is pre-existing, not new debt). Fix the
+  palette at the stock's next quarterly touch after migration, not before — same per-touch
+  discipline as everything else here.
 
 ---
 

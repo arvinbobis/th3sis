@@ -21,11 +21,15 @@ the cached browser version doesn't match.)
 - A tooltip-bearing element can be hovered without throwing (best-effort — some legacy
   builds don't expose a hoverable `title` attribute yet, that's a warning not a failure)
 
-**Sync-lint, no browser needed:**
+**Sync-lint, no browser needed:** for a stock migrated to the engine split (has
+`stocks/<t>/thesis-data.js`), this is `tools/lint-thesis-data.js` running automatically
+(also runnable standalone for fast iteration while editing — no Playwright needed); for a
+not-yet-migrated stock it's the original regex checks against the inline HTML. Same checks
+either way:
 - `TRACK_ALL` has no duplicate quarter
-- The thesis's own `ALERT` fallback block (if present) still matches `PF_ALERTS` in
-  `portfolio-data.js` — catches exactly the kind of silent drift Phase 1 of the machine audit
-  eliminated as a *manual* step; this is the automated backstop
+- The `ALERT` block still matches `PF_ALERTS` in `portfolio-data.js` — catches exactly the
+  kind of silent drift Phase 1 of the machine audit eliminated as a *manual* step; this is
+  the automated backstop
 - No relative path has an uppercase folder segment (would 404 on GitHub Pages' Linux runner)
 - The on-disk folder casing matches what git actually has tracked — macOS being
   case-insensitive can hide a real Linux 404 waiting to happen (this is CLAUDE.md's
@@ -34,6 +38,16 @@ the cached browser version doesn't match.)
   (`#f1564b`/`#e0a83b`/`#3fd07a`/`#2f6dff`) — skipped with a warning for stocks on
   CLAUDE.md's legacy-hex list, since those are already scheduled for their own refactor
 - `#root` uses `align-items: safe center; justify-content: safe center`
+
+**Migrated stocks only, also checked:**
+- `TICKER_META.ticker` in `thesis-data.js` matches the folder it lives in — this is the
+  automated catch for the exact bug class that hit ALAB (another stock's content shipping
+  under this ticker's name)
+- Every `CASES.{bear,base,bull}` has all required fields and a real narrative, not a
+  placeholder
+- The HTML shell correctly references both `thesis-data.js` and
+  `../engine/thesis-engine.js`, with no leftover substantial inline JSX (a partial or
+  reverted migration)
 
 ## Reading the result
 

@@ -12,10 +12,20 @@ price, updated consensus estimates and targets, new guidance/capex, and any regu
 competitive shifts since last update. Never rely on memory.
 
 ## Step 2 — Layer 1: refresh the numbers
-In `stocks/$ARGUMENTS/$ARGUMENTS-thesis.html`, update the top config block: as-of date,
-current price, history, forward-quarter labels, KPI tags/positions, KPI values, and APPEND
-the just-reported quarter to TRACK_ALL (the oldest auto-drops via the fixed window). Update
-the dislocation settings only if a new shock occurred.
+**If this stock has `stocks/$ARGUMENTS/thesis-data.js`** (migrated to the engine split —
+check first), edit that file: as-of date, current price, history, forward-quarter labels,
+KPI tags/positions, KPI values, and APPEND the just-reported quarter to TRACK_ALL (the
+oldest auto-drops via the fixed window). Update the dislocation settings only if a new
+shock occurred. Do not touch `stocks/engine/thesis-engine.jsx` for a normal numbers refresh.
+
+**If it doesn't have a `thesis-data.js` yet** (not yet migrated), do the numbers refresh in
+the existing inline config block as before — a routine quarterly update should stay fast, not
+absorb a structural migration by default. Migration is a real, separate piece of work (extract
+every narrative/tooltip string losslessly into `thesis-data.js`'s `TEXT` object, per
+`stocks/tsm/thesis-data.js` + `stocks/tsm/tsm-thesis.html` as templates); offer it to the user
+as an option for this stock rather than doing it automatically, and only proceed if they say
+yes. If the stock is on the `LEGACY_HEX_TICKERS` list, migrating doesn't fix the palette —
+that stays a separate future touch either way.
 
 Write the inputs you just pulled to `stocks/$ARGUMENTS/data/inputs-YYYY-QQ.json` per the
 provenance format in CLAUDE.md's data freshness rules (one new file per update, never edit a
@@ -50,9 +60,13 @@ produces), then regenerates the band-coverage data and captures the new most-lik
 just wrote in Step 3.D as the standing prediction for next time.
 
 ## Step 6 — Verify (REQUIRED, not optional)
-Run `/verify-thesis $ARGUMENTS`. Fix anything it fails on before closing out — this also
-catches the case where refreshing PF_ALERTS in `portfolio-data.js` (if this stock's buy floor
-or thesisIntact flag changed) fell out of sync with the local fallback ALERT block.
+For a migrated stock, `node tools/lint-thesis-data.js $ARGUMENTS` is a sub-second, no-browser
+check worth running after each edit to `thesis-data.js`. Either way, run the full
+`/verify-thesis $ARGUMENTS` before closing out — for a migrated stock this runs that lint
+automatically plus a Playwright render pass; for a not-yet-migrated stock it's the original
+inline-HTML checks. Fix anything it fails on — this also catches the case where refreshing
+PF_ALERTS in `portfolio-data.js` (if this stock's buy floor or thesisIntact flag changed)
+fell out of sync with the local/data-file fallback ALERT block.
 
 ## Step 7 — Close
 Summarize what changed, the new most-probable case, and the key KPI to watch next. Remind:

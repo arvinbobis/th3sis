@@ -32,9 +32,21 @@
 const fs = require("fs");
 const path = require("path");
 const vm = require("vm");
+const { findDataFile } = require("./lint-thesis-data");
 
 const ROOT = path.join(__dirname, "..");
 const OUTPUT_PATH = path.join(ROOT, "stocks", "portfolio", "scorecard-data.js");
+
+// Migrated stocks (engine split — see CLAUDE.md's ENGINE SPLIT note) keep TRACK_ALL
+// in thesis-data.js, not inline in the HTML — read it back as a real array via vm
+// instead of regex, which is both simpler and can't be fooled by formatting drift.
+function extractTrackAllFromDataFile(dataPath) {
+  const src = fs.readFileSync(dataPath, "utf8");
+  const context = vm.createContext({});
+  vm.runInContext(src, context);
+  const arr = vm.runInContext("typeof TRACK_ALL !== 'undefined' ? TRACK_ALL : []", context);
+  return arr.map((r) => ({ quarter: r.q, date: r.date, post: r.post, landed: r.landed, conf: r.conf }));
+}
 
 // PF_GRADED is hand-maintained by the /scorecard skill (it records a real prospective
 // grading decision that this script has no way to derive on its own) — preserve whatever
@@ -96,8 +108,10 @@ function main() {
   for (const [ticker, registryPath] of Object.entries(registry)) {
     const absPath = path.join(ROOT, "stocks", registryPath);
     if (!fs.existsSync(absPath)) continue;
-    const src = fs.readFileSync(absPath, "utf8");
-    const rows = extractTrackAll(src);
+    const migrated = findDataFile(ticker);
+    const rows = migrated
+      ? extractTrackAllFromDataFile(migrated.dataPath)
+      : extractTrackAll(fs.readFileSync(absPath, "utf8"));
     for (const r of rows) {
       const bandHit = !/miss|outside/i.test(r.landed);
       scorecard.push({ t: ticker, quarter: r.quarter, date: r.date, post: r.post, landed: r.landed, conf: r.conf, bandHit });
