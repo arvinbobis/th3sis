@@ -20,6 +20,8 @@ instead.
 - Forward analyst consensus (EPS or the relevant metric) and price targets
 - Forward multiples for 3–5 named peer comparables (the peer-median anchor for the multiple
   judgment — record it as `multiple_peer_median` in the provenance snapshot)
+- The stock's own trailing 5-year forward-P/E range (rough trough / normal / peak bands) —
+  this feeds THE CURRENT tab's mood panel and reverse-DCF, alongside the peer multiples above
 - Forward guidance, capex plans, and any major spending cycle
 - Regulatory, competitive, or macro factors specific to this company
 - The next scheduled earnings date
@@ -66,6 +68,29 @@ renders every chart, tab, and tooltip. You're writing two small files:
    `THESIS_HISTORY = []` — an empty append-only archive of past CASES vintages; nothing to
    archive yet on a brand-new build, but `/update-thesis` needs it to exist so the FIRST
    future rewrite has somewhere to push the outgoing narrative before overwriting it.
+
+   **THE CURRENT tab** — the tab carrying the actual verdict (thesis-intact check, price-fair
+   check, reverse-DCF, risk/reward) — needs more than a bare `VAL_CONFIG`/`TEXT` mention.
+   `lint-thesis-data.js` only checks these globals *exist*, not their shape, so a shallow
+   `VAL_CONFIG = {}` or empty `TEXT.current` passes lint but silently breaks or hollows out
+   the tab at render time. Build these in full, using `stocks/tsm/thesis-data.js`'s
+   `VAL_CONFIG` and `TEXT.current` as the shape reference:
+   - `VAL_CONFIG`: `ntm_eps` (same consensus NTM EPS driving the price bands), `shares_b`,
+     `fcf_ntm_b`, `risk_free_pct` (current 10Y Treasury), `default_discount_pct`,
+     `default_terminal_pe`, `dcf_years` — these five power the reverse-DCF implied-CAGR that
+     must surface inline in the verdict/mood labels, not just in an evidence panel; the
+     stock's own forward-P/E range from Step 1 as `pe_trough`/`pe_bear_hi`/`pe_normal_lo`/
+     `pe_normal_hi`/`pe_bull_lo`/`pe_peak`; and `peers[]` (the same 3–5 named comps from Step
+     1, each with `fpe`/`ev_eb`/`fcf_y`).
+   - `SIGNAL_HELP` and `TAG_HELP`: a plain-language explanation for every `SIGNALS`/`MARGIN`
+     entry name, plus the four BEAT/MATCH/MISS/WATCH tag definitions.
+   - `TEXT.current`: `statusNarrative.{broken,watch,intact}`, `panelTipStory`,
+     `verdictBody.{broken,watchBelow,below,inBase,above}` (functions of price),
+     `kpiTitle`/`kpiSub`/`kpiMeasures`/`kpiRequires.{bull,base,bear}`, `killSwitch`,
+     `priceBanner.{below,inBase,above}`, `moodBanner`, `cagrNotes.{low,mid,high}`, and
+     `peerCommentary` — every one a real narrative string, not a placeholder. This is where
+     the CLAUDE.md quality bar (narrative, kill-switch, most-probable case) actually reaches
+     the reader, so verify by opening the tab in a browser, not just a clean lint run.
 2. **`stocks/$ARGUMENTS/$ARGUMENTS-thesis.html`** — a thin shell. Copy
    `stocks/tsm/tsm-thesis.html` and swap only the `<title>` and the theme-color literals in
    the loading-state fallback markup; it already wires `thesis-data.js` + the shared engine.
