@@ -136,6 +136,32 @@ capital recommendation through it — never recommend adding at highs without a 
   not hindsight. Mark older/fuzzier quarters as lower-confidence.
 - Note the as-of date prominently. Re-verify anything time-sensitive each session.
 
+### Wisesheets (facts layer)
+
+The Wisesheets MCP connector (`mcp__claude_ai_Wisesheets__*`) is the primary source for two
+things only: **EOD prices** (any ticker, any date range) and **filed actuals for US filers**
+(quarterly financial-statement lines and calculated ratios — revenue, EPS, margins, capex,
+FCF, inventory, etc.), each returned with an SEC citation (`accession`, `filingUrl`,
+`filingDate`). Use it before web search for these two things.
+
+**The boundary: estimates, forward multiples, segments, and guidance remain web-sourced —
+Wisesheets never replaces them.** It has no analyst consensus, no peer forward P/E, no
+segment breakouts (AWS revenue, ad impressions, HBM mix, etc.), and no guidance. The metric
+that drives every price band (consensus EPS NTM) and the peer-median multiple anchor are
+not in this API and must stay web-sourced.
+
+Caveats, confirmed by live testing (2026-07-12):
+- **Foreign 20-F filers (e.g. TSM) have no quarterly fundamentals, annual-only, and can
+  mislabel currency** — TSM's FY2024 `revenue` came back tagged `"USD"` but was actually
+  TWD. Sanity-check magnitude on any foreign-filer value before use; for TSM quarterlies,
+  keep using the company's own IR releases. ASML files US-style and is fine through FY2025.
+- **Filed EPS is GAAP.** Never tag BEAT/MATCH/MISS against a non-GAAP consensus band without
+  checking whether `eps_adjusted` is available for that stock — compare like-for-like.
+- Extend the provenance `src` convention with the citation form:
+  `"SEC 10-Q via Wisesheets — accession 0000723125-26-000015"`.
+- Free-plan quota is 5,000 requests/month, 5-year history; a full quarterly touch costs
+  roughly 20–40 units; `whoami` is free to call and checks quota without spending it.
+
 **Provenance snapshot (write this every time you build or update a thesis):** save the
 judgment inputs you just pulled/chose to `stocks/<ticker>/data/inputs-YYYY-QQ.json` — the
 quarter being built or refreshed, not the quarter reported. This is what lets a *future*

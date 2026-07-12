@@ -9,10 +9,15 @@ logged as a pass/watch instead. Do not build price bands, KPIs, or a dashboard h
 only happens after a PASS. Nothing here is financial advice; this is a triage step.
 
 ## Step 1 — Quick data pull (light, not the full /thesis pull)
-Search the web for just enough to answer the gate questions below. Do not do the full
-`/thesis` data pull (no 6-quarter history, no full analyst consensus spread):
-- Current price and the single most relevant valuation multiple (P/E, P/S, P/B, or FFO —
-  whichever fits the business)
+**First**, one `mcp__claude_ai_Wisesheets__get_financials` call (revenue_growth_yoy,
+gross_margin, eps_diluted trailing, free_cash_flow — `period: latest`) plus a
+`get_prices_eod` for the current price, to ground the cushion test in filed numbers instead
+of a searched multiple. Skip for foreign 20-F filers with no quarterly coverage.
+
+**Then** search the web for just enough to answer the gate questions below. Do not do the
+full `/thesis` data pull (no 6-quarter history, no full analyst consensus spread):
+- The single most relevant valuation multiple (P/E, P/S, P/B, or FFO — whichever fits the
+  business) using the price/EPS just pulled
 - One-sentence read on what the bull narrative currently is, and how mainstream/crowded it
   already is (sell-side consensus, recent financial-media coverage)
 - Whether this would overlap an existing holding's risk cluster — cross-check against

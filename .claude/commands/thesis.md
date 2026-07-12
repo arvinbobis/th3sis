@@ -7,9 +7,16 @@ You are building a complete investment thesis for: **$ARGUMENTS**
 Follow the methodology in CLAUDE.md exactly. Do not skip the data-freshness step.
 
 ## Step 1 — Pull fresh data (REQUIRED, do this first)
-Search the web for current, real information on $ARGUMENTS before anything else:
-- Current share price and recent price history (last ~6 quarters)
-- Latest earnings results and the most recent quarter's prints
+**First, pull exact facts from Wisesheets** (`mcp__claude_ai_Wisesheets__*` — see CLAUDE.md's
+"Wisesheets (facts layer)"): `get_prices_eod` for the current price and monthly closes across
+the last ~6 quarters (feeds `HISTORY` and the backtest exactly, not from memory); `get_financials`
+for trailing revenue/EPS/margins (`frequency: quarterly, period: last6q`) to compute the
+own-history trailing-P/E anchor (real price ÷ filed trailing EPS) alongside the peer-median
+anchor. Skip for foreign 20-F filers with no quarterly coverage (e.g. TSM) — use IR data
+instead.
+
+**Then search the web** for what Wisesheets doesn't cover:
+- Latest earnings results and the most recent quarter's prints (narrative/segment detail)
 - Forward analyst consensus (EPS or the relevant metric) and price targets
 - Forward multiples for 3–5 named peer comparables (the peer-median anchor for the multiple
   judgment — record it as `multiple_peer_median` in the provenance snapshot)

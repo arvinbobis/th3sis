@@ -7,9 +7,18 @@ You are updating the existing thesis for: **$ARGUMENTS**
 Follow the QUARTERLY-UPDATE-CHECKLIST for this stock and the methodology in CLAUDE.md.
 
 ## Step 1 — Pull fresh data first (REQUIRED)
-Search for the latest on $ARGUMENTS: the just-reported quarter's actual results, current
-price, updated consensus estimates and targets, new guidance/capex, and any regulatory or
-competitive shifts since last update. Never rely on memory.
+**First, pull filed facts from Wisesheets** (`mcp__claude_ai_Wisesheets__*` — see CLAUDE.md's
+"Wisesheets (facts layer)"): `get_financials` for the just-reported quarter's financial KPIs
+(revenue, eps_diluted, gross_margin, capital_expenditures, plus whatever maps to this stock's
+SIGNALS), `frequency: quarterly, period: last1q` — keep the `source` block for provenance.
+`get_prices_eod` for the quarter-end close (the new TRACK_ALL row) and the latest price. Skip
+this for foreign 20-F filers with no quarterly coverage (e.g. TSM) — use IR releases instead,
+per CLAUDE.md's caveat, and watch for the GAAP-vs-non-GAAP EPS mismatch before tagging
+BEAT/MATCH/MISS.
+
+**Then search the web** for what Wisesheets doesn't cover: updated consensus estimates and
+price targets, new guidance/capex, segment detail, and any regulatory or competitive shifts
+since last update. Never rely on memory for either half.
 
 ## Step 2 — Layer 1: refresh the numbers
 **If this stock has `stocks/$ARGUMENTS/thesis-data.js`** (migrated to the engine split —
@@ -29,8 +38,10 @@ that stays a separate future touch either way.
 
 Write the inputs you just pulled to `stocks/$ARGUMENTS/data/inputs-YYYY-QQ.json` per the
 provenance format in CLAUDE.md's data freshness rules (one new file per update, never edit a
-past quarter's snapshot). Include `multiple_peer_median` with the comps named in `src` — the
-peer anchor is what catches a whole-group re-rating that own-history anchoring would miss.
+past quarter's snapshot). For any value pulled via Wisesheets, use the SEC-citation `src`
+form from CLAUDE.md (e.g. `"SEC 10-Q via Wisesheets — accession ..."`) instead of "web
+search". Include `multiple_peer_median` with the comps named in `src` — the peer anchor is
+what catches a whole-group re-rating that own-history anchoring would miss.
 
 ## Step 3 — Layer 2: AUDIT THE THESIS (do not skip)
 
