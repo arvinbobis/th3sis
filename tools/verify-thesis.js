@@ -22,7 +22,7 @@ const ROOT = path.join(__dirname, "..");
 const SCREENSHOT_DIR = path.join(ROOT, "tools", ".verify-output");
 
 const LEGACY_HEX_TICKERS = new Set([
-  "ALAB", "AMZN", "ASML", "FICO", "GOOGL", "META", "MRVL", "MSFT", "MU", "NVDA", "TSM",
+  "ALAB", "AMZN", "FICO", "GOOGL", "META", "MRVL", "MSFT", "MU", "NVDA", "TSM",
 ]);
 const ALLOWED_SEMANTIC_HEX = new Set(["#f1564b", "#e0a83b", "#3fd07a", "#2f6dff"]);
 

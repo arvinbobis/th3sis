@@ -237,8 +237,10 @@ GATE pages, applied to the stock dashboards.
   automatically *and* the full Playwright render pass in both themes, so nothing is skipped,
   it's just that the expensive half no longer blocks a data-only edit loop.
 - **Rollout is per-touch, like provenance snapshots and the legacy-hex list** — no big-bang
-  backfill. TSM migrated 2026-07-11 as the pilot; the other 11 stocks migrate at their own
-  next `/update-thesis`, keeping their existing inline-JSX build valid until then.
+  backfill. TSM migrated 2026-07-11 as the pilot; ASML migrated 2026-07-16 (its own next
+  `/update-thesis`, prompted by the user noticing it didn't match TSM's format); the
+  remaining 10 stocks migrate at their own next `/update-thesis`, keeping their existing
+  inline-JSX build valid until then.
 - **Self-containment loosens from "one file" to "one folder + shared engine + theme.css"** —
   already true in spirit (`theme.css` was always external); this just makes it explicit.
 
@@ -282,11 +284,14 @@ GATE pages, applied to the stock dashboards.
   migrated stock that's `node tools/verify-thesis.js <TICKER>`; "the JSX compiles" was never
   the bar.
 - **⚠ Legacy stocks** (built before June 2026, hardcoded hex in JSX — light mode won't render
-  correctly until each is refactored): ALAB, AMZN, ASML, FICO, GOOGL, META, MRVL, MSFT, MU,
+  correctly until each is refactored): ALAB, AMZN, FICO, GOOGL, META, MRVL, MSFT, MU,
   NVDA, TSM. This list is about the **hex-color debt**, independent of engine-split status —
   TSM migrated to the engine split 2026-07-11 but *inherited* this exemption rather than
-  fixing it (its `#dd817a`/`#c59542`/`#66b278` palette is pre-existing, not new debt). Fix the
-  palette at the stock's next quarterly touch after migration, not before — same per-touch
+  fixing it (its `#dd817a`/`#c59542`/`#66b278` palette is pre-existing, not new debt). ASML
+  migrated 2026-07-16 and came off this list the same day — its pre-migration build already
+  used the four permitted semantic colors, so nothing needed fixing (verified: `grep -oE
+  '#[0-9a-fA-F]{3,6}' stocks/asml/thesis-data.js` returns only the four permitted hex codes).
+  Fix the palette at the stock's next quarterly touch after migration, not before — same per-touch
   discipline as everything else here.
 
 ---

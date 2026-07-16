@@ -188,6 +188,15 @@ const PF_SCORECARD = [
     "bandHit": true
   },
   {
+    "t": "ASML",
+    "quarter": "Q2 2026",
+    "date": "2026-07",
+    "post": 1815,
+    "landed": "base",
+    "conf": "high",
+    "bandHit": true
+  },
+  {
     "t": "AVGO",
     "quarter": "Q4 FY24",
     "date": "2024-11",
@@ -681,10 +690,25 @@ const PF_SCORECARD = [
     "landed": "base",
     "conf": "high",
     "bandHit": true
+  },
+  {
+    "t": "TSM",
+    "quarter": "Q2 2026",
+    "date": "2026-07",
+    "post": 407,
+    "landed": "bear→base",
+    "conf": "med",
+    "bandHit": true
   }
 ];
 
 const PF_PREDICTIONS = {
+  "ASML": {
+    "quarter": "Q2 2026",
+    "asOf": "2026-07-16",
+    "case": "BASE",
+    "note": "50%"
+  },
   "AVGO": {
     "quarter": "Q2 FY2026",
     "asOf": "2026-06-06",
@@ -696,6 +720,12 @@ const PF_PREDICTIONS = {
     "asOf": "2026-07-11",
     "case": "BASE, tracking toward BULL on fundamentals",
     "note": ""
+  },
+  "TSM": {
+    "quarter": "Q2 2026",
+    "asOf": "2026-07-16",
+    "case": "BASE",
+    "note": "50%"
   }
 };
 

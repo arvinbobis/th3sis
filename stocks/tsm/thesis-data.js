@@ -19,7 +19,7 @@
    ╚══════════════════════════════════════════════════════════════════════════╝ */
 
 const TICKER_META = { ticker: "TSM", exchange: "NYSE", company: "Taiwan Semiconductor Manufacturing Co." };
-const AS_OF_DATE = "2026-06-16";
+const AS_OF_DATE = "2026-07-16";
 
 // Most recent material dislocation (Apr 2025 "Liberation Day" tariff panic)
 const DISLOCATION_DATE = "2025-04-08";
@@ -30,27 +30,27 @@ const REVERSION_PRECEDENT_DAYS = 282;
 const CASES = {
   bear: {
     key: "bear", label: "BEAR", accent: "#dd817a", glow: "rgba(241,86,75,0.45)",
-    target12: "$250 — $295",
-    op: "TSM trades near all-time highs at ~$424 heading into Q2 2026 earnings (Jul 16), and the market has priced in close to flawless execution on the AI/HPC ramp. The bear case is mostly a multiple-compression story: a Q2 guide miss, a stalled N2 ramp, or — the bigger tail risk — a fresh escalation in cross-strait tension or U.S./Taiwan export-control friction (Taiwan's own proposed review of advanced-chip exports is a new 2026 wrinkle) could reprice the stock from today's ~25x NTM multiple back toward the 16–19x trough zone seen during the April 2025 tariff panic. A hyperscaler-led pause in AI infrastructure capex, after two years of hyper-growth, is the most plausible near-term trigger even without a geopolitical shock.",
-    breaks: "A hyperscaler (Microsoft, Google, Meta, Amazon) publicly signals a multi-quarter AI capex pause, or a new export-control/tariff action materially restricts TSM's advanced-node shipments.",
-    requires01: "Q2 2026 revenue misses the $39.0–40.2B guide, or gross margin falls below the 65.5% guided floor",
-    requires02: "N2 (2nm) volume ramp slips, or cross-strait/export-control risk escalates materially",
+    target12: "$265 — $335",
+    op: "Q2 2026 was a genuine beat on every disclosed line (revenue $40.2B beat the $39.0–40.2B guide's own high end, GM 67.7% beat 65.5–67.5%, EPS $4.31 beat ~$3.80 consensus) and management raised FY26 capex to $60–64B and USD revenue growth guide to 'slightly above 40%' — yet the stock fell from a $477.57 pre-print high to an estimated ~$407 post-print, a real 'sell the news' round-trip. The bear case is no longer about the AI/HPC ramp stalling — it's about whether Q3's much steeper $44.6–45.8B guide (+11–14% QoQ) is now priced for perfection after two straight beat-and-raise quarters, or whether cross-strait/export-control friction (Taiwan's own proposed review of advanced-chip exports remains a live 2026 wrinkle even as TSM pledges another $100B into US fabs) resurfaces as the real tail risk. A quieter structural risk this thesis has under-covered: Google's TPU ('Humufish') shifting some advanced-packaging work from TSMC's CoWoS to Intel's competing EMIB-T process (first flagged Jul 1) is the first hard evidence a hyperscaler will route AI-accelerator packaging outside TSMC — still a single data point, not a trend, but the CoWoS moat has real competitive testing now that it didn't have a quarter ago.",
+    breaks: "A hyperscaler (Microsoft, Google, Meta, Amazon) publicly signals a multi-quarter AI capex pause, a new export-control/tariff action materially restricts TSM's advanced-node shipments, or a SECOND hyperscaler discloses a real (non-pilot) advanced-packaging design win outside TSMC's CoWoS — confirming Google's TPU/Intel EMIB-T shift as a trend rather than a one-off.",
+    requires01: "Q3 2026 revenue misses the $44.6–45.8B guide, or gross margin falls below the 65.0% guided floor",
+    requires02: "N2 (2nm) volume ramp slips from its current 3% wafer-revenue base, cross-strait/export-control risk escalates materially, or a second hyperscaler follows Google's Intel-EMIB-T packaging shift (watch, not yet triggered)",
   },
   base: {
     key: "base", label: "BASE", accent: "#c59542", glow: "rgba(224,168,59,0.40)",
-    target12: "$415 — $500",
-    op: "Q1 2026 delivered a clean beat — revenue $35.9B (+40.6% YoY) and gross margin 66.2%, above the high end of guidance — and management's Q2 guide ($39.0–40.2B revenue, 65.5–67.5% GM) implies the AI/HPC ramp continues uninterrupted. At ~$424 and roughly 25x NTM earnings, the stock is pricing in continued execution but not obvious euphoria. TSM remains the only foundry shipping leading-edge AI accelerators at scale, N2 is ramping on schedule, and CoWoS advanced-packaging capacity — the bottleneck of the last two years — keeps expanding. Most likely path: Q2 prints in line with guidance and the stock grinds higher with EPS growth rather than further multiple expansion.",
-    breaks: "Management cuts full-year 2026 capex or revenue guidance, signaling the AI/HPC buildout is decelerating faster than expected.",
-    requires01: "Q2 2026 revenue lands within the $39.0–40.2B guide; gross margin within 65.5–67.5%",
+    target12: "$375 — $490",
+    op: "Q2 2026 beat across the board (revenue $40.2B/+33.7% YoY, GM 67.7%, OM 60.3%, EPS $4.31) and management guided Q3 to a steep $44.6–45.8B / 65.0–67.0% GM, raising FY26 capex to $60–64B and USD revenue growth to 'slightly above 40%.' Despite that, the ADR pulled back from its $477.57 pre-print high to an estimated ~$407 — the forward multiple actually COMPRESSED (from ~28x pre-print toward ~22x now) because the consensus EPS estimate rose faster than the price fell. That's a healthier setup than the prior quarter's all-time-high entry point, not a worse one: TSM remains the only foundry shipping leading-edge AI accelerators at scale, N2 is now a real (if small, ~3% of wafer revenue) contributor, and the new $100B US investment pledge (total $265B) extends the political-goodwill moat. Most likely path: Q3 lands in the raised guide and the stock re-tests its prior highs on earnings growth rather than needing further multiple expansion.",
+    breaks: "Management cuts full-year 2026 capex or revenue guidance, signaling the AI/HPC buildout is decelerating faster than expected — the opposite of what just happened.",
+    requires01: "Q3 2026 revenue lands within the $44.6–45.8B guide; gross margin within 65.0–67.0%",
     requires02: "N2 ramp and CoWoS capacity expansion stay on the disclosed schedule; no new export-control escalation",
   },
   bull: {
     key: "bull", label: "BULL", accent: "#66b278", glow: "rgba(63,208,122,0.45)",
-    target12: "$555 — $650",
-    op: "The AI/HPC buildout is still in its early-to-middle innings, and TSM's monopoly-like grip on leading-edge nodes (N2 ramping now, N2P/A16 behind it) gives it pricing power that already shows up in gross margin — 66.2% in Q1 2026, above the top of TSM's own long-run target range. If Q2 beats the $40.2B guide high end and management raises full-year guidance on accelerating AI accelerator demand, the market re-rates TSM from a cyclical-foundry multiple (mid-20s P/E) toward a structural-monopoly multiple (30x+), echoing how NVDA and ASML have re-rated on their own AI bottleneck positions. A de-escalation in cross-strait tension would remove the largest tail-risk discount currently embedded in the multiple.",
-    breaks: "Q2 2026 revenue or margin misses guidance, confirming the AI/HPC ramp is decelerating rather than accelerating — or cross-strait/export-control risk escalates instead of resolving.",
-    requires01: "Q2 2026 revenue beats $40.2B guide high end; gross margin beats 67.5% guide high end",
-    requires02: "Full-year 2026 capex or revenue guidance raised; N2 ramp ahead of schedule",
+    target12: "$565 — $640",
+    op: "The AI/HPC buildout accelerated again this quarter, not decelerated: FY26 capex guide raised to $60–64B (from $52–56B), USD revenue growth guide raised to 'slightly above 40%' (from '>30%'), and TSM committed another $100B to US fabs (total $265B, four more Arizona plants at 2nm-and-below). HPC now makes up 66% of revenue (+20% QoQ) and N2 has crossed into real production (3% of wafer revenue in its first reporting quarter). Sell-side price targets moved decisively higher post-print — Goldman Sachs to $600 ADR (from $550), one analyst to $590 (from $490) — even as the stock itself pulled back, which is exactly the kind of gap between fundamentals and price action that closes fast if Q3 beats its own raised guide. A de-escalation in cross-strait tension would remove the largest tail-risk discount still embedded in the multiple.",
+    breaks: "Q3 2026 revenue or margin misses the raised guidance, confirming the beat-and-raise pattern was a peak rather than a trend — or cross-strait/export-control risk escalates instead of resolving.",
+    requires01: "Q3 2026 revenue beats $45.8B guide high end; gross margin beats 67.0% guide high end",
+    requires02: "Full-year 2026 capex or revenue guidance raised a second time; N2 ramp accelerates past its current ~3% wafer-revenue share",
   },
 };
 
@@ -64,13 +64,13 @@ const CASES = {
 // the OUTGOING values here first, tagged with the quarter/asOf that's ending.
 const THESIS_HISTORY = [
   { asOf: "2026-06-16", quarter: "Q1 2026", cases: {
-    bear: { target12: CASES.bear.target12, op: CASES.bear.op, breaks: CASES.bear.breaks, requires01: CASES.bear.requires01, requires02: CASES.bear.requires02 },
-    base: { target12: CASES.base.target12, op: CASES.base.op, breaks: CASES.base.breaks, requires01: CASES.base.requires01, requires02: CASES.base.requires02 },
-    bull: { target12: CASES.bull.target12, op: CASES.bull.op, breaks: CASES.bull.breaks, requires01: CASES.bull.requires01, requires02: CASES.bull.requires02 },
+    bear: { target12: "$250 — $295", op: "TSM trades near all-time highs at ~$424 heading into Q2 2026 earnings (Jul 16), and the market has priced in close to flawless execution on the AI/HPC ramp. The bear case is mostly a multiple-compression story: a Q2 guide miss, a stalled N2 ramp, or — the bigger tail risk — a fresh escalation in cross-strait tension or U.S./Taiwan export-control friction (Taiwan's own proposed review of advanced-chip exports is a new 2026 wrinkle) could reprice the stock from today's ~25x NTM multiple back toward the 16–19x trough zone seen during the April 2025 tariff panic. A hyperscaler-led pause in AI infrastructure capex, after two years of hyper-growth, is the most plausible near-term trigger even without a geopolitical shock.", breaks: "A hyperscaler (Microsoft, Google, Meta, Amazon) publicly signals a multi-quarter AI capex pause, or a new export-control/tariff action materially restricts TSM's advanced-node shipments.", requires01: "Q2 2026 revenue misses the $39.0–40.2B guide, or gross margin falls below the 65.5% guided floor", requires02: "N2 (2nm) volume ramp slips, or cross-strait/export-control risk escalates materially" },
+    base: { target12: "$415 — $500", op: "Q1 2026 delivered a clean beat — revenue $35.9B (+40.6% YoY) and gross margin 66.2%, above the high end of guidance — and management's Q2 guide ($39.0–40.2B revenue, 65.5–67.5% GM) implies the AI/HPC ramp continues uninterrupted. At ~$424 and roughly 25x NTM earnings, the stock is pricing in continued execution but not obvious euphoria. TSM remains the only foundry shipping leading-edge AI accelerators at scale, N2 is ramping on schedule, and CoWoS advanced-packaging capacity — the bottleneck of the last two years — keeps expanding. Most likely path: Q2 prints in line with guidance and the stock grinds higher with EPS growth rather than further multiple expansion.", breaks: "Management cuts full-year 2026 capex or revenue guidance, signaling the AI/HPC buildout is decelerating faster than expected.", requires01: "Q2 2026 revenue lands within the $39.0–40.2B guide; gross margin within 65.5–67.5%", requires02: "N2 ramp and CoWoS capacity expansion stay on the disclosed schedule; no new export-control escalation" },
+    bull: { target12: "$555 — $650", op: "The AI/HPC buildout is still in its early-to-middle innings, and TSM's monopoly-like grip on leading-edge nodes (N2 ramping now, N2P/A16 behind it) gives it pricing power that already shows up in gross margin — 66.2% in Q1 2026, above the top of TSM's own long-run target range. If Q2 beats the $40.2B guide high end and management raises full-year guidance on accelerating AI accelerator demand, the market re-rates TSM from a cyclical-foundry multiple (mid-20s P/E) toward a structural-monopoly multiple (30x+), echoing how NVDA and ASML have re-rated on their own AI bottleneck positions. A de-escalation in cross-strait tension would remove the largest tail-risk discount currently embedded in the multiple.", breaks: "Q2 2026 revenue or margin misses guidance, confirming the AI/HPC ramp is decelerating rather than accelerating — or cross-strait/export-control risk escalates instead of resolving.", requires01: "Q2 2026 revenue beats $40.2B guide high end; gross margin beats 67.5% guide high end", requires02: "Full-year 2026 capex or revenue guidance raised; N2 ramp ahead of schedule" },
   } },
 ];
 
-const FALLBACK_PRICE = 423.93;
+const FALLBACK_PRICE = 407.00;
 
 const LIVE_PRICE = {
   enabled: true,
@@ -84,62 +84,62 @@ const LIVE_PRICE = {
 // stocks/portfolio/portfolio-data.js; this copy is a FALLBACK for offline opens.
 const ALERT = {
   symbol: "TSM",
-  buyFloor: 415,
+  buyFloor: 375,
   thesisIntact: true,
   asOf: AS_OF_DATE,
-  nextEarnings: "2026-07-16",
+  nextEarnings: "2026-10-15",
 };
 
 const HISTORY = [
-  { q: "Q4 2024", p: 197.49 },
   { q: "Q1 2025", p: 166.00 },
   { q: "Q2 2025", p: 226.49 },
   { q: "Q3 2025", p: 279.29 },
   { q: "Q4 2025", p: 303.89 },
   { q: "Q1 2026", p: 337.95 },
+  { q: "Q2 2026", p: 477.57 },
   { q: "NOW",     p: FALLBACK_PRICE },
 ];
 
-const PROJ_END = { bear: 273, base: 458, bull: 603 };
-const FUTURE_Q = ["Q2 2026", "Q3 2026", "Q4 2026", "Q1 2027"];
+const PROJ_END = { bear: 300, base: 433, bull: 603 };
+const FUTURE_Q = ["Q3 2026", "Q4 2026", "Q1 2027", "Q2 2027"];
 
 const SIGNALS = {
   bear: [
-    { name: "Q1 2026 Revenue YoY",        unit: "%",  tag: "BEAT",  next: "Jul 16, 2026", val: "ACTUAL +40.6% ($35.9B)", guide: "vs ~+35% consensus", pos: 0.68 },
-    { name: "Q2 2026 Revenue Guide",      unit: "$B", tag: "WATCH", next: "Jul 16, 2026", val: "TO REPORT",  guide: "GUIDE $39.0–40.2B", pos: 0.60 },
-    { name: "Q2 2026 Gross Margin Guide", unit: "%",  tag: "WATCH", next: "Jul 16, 2026", val: "TO REPORT",  guide: "GUIDE 65.5–67.5%", pos: 0.56 },
+    { name: "Q2 2026 Revenue YoY",        unit: "%",  tag: "BEAT",  next: "Oct 15, 2026", val: "ACTUAL +33.7% ($40.2B)", guide: "beat $39.0–40.2B guide hi", pos: 0.70 },
+    { name: "Q3 2026 Revenue Guide",      unit: "$B", tag: "WATCH", next: "Oct 15, 2026", val: "TO REPORT",  guide: "GUIDE $44.6–45.8B", pos: 0.62 },
+    { name: "Q3 2026 Gross Margin Guide", unit: "%",  tag: "WATCH", next: "Oct 15, 2026", val: "TO REPORT",  guide: "GUIDE 65.0–67.0%", pos: 0.55 },
   ],
   base: [
-    { name: "Q1 2026 Revenue YoY",        unit: "%",  tag: "BEAT",  next: "Jul 16, 2026", val: "ACTUAL +40.6% ($35.9B)", guide: "vs ~+35% consensus", pos: 0.68 },
-    { name: "Q2 2026 Revenue Guide",      unit: "$B", tag: "WATCH", next: "Jul 16, 2026", val: "TO REPORT",  guide: "GUIDE $39.0–40.2B", pos: 0.60 },
-    { name: "Q2 2026 Gross Margin Guide", unit: "%",  tag: "WATCH", next: "Jul 16, 2026", val: "TO REPORT",  guide: "GUIDE 65.5–67.5%", pos: 0.56 },
+    { name: "Q2 2026 Revenue YoY",        unit: "%",  tag: "BEAT",  next: "Oct 15, 2026", val: "ACTUAL +33.7% ($40.2B)", guide: "beat $39.0–40.2B guide hi", pos: 0.70 },
+    { name: "Q3 2026 Revenue Guide",      unit: "$B", tag: "WATCH", next: "Oct 15, 2026", val: "TO REPORT",  guide: "GUIDE $44.6–45.8B", pos: 0.62 },
+    { name: "Q3 2026 Gross Margin Guide", unit: "%",  tag: "WATCH", next: "Oct 15, 2026", val: "TO REPORT",  guide: "GUIDE 65.0–67.0%", pos: 0.55 },
   ],
   bull: [
-    { name: "Q1 2026 Revenue YoY",        unit: "%",  tag: "BEAT",  next: "Jul 16, 2026", val: "ACTUAL +40.6% ($35.9B)", guide: "vs ~+35% consensus", pos: 0.68 },
-    { name: "Q2 2026 Revenue Guide",      unit: "$B", tag: "WATCH", next: "Jul 16, 2026", val: "TO REPORT",  guide: "GUIDE $39.0–40.2B", pos: 0.60 },
-    { name: "Q2 2026 Gross Margin Guide", unit: "%",  tag: "WATCH", next: "Jul 16, 2026", val: "TO REPORT",  guide: "GUIDE 65.5–67.5%", pos: 0.56 },
+    { name: "Q2 2026 Revenue YoY",        unit: "%",  tag: "BEAT",  next: "Oct 15, 2026", val: "ACTUAL +33.7% ($40.2B)", guide: "beat $39.0–40.2B guide hi", pos: 0.70 },
+    { name: "Q3 2026 Revenue Guide",      unit: "$B", tag: "WATCH", next: "Oct 15, 2026", val: "TO REPORT",  guide: "GUIDE $44.6–45.8B", pos: 0.62 },
+    { name: "Q3 2026 Gross Margin Guide", unit: "%",  tag: "WATCH", next: "Oct 15, 2026", val: "TO REPORT",  guide: "GUIDE 65.0–67.0%", pos: 0.55 },
   ],
 };
 const MARGIN = {
   bear: [
     { name: "Cross-Strait Risk Level", tag: "WATCH", next: "Ongoing", pos: 0.45 },
-    { name: "N2 (2nm) Node Ramp",      tag: "MATCH", next: "Jul 16, 2026", pos: 0.55 },
+    { name: "N2 (2nm) Node Ramp",      tag: "BEAT",  next: "Oct 15, 2026", pos: 0.62 },
   ],
   base: [
     { name: "Cross-Strait Risk Level", tag: "WATCH", next: "Ongoing", pos: 0.45 },
-    { name: "N2 (2nm) Node Ramp",      tag: "MATCH", next: "Jul 16, 2026", pos: 0.55 },
+    { name: "N2 (2nm) Node Ramp",      tag: "BEAT",  next: "Oct 15, 2026", pos: 0.62 },
   ],
   bull: [
     { name: "Cross-Strait Risk Level", tag: "WATCH", next: "Ongoing", pos: 0.45 },
-    { name: "N2 (2nm) Node Ramp",      tag: "MATCH", next: "Jul 16, 2026", pos: 0.55 },
+    { name: "N2 (2nm) Node Ramp",      tag: "BEAT",  next: "Oct 15, 2026", pos: 0.62 },
   ],
 };
 
-const KPI_HIST = 35.9;  // Q1 2026 actual (+40.6% YoY)
+const KPI_HIST = 40.2;  // Q2 2026 actual (+33.7% YoY, beat $39.0-40.2B guide hi)
 const KPI_PROJ = {
-  bear:  [37.5, 38.0, 39.0, 40.0],
-  base:  [39.5, 41.5, 44.0, 46.0],
-  bull:  [41.0, 44.5, 48.5, 52.0],
+  bear:  [44.6, 45.0, 42.0, 43.5],
+  base:  [45.2, 49.0, 47.5, 51.0],
+  bull:  [47.0, 52.5, 51.5, 56.0],
 };
 
 // TRACK RECORD — append newest to end; dashboard keeps last TRACK_WINDOW.
@@ -150,6 +150,7 @@ const TRACK_ALL = [
   { q: "Q3 2025", date: "2025-10", post: 279, reaction: "++", bear: [200,235], base: [245,285], bull: [290,335], landed: "bull",      conf: "med" },
   { q: "Q4 2025", date: "2026-01", post: 304, reaction: "+",  bear: [255,290], base: [295,330], bull: [335,380], landed: "base",      conf: "high" },
   { q: "Q1 2026", date: "2026-04", post: 338, reaction: "+",  bear: [280,315], base: [320,360], bull: [365,410], landed: "base",      conf: "high" },
+  { q: "Q2 2026", date: "2026-07", post: 407, reaction: "++", bear: [250,295], base: [415,500], bull: [555,650], landed: "bear→base", conf: "med"  },
 ];
 const TRACK_WINDOW = 6;
 
@@ -175,20 +176,20 @@ const PAST_EVENTS = [
 ];
 
 const VAL_CONFIG = {
-  ntm_eps:              17.20,
+  ntm_eps:              18.75,
   shares_b:              5.19,
-  fcf_ntm_b:            38.0,
+  fcf_ntm_b:            39.0,
   risk_free_pct:         4.35,
   default_discount_pct:  10.0,
   default_terminal_pe:   23,
   dcf_years:              5,
-  capex_fy26_guide_b:    56,
+  capex_fy26_guide_b:    62,      // raised from $52-56B to $60-64B on the Q2 2026 call; using midpoint
   prior_fy_rev_b:       122.2,     // last full fiscal year actual revenue
   prior_fy_label:       "2025",
   pe_trough: 14, pe_bear_hi: 18, pe_normal_lo: 20, pe_normal_hi: 26, pe_bull_lo: 30, pe_peak: 34,
   peers: [
-    { t: "TSM",  fpe: 24.6, ev_eb: 14.1, fcf_y: 2.7, note: "Leading-edge foundry monopoly" },
-    { t: "ASML", fpe: 29.5, ev_eb: 23.0, fcf_y: 2.4, note: "EUV lithography monopoly" },
+    { t: "TSM",  fpe: 21.7, ev_eb: 14.1, fcf_y: 2.7, note: "Leading-edge foundry monopoly" },
+    { t: "ASML", fpe: 49.6, ev_eb: 23.0, fcf_y: 2.4, note: "EUV lithography monopoly (re-rated sharply post its own Q2 2026 beat-and-raise)" },
     { t: "AVGO", fpe: 26.7, ev_eb: 22.4, fcf_y: 3.9, note: "AI semi + VMware software" },
     { t: "NVDA", fpe: 37.2, ev_eb: 36.8, fcf_y: 1.8, note: "GPU monopoly" },
   ],
@@ -210,14 +211,14 @@ const TAG_HELP = {
 
 const THESIS_ITEMS = [
   { key: "revenueGuide",     label: "Revenue landing within quarterly guide",    note: "Two consecutive misses would break this" },
-  { key: "marginGuide",      label: "Gross margin holding within guided range",  note: "65.5–67.5% band per the Q2 2026 guide" },
+  { key: "marginGuide",      label: "Gross margin holding within guided range",  note: "65.0–67.0% band per the Q3 2026 guide" },
   { key: "n2Ramp",           label: "N2 (2nm) node ramp on schedule",            note: "Volume ramp and CoWoS capacity expansion both tracking" },
   { key: "crossStraitRisk",  label: "No new export-control or tariff escalation", note: "Cross-strait and trade-policy risk is the wildcard" },
 ];
 const PRICE_ZONES = [
-  { label: "BEAR",    lo: 250, hi: 295, mid: 273, color: "#dd817a", action: "Exit / reduce if thesis also breaking" },
-  { label: "BASE",    lo: 415, hi: 500, mid: 458, color: "#c59542", action: "Small add OK if thesis intact" },
-  { label: "BULL",    lo: 555, hi: 650, mid: 603, color: "#66b278", action: "Let it ride — don't chase" },
+  { label: "BEAR",    lo: 265, hi: 335, mid: 300, color: "#dd817a", action: "Exit / reduce if thesis also breaking" },
+  { label: "BASE",    lo: 375, hi: 490, mid: 433, color: "#c59542", action: "Small add OK if thesis intact" },
+  { label: "BULL",    lo: 565, hi: 640, mid: 603, color: "#66b278", action: "Let it ride — don't chase" },
 ];
 
 // ── Chart geometry / axis ranges (per-stock: depends on price scale) ─────────
@@ -227,7 +228,7 @@ const GEOM = {
   fanYears: ["2025", "2026", "2027"],
   trackMin: 100, trackMax: 450,
   trackGrid: [500, 400, 300, 200, 100],
-  kpiMin: 30, kpiMax: 55,
+  kpiMin: 30, kpiMax: 58,
   visLo: 200, visHi: 700,
   nowZoneLo: 390, nowZoneHi: 460,   // thresholds for the "NOW" dot zone tooltip on THE FUTURE signal panel
 };
@@ -240,24 +241,24 @@ const GEOM = {
 const TEXT = {
   // header / footer
   priceTipLive: (px, at, asOf) => `Live quote: $${px} (fetched ${at}). The price is real-time, but the scenario bands and EPS are still as of ${asOf} — only the price-derived figures (scenario returns, P/E, band position) update live. Each ADR = 5 ordinary shares.`,
-  priceTipStatic: (px, asOf, liveEnabled) => `$${px} as of ${asOf} — ${liveEnabled ? "live fetch unavailable (offline or blocked), using the saved price" : "static price (live fetch disabled)"}. Each ADR = 5 ordinary shares. Next earnings: Q2 2026 (Jul 16, 2026).`,
-  footerDisclaimer: (asOf) => `Illustrative scenario framing built on public consensus & estimates as of ${asOf} — not a prediction and not financial advice. Price ranges are scenario mid-bands; KPI markers are positional, not literal. Valuation ruler: forward GAAP EPS × P/E multiple. Data inputs will move with every print. Next earnings: Q2 2026 (Jul 16, 2026).`,
+  priceTipStatic: (px, asOf, liveEnabled) => `$${px} as of ${asOf} — ${liveEnabled ? "live fetch unavailable (offline or blocked), using the saved price" : "static price (live fetch disabled)"}. Each ADR = 5 ordinary shares. Next earnings: Q3 2026 (~Oct 15, 2026).`,
+  footerDisclaimer: (asOf) => `Illustrative scenario framing built on public consensus & estimates as of ${asOf} — not a prediction and not financial advice. Price ranges are scenario mid-bands; KPI markers are positional, not literal. Valuation ruler: forward GAAP EPS × P/E multiple. Data inputs will move with every print. Next earnings: Q3 2026 (~Oct 15, 2026).`,
 
   // fan chart
-  fanHistory: "The solid white line is TSM's actual ADR price since Q4 2024. The run from ~$166 (Apr 2025 tariff-panic trough) to $424 today was driven almost entirely by the AI/HPC accelerator ramp overpowering cross-strait and export-control fear.",
-  fanNow: (px) => `TSM (ADR) trades around $${px} right now — an all-time high heading into Q2 2026 earnings (Jul 16). Q1 2026 printed a clean beat: $35.9B revenue (+40.6% YoY), 66.2% gross margin, and management guided Q2 to $39.0–40.2B. Everything left of this dot is history; everything right is forecast.`,
+  fanHistory: "The solid white line is TSM's actual ADR price since Q1 2025. The run from ~$166 (Apr 2025 tariff-panic trough) to a $477.57 high (Jun 30, 2026) was driven almost entirely by the AI/HPC accelerator ramp overpowering cross-strait and export-control fear — then gave some back into and after the Q2 2026 print despite a genuine beat-and-raise.",
+  fanNow: (px) => `TSM (ADR) trades around $${px} right now — down from a $477.57 pre-print high despite Q2 2026 beating on every disclosed line: $40.2B revenue (+33.7% YoY, above the $39.0–40.2B guide's own high end), 67.7% gross margin, $4.31 EPS. Management guided Q3 to $44.6–45.8B revenue / 65.0–67.0% margin and raised FY26 capex to $60–64B. Everything left of this dot is history; everything right is forecast.`,
   fanPastDot: (q, p) => `At the end of ${q}, TSM (ADR) was around $${p}.`,
 
   // scenario selector
   segmentedExplain: {
-    bear: ["The pessimistic scenario", "Click to see what TSM looks like if the AI/HPC ramp stalls — a Q2 2026 guide miss, a slipped N2 ramp, or a fresh cross-strait/export-control shock reprices the stock from today's ~25x multiple back toward the 16–19x trough zone. Price would likely fall to the $250–295 range."],
-    base: ["The most-likely scenario", "Click for the base view — Q2 2026 lands inside the $39.0–40.2B revenue / 65.5–67.5% margin guide, N2 and CoWoS capacity expand on schedule, and TSM keeps compounding EPS without much further multiple re-rating. Price stays in the $415–500 range near fair value."],
-    bull: ["The optimistic scenario", "Click to see the upside — Q2 2026 beats the $40.2B guide high end, full-year guidance gets raised, and the market re-rates TSM from a cyclical-foundry multiple toward a structural-monopoly multiple like NVDA/ASML. Price could reach $555–650."],
+    bear: ["The pessimistic scenario", "Click to see what TSM looks like if the AI/HPC ramp actually stalls — a Q3 2026 guide miss, a slipped N2 ramp, or a fresh cross-strait/export-control shock reprices the stock from today's ~22x multiple back toward the 14–18x trough zone. Price would likely fall to the $265–335 range."],
+    base: ["The most-likely scenario", "Click for the base view — Q3 2026 lands inside the newly-raised $44.6–45.8B revenue / 65.0–67.0% margin guide, N2 and CoWoS capacity expand on schedule, and TSM keeps compounding EPS without much further multiple re-rating. Price recovers toward the $375–490 range."],
+    bull: ["The optimistic scenario", "Click to see the upside — Q3 2026 beats the $45.8B guide high end, full-year guidance gets raised a SECOND time, and the market re-rates TSM from a cyclical-foundry multiple toward a structural-monopoly multiple like NVDA/ASML. Price could reach $565–640."],
   },
 
   // KPI column
-  kpiBaseline: (val) => `This is the most recent real number: TSM reported $${val}B in total revenue last quarter (+40.6% YoY). The bars to the right are scenario forecasts for where it goes next.`,
-  kpiForecast: (label, val) => `In this scenario, quarterly total revenue reaches ~$${val}B by ${label}. Management's Q2 2026 guide is $39.0–40.2B — taller bar = faster ramp.`,
+  kpiBaseline: (val) => `This is the most recent real number: TSM reported $${val}B in total revenue last quarter (+33.7% YoY, beating its own $39.0–40.2B guide's high end). The bars to the right are scenario forecasts for where it goes next.`,
+  kpiForecast: (label, val) => `In this scenario, quarterly total revenue reaches ~$${val}B by ${label}. Management's Q3 2026 guide is $44.6–45.8B — taller bar = faster ramp.`,
 
   // reversion clock
   reversion: {
@@ -269,9 +270,9 @@ const TEXT = {
 
   // track record
   track: {
-    lastDot: (post, nowPx) => `After Q1 2026 earnings (Apr 2026), TSM (ADR) traded around $${post} — a clean beat that landed inside the base band. Price has since continued rallying to $${nowPx} today. Next dot: Q2 2026 earnings (Jul 16, 2026).`,
+    lastDot: (post, nowPx) => `After Q2 2026 earnings (Jul 16), TSM (ADR) traded around $${post} — landing just under the OLD base band's floor ($415) even though revenue, margin, and EPS all beat guide, because the stock had already pulled back hard from its $477.57 pre-print high. Price sits at $${nowPx} today. Next dot: Q3 2026 earnings (~Oct 15, 2026).`,
     pastDot: (q, post) => `After ${q} earnings, TSM (ADR) actually traded around $${post}. Compare this dot to the colored bars behind it to see if the predicted range was right.`,
-    readoutHtml: (hits, n, nowPx) => `Price has tracked <span style="color:#66b278;font-weight:700">base-or-better in ${hits} of ${n} quarters</span> since Q4 2024. The only bear landing was Q1 2025 ($166), which coincided with the April 2025 tariff-panic low — a macro/policy shock, not a business miss. Q1 2026 printed a clean beat ($35.9B revenue, +40.6% YoY, 66.2% gross margin) and landed inside the base band at $338. Price has since continued running to <span style="color:var(--blue-soft);font-weight:700">$${nowPx}</span> on continued AI/HPC demand. Next directional catalyst: <span style="color:#c59542;font-weight:700">Q2 2026 earnings (Jul 16, 2026)</span> — revenue and gross margin vs. the $39.0–40.2B / 65.5–67.5% guide.`,
+    readoutHtml: (hits, n, nowPx) => `Price has tracked <span style="color:#66b278;font-weight:700">base-or-better in ${hits} of ${n} quarters</span> since Q1 2025. Q2 2026 is the most interesting recent case: revenue beat guide's own high end ($40.2B, +33.7% YoY), gross margin beat (67.7%), EPS beat ($4.31) — yet the stock landed just BELOW the old base floor at $${nowPx}, a genuine "sell the news" pullback from a $477.57 pre-print high, not a business miss. FY26 capex guide was raised to $60–64B and revenue growth guide to "slightly above 40%" the same call. Next directional catalyst: <span style="color:#c59542;font-weight:700">Q3 2026 earnings (~Oct 15, 2026)</span> — revenue and gross margin vs. the newly-raised $44.6–45.8B / 65.0–67.0% guide.`,
     footnote: "⚠ Bands are reconstructed now, anchored to each date's forward EPS & multiple regime — not archived in real time. Treat levels as directional, especially \"lower-conf\" quarters. ADR price reflects 5 ordinary shares per ADR. Revenue and fab capacity are concentrated in Taiwan — treat all bands as wider than they appear given cross-strait/export-control tail risk.",
   },
 
@@ -279,72 +280,72 @@ const TEXT = {
   current: {
     statusNarrative: {
       broken: "Multiple signals missed. Thesis is under pressure — review the kill-switch criteria.",
-      watch:  "Revenue beat but margin or guide disappointed, or cross-strait risk ticked up. Core thesis tracking — the Q2 2026 print (Jul 16) is the next test. Not broken, but watch closely.",
-      intact: "All key signals tracking as expected. The AI/HPC ramp and N2 node transition thesis remains intact.",
+      watch:  "Revenue beat but margin or guide disappointed, or cross-strait risk ticked up. Core thesis tracking — the Q3 2026 print (~Oct 15) is the next test. Not broken, but watch closely.",
+      intact: "All key signals tracking as expected. The AI/HPC ramp and N2 node transition thesis remains intact — Q2 2026 beat on every disclosed line, even though the stock itself pulled back.",
     },
-    panelTipStory: "Checks whether the original reasons to own TSM are playing out. Counts signals from the Q1 2026 print and Q2 2026 guide — revenue, gross margin, cross-strait risk, N2 ramp. 0–1 miss = thesis intact. 2 misses = watch. 3+ = exit. Click to see KPI bars and kill-switch.",
-    watchChipHtml: `🔑 WATCH: Q2 2026 rev vs <span style="color:#c59542;font-weight:700">$39.0–40.2B</span> guide · Jul 16, 2026`,
+    panelTipStory: "Checks whether the original reasons to own TSM are playing out. Counts signals from the Q2 2026 print and Q3 2026 guide — revenue, gross margin, cross-strait risk, N2 ramp. 0–1 miss = thesis intact. 2 misses = watch. 3+ = exit. Click to see KPI bars and kill-switch.",
+    watchChipHtml: `🔑 WATCH: Q3 2026 rev vs <span style="color:#c59542;font-weight:700">$44.6–45.8B</span> guide · ~Oct 15, 2026`,
     exitChipHtml: `⚠ EXIT IF: rev/GM miss guide <span style="font-weight:700">2 straight quarters</span>, or cross-strait risk escalates`,
     verdictBody: {
       broken:     (px) => `TSM at $${px}: kill-switch criteria met. Price position is irrelevant — signals say the AI/HPC ramp thesis is no longer playing out. The question is not whether to add; it is how much to reduce.`,
-      watchBelow: (px) => `TSM at $${px} sits below the base floor but signals are mixed. Price is attractive, but adding into a weakening thesis is the wrong sequence. Wait for the Q2 2026 print (Jul 16) to confirm or deny the pattern before deploying capital.`,
-      below:      (px) => `TSM at $${px} sits below the base floor with the thesis intact — Q1 2026 revenue beat, gross margin above the long-term target band, N2 ramping on schedule. The market is pricing in cross-strait/tariff fear; the fundamentals say it's sentiment, not demand destruction.`,
-      inBase:     (px, statusWord) => `TSM at $${px} is inside the base range. Thesis ${statusWord} and price is fair. No urgency to add or reduce. Watch Q2 2026 revenue and gross margin vs guide on Jul 16 — a beat opens the bull case; a miss reopens the bear.`,
-      above:      (px) => `TSM at $${px} is above the base ceiling. The bull case — a guide beat and a raised full-year outlook — needs to play out to justify entry. If already in, hold. If adding, wait for a pullback toward the base floor.`,
+      watchBelow: (px) => `TSM at $${px} sits below the base floor but signals are mixed. Price is attractive, but adding into a weakening thesis is the wrong sequence. Wait for the Q3 2026 print (~Oct 15) to confirm or deny the pattern before deploying capital.`,
+      below:      (px) => `TSM at $${px} sits below the base floor with the thesis intact — Q2 2026 revenue, margin, and EPS all beat guide, capex and revenue-growth guidance were both raised, and N2 crossed into real production. The market gave back the pre-print rally anyway ("sell the news" on already-elevated expectations); the fundamentals say it's sentiment/positioning, not demand destruction.`,
+      inBase:     (px, statusWord) => `TSM at $${px} is inside the base range. Thesis ${statusWord} and price is fair — actually cheaper on a forward-P/E basis than before the Q2 print, since the EPS estimate rose faster than the price fell. Watch Q3 2026 revenue and gross margin vs the raised guide around Oct 15 — a beat opens the bull case; a miss reopens the bear.`,
+      above:      (px) => `TSM at $${px} is above the base ceiling. The bull case — a second guide raise — needs to play out to justify entry. If already in, hold. If adding, wait for a pullback toward the base floor.`,
     },
     kpiTitle: "Total Revenue",
     kpiSub: "$B quarterly · HIGHER BETTER",
-    kpiMeasures: "Total quarterly revenue, driven by N2/N3/N5 leading-edge wafer demand for AI accelerators and HPC, plus the broader smartphone/auto/IoT mix. Guided $39.0–40.2B for Q2 2026.",
+    kpiMeasures: "Total quarterly revenue, driven by N2/N3/N5 leading-edge wafer demand for AI accelerators and HPC, plus the broader smartphone/auto/IoT mix. Guided $44.6–45.8B for Q3 2026 — a steep +11-14% QoQ step-up from Q2's $40.2B.",
     kpiRequires: {
-      bull: "Revenue beats guide every quarter and accelerates toward $52B by Q1 2027, confirming N2 ramps faster and broader than modeled.",
-      base: "Revenue lands inside guide each quarter and scales toward $46B by Q1 2027, in line with the disclosed capex and capacity plan.",
-      bear: "Revenue misses guide and stalls near $40B for multiple quarters, signaling AI capex digestion or a cross-strait/export-control shock.",
+      bull: "Revenue beats guide every quarter and accelerates toward $56B by Q2 2027, confirming N2 ramps faster and broader than modeled.",
+      base: "Revenue lands inside guide each quarter and scales toward $51B by Q2 2027, in line with the newly-raised capex and capacity plan.",
+      bear: "Revenue misses the raised guide and stalls, signaling the Q2 2026 beat-and-raise was a peak rather than a trend, or a cross-strait/export-control shock hits.",
     },
     group1Title: "Revenue &amp; Margin Momentum",
     group2Title: "Geopolitical &amp; Technology Risk",
     killSwitch: "Two straight quarters of revenue or gross margin missing guide, or a new export-control/tariff action that materially restricts advanced-node shipments — exit / reduce. That is demand destruction or policy risk, not noise.",
     priceBanner: {
-      below:  (px, baseLo) => `At $${px}, price is $${baseLo - px} below the base floor. Market is pricing in fear — not fundamentals. Historically the window patient buyers use.`,
+      below:  (px, baseLo) => `At $${px}, price is $${baseLo - px} below the base floor. Market is pricing in fear or profit-taking after a big run — not a fundamentals problem, given the Q2 beat-and-raise. Historically the window patient buyers use.`,
       inBase: (px) => `At $${px}, price is inside the base range. Fair value — not a discount, not expensive.`,
       above:  (px, baseHi) => `At $${px}, price is $${px - baseHi} above the base ceiling. The bull thesis needs to play out in full.`,
     },
-    moodBanner: (currentPE, loPE, hiPE) => `At ${currentPE}× forward P/E, the market is pricing in continued N2/CoWoS execution and the Q2 2026 guide ($39.0–40.2B) landing roughly as promised — but is not yet paying up for a structural re-rate above the historical ${loPE}–${hiPE}× band.`,
+    moodBanner: (currentPE, loPE, hiPE) => `At ${currentPE}× forward P/E, the market is pricing in continued N2/CoWoS execution and the Q3 2026 guide ($44.6–45.8B) landing roughly as promised — the multiple actually sits mid-band now (${loPE}–${hiPE}×), a real compression from the ~28x the stock traded at right before the Q2 print, because the EPS estimate rose faster than the price fell.`,
     cagrNotes: {
       low:  "Low bar — not priced for perfection. Even moderate execution justifies the price.",
       mid:  "Moderate bar — requires the N2 ramp and CoWoS capacity expansion to stay on schedule.",
       high: "High bar — requires near-perfect execution with no cross-strait or export-control disruption.",
     },
-    fy26CardTip: (fy26) => `Adding Q1 2026 actuals to the base-case Q2–Q4 2026 projections gives a full-year run rate of roughly $${fy26}B, up from $122.2B in 2025. That ~32% growth rate is what the base case — and roughly today's price — already assumes. The bull case requires the N2 ramp to push meaningfully above this.`,
-    fy26CardHtml: (fy26, growthPct) => `Q1 2026 actual plus base-case Q2–Q4 projections sum to roughly <span style="color:var(--blue-soft);font-weight:700">$${fy26}B</span> for full-year 2026 — the growth path today's price already assumes. 2025 actual revenue was <span style="color:#66b278">$122.2B</span>, so this implies <em>~${growthPct}%</em> YoY growth.`,
-    peerCommentary: (currentPE) => `At ${currentPE}× NTM P/E, TSM trades at a discount to AVGO and a steep discount to NVDA despite sitting at the center of the same AI buildout — the market still prices foundry manufacturing below fabless design and GPU monopoly. ASML, the other irreplaceable chokepoint in the chain, commands a similar premium to NVDA.`,
+    fy26CardTip: (fy26) => `Adding Q1+Q2 2026 actuals to the base-case Q3–Q4 2026 projections gives a full-year run rate of roughly $${fy26}B, up from $122.2B in 2025 — comfortably inside management's own raised "slightly above 40%" USD revenue growth guide. That's what the base case — and roughly today's price — already assumes. The bull case requires the N2 ramp to push meaningfully above this.`,
+    fy26CardHtml: (fy26, growthPct) => `Q1+Q2 2026 actuals plus base-case Q3–Q4 projections sum to roughly <span style="color:var(--blue-soft);font-weight:700">$${fy26}B</span> for full-year 2026 — the growth path today's price already assumes. 2025 actual revenue was <span style="color:#66b278">$122.2B</span>, so this implies <em>~${growthPct}%</em> YoY growth.`,
+    peerCommentary: (currentPE) => `At ${currentPE}× NTM P/E, TSM trades at a discount to AVGO and a steep discount to NVDA despite sitting at the center of the same AI buildout — the market still prices foundry manufacturing below fabless design and GPU monopoly. ASML, the other irreplaceable chokepoint in the chain, re-rated sharply on its own Q2 2026 beat-and-raise (now ~50x forward EPS) — a reminder that TSM's own multiple compressing on a beat this quarter is a market-mood divergence between two AI chokepoints, not a shared read on the cycle.`,
   },
 
   // THE FUTURE tab
   future: {
     scenarioTips: {
-      bear: "Triggered by: revenue/margin guide misses or a new export-control/tariff escalation. Multiple compresses toward the 16–19× trough zone. Note: at current price, bear downside is larger than bull upside.",
-      base: (loPE, hiPE) => `Revenue and gross margin land within guide each quarter; N2 ramp and CoWoS capacity stay on schedule. P/E holds in the normal ${loPE}–${hiPE}× band. Near-flat to modestly positive return from here.`,
-      bull: (currentPE) => `Revenue and margin beat guide; N2 ramps ahead of schedule and full-year guidance gets raised. Multiple re-rates from ~${currentPE}× toward the bull zone, closing the gap to the bull target.`,
+      bear: "Triggered by: revenue/margin guide misses or a new export-control/tariff escalation. Multiple compresses toward the 14–18× trough zone. Note: at current price, bear downside is larger than bull upside.",
+      base: (loPE, hiPE) => `Revenue and gross margin land within the newly-raised guide each quarter; N2 ramp and CoWoS capacity stay on schedule. P/E holds in the normal ${loPE}–${hiPE}× band. Modestly positive return from here as the stock re-tests its pre-print highs.`,
+      bull: (currentPE) => `Revenue and margin beat the raised guide again; N2 ramps ahead of schedule and full-year guidance gets raised a SECOND time. Multiple re-rates from ~${currentPE}× toward the bull zone, closing the gap to the bull target.`,
     },
     downsideChevronTip: "Kill-switch: two straight quarters missing guide, or a new export-control/tariff escalation = exit / reduce.",
     dislocEventName: "the Apr 2025 tariff-panic low",
     dislocLabel: "SINCE APR 2025 TARIFF LOW",
-    bearPriceTip: (bearMid, bearLo, bearHi, peTrough, peBearHi) => `$${bearMid} is the midpoint of the bear case range ($${bearLo}–$${bearHi}). This assumes a guide-miss pattern persists or a new export-control/tariff action hits, and the multiple compresses toward the ${peTrough}–${peBearHi}× trough zone. The kill-switch is two straight quarters missing guide — if it triggers, do not average down.`,
+    bearPriceTip: (bearMid, bearLo, bearHi, peTrough, peBearHi) => `$${bearMid} is the midpoint of the bear case range ($${bearLo}–$${bearHi}). This assumes a guide-miss pattern replaces the Q2 2026 beat-and-raise, or a new export-control/tariff action hits, and the multiple compresses toward the ${peTrough}–${peBearHi}× trough zone. The kill-switch is two straight quarters missing guide — if it triggers, do not average down.`,
     killSwitchTip: "A kill-switch is a pre-committed exit rule you set BEFORE you own the position — when you are thinking clearly. If revenue or gross margin misses guide for two straight quarters, or a new export-control/tariff action materially restricts advanced-node shipments, the thesis is broken: that's demand weakness or policy risk, not timing. Do not average down into a broken thesis — the market is telling you something. No debate, no rationalisation. Exit.",
     killSwitchTipNote: "Two straight misses, or a new export-control action. Either one. No debate.",
     killSwitchHtml: `<strong style="color:var(--title)">Two consecutive quarters missing the revenue or gross margin guide, or a new export-control/tariff escalation</strong> → exit or reduce. No debate. Do not average down into a broken thesis.`,
-    nextCheck: "Next check: Q2 2026 earnings (Jul 16, 2026)",
+    nextCheck: "Next check: Q3 2026 earnings (~Oct 15, 2026)",
     downsideFootnote: (px, peTrough, peBearHi) => `Bear case scenario: guide misses or a new export-control/tariff escalation. Assumes a multiple compression toward ${peTrough}–${peBearHi}× on roughly flat-to-down EPS. Position loss is illustrative at $${px} entry.`,
-    multipleSummary: (peNow, loPE, hiPE) => `At ~${peNow}× NTM P/E, TSM sits inside its historical normal range (${loPE}–${hiPE}×) even though the stock trades at an all-time high — EPS has grown roughly in step with price, so this is an earnings-driven rally, not a multiple-driven one.`,
+    multipleSummary: (peNow, loPE, hiPE) => `At ~${peNow}× NTM P/E, TSM sits mid-way inside its historical normal range (${loPE}–${hiPE}×) — a real compression from the ~28x it traded at just before the Q2 2026 print, because the consensus EPS estimate rose faster than the price pulled back. Earnings beat; the multiple actually got cheaper.`,
     peBarTipSuffix: "TSM has clean GAAP earnings and low debt, so unlike some AI-semi peers there's no amortization distortion to strip out — this P/E is the real number.",
     deepValueZoneNote: "Historically cheap. Rare — last seen at the 2022 rate-shock bottom. Exceptional entry if thesis is intact.",
     dislocPrecedent: (baseFloor) => `Historical precedent: the April 2025 tariff-panic dislocation resolved within the 282-day base-reversion window when the fundamentals stayed intact. Base floor: $${baseFloor}.`,
-    regretHtml: (currentPE) => `Q2 2026 revenue and margin <strong style="color:#66b278">materially beat the $39.0–40.2B / 65.5–67.5% guide</strong> AND full-year revenue or capex guidance is raised. That would confirm the N2/AI ramp is running ahead of schedule, re-rate the stock from ~${currentPE}× toward the bull zone, and close today's entry window.`,
-    regretTip: "Charlie Munger's inversion: instead of asking 'why should I buy?', ask 'what would I have to believe happened, in hindsight, to wish I had bought more?' If Q2 2026 beats guide and full-year revenue/capex guidance gets raised, today's entry window will close fast. You will not get a second chance at this multiple if the bull case materialises. This question is not about FOMO — it is about sizing correctly for your conviction.",
+    regretHtml: (currentPE) => `Q3 2026 revenue and margin <strong style="color:#66b278">materially beat the $44.6–45.8B / 65.0–67.0% guide</strong> AND full-year revenue or capex guidance is raised a SECOND time. That would confirm the Q2 2026 beat-and-raise was the start of a trend, not a peak, re-rate the stock from ~${currentPE}× toward the bull zone, and close today's entry window.`,
+    regretTip: "Charlie Munger's inversion: instead of asking 'why should I buy?', ask 'what would I have to believe happened, in hindsight, to wish I had bought more?' If Q3 2026 beats the newly-raised guide and full-year revenue/capex guidance gets raised again, today's entry window will close fast. You will not get a second chance at this multiple if the bull case materialises. This question is not about FOMO — it is about sizing correctly for your conviction.",
     chips: [
       { label: "KILL-SWITCH: 2 STRAIGHT GUIDE MISSES → EXIT", col: "#dd817a" },
-      { label: "REGRET IF: Q2 BEATS + FY GUIDE RAISED",       col: "#66b278" },
-      { label: "NEXT CHECK: JUL 16, 2026 EARNINGS",           col: "#46aad9" },
+      { label: "REGRET IF: Q3 BEATS + FY GUIDE RAISED AGAIN", col: "#66b278" },
+      { label: "NEXT CHECK: ~OCT 15, 2026 EARNINGS",          col: "#46aad9" },
     ],
     signalFootnote: (ntmEps) => `P/E uses GAAP NTM EPS $${ntmEps} — TSM has no meaningful intangible amortization to strip out, unlike fabless peers carrying large acquisition goodwill.`,
   },

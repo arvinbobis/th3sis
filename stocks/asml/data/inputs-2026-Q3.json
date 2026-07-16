@@ -1,0 +1,22 @@
+{
+  "ticker": "ASML",
+  "asOf": "2026-07-16",
+  "quarter": "Q3 FY2026",
+  "inputs": {
+    "price":               { "value": 1815.27, "src": "Wisesheets EOD price, 2026-07-15 close", "pulled": "2026-07-16" },
+    "q2_2026_revenue_eur_b": { "value": 9.3, "src": "ASML press release / SEC 6-K, Q2 2026 results, 2026-07-15", "pulled": "2026-07-16" },
+    "q2_2026_gross_margin":  { "value": 0.540, "src": "ASML press release / SEC 6-K, Q2 2026 results, 2026-07-15", "pulled": "2026-07-16" },
+    "q2_2026_eps_eur":       { "value": 7.59, "src": "ASML press release / SEC 6-K, Q2 2026 results, 2026-07-15", "pulled": "2026-07-16" },
+    "fy26_revenue_guide_eur_b": { "value": [43, 45], "src": "ASML Q2 2026 earnings call/press release (2nd upward revision this year, from ~30-35B originally, 36-40B at Q1)", "pulled": "2026-07-16" },
+    "q3_2026_revenue_guide_eur_b": { "value": [11.0, 12.0], "src": "ASML Q2 2026 earnings call/press release", "pulled": "2026-07-16" },
+    "consensus_eps_2026e_usd": { "value": 36.62, "src": "web search — analyst consensus post-Q2 print", "pulled": "2026-07-16" },
+    "consensus_eps_2027e_usd": { "value": 49.46, "src": "web search — analyst consensus post-Q2 print (up from $36.46 pre-print)", "pulled": "2026-07-16" },
+    "eur_usd_rate":        { "value": 1.147, "src": "web search — spot rate, 2026-07-16", "pulled": "2026-07-16" },
+    "multiple_bear":       { "value": 28, "src": "judgment — below-normal multiple, reflects re-rate risk on 2027E EPS even with fundamentals intact", "pulled": "2026-07-16" },
+    "multiple_base":       { "value": 40, "src": "judgment — normal-for-current-cycle multiple on 2027E EPS, tracks analyst price-target cluster ($2,100-2,300)", "pulled": "2026-07-16" },
+    "multiple_bull":       { "value": 52, "src": "judgment — above-normal multiple on 2027E EPS, tracks top of analyst target range (Bernstein $2,623, BofA $2,345)", "pulled": "2026-07-16" },
+    "multiple_peer_median": { "value": 42, "src": "web search — approximate forward P/E context vs AMAT/LRCX/KLAC (WFE peer group); ASML trades near/above peer group as the sole EUV monopoly, not a direct comp match", "pulled": "2026-07-16" },
+    "price_targets_post_print": { "value": "JPM $2,200, Wells Fargo $2,200, BofA $2,345, Bernstein $2,623, mean of buy-rated $2,119.67", "src": "web search — sell-side notes post Q2 2026 print", "pulled": "2026-07-16" }
+  },
+  "notes": "ASML delivered a genuine beat-and-raise: Q2 revenue/margin beat, FY26 guide raised a SECOND time (to €43-45B). The structural change this quarter is that ASML retired quarterly net bookings disclosure starting Q1 2026 (management cited lumpy single-order distortion) -- the thesis's primary forward KPI no longer exists as a hard number. Repurposed KPI_HIST/KPI_PROJ and the core SIGNALS row from bookings to quarterly-revenue-vs-guide as the best available substitute. Price target cluster from sell-side sits meaningfully above current price ($1,815), consistent with the bull case being live, but the base case anchors closer to the target cluster than to a fresh multiple expansion, since the ~50x 2026E multiple already prices in a lot of the good news."
+}

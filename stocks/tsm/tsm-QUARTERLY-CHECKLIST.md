@@ -3,7 +3,7 @@
 *A pre-flight checklist for your TH3SIS dashboard. Run it every quarter, right after TSMC's earnings report — even when nothing looks wrong. The whole point is to catch the quarter where the world quietly moved and your thesis didn't.*
 
 **Earnings calendar:** TSMC reports roughly mid-January / mid-April / mid-July / mid-October.
-Next scheduled: **July 16, 2026** (Q2 2026). Run this within a week of each print, while details are fresh.
+Next scheduled: **~October 15, 2026** (Q3 2026). Run this within a week of each print, while details are fresh.
 
 ---
 
@@ -14,7 +14,11 @@ There are **two layers** to every update. Most people only do Layer 1 and slowly
 - **Layer 1 — Refresh the numbers.** Mechanical. ~15 minutes. Plug in what happened.
 - **Layer 2 — Audit the thesis.** Judgment. ~30 minutes. Ask whether the three cases themselves still make sense, or whether reality has overtaken them.
 
-Open `tsm-thesis.html` in a text editor. Everything you edit lives in the block at the top marked **"EDIT EVERYTHING IN THIS BLOCK EACH QUARTER."**
+**⚠ TSM migrated to the engine split (2026-06-16).** Everything you edit each quarter now
+lives in **`thesis-data.js`**, not `tsm-thesis.html` — the HTML file is a thin shell that
+just loads `thesis-data.js` + the shared `../engine/thesis-engine.js`. All the item
+references below (`AS_OF_DATE`, `CASES`, `SIGNALS`, `TRACK_ALL`, etc.) refer to
+`thesis-data.js`'s top-of-file "EDIT EVERYTHING IN THIS FILE EACH QUARTER" block.
 
 ---
 
@@ -84,7 +88,8 @@ Are the KPIs in `SIGNALS` / `MARGIN` still the *right things to watch*, or has t
 → Swap out any signal that's become an answered question for the one that now matters.
 
 **D. Did the probability shift?**
-Which case is most likely *now*? Be willing to say it changed. The starting assessment (June 2026) was: **Base ~55%, Bull momentum ~30%, Bear tail ~15%** — the bear case is mostly a multiple-compression/geopolitical tail risk, not a demand-collapse risk, since Q1 2026 printed a clean beat.
+Which case is most likely *now*? Be willing to say it changed. The starting assessment (June 2026) was: Base ~55%, Bull momentum ~30%, Bear tail ~15%.
+**Updated 2026-07-16 (post Q2 2026 beat-and-raise + "sell the news" pullback): Base ~50%, Bull ~35%, Bear ~15%.** Base stays most likely — Q3's raised guide ($44.6–45.8B) is a real step up and needs to actually print before assuming a third guide raise. Bull ticked up (30%→35%) because the multiple compression on a beat is unusual and arguably makes the bull case CHEAPER to own than it was a quarter ago, not more expensive. Bear held flat — the CoWoS multi-vendor watch item (Google TPU → Intel EMIB-T) is a new, real data point but still just one data point.
 
 → Note any shift in the log below.
 
@@ -95,12 +100,14 @@ Which case is most likely *now*? Be willing to say it changed. The starting asse
 ### Habit 1 — "What would prove me wrong?"
 For whichever case you currently believe most, write down the **single piece of evidence that would force you to abandon it.**
 
-*For the base case (most likely at time of writing):* The kill-switch is two straight quarters of revenue or gross margin missing guide, **or** a new export-control/tariff action that materially restricts advanced-node shipments. Either one alone would be enough — this isn't a "both must happen" test. A single guide miss is noise; two in a row, or a policy shock, is signal that the AI/HPC ramp thesis itself is breaking, not just the quarter.
+*For the base case (2026-07-16 update):* The kill-switch is two straight quarters of revenue or gross margin missing guide, **or** a new export-control/tariff action that materially restricts advanced-node shipments, **or** a second hyperscaler following Google's Intel-EMIB-T packaging shift. Any one alone would be enough — this isn't a "all must happen" test. A single guide miss is noise; two in a row, a policy shock, or a real CoWoS-alternative trend is signal that the thesis itself is breaking, not just the quarter.
 
 ### Habit 2 — "What surprised me?"
 Write the one thing this quarter you *didn't* see coming. Over a year these four notes become a map of where your model is consistently blind.
 
-> A caution worth re-reading every time: **this dashboard looks authoritative, and that can fool its own author.** At $423.93 and roughly 25× NTM P/E, TSM is pricing in continued, near-flawless execution on the AI/HPC ramp. The colored bands are estimates, not forecasts with real precision. The April 2025 tariff-panic discount has fully closed — but the underlying tail risk (cross-strait tension, export controls) hasn't gone away, it's just not being priced right now. CoWoS and N2 capacity expansion rest on execution at a scale TSM has never operated at before. Let the tool organize your thinking — never let it replace it. When in doubt, widen your bands and lower your confidence.
+> **2026-07-16:** The surprise wasn't the beat — it was that a genuine beat-and-raise on every disclosed line (revenue, GM, OM, EPS, capex guide, growth guide) still produced a "sell the news" pullback from the pre-print high. Worth remembering: TSM had already run from ~$338 to $477.57 BEFORE the print, so a lot of the good news was arguably priced in ahead of the actual number. The forward multiple compressing on a beat (because EPS estimates rose faster than price) is the kind of divergence that's easy to miss if you only look at the raw price chart.
+>
+> A caution worth re-reading every time: **this dashboard looks authoritative, and that can fool its own author.** The colored bands are estimates, not forecasts with real precision. The April 2025 tariff-panic discount has fully closed — but the underlying tail risk (cross-strait tension, export controls) hasn't gone away, it's just not being priced right now. CoWoS and N2 capacity expansion rest on execution at a scale TSM has never operated at before, and the Google TPU/Intel EMIB-T packaging shift is the first real evidence CoWoS isn't unchallengeable. Let the tool organize your thinking — never let it replace it. When in doubt, widen your bands and lower your confidence.
 
 ---
 
@@ -136,8 +143,58 @@ WHAT SURPRISED ME THIS QUARTER:
 ────────────────────────────────────────────
 ```
 
-### Q2 2026 — (fill in after the July 16 report)
-*(your first live entry goes here)*
+### Q2 2026 — updated 2026-07-16
+```
+────────────────────────────────────────────
+QUARTER: Q2 2026          UPDATED ON: 2026-07-16
+TSM ADR price at update: $407 (est.)   Most-likely case: BASE (50%), Bull 35%, Bear 15%
+Consensus NTM EPS at update: $18.75/ADR (was $17.20)   Forward P/E: ~22x (was ~28x pre-print)
+
+THESIS AUDIT (one line each):
+  Bear  — narrative still true? PARTIALLY — reframed around "priced for perfection after
+          two beats" instead of "ramp stalls"; added CoWoS multi-vendor watch (Google
+          TPU -> Intel EMIB-T, one data point).
+          bands moved? YES ($250-295 -> $265-335). why: EPS estimate rose.
+  Base  — narrative still true? YES, rewritten around the beat-and-raise + pullback.
+          bands moved? YES ($415-500 -> $375-490). why: base floor actually LOWERED in
+          dollar terms even though fundamentals improved, because price fell further
+          than EPS rose -- the current price now sits INSIDE base instead of below it.
+  Bull  — narrative still true? YES, strengthened -- FY26 capex/growth guide both raised,
+          new $100B US pledge, GS/analyst price targets raised post-print.
+          bands moved? YES ($555-650 -> $565-640). why: tracks updated NTM EPS x
+          unchanged 30-34x bull multiple range.
+
+PROBABILITY shift this quarter: Bull ticked UP (30%->35%) -- multiple compression on a
+  genuine beat is unusual and makes the bull case cheaper to own, not more expensive.
+  Base ticked down slightly (55%->50%) as some mass shifted to bull. Bear held flat (15%).
+
+KEY NUMBERS REFRESHED:
+  Q2 revenue: $40.2B vs. guide of $39.0-40.2B          →  BEAT (guide's own high end)
+  Gross margin: 67.7%  vs. guide of 65.5-67.5%          →  BEAT
+  Operating margin: 60.3% vs. guide of 56.5-58.5%       →  BEAT
+  EPS: $4.31 vs. ~$3.80 consensus                        →  BEAT
+  Next quarter guide: $44.6-45.8B rev / 65.0-67.0% GM / 56.0-58.0% OM
+  FY26 capex guide: RAISED to $60-64B (was $52-56B)
+  FY26 USD revenue growth guide: RAISED to "slightly above 40%" (was ">30%")
+  N2 (2nm) ramp status: first real revenue quarter -- 3% of wafer revenue; Intel 18A-class
+    competitive pressure not a factor here (TSM's own node), tracking on schedule
+  Cross-strait / export-control tension level: Elevated but stable -- new $100B US pledge
+    ($265B total) is a goodwill/hedge move, not a response to fresh escalation
+  NEW WATCH ITEM: Google TPU ("Humufish") shifting some advanced-packaging work from TSMC
+    CoWoS to Intel EMIB-T -- first hard evidence of a non-TSMC design win (RADAR gap,
+    flagged 2026-07-01, addressed this update)
+
+WHAT WOULD PROVE ME WRONG (for my favored case):
+  Q3 2026 misses the newly-raised $44.6-45.8B guide, or a second hyperscaler follows
+  Google's Intel-EMIB-T packaging shift -- either would mean this quarter's beat-and-raise
+  was the peak, not a new baseline.
+
+WHAT SURPRISED ME THIS QUARTER:
+  A beat-and-raise on every disclosed line still produced a "sell the news" pullback --
+  the stock had already run hard pre-print, so a lot of the good news was priced in before
+  the actual number landed. The forward multiple actually got CHEAPER on a beat.
+────────────────────────────────────────────
+```
 
 ---
 
@@ -147,12 +204,12 @@ These are the signals that most move the TSM story, in priority order:
 
 | # | KPI | Why it matters | Where to find it |
 |---|-----|---------------|-----------------|
-| 1 | **Revenue vs. quarterly guide** | Near-term demand litmus test. TSMC guides conservatively — a miss matters more than a beat. Q1 2026: $35.9B actual, +40.6% YoY. | Earnings release |
-| 2 | **Gross margin vs. guide** | At 66.2% in Q1 2026, above its own long-run target band. Capacity expansion (overseas fabs, N2 ramp costs) is the structural drag risk. Q2 2026 guide: 65.5–67.5%. | Earnings release |
+| 1 | **Revenue vs. quarterly guide** | Near-term demand litmus test. TSMC guides conservatively — a miss matters more than a beat. Q2 2026: $40.2B actual, +33.7% YoY, beat the $39.0–40.2B guide's own high end. | Earnings release |
+| 2 | **Gross margin vs. guide** | At 67.7% in Q2 2026, above its own guided range and long-run target band. Capacity expansion (overseas fabs, N2 ramp costs) is the structural drag risk. Q3 2026 guide: 65.0–67.0%. | Earnings release |
 | 3 | **Cross-Strait Risk Level** | The non-financial variable that can compress the multiple regardless of fundamentals — doesn't show up in any quarterly number until it does. Watch continuously, not just quarterly. | News, US/Taiwan trade-policy and export-control announcements |
-| 4 | **N2 (2nm) node ramp** | The next pricing/margin lever and the thing the bull case needs to stay ahead of schedule. | TSMC management commentary, earnings call |
-| 5 | **CoWoS / advanced-packaging capacity** | The bottleneck that has constrained AI-accelerator supply for two years. Continued expansion is required for the base case to hold, let alone the bull case. | TSMC management commentary, customer (NVIDIA) supply-chain checks |
-| 6 | **Full-year 2026 capex/revenue guidance revisions** | The single clearest tell on whether management sees the AI/HPC buildout accelerating or decelerating. | Earnings release / guidance call |
+| 4 | **N2 (2nm) node ramp** | The next pricing/margin lever and the thing the bull case needs to stay ahead of schedule. Now a real (if small, ~3% of wafer revenue) contributor as of Q2 2026. | TSMC management commentary, earnings call |
+| 5 | **CoWoS / advanced-packaging capacity — AND multi-vendor risk** | The bottleneck that has constrained AI-accelerator supply for two years. Continued expansion is required for the base case to hold — but also watch whether Google's TPU shift to Intel EMIB-T (first flagged Jul 2026) becomes a trend, not just a data point. | TSMC management commentary, customer (NVIDIA, Google) supply-chain checks |
+| 6 | **Full-year 2026 capex/revenue guidance revisions** | The single clearest tell on whether management sees the AI/HPC buildout accelerating or decelerating. Raised twice now (capex to $60–64B, USD revenue growth to "slightly above 40%"). | Earnings release / guidance call |
 
 ---
 

@@ -41,10 +41,20 @@
  * not to hold both a passive stake and a full satellite position at today's prices. Added
  * PF_ALERTS.MRVL (buyFloor 195 = its own base-case floor, matching the ALAB convention);
  * ALAB's existing entry kept as-is, no change needed there.
+ * 2026-07-16: price/PnL-only resync from live IBKR (net liq 35,352.24 → 35,509.16, cash
+ * unchanged ~5,363.56, dividends 2.99 → 7.19). Same 29 positions as 07-11 — no adds, no
+ * exits, no share-count changes. Notable moves since: DRAM -13% ($63.00→$54.80, biggest
+ * single-day dollar swing in the book at -$44.00), MU -10% ($982.98→$879.60, unrealized
+ * flips positive→negative) despite this same week's thesis rewrite calling it undervalued
+ * post-beat, GEV/TSM/EQIX also flip unrealized positive→negative on price alone. AMZN/GOOG/
+ * META/MSFT/FICO all had a strong week. Also added PF_ALERTS.ASML (buyFloor 1900, its own
+ * new base floor) — ASML never had a PF_ALERTS entry before its engine-split migration
+ * today; TSM's buyFloor was already updated to 375 at its own update-thesis touch earlier
+ * this session.
  * ─────────────────────────────────────────────────────────────────────────── */
 
-const PF_ASOF = "2026-07-11";
-const PF_ACCT = { netLiq: 35352.24, cash: 5363.53, dividends: 2.99, buyingPower: 5363.53 };
+const PF_ASOF = "2026-07-16";
+const PF_ACCT = { netLiq: 35509.16, cash: 5363.56, dividends: 7.19, buyingPower: 5363.56 };
 
 // ── Buy-alert pre-commitment (single source of truth for every armed ticker) ──
 // Previously hand-mirrored in three places: each thesis's own `const ALERT`,
@@ -63,7 +73,8 @@ const PF_ALERTS = {
   ALAB: { buyFloor: 300, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-08-11", held: false },
   MRVL: { buyFloor: 195, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "~2026-08-28", held: false },
   AVGO: { buyFloor: 390, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-09-04" },
-  TSM:  { buyFloor: 415, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-07-16" },
+  TSM:  { buyFloor: 375, thesisIntact: true, asOf: "2026-07-16", nextEarnings: "2026-10-15" },
+  ASML: { buyFloor: 1900, thesisIntact: true, asOf: "2026-07-16", nextEarnings: "2026-10-14" },
 };
 
 const PF_THEMES = {
@@ -81,35 +92,35 @@ const PF_THEMES = {
 // 2026-07-09 (later same day than that sync) — all closed positions per live IBKR
 // pull, see header note. ALAB and MRVL both had full built theses.
 const PF_RAW = [
-  ["AMZN","Amazon.com",           8.1653, 202.74,  245.34, 2003.27,  347.87, -13.88, "platforms",    true ],
-  ["ASML","ASML Holding",         0.5986, 730.61, 1797.32, 1075.88,  638.53,  -4.15, "semis",        true ],
-  ["AVGO","Broadcom",             1.1432, 351.63,  400.39,  457.73,   55.74,  -0.82, "semis",        true ],
-  ["BKNG","Booking Holdings",    10.7000, 188.61,  178.50, 1909.93, -108.15,  31.86, "diversifiers", false],
-  ["BN","Brookfield",            11.0450,  45.36,   43.73,  483.00,  -18.00,   7.07, "diversifiers", false],
-  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  268.07,  281.18,  -19.80,   0.23, "findata",      false],
-  ["CME","CME Group",             0.9659, 311.60,  240.80,  232.59,  -68.38,   1.06, "findata",      false],
-  ["DRAM","Roundhill Memory ETF",16.9247,  59.14,   63.00, 1066.26,   65.26, -23.02, "semis",        false],
-  ["EFX","Equifax",               4.9299, 253.60,  166.44,  820.53, -429.71,  -1.08, "findata",      false],
-  ["EQIX","Equinix",              0.0936,1078.41, 1051.21,   98.39,   -2.55,   1.53, "power",        false],
-  ["ETN","Eaton",                 0.2627, 384.38,  407.28,  106.99,    6.02,   0.38, "power",        false],
-  ["FICO","Fair Isaac",           1.8783,1407.84, 1250.90, 2349.57, -294.79, -53.55, "findata",      true ],
-  ["GE","GE Aerospace",           2.7332, 295.44,  359.27,  981.96,  174.46,   0.63, "power",        false],
-  ["GEV","GE Vernova",            0.9451,1060.05, 1091.57, 1031.64,   29.79,  15.41, "power",        false],
-  ["GOOG","Alphabet",             3.0338, 227.50,  355.05, 1077.15,  386.96,  -3.61, "platforms",    true ],
-  ["INTU","Intuit",               2.3960, 642.94,  274.52,  657.75, -882.72,   2.73, "platforms",    false],
-  ["MA","Mastercard",             5.2499, 532.50,  526.74, 2765.33,  -30.26,  18.58, "payments",     false],
-  ["MBGL","Mobility Global",      5.0000,  21.19,   20.80,  104.00,   -1.95,  -7.30, "findata",      false],
-  ["MCO","Moody's",               5.1545, 484.90,  487.28, 2511.68,   12.25,   1.34, "findata",      false],
-  ["META","Meta Platforms",       2.9644, 610.47,  669.21, 1983.81,  174.12, 111.85, "platforms",    true ],
-  ["MSFT","Microsoft",            5.8559, 434.43,  385.36, 2256.63, -287.35,   5.86, "platforms",    true ],
-  ["MU","Micron Technology",      1.0769, 883.91,  982.98, 1058.57,  106.69,  -9.32, "semis",        true ],
-  ["NVDA","NVIDIA",               2.1852, 183.96,  210.58,  460.16,   58.17,  17.04, "semis",        true ],
-  ["PWR","Quanta Services",       0.4109, 732.43,  658.56,  270.60,  -30.35,  -3.95, "power",        false],
-  ["QQQ","Invesco QQQ",           0.9735, 722.02,  726.30,  707.05,    4.17,   2.94, "index",        false],
-  ["QQQM","Invesco Nasdaq 100",   0.6868, 292.65,  298.98,  205.34,    4.35,   0.82, "index",        false],
-  ["SPGI","S&P Global",           5.8357, 504.01,  430.50, 2512.27, -428.95, -14.36, "findata",      false],
-  ["SPMO","Invesco S&P 500 Momentum", 1.3592, 147.87, 153.75, 208.98, 7.99,   0.91, "index",        false],
-  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  435.80,  312.99,   11.99,  -0.83, "semis",        true ],
+  ["AMZN","Amazon.com",           8.1653, 202.74,  257.51, 2102.65,  447.24,  20.82, "platforms",    true ],
+  ["ASML","ASML Holding",         0.5986, 730.61, 1792.20, 1072.81,  635.47, -13.81, "semis",        true ],
+  ["AVGO","Broadcom",             1.1432, 351.63,  388.00,  443.56,   41.58,  -7.18, "semis",        true ],
+  ["BKNG","Booking Holdings",    10.7000, 188.61,  182.91, 1957.14,  -60.94,   1.18, "diversifiers", false],
+  ["BN","Brookfield",            11.0450,  45.36,   44.36,  489.96,  -11.04,  -1.21, "diversifiers", false],
+  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  277.11,  290.66,  -10.32,   0.00, "findata",      false],
+  ["CME","CME Group",             0.9659, 311.60,  245.18,  236.82,  -64.15,   0.00, "findata",      false],
+  ["DRAM","Roundhill Memory ETF",16.9247,  59.14,   54.80,  927.47,  -73.52, -44.00, "semis",        false],
+  ["EFX","Equifax",               4.9299, 253.60,  172.00,  847.94, -402.30,   1.92, "findata",      false],
+  ["EQIX","Equinix",              0.0936,1078.41, 1022.60,   95.72,   -5.22,   0.00, "power",        false],
+  ["ETN","Eaton",                 0.2627, 384.38,  402.19,  105.66,    4.68,  -2.80, "power",        false],
+  ["FICO","Fair Isaac",           1.8783,1407.84, 1209.41, 2271.63, -372.72,   6.80, "findata",      true ],
+  ["GE","GE Aerospace",           2.7332, 295.44,  351.73,  961.35,  153.85, -23.56, "power",        false],
+  ["GEV","GE Vernova",            0.9451,1060.05, 1039.99,  982.89,  -18.96, -14.45, "power",        false],
+  ["GOOG","Alphabet",             3.0338, 227.50,  376.80, 1143.14,  452.94,  19.99, "platforms",    true ],
+  ["INTU","Intuit",               2.3960, 642.94,  283.34,  678.88, -861.59,   8.72, "platforms",    false],
+  ["MA","Mastercard",             5.2499, 532.50,  537.27, 2820.61,   25.02,  10.81, "payments",     false],
+  ["MBGL","Mobility Global",      5.0000,  21.19,   20.80,  104.00,   -1.95,  -1.00, "findata",      false],
+  ["MCO","Moody's",               5.1545, 484.90,  504.46, 2600.24,  100.81,   0.00, "findata",      false],
+  ["META","Meta Platforms",       2.9644, 610.47,  684.00, 2027.65,  217.97,   7.97, "platforms",    true ],
+  ["MSFT","Microsoft",            5.8559, 434.43,  400.54, 2345.52, -198.45,  28.75, "platforms",    true ],
+  ["MU","Micron Technology",      1.0769, 883.91,  879.60,  947.24,   -4.64, -26.58, "semis",        true ],
+  ["NVDA","NVIDIA",               2.1852, 183.96,  209.71,  458.26,   56.27,  -6.10, "semis",        true ],
+  ["PWR","Quanta Services",       0.4109, 732.43,  644.80,  264.95,  -36.01,  -1.66, "power",        false],
+  ["QQQ","Invesco QQQ",           0.9735, 722.02,  714.12,  695.20,   -7.69,  -3.52, "index",        false],
+  ["QQQM","Invesco Nasdaq 100",   0.6868, 292.65,  294.02,  201.93,    0.94,  -1.06, "index",        false],
+  ["SPGI","S&P Global",           5.8357, 504.01,  444.48, 2593.85, -347.37,   0.00, "findata",      false],
+  ["SPMO","Invesco S&P 500 Momentum", 1.3592, 147.87, 148.69, 202.10, 1.11,  -1.78, "index",        false],
+  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  403.20,  289.58,  -11.42, -11.69, "semis",        true ],
 ];
 const PF_POS = PF_RAW.map(r => ({
   t:r[0], name:r[1], qty:r[2], avg:r[3], px:r[4], mv:r[5], up:r[6], day:r[7], theme:r[8], thesis:r[9],
@@ -165,7 +176,7 @@ const PF_STRAT = {
   // Per-stock thesis kill-switch review dates (next earnings = the real re-test).
   REVIEW_GATES: [
     { t:"AVGO", date:"2026-09-04", note:"VMware ARR = WATCH (software missed Q2). Gates any AVGO add AND the generator math." },
-    { t:"TSM",  date:"2026-07-16", note:"Next print; thesis intact, holding small." },
+    { t:"TSM",  date:"2026-10-15", note:"Q2 2026 beat-and-raise (rev/GM/OM/EPS all beat, capex+growth guide raised) but ADR pulled back on 'sell the news'; buyFloor lowered to $375 (new base floor). Thesis intact." },
     { t:"ALAB", date:"2026-08-11", note:"NOT HELD (sold 2026-07-09) — this now gates the re-entry buyFloor ($300 in PF_ALERTS), not an add to an existing position. Leo CXL ramp is still the key variable to re-check before re-underwriting." },
     { t:"MRVL", date:"~2026-08-28", note:"NOT HELD (sold 2026-07-09) — gates the re-entry buyFloor ($195 in PF_ALERTS, its own base-case floor). Passive QQQ/QQQM exposure covers the gap until then." },
   ],

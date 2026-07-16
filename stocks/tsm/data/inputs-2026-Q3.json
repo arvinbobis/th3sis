@@ -1,0 +1,28 @@
+{
+  "ticker": "TSM",
+  "asOf": "2026-07-16",
+  "quarter": "Q3 FY2026",
+  "inputs": {
+    "price": { "value": 407.00, "src": "reconstructed: Wisesheets EOD 2026-07-15 close $419.48, minus a reported same-day earnings-reaction decline of ~3.13% on 2026-07-16 (web search) -- NOT a confirmed EOD print, Wisesheets has no 2026-07-16 row yet. Lower confidence than usual; treat as directional.", "pulled": "2026-07-16" },
+    "q2_2026_revenue_usd_b": { "value": 40.2, "src": "TSMC IR quarterly results page (investor.tsmc.com), Q2 2026 -- beat guide high end of $39.0-40.2B, +33.7% YoY", "pulled": "2026-07-16" },
+    "q2_2026_gross_margin": { "value": 0.677, "src": "TSMC IR quarterly results page, Q2 2026 -- beat guided 65.5-67.5% range", "pulled": "2026-07-16" },
+    "q2_2026_operating_margin": { "value": 0.603, "src": "TSMC IR quarterly results page, Q2 2026 -- beat guided 56.5-58.5% range", "pulled": "2026-07-16" },
+    "q2_2026_eps_usd_adr": { "value": 4.31, "src": "web search -- GAAP EPS, beat ~$3.77-3.83 consensus", "pulled": "2026-07-16" },
+    "q2_2026_net_income_twd_b": { "value": 706.6, "src": "web search -- record net income, +77% YoY", "pulled": "2026-07-16" },
+    "q3_2026_revenue_guide_usd_b": { "value": [44.6, 45.8], "src": "TSMC IR quarterly results page, Q2 2026 call guidance", "pulled": "2026-07-16" },
+    "q3_2026_gross_margin_guide": { "value": [0.650, 0.670], "src": "TSMC IR quarterly results page, Q2 2026 call guidance", "pulled": "2026-07-16" },
+    "fy26_capex_guide_usd_b": { "value": [60, 64], "src": "web search -- raised from prior $52-56B guide, announced on Q2 2026 call", "pulled": "2026-07-16" },
+    "fy26_usd_revenue_growth_guide": { "value": "slightly above 40%", "src": "web search -- raised from prior >30% guide, announced on Q2 2026 call", "pulled": "2026-07-16" },
+    "us_investment_pledge_total_usd_b": { "value": 265, "src": "web search -- new $100B pledge announced 2026-07-16, on top of existing $165B, funding 4 more Arizona fabs incl. 2nm-and-below", "pulled": "2026-07-16" },
+    "consensus_eps_fy26_ntd_per_share": { "value": 100.58, "src": "web search -- FactSet consensus, per ordinary share (multiply by 5 for per-ADR TWD, divide by FX for USD)", "pulled": "2026-07-16" },
+    "consensus_eps_fy27_ntd_per_share": { "value": 129.97, "src": "web search -- FactSet consensus, per ordinary share", "pulled": "2026-07-16" },
+    "ntd_usd_rate": { "value": 31.6, "src": "TSMC IR guidance assumption for Q3 2026 (31.7) and actual Q2 rate (31.60); used 31.6", "pulled": "2026-07-16" },
+    "ntm_eps_usd_adr": { "value": 18.75, "src": "judgment -- derived by blending FactSet FY26/FY27 consensus (converted to USD/ADR: ~$15.9 FY26, ~$20.6 FY27) with the actual accelerating quarterly cadence (Q2 actual $4.31 ADR, Q3 guide implies further growth); prior update's NTM EPS was $17.20", "pulled": "2026-07-16" },
+    "multiple_bear": { "value": [14, 18], "src": "judgment -- unchanged trough-to-bear-high P/E range from prior update, anchored to Apr 2025 tariff-panic trough (~14x) and prior bear-case ceiling (~18x)", "pulled": "2026-07-16" },
+    "multiple_base": { "value": [20, 26], "src": "judgment -- unchanged normal P/E range from prior update", "pulled": "2026-07-16" },
+    "multiple_bull": { "value": [30, 34], "src": "judgment -- unchanged bull/structural-monopoly-re-rate P/E range from prior update", "pulled": "2026-07-16" },
+    "multiple_peer_median_asml_fpe": { "value": 49.6, "src": "derived this session from ASML's own update: $1,815.27 price / $36.62 2026E consensus EPS -- the other irreplaceable AI chokepoint peer, useful context though not a P/E comp match for a foundry", "pulled": "2026-07-16" },
+    "price_targets_post_print": { "value": "Goldman Sachs ADR $600 (from $550), another analyst $590 (from $490), average analyst target ~$520 (~17% upside from pre-print levels); Citi raised Taiwan-listed target to NT$3,800 from NT$2,875", "src": "web search -- sell-side notes post Q2 2026 print", "pulled": "2026-07-16" }
+  },
+  "notes": "Genuine beat-and-raise on every disclosed metric (revenue, GM, OM, EPS all above guide/consensus; capex guide raised ~$8-12B; FY26 USD revenue growth guide raised from >30% to slightly above 40%) plus a new $100B US investment pledge. But the stock did NOT re-rate up on it -- it round-tripped from a $477.57 pre-print high (2026-06-30) down through $419 (07-15) to an estimated ~$407 post-print (07-16), a 'sell the news' pattern on elevated pre-print expectations. Net effect on the forward multiple: price fell ~15% off its pre-print high while NTM EPS estimate rose ~9% (17.20->18.75), so the forward P/E actually COMPRESSED from ~27.8x (pre-print, near the top of the historical normal band) to ~21.7x (post-print, mid-normal-band) -- a healthier setup than before the print, not a worse one, even though the raw price is down. This is the single most important Layer-2 finding this quarter."
+}
