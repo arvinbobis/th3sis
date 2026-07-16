@@ -1,0 +1,39 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(thesis)",
+      "Skill(update-thesis)",
+      "Skill(prescreen)",
+      "Skill(radar)",
+      "Skill(scorecard)",
+      "Skill(verify-thesis)",
+
+      "Edit(stocks/portfolio/portfolio-data.js)",
+
+      "mcp__claude_ai_Wisesheets__whoami",
+      "mcp__claude_ai_Wisesheets__get_company",
+      "mcp__claude_ai_Wisesheets__get_financials",
+      "mcp__claude_ai_Wisesheets__get_prices_eod",
+      "mcp__claude_ai_Wisesheets__get_statements",
+      "mcp__claude_ai_Wisesheets__list_metrics",
+      "mcp__claude_ai_Wisesheets__search_companies",
+
+      "WebSearch",
+      "WebFetch(domain:stockanalysis.com)",
+      "WebFetch(domain:www.sec.gov)",
+      "WebFetch(domain:finance.yahoo.com)",
+      "WebFetch(domain:www.macrotrends.net)",
+      "WebFetch(domain:mlq.ai)",
+
+      "Bash(node tools/lint-thesis-data.js *)",
+      "Bash(node tools/verify-thesis.js *)",
+      "Bash(node tools/build-scorecard.js)",
+      "Bash(npm run verify -- *)",
+      "Bash(npx esbuild stocks/engine/thesis-engine.jsx --outfile=stocks/engine/thesis-engine.js --target=es2019)",
+
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)"
+    ]
+  }
+}
