@@ -284,8 +284,12 @@ GATE pages, applied to the stock dashboards.
   migrated stock that's `node tools/verify-thesis.js <TICKER>`; "the JSX compiles" was never
   the bar.
 - **⚠ Legacy stocks** (built before June 2026, hardcoded hex in JSX — light mode won't render
-  correctly until each is refactored): ALAB, AMZN, FICO, GOOGL, META, MRVL, MSFT, MU,
-  NVDA, TSM. This list is about the **hex-color debt**, independent of engine-split status —
+  correctly until each is refactored): ALAB, AMZN, AVGO, FICO, GOOGL, META, MRVL, MSFT, MU,
+  NVDA, TSM. AVGO was added to this list 2026-07-18 (a straight oversight — it was built in
+  the same pre-June-2026 batch and carries the identical `#dd817a`/`#c59542`/`#66b278`
+  palette as TSM/others, just never got listed; found because `verify-thesis` doesn't
+  exempt undocumented stocks and a mid-cycle AVGO touch that day surfaced the gap). This
+  list is about the **hex-color debt**, independent of engine-split status —
   TSM migrated to the engine split 2026-07-11 but *inherited* this exemption rather than
   fixing it (its `#dd817a`/`#c59542`/`#66b278` palette is pre-existing, not new debt). ASML
   migrated 2026-07-16 and came off this list the same day — its pre-migration build already

@@ -212,6 +212,47 @@ WHAT SURPRISED ME THIS QUARTER:
 ────────────────────────────────────────────
 ```
 
+### Mid-cycle risk-note — 2026-07-18 (no new print; Q3 FY2026 still ~Sep 2026)
+
+```
+────────────────────────────────────────────
+MID-CYCLE TOUCH          UPDATED ON: 2026-07-18
+Price at update: $370.83 (07-17 close)   Most-likely case: BASE (unchanged)
+
+Trigger: reviewing grok-buy-side-scalper reports (07-14/07-15) surfaced a genuinely new
+risk to the networking segment that the thesis had zero coverage of — added as a KPI +
+kill-switch, not a numbers-driven refresh (no earnings since Q2 FY26).
+
+NEW RISK ADDED: Amazon disclosed "Resilient Network Graphs" (RNG) — a custom network
+topology (random-graph design + passive optical shuffle boxes) claiming up to 45% cost
+savings vs. traditional fat-tree networks built on merchant switch silicon (Broadcom's
+Jericho/Tomahawk chips). This is a hyperscaler substituting owned network-engineering IP
+for AVGO's silicon at the topology level — distinct from the already-tracked "XPU design
+moves in-house" risk, which is about chip design, not network fabric.
+
+THESIS AUDIT:
+  Bear  — narrative gains a second, structurally different leg (network-fabric
+          disintermediation, not just the guide-miss/VMware-churn story). One data
+          point, not yet a trend — tagged WATCH, not BEAR, until a second hyperscaler
+          discloses something comparable.
+  Base  — unaffected for now; added as a breaks-condition, not a band change.
+  Bull  — unaffected for now.
+
+PROBABILITY shift: none — this is a new watch item, not a case-probability change.
+Price also drifted from ~$387 (last touch) to $370.83, now BELOW the $390 PF_ALERTS
+buy floor — flagged separately, not acted on here (no capital-allocation decision made).
+
+WHAT WOULD PROVE ME WRONG (for base case, updated):
+  Two consecutive AI revenue guidance misses (unchanged) OR a second hyperscaler
+  discloses a custom-network deployment comparable to Amazon's RNG.
+
+WHAT SURPRISED ME:
+  That a genuinely new, unpriced risk to AVGO's networking segment surfaced from a
+  general macro/tech scan rather than from Broadcom's own disclosures or sell-side
+  coverage — the discovery-latency problem the /radar system exists to catch.
+────────────────────────────────────────────
+```
+
 ---
 
 ## Layer 1 quick-reference: where each number comes from

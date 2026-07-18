@@ -148,6 +148,7 @@ const SIGNAL_HELP = {
   "Software Revenue": "Broadcom's infrastructure software segment (primarily VMware). Q2 FY2026: $7.18B, up 9% YoY — a miss vs. the $7.32B analyst estimate. This was the secondary source of disappointment in the Q2 print. At 93% gross margin, the segment is highly profitable, but missing estimates two quarters in a row would signal ARR growth is decelerating faster than the model assumes.",
   "Non-GAAP EBITDA Margin": "Out of every dollar Broadcom brings in, how much is left as cash profit before interest and taxes. 'Non-GAAP' strips out amortization from the VMware acquisition — a financing cost, not an economic one. Q2 FY2026: 69% — a beat vs. the guided ~68%. This is a genuine positive from the quarter and shows operating leverage.",
   "Q3 AI Revenue Guidance": "What management says next quarter's AI chip revenue will be. Q3 FY2026 guide: $16B — over 200% YoY growth, but below analyst whisper expectations of ~$17.2B. This guidance miss was the primary catalyst for the 15% post-earnings selloff. The $100B FY2027 target was reaffirmed but not raised. Watch whether Q3 actuals land at or above $16B.",
+  "Hyperscaler Custom Networking": "A new, unresolved risk added 2026-07-18: Amazon disclosed 'Resilient Network Graphs' (RNG) — a custom network topology (random-graph design + passive optical shuffle boxes) that AWS claims saves up to 45% vs. traditional fat-tree networks built on merchant switch silicon (the Jericho/Tomahawk chips Broadcom sells into hyperscaler AI clusters). This is a hyperscaler substituting owned network-engineering IP for Broadcom's silicon at the topology level — not yet a disclosed revenue impact, just the first hard evidence of the pattern. WATCH, not yet BEAR or BULL: it only becomes a real threat if a second hyperscaler (Google, Microsoft, Meta) discloses something comparable, or if AVGO's own networking-segment growth decelerates in a way tied to this.",
 };
 const TAG_HELP = {
   BEAT: "doing better than expected — a good sign.",
@@ -188,7 +189,7 @@ function tipSvg(title, body, note, color, extraClass) {
 const TICKER_META = { ticker: "AVGO", exchange: "NASDAQ", company: "Broadcom Inc." };
 
 // 1 ── DATE shown top-right
-const AS_OF_DATE = "2026-06-06";
+const AS_OF_DATE = "2026-07-18";
 
 // 10 ── Most recent dislocation (Q2 FY26 earnings: AI guide miss caused ~15% drop Jun 3-4)
 const DISLOCATION_DATE = "2026-06-03";
@@ -200,16 +201,16 @@ const CASES = {
   bear: {
     key: "bear", label: "BEAR", accent: "#dd817a", glow: "rgba(241,86,75,0.45)",
     target12: "$210 — $280",
-    op: "The Q2 earnings print exposed two cracks in the thesis: software revenue missed ($7.18B vs $7.32B expected) and Q3 AI guidance of $16B came in below analyst whispers of ~$17.2B — enough to erase 15% of market cap in two days. If this guidance pattern recurs (AI beats but next-quarter guide disappoints), Hock Tan's $100B FY2027 AI target starts looking like a ceiling rather than a floor. VMware churn accelerates as enterprises resist renewed price hikes, ARR growth stalls below 10%, and the market re-prices AVGO at 20–23x on cut FY2027 EPS of ~$9–10.",
-    breaks: "AI revenue Q3 prints $16B+ as guided AND Q4 AI guidance steps up materially; VMware ARR reaccelerates above 15%.",
+    op: "The Q2 earnings print exposed two cracks in the thesis: software revenue missed ($7.18B vs $7.32B expected) and Q3 AI guidance of $16B came in below analyst whispers of ~$17.2B — enough to erase 15% of market cap in two days. If this guidance pattern recurs (AI beats but next-quarter guide disappoints), Hock Tan's $100B FY2027 AI target starts looking like a ceiling rather than a floor. VMware churn accelerates as enterprises resist renewed price hikes, ARR growth stalls below 10%, and the market re-prices AVGO at 20–23x on cut FY2027 EPS of ~$9–10. A newer, structurally different risk (added 2026-07-18): Amazon disclosed a custom network topology ('Resilient Network Graphs') claiming up to 45% cost savings vs. merchant-switch fat-tree networks — the first hard evidence of a hyperscaler substituting owned network IP for the Jericho/Tomahawk silicon AVGO sells into AI clusters. One data point isn't a trend, but it's a networking-segment threat the bear case didn't previously name at all.",
+    breaks: "AI revenue Q3 prints $16B+ as guided AND Q4 AI guidance steps up materially; VMware ARR reaccelerates above 15%; no second hyperscaler discloses a comparable custom-network deployment.",
     requires01: "Q3 AI revenue misses $16B guide; VMware ARR decelerates below 10%",
-    requires02: "Software margin compression or second consecutive guide miss",
+    requires02: "Software margin compression or second consecutive guide miss, OR a second hyperscaler (Google, Microsoft, Meta) discloses a custom-network deployment comparable to Amazon's RNG",
   },
   base: {
     key: "base", label: "BASE", accent: "#c59542", glow: "rgba(224,168,59,0.40)",
     target12: "$390 — $460",
-    op: "Q2 delivered: AI revenue beat ($10.8B vs $10.7B guide), EBITDA margin expanded to 69%, and hyperscaler volume commitments are now quantified — Anthropic 5 GW starting 2027, OpenAI 1.3 GW in 2027, Meta 3 GW through 2028. The $16B Q3 AI guide looks soft vs. whispers, but reflects real wafer-start timing, not demand destruction. The stock repriced 15% lower to ~$385, which at ~26–28x NTM earnings is a more defensible multiple than pre-earnings. Broadcom executes Q3 near the $16B AI mark, VMware stabilizes, and the $100B FY2027 target remains intact — enabling a re-rate back toward $420–460 over the next two quarters.",
-    breaks: "Hock Tan revises the $100B FY2027 AI chip target downward, or a hyperscaler announces it is moving XPU design fully in-house.",
+    op: "Q2 delivered: AI revenue beat ($10.8B vs $10.7B guide), EBITDA margin expanded to 69%, and hyperscaler volume commitments are now quantified — Anthropic 5 GW starting 2027, OpenAI 1.3 GW in 2027, Meta 3 GW through 2028. The $16B Q3 AI guide looks soft vs. whispers, but reflects real wafer-start timing, not demand destruction. The stock repriced 15% lower to ~$385, which at ~26–28x NTM earnings is a more defensible multiple than pre-earnings. Broadcom executes Q3 near the $16B AI mark, VMware stabilizes, and the $100B FY2027 target remains intact — enabling a re-rate back toward $420–460 over the next two quarters. Added 2026-07-18: Amazon's custom 'Resilient Network Graphs' topology (up to 45% cheaper than merchant-switch fat-tree networks) is a new networking-segment risk to watch, distinct from the already-tracked XPU-design-win risk — one data point, not yet a trend.",
+    breaks: "Hock Tan revises the $100B FY2027 AI chip target downward, a hyperscaler announces it is moving XPU design fully in-house, or a second hyperscaler discloses a custom-network deployment comparable to Amazon's RNG.",
     requires01: "Q3 AI revenue meets ~$16B; VMware ARR holds above 10%",
     requires02: "EBITDA margin stays at 68–70%; no further guide-miss pattern",
   },
@@ -228,7 +229,7 @@ const CASES = {
 //   renders with on its own — when the live fetch is disabled, offline, blocked (CORS),
 //   or returns garbage. The live fetch only *upgrades* this value; it never gates render.
 //   Update FALLBACK_PRICE each quarter (step 2 above) exactly as before.
-const FALLBACK_PRICE = 382.07;
+const FALLBACK_PRICE = 370.83;
 let   NOW_PRICE      = FALLBACK_PRICE;   // mutated in-place by a successful live fetch
 
 // ── Live-price config (prototype) ─────────────────────────────────────────────
@@ -317,16 +318,19 @@ const SIGNALS = {
     { name: "Q2 AI Revenue vs Guide",  unit: "$B", tag: "BEAT", next: "Sep 2026", val: "ACTUAL $10.8B", guide: "GUIDE $10.7B", pos: 0.55 },
     { name: "XPU Customer Count",      unit: "customers", tag: "MATCH", next: "Sep 2026", val: "Still 6; GW volumes disclosed", guide: "CURRENT 6", pos: 0.42 },
     { name: "Software Revenue",        unit: "$B", tag: "MISS", next: "Sep 2026", val: "ACTUAL $7.18B", guide: "EST $7.32B", pos: 0.30 },
+    { name: "Hyperscaler Custom Networking", unit: "", tag: "WATCH", next: "Sep 2026", val: "Amazon RNG disclosed", guide: "No 2nd hyperscaler yet", pos: 0.38 },
   ],
   base: [
     { name: "Q2 AI Revenue vs Guide",  unit: "$B", tag: "BEAT", next: "Sep 2026", val: "ACTUAL $10.8B", guide: "GUIDE $10.7B", pos: 0.55 },
     { name: "XPU Customer Count",      unit: "customers", tag: "MATCH", next: "Sep 2026", val: "Still 6; GW volumes disclosed", guide: "CURRENT 6", pos: 0.42 },
     { name: "Software Revenue",        unit: "$B", tag: "MISS", next: "Sep 2026", val: "ACTUAL $7.18B", guide: "EST $7.32B", pos: 0.30 },
+    { name: "Hyperscaler Custom Networking", unit: "", tag: "WATCH", next: "Sep 2026", val: "Amazon RNG disclosed", guide: "No 2nd hyperscaler yet", pos: 0.38 },
   ],
   bull: [
     { name: "Q2 AI Revenue vs Guide",  unit: "$B", tag: "BEAT", next: "Sep 2026", val: "ACTUAL $10.8B", guide: "GUIDE $10.7B", pos: 0.55 },
     { name: "XPU Customer Count",      unit: "customers", tag: "MATCH", next: "Sep 2026", val: "Still 6; GW volumes disclosed", guide: "CURRENT 6", pos: 0.42 },
     { name: "Software Revenue",        unit: "$B", tag: "MISS", next: "Sep 2026", val: "ACTUAL $7.18B", guide: "EST $7.32B", pos: 0.30 },
+    { name: "Hyperscaler Custom Networking", unit: "", tag: "WATCH", next: "Sep 2026", val: "Amazon RNG disclosed", guide: "No 2nd hyperscaler yet", pos: 0.38 },
   ],
 };
 const MARGIN = {

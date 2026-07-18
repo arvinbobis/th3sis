@@ -1,0 +1,13 @@
+{
+  "ticker": "AVGO",
+  "asOf": "2026-07-18",
+  "quarter": "Q3 FY2026 (pre-report, ~Sep 2026 -- this is a mid-quarter risk-factor touch, not a new print)",
+  "inputs": {
+    "price": { "value": 370.83, "src": "Wisesheets EOD close, 2026-07-17 (latest available; market open on 07-18)", "pulled": "2026-07-18" },
+    "price_at_last_touch_jun06": { "value": 382.07, "src": "carried from the prior AS_OF_DATE fallback price", "pulled": "2026-07-18" },
+    "new_risk_amazon_rng": { "value": "Amazon 'Resilient Network Graphs' -- random-graph topology + passive optical shuffle boxes + Spraypoint multipath, claimed up to 45% cost savings vs. fat-tree networks on merchant switch silicon", "src": "grok-buy-side-scalper report 2026-07-15, sourcing @SemiAnalysis_ 2026-07-14 research thread", "pulled": "2026-07-18" },
+    "risk_scope": { "value": "First hard evidence of a hyperscaler substituting owned network-engineering IP for merchant switch silicon (AVGO's Jericho/Tomahawk) at the topology level -- distinct from the already-tracked XPU-chip-design-in-house risk", "src": "judgment -- synthesized from the scalper report + AVGO's existing bear/base case language", "pulled": "2026-07-18" },
+    "no_new_earnings": { "value": "Confirmed no AVGO earnings/filing since Q2 FY2026 (reported 2026-06-03); Q3 FY2026 still ~September 2026", "src": "web search, 2026-07-18", "pulled": "2026-07-18" }
+  },
+  "notes": "Triggered by reviewing 4 unstudied grok-buy-side-scalper reports (07-12 through 07-15) for the scalper feedback loop -- surfaced a genuinely new networking-segment risk with zero prior coverage anywhere in AVGO's thesis or PF_RADAR. This is a risk-factor addition, not a numbers-driven refresh: no new earnings have landed since the last touch (2026-06-06), so Layer 1 numeric fields (SIGNALS BEAT/MATCH/MISS tags, KPI_HIST, TRACK_ALL) are unchanged except price. Added as a new WATCH-tagged KPI + kill-switch clause on bear/base breaks, not a case-probability shift -- one data point (Amazon) isn't a trend yet. Separately noted but not acted on: price ($370.83) has now drifted below the $390 PF_ALERTS buy floor -- a capital-allocation observation, out of scope for this risk-factor touch."
+}
