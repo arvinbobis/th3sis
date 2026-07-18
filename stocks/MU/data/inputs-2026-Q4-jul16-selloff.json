@@ -1,0 +1,20 @@
+{
+  "ticker": "MU",
+  "asOf": "2026-07-16",
+  "quarter": "Q4 FY2026 (pre-report, same target quarter as inputs-2026-Q4.json -- this is a mid-quarter follow-up touch, not a new print)",
+  "inputs": {
+    "price": { "value": 879.60, "src": "live IBKR position pull, 2026-07-16", "pulled": "2026-07-16" },
+    "price_wisesheets_eod_jul15": { "value": 904.28, "src": "Wisesheets EOD close, 2026-07-15", "pulled": "2026-07-16" },
+    "price_at_last_touch_jul11": { "value": 979.30, "src": "carried from inputs-2026-Q4.json for comparison", "pulled": "2026-07-16" },
+    "sector_selloff_magnitude": { "value": "MU/Samsung/SK Hynix all down 20%+ from recent highs", "src": "web search -- Yahoo Finance 'Micron, Samsung, SK Hynix just dragged memory stocks into a bear market'", "pulled": "2026-07-16" },
+    "skhy_q2_miss_pct": { "value": -8, "unit": "%", "src": "web search -- SK Hynix Q2 2026 profit estimate ~8% below consensus, attributed to delayed HBM4 shipments", "pulled": "2026-07-16" },
+    "skhy_context": { "value": "SK Hynix's own execution/shipment-timing issue, not a Micron design-win loss; also triggered a KOSPI trading halt and SK Hynix's Jul 10 Nasdaq ADR listing may be pulling rotation flow away from MU/Samsung", "src": "web search, multiple outlets", "pulled": "2026-07-16" },
+    "cxmt_context": { "value": "CXMT now #4 global DRAM producer, ~$8.5B IPO planned -- a commodity-DRAM share story, not an HBM4 design-win loss for Micron", "src": "web search", "pulled": "2026-07-16" },
+    "analyst_consensus_target_avg_updated": { "value": 1316.79, "src": "web search -- 29-analyst consensus, cited Jul 15 2026 (supersedes the 45-analyst/$1,486 figure in inputs-2026-Q4.json -- different source snapshot, not a downgrade signal since it's still comfortably inside the base band)", "pulled": "2026-07-16" },
+    "keybanc_target_new": { "value": 1750, "src": "web search -- KeyBanc raised target to $1,750 on 2026-07-14, DURING the selloff, not before it", "pulled": "2026-07-16" },
+    "analyst_rating_mix": { "value": "41% Strong Buy, 55% Buy, 3% Hold, 0% Sell (29 analysts)", "src": "web search, Jul 15 2026", "pulled": "2026-07-16" },
+    "named_bear_voice": { "value": "Michael Burry disclosed short position", "src": "web search", "pulled": "2026-07-16" },
+    "forward_pe_at_new_price": { "value": 6.5, "src": "judgment -- price $880 / blended NTM EPS ~$135 (unchanged from 07-11 touch)", "pulled": "2026-07-16" }
+  },
+  "notes": "Triggered by the user noticing MU trading well below its own 07-11-set base floor ($1,100-1,350) despite no new company-specific news. Confirmed via Wisesheets: no new MU quarterly filing since Q3 FY26 (still period-end 2026-05-28, filed 2026-06-25) -- Q4 FY26 doesn't report until ~late Sept 2026. The price move is entirely a mid-July memory-sector selloff, not a Micron-specific event: SK Hynix's own Q2 profit miss (its own HBM4 shipment delay, not a Micron design-win loss) plus CXMT competition headlines (commodity DRAM share, not HBM4) dragged MU/Samsung/SK Hynix all down 20%+ together. Sell-side has NOT capitulated -- consensus target ($1,316.79) sits comfortably inside the base band, and KeyBanc actively RAISED its target to $1,750 mid-selloff (Jul 14), which would not happen if analysts read this as a fundamentals problem. Conclusion: base case target12 left UNCHANGED at $1,100-1,350 since nothing in the SCA/HBM4 contracted-revenue story actually broke this touch -- this is logged as a 'thesis intact, price move only' update, distinct from a numbers-driven quarterly refresh. Added PF_ALERTS.MU (buyFloor $1,100) as this stock's first-ever buy-alert entry, a direct infrastructure consequence of this session's price/band-gap discovery."
+}

@@ -95,7 +95,7 @@ After June 24, the Q3/Q4 signals are answered. New questions for Q4 (September):
 → Update `SIGNALS` rows to reflect the current live questions, not the answered ones.
 
 **D. Did the probability shift?**
-*Current assessment (June 2026):* BASE. Q3 is largely locked in via HBM contracts. The open question is Q4 and FY2027.
+*Current assessment (updated 2026-07-16, mid-quarter check — no new print):* BASE, unchanged. Q3 is largely locked in via the $100B SCAs. A mid-July memory-sector selloff (SK Hynix's own Q2 miss, CXMT headlines) knocked the price ~15-20% below the base floor with zero new MU-specific information — sell-side hasn't budged (consensus $1,316.79, KeyBanc raised to $1,750 mid-selloff). The open question is still Q4 and FY2027, not whether this quarter's price action means anything new.
 
 **Critical rule for MU:** If Q4 guidance disappoints on June 24, shift immediately to BEAR. Do not average down into a cycle turn. Memory stocks can fall 50–70% from peak in 18 months — the 2022–2023 cycle saw Micron go from $98 to $52 despite analyst "upgrades" at $80. Update the log before the stock reaction sets in.
 
@@ -214,6 +214,56 @@ WHAT SURPRISED ME THIS QUARTER:
   real, sourced, and structurally different from prior cycles, but the market
   hasn't decided to believe it yet. That gap (fundamentals vs. price) is now the
   actual thesis, more than "will the cycle extend."
+────────────────────────────────────────────
+```
+
+### Mid-quarter check — July 16, 2026 (no new print; price/band gap noticed)
+
+```
+────────────────────────────────────────────
+QUARTER: Q4 FY2026 (pre-report — this is a mid-quarter check, not a new print)
+UPDATED ON: 2026-07-16
+Price at update: $880 (was $979 at the 07-11 touch)   Most-likely case: BASE (unchanged)
+  (Triggered by noticing MU trading ~20% below its own 07-11-set base floor
+  $1,100-1,350 with no new earnings. Confirmed via Wisesheets: still Q3 FY26 as the
+  latest filed quarter — no new MU-specific data exists. This entry exists to
+  distinguish a genuine numbers-driven audit from "the world moved, go check.")
+
+WHAT MOVED: a mid-July memory-sector selloff, not Micron. SK Hynix's Q2 2026 profit
+  estimate came in ~8% below consensus on delayed HBM4 shipments (SK Hynix's OWN
+  execution problem, not a Micron design-win loss) — triggered a KOSPI trading halt.
+  CXMT's rapid DRAM share gain (now #4 global producer, ~$8.5B IPO planned) revived
+  China-competition headlines (commodity DRAM, not HBM4). MU/Samsung/SK Hynix all
+  down 20%+ from recent highs together.
+
+THESIS AUDIT (one line each):
+  Bear  — narrative still true? PARTIALLY — the named risk (Samsung/CXMT HBM4 share)
+    got louder in headlines, but neither event is actually a Micron design-win loss.
+    bands moved? NO ($550-750 unchanged).
+  Base  — narrative still true? YES, UNCHANGED — the $100B SCA story is untouched by
+    peer-company shipment timing or a competitor's IPO plans. bands moved? NO
+    ($1,100-1,350 unchanged) — nothing in the SCA/HBM4 contracted-revenue story
+    actually broke this touch.
+  Bull  — narrative still true? YES — KeyBanc actually RAISED its target to $1,750
+    on Jul 14, DURING the selloff, which would not happen if sell-side read this as
+    a fundamentals problem. bands moved? NO ($1,500-1,800 unchanged).
+
+PROBABILITY shift this quarter: None from fundamentals — this is a market-fear/sector-
+  rotation event (SK Hynix's own Jul 10 Nasdaq listing may be pulling capital rotation
+  away from MU/Samsung independent of either company's numbers), not new information
+  about MU's own contracted-revenue thesis. Sell-side consensus ($1,316.79, 29
+  analysts, 96%+ Buy/Strong Buy, zero Sells) hasn't moved down either.
+Did cycle direction change? (Y/N): N.
+
+WHAT WOULD PROVE ME WRONG (unchanged from the 07-11 entry): Q4 FY26 actual misses the
+  $50B±$1B guide, OR initial FY2027 guidance signals deceleration on non-SCA volume.
+
+WHAT SURPRISED ME THIS QUARTER: How completely disconnected the price action was from
+  MU's own information set — a 15% decline with zero new company-specific data,
+  driven entirely by a peer's earnings miss and a competitor's IPO headline. Added
+  PF_ALERTS.MU (buyFloor $1,100) this touch — MU never had a buy-alert entry before,
+  and this is exactly the kind of "price disconnected from thesis" gap that alert
+  system exists to catch going forward.
 ────────────────────────────────────────────
 ```
 

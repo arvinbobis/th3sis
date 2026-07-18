@@ -51,6 +51,11 @@
  * new base floor) — ASML never had a PF_ALERTS entry before its engine-split migration
  * today; TSM's buyFloor was already updated to 375 at its own update-thesis touch earlier
  * this session.
+ * 2026-07-16 (later same day): added PF_ALERTS.MU (buyFloor $1,100 = its own base-case
+ * floor) after /update-thesis MU — price fell ~15% since the 07-11 update in a mid-July
+ * memory-sector selloff (SK Hynix's own Q2 profit miss, CXMT China-competition headlines)
+ * with no new MU-specific bad news; thesis reaffirmed intact, target12 unchanged. First
+ * PF_ALERTS entry MU has ever had.
  * ─────────────────────────────────────────────────────────────────────────── */
 
 const PF_ASOF = "2026-07-16";
@@ -75,6 +80,7 @@ const PF_ALERTS = {
   AVGO: { buyFloor: 390, thesisIntact: true, asOf: PF_ASOF, nextEarnings: "2026-09-04" },
   TSM:  { buyFloor: 375, thesisIntact: true, asOf: "2026-07-16", nextEarnings: "2026-10-15" },
   ASML: { buyFloor: 1900, thesisIntact: true, asOf: "2026-07-16", nextEarnings: "2026-10-14" },
+  MU:   { buyFloor: 1100, thesisIntact: true, asOf: "2026-07-16", nextEarnings: "~2026-09-24" },
 };
 
 const PF_THEMES = {
@@ -179,6 +185,7 @@ const PF_STRAT = {
     { t:"TSM",  date:"2026-10-15", note:"Q2 2026 beat-and-raise (rev/GM/OM/EPS all beat, capex+growth guide raised) but ADR pulled back on 'sell the news'; buyFloor lowered to $375 (new base floor). Thesis intact." },
     { t:"ALAB", date:"2026-08-11", note:"NOT HELD (sold 2026-07-09) — this now gates the re-entry buyFloor ($300 in PF_ALERTS), not an add to an existing position. Leo CXL ramp is still the key variable to re-check before re-underwriting." },
     { t:"MRVL", date:"~2026-08-28", note:"NOT HELD (sold 2026-07-09) — gates the re-entry buyFloor ($195 in PF_ALERTS, its own base-case floor). Passive QQQ/QQQM exposure covers the gap until then." },
+    { t:"MU",   date:"~2026-09-24", note:"Price fell ~15% since the 07-11 update ($979→~$880) in a mid-July memory-sector selloff (SK Hynix's own Q2 miss, CXMT headlines) — no new MU-specific bad news, thesis intact, base floor unchanged at $1,100. First PF_ALERTS entry for MU." },
   ],
 
   RULES: [
