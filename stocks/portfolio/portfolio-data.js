@@ -307,7 +307,7 @@ const PF_PRESCREEN = [
 //   "thesis-gap" (a thesis exists but doesn't mention this risk yet — the actionable ones) ·
 //   "prescreen-only" (no full thesis built; tracked only at the GATE level) · "n/a" (not held).
 const PF_RADAR = {
-  updated: "2026-07-15",
+  updated: "2026-07-18",
   THEMES: [
     { id:"stablecoins", label:"Stablecoins vs. card-network fees", direction:"threatens",
       holdings:["MA"], coverage:"prescreen-only",
@@ -341,5 +341,10 @@ const PF_RADAR = {
       evidence:"Gov. Hochul's EO (reported 2026-07-14/15) imposes a first-of-its-kind statewide moratorium on discretionary permitting for 50MW+ data centers (~1yr GEIS process); street digests cite ~$10B of NY-pipeline projects paused, though existing/already-approved sites are largely excluded. Same window, Virginia separately denied a 2,000-acre DC campus (2026-07-14) while entitled/zoned land nearby kept trading (TA Realty, Sterling) — the pattern is capital redirecting to already-entitled, non-coastal sites (Ohio/Utah/Texas — the same geography Blackstone just backed with a $5.34B BTM-gas JV, 2026-07-15) rather than a demand kill. Loeb (2026-07-15) called the NY move the 'stupidest since AOC/Amazon Queens.'",
       tripwire:"A second state (beyond NY) enacts a comparable discretionary-permitting pause for large-load data centers, or NY's moratorium is extended/expanded past its ~1yr GEIS window instead of lapsing.",
       note:"EQIX is a small existing satellite position (~$98 notional) with no thesis and no PF_PRESCREEN entry on file — coverage is 'n/a' because there's no thesis to audit for a gap, not because the theme doesn't apply. This row exists to watch entitled-vs-coastal siting bifurcation generally; META/MSFT/AMZN/GOOGL have diffuse secondary exposure (they lease/site DCs too) but at their scale a single state's pause is immaterial — not added as holdings here to avoid diluting the row's actual point." },
+    { id:"custom-hyperscaler-networking", label:"Hyperscalers building custom network fabric instead of buying merchant switch silicon", direction:"threatens",
+      holdings:["AVGO"], coverage:"thesis-gap",
+      evidence:"SemiAnalysis (2026-07-14/15): Amazon's Resilient Network Graphs (RNG) — a random-graph topology + passive optical shuffle boxes + 'Spraypoint' multipath — is 'the first network based on random graphs concept deployed at scale' and claims up to 45% cost savings vs. fat-tree topologies at similar oversubscription. This is AWS substituting owned network-engineering IP for merchant switch silicon at the topology level, not just a chip-design-win story (c.f. the already-tracked packaging-multivendor row, which is about advanced packaging, not networking).",
+      tripwire:"A second hyperscaler (Google, Microsoft, Meta) discloses a comparable custom-topology network deployment at scale, or AVGO's own 10-Q/10-K flags networking-segment growth deceleration tied to hyperscaler in-house fabric.",
+      note:"AVGO's networking segment (Jericho/Tomahawk merchant switches sold into hyperscaler AI clusters) is a named pillar of its own bull case, and its thesis currently has zero mention of hyperscaler-custom-fabric risk as a kill-switch. Genuinely new evidence, not previously on file (first surfaced in the 2026-07-14/15 scalper reports, reviewed 2026-07-18). Add at AVGO's next /update-thesis — AVGO's own REVIEW_GATES entry (2026-09-04) already exists for the VMware ARR watch; this is a second, distinct thread worth folding into the same touch." },
   ],
 };
