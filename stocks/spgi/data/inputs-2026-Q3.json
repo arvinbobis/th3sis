@@ -1,0 +1,25 @@
+{
+  "ticker": "SPGI",
+  "asOf": "2026-07-18",
+  "quarter": "Q3 FY2026 (build touch; next report is Q2 FY2026 on 2026-07-28)",
+  "inputs": {
+    "price":              { "value": 450.84, "src": "Wisesheets EOD (get_prices_eod), close 2026-07-17", "pulled": "2026-07-18" },
+    "consensus_eps_ntm":  { "value": 18.46,  "src": "web search — stockanalysis.com analyst consensus, FY2026 adjusted diluted EPS, continuing operations ex-Mobility (post 2026-07-01 spinoff)", "pulled": "2026-07-18" },
+    "consensus_eps_fy27": { "value": 20.33,  "src": "web search — stockanalysis.com analyst consensus, FY2027 adjusted diluted EPS (+10.11% YoY)", "pulled": "2026-07-18" },
+    "eps_q1fy26_actual_continuing": { "value": 4.48, "src": "SEC 8-K/A (pro forma, continuing operations ex-Mobility) via web search — accession referenced in tm2619099d2_ex99-1.htm, filed 2026-07-06", "pulled": "2026-07-18" },
+    "eps_fy25_actual_continuing_proforma": { "value": 13.74, "src": "SEC 8-K/A pro forma recast (continuing operations ex-Mobility, FY2025)", "pulled": "2026-07-18" },
+    "eps_diluted_fy25_combined": { "value": 14.66, "src": "SEC 10-K via Wisesheets — accession 0000064040-26-000013 (pre-spinoff, combined company, GAAP)", "pulled": "2026-07-18" },
+    "fy26_guide_combined_adj_eps": { "value": "19.40-19.65", "src": "SEC 8-K Q4 FY2025 earnings release (guidance issued 2026-02-10, pre-spinoff combined-company basis; company said it will issue updated GAAP guidance and adjusted guidance ex-Mobility alongside the 2026-07-28 Q2 print)", "pulled": "2026-07-18" },
+    "multiple_bear":      { "value": 20,     "src": "judgment — near the ~18-19x forward P/E the stock actually traded at during the 2026-02-10/11 guidance-miss panic (scared)", "pulled": "2026-07-18" },
+    "multiple_base":      { "value": 25,     "src": "judgment — mid-band of the ~23-28x range the stock has spent most of the last 12 months in on a forward-P/E basis", "pulled": "2026-07-18" },
+    "multiple_bull":      { "value": 31,     "src": "judgment — approaching the ~33-34x forward P/E implied by the Aug 2025 all-time-high ($579.05) against then-prevailing NTM EPS estimates (excited)", "pulled": "2026-07-18" },
+    "multiple_peer_median": { "value": 27.1, "src": "web search — median forward P/E of MCO ~27.1x (avg of 26.83x/27.40x cited 2026-06-23/07-01), MSCI ~30.4x (2026-07-06), VRSK ~25.8x (avg of 24.24-26.3x range cited 2026-07-13/07-16) — three named findata/ratings/analytics comps", "pulled": "2026-07-18" },
+    "peer_mco_fpe":        { "value": 27.1,  "src": "web search — Moody's forward P/E, multiple sources 2026-06-23 to 2026-07-01", "pulled": "2026-07-18" },
+    "peer_msci_fpe":       { "value": 30.4,  "src": "web search — GuruFocus MSCI forward P/E, 2026-07-06", "pulled": "2026-07-18" },
+    "peer_vrsk_fpe":       { "value": 25.8,  "src": "web search — Verisk Analytics forward P/E, 2026-07-13/07-16", "pulled": "2026-07-18" },
+    "risk_free_10y":      { "value": 4.55,   "src": "web search — US 10Y Treasury yield, 2026-07-17", "pulled": "2026-07-18" },
+    "shares_diluted_m":   { "value": 297.6,  "src": "SEC 10-Q Q1 FY2026 via web search — diluted weighted-avg shares, trending down on ongoing buybacks ($1.0B repurchased in Q1 alone)", "pulled": "2026-07-18" },
+    "fcf_fy25_combined_b": { "value": 5.456, "src": "SEC 10-K via Wisesheets (calculated free_cash_flow) — accession 0000064040-26-000013, pre-spinoff combined company", "pulled": "2026-07-18" }
+  },
+  "notes": "This is the pre-thesis provenance snapshot for the SPGI /thesis build, dated the day of the prescreen refresh and build (2026-07-18), NOT tied to a reported quarter — SPGI's next actual print is Q2 FY2026 on 2026-07-28, which is also the call where management is expected to issue the first full 2026 GAAP + adjusted guidance that formally excludes Mobility (spun off 2026-07-01 as MBGL). Everything dated after that call should be treated as the real Q2 FY2026 touch, with this file staying as the historical record of what was knowable before it. Regime note: stock fell ~17% in a single session on 2026-02-10 when FY2026 adjusted EPS guidance ($19.40-19.65, combined-company) missed the ~$19.96 consensus — a real earnings-guidance disappointment, not sentiment alone. It fell further into a February trough near $390 (forward P/E ~18-19x, the bear-case multiple anchor) before recovering through H1 2026, then popped on the 2026-07-01 Mobility spinoff completion (a real narrative simplification: shed the lower-margin, more cyclical Mobility unit, leaving a cleaner four-segment toll-booth business) before settling near $450. A distinct pull-forward flag surfaced on the Q1 FY2026 call (2026-04-28): management said some of the Ratings-division issuance strength was 'front-end loading of hyperscaler issuance relative to initial expectations,' and separately guided Ratings revenue growth to decelerate through 2026 and turn NEGATIVE in Q4 FY2026 as they lap prior-year highs. This is a real, disclosed, company-sourced pull-forward signal, not speculation, and is the single most important thing to track."
+}
