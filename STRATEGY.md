@@ -101,7 +101,8 @@ they could become a single ticker's worth of risk. Enforced via `MUSK_BUCKET_CAP
 real post-IPO SpaceX trading data (see §4) and resizing the SPCX GTC order to 9 sh @ $120
 (~$1,080) + the existing $500 TSLA plan. Not scope creep — a conscious re-sizing of the
 correlated bet with a real reason (see the SPCX entry in `PF_STRAT.LIMITS` for the full
-analyst-data reasoning), not a cap that quietly drifted.
+analyst-data reasoning), not a cap that quietly drifted. **The SPCX leg filled 2026-07-20**
+(see `PF_POS`); TSLA's $500 @ $250 remains resting, unfilled as of 2026-07-23.
 
 **On chasing:** if a name bounces just above its limit, do NOT bump the limit up — see
 §5 rule 3. Patience is the position.
