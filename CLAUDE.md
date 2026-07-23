@@ -238,8 +238,9 @@ GATE pages, applied to the stock dashboards.
   it's just that the expensive half no longer blocks a data-only edit loop.
 - **Rollout is per-touch, like provenance snapshots and the legacy-hex list** — no big-bang
   backfill. TSM migrated 2026-07-11 as the pilot; ASML migrated 2026-07-16 (its own next
-  `/update-thesis`, prompted by the user noticing it didn't match TSM's format); the
-  remaining 10 stocks migrate at their own next `/update-thesis`, keeping their existing
+  `/update-thesis`, prompted by the user noticing it didn't match TSM's format); MU migrated
+  2026-07-19 (its own mid-quarter touch); MRVL migrated 2026-07-19 (same day, separate touch);
+  the remaining 8 stocks migrate at their own next `/update-thesis`, keeping their existing
   inline-JSX build valid until then.
 - **Self-containment loosens from "one file" to "one folder + shared engine + theme.css"** —
   already true in spirit (`theme.css` was always external); this just makes it explicit.
@@ -284,7 +285,7 @@ GATE pages, applied to the stock dashboards.
   migrated stock that's `node tools/verify-thesis.js <TICKER>`; "the JSX compiles" was never
   the bar.
 - **⚠ Legacy stocks** (built before June 2026, hardcoded hex in JSX — light mode won't render
-  correctly until each is refactored): ALAB, AMZN, AVGO, FICO, GOOGL, META, MRVL, MSFT, MU,
+  correctly until each is refactored): ALAB, AMZN, AVGO, FICO, GOOGL, META, MSFT, MU,
   NVDA, TSM. AVGO was added to this list 2026-07-18 (a straight oversight — it was built in
   the same pre-June-2026 batch and carries the identical `#dd817a`/`#c59542`/`#66b278`
   palette as TSM/others, just never got listed; found because `verify-thesis` doesn't
@@ -295,6 +296,9 @@ GATE pages, applied to the stock dashboards.
   migrated 2026-07-16 and came off this list the same day — its pre-migration build already
   used the four permitted semantic colors, so nothing needed fixing (verified: `grep -oE
   '#[0-9a-fA-F]{3,6}' stocks/asml/thesis-data.js` returns only the four permitted hex codes).
+  MRVL migrated 2026-07-19 and came off this list the same day for the identical reason —
+  its pre-migration build already only used `#f1564b`/`#e0a83b`/`#3fd07a`/`#2f6dff` (verified:
+  `grep -oE '#[0-9a-fA-F]{6}\b' stocks/mrvl/thesis-data.js` returns only those four hex codes).
   Fix the palette at the stock's next quarterly touch after migration, not before — same per-touch
   discipline as everything else here.
 

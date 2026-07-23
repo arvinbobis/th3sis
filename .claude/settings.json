@@ -9,6 +9,14 @@
       "Skill(verify-thesis)",
 
       "Edit(stocks/portfolio/portfolio-data.js)",
+      "Edit(stocks/mu/*)",
+      "Edit(stocks/MU/*)",
+      "Edit(stocks/mrvl/*)",
+      "Edit(stocks/MRVL/*)",
+      "Write(stocks/mu/*)",
+      "Write(stocks/MU/*)",
+      "Write(stocks/mrvl/*)",
+      "Write(stocks/MRVL/*)",
 
       "mcp__claude_ai_Wisesheets__whoami",
       "mcp__claude_ai_Wisesheets__get_company",
@@ -17,6 +25,15 @@
       "mcp__claude_ai_Wisesheets__get_statements",
       "mcp__claude_ai_Wisesheets__list_metrics",
       "mcp__claude_ai_Wisesheets__search_companies",
+
+      "mcp__claude_ai_Interactive_Brokers_IBKR__get_account_positions",
+      "mcp__claude_ai_Interactive_Brokers_IBKR__get_account_summary",
+      "mcp__claude_ai_Interactive_Brokers_IBKR__get_account_balances",
+      "mcp__claude_ai_Interactive_Brokers_IBKR__get_account_trades",
+      "mcp__claude_ai_Interactive_Brokers_IBKR__get_account_orders",
+      "mcp__claude_ai_Interactive_Brokers_IBKR__get_price_history",
+      "mcp__claude_ai_Interactive_Brokers_IBKR__get_price_snapshot",
+      "mcp__claude_ai_Interactive_Brokers_IBKR__search_contracts",
 
       "WebSearch",
       "WebFetch(domain:stockanalysis.com)",
@@ -30,6 +47,9 @@
       "Bash(node tools/build-scorecard.js)",
       "Bash(npm run verify -- *)",
       "Bash(npx esbuild stocks/engine/thesis-engine.jsx --outfile=stocks/engine/thesis-engine.js --target=es2019)",
+      "Bash(awk *)",
+      "Bash(mkdir -p *)",
+      "Bash(cp *)",
 
       "Bash(git status*)",
       "Bash(git diff*)",
