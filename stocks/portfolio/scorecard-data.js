@@ -638,6 +638,60 @@ const PF_SCORECARD = [
     "bandHit": true
   },
   {
+    "t": "SPGI",
+    "quarter": "Q4 2024",
+    "date": "2025-02",
+    "post": 540,
+    "landed": "bull",
+    "conf": "low",
+    "bandHit": true
+  },
+  {
+    "t": "SPGI",
+    "quarter": "Q1 2025",
+    "date": "2025-04",
+    "post": 492,
+    "landed": "base→bull",
+    "conf": "low",
+    "bandHit": true
+  },
+  {
+    "t": "SPGI",
+    "quarter": "Q2 2025",
+    "date": "2025-07",
+    "post": 551,
+    "landed": "bull",
+    "conf": "med",
+    "bandHit": true
+  },
+  {
+    "t": "SPGI",
+    "quarter": "Q3 2025",
+    "date": "2025-10",
+    "post": 473,
+    "landed": "base",
+    "conf": "med",
+    "bandHit": true
+  },
+  {
+    "t": "SPGI",
+    "quarter": "Q4 2025",
+    "date": "2026-02",
+    "post": 391,
+    "landed": "bear",
+    "conf": "high",
+    "bandHit": true
+  },
+  {
+    "t": "SPGI",
+    "quarter": "Q1 2026",
+    "date": "2026-04",
+    "post": 433,
+    "landed": "base",
+    "conf": "high",
+    "bandHit": true
+  },
+  {
     "t": "TSM",
     "quarter": "Q4 2024",
     "date": "2025-01",
