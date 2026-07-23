@@ -94,7 +94,7 @@ const ACCENT = "var(--blue-soft)";
 
 // shared snapshot + strategy
 const ASOF = PF_ASOF, ACCT = PF_ACCT, POS = PF_POS, LIVE = PF_LIVE;
-const { CORE_TICKERS, TARGET_CORE_PCT, GEN_MULTIPLE, GEN_MIN_PROG, MUSK_BUCKET_CAP, LIMITS, RULES, REVIEW_GATES, TRIMMED } = PF_STRAT;
+const { CORE_TICKERS, TARGET_CORE_PCT, GEN_MULTIPLE, GEN_MIN_PROG, MUSK_BUCKET_CAP, LIMITS, RULES, REVIEW_GATES, TRIMMED, SEEDED } = PF_STRAT;
 
 const usd = (v, d=2) => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 const pct = (v, d=0) => (v>=0?"+":"") + v.toFixed(d) + "%";
@@ -223,6 +223,29 @@ function TrimLog() {
   );
 }
 
+function SeedLog() {
+  const seeded = Object.entries(SEEDED || {});
+  if (!seeded.length) return null;
+  return (
+    <Panel delay={.06}>
+      <Eyebrow color={BLUE} note="fresh capital deployed · thesis-gated">✓ Executed — seed log</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
+        {seeded.map(([t, x]) => {
+          const live = LIVE[t];
+          return (
+            <Item key={t} navTicker={t} tag="PLANTED" color={BLUE}
+              head={<>{t} — seeded {x.date}{x.from && <span style={{ color:"var(--tx5)", fontWeight:400 }}> (funded by {x.from}'s harvest)</span>}</>}
+              right={live ? `${pct((live.px/x.fillPx-1)*100)} since fill` : undefined}
+              body={<>Filled <b>{x.fillQty}</b> sh @ <b>{usd(x.fillPx)}</b> (<b>{usd(x.planted,0)}</b> planted). {x.note} 2× trim trigger from here: <b>{usd(x.fillPx*GEN_MULTIPLE,0)}</b>.</>}
+              tipTitle={`${t} — generator seed`}
+              tipBody={`The recycling engine's other half: a harvested winner's proceeds redeployed into the next idea. This position graduates to the trim log above once it doubles AND the thesis is still intact — never on price alone.`} />
+          );
+        })}
+      </div>
+    </Panel>
+  );
+}
+
 function Orders() {
   return (
     <Panel delay={.07}>
@@ -331,6 +354,7 @@ function App() {
         <SummaryStrip />
         <DecideNow />
         <TrimLog />
+        <SeedLog />
         <Orders />
         <HoldRide />
         <Gates />
