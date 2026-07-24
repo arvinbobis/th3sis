@@ -183,10 +183,24 @@ const PF_STRAT = {
 
   // Seeds DEPLOYED but not yet harvested — the recycled ~$1,000 living in its next
   // idea. A ticker graduates from here to TRIMMED on its own thesis-gated 2× harvest.
-  // planted = actual fill cost incl. commission; from = which harvest funded it.
+  // planted = actual fill cost incl. commission; from = which harvest funded it (omit
+  // for a seed that's fresh capital, not a recycled harvest — see THREAD_META/SPCX).
+  // thread ties an entry to its own independent trunk on the GENERATOR tree — default
+  // (unset) = "core", the single ASML→MU→… recycled-seed chain. A different thread is
+  // its own separate stake, sized once, not fed by nor feeding the core chain.
   SEEDED: {
     MU: { date:"2026-07-07", from:"ASML", planted:850.95, fillPx:899.80, fillQty:0.9446,
           note:"GTC limit @900 filled — the ASML trim proceeds ($851.81) replanted almost to the dollar. Prior $101 nibble (0.1323 sh @762.87) folds into the same position: 1.0769 sh @ avg 883.91. 2× trigger ≈ $1,768 (thesis-gated: AI/HBM supercycle per stocks/MU thesis; kill-switch = cycle turn, see checklist)." },
+    SPCX: { date:"2026-07-20", thread:"musk", planted:1080.00, fillPx:120, fillQty:9,
+          note:"GTC limit @120 filled — fresh Musk-bucket capital (see LIMITS/MUSK_BUCKET_CAP), NOT a recycled harvest like the ASML→MU seed. A second, independent generator thread: same mechanic (plant → let it double → thesis-gated harvest → reseed), its own separate ~$1,080 stake sized to the correlated SPCX+TSLA bet — doesn't feed from, or into, the core chain. TSLA (the bucket's other leg, still resting at its $250 limit) would be a second station on this SAME thread once/if it fills, not its own third thread." },
+  },
+
+  // Per-thread metadata for the GENERATOR tree (stocks/portfolio/generator.html) — each
+  // thread gets its own seed pill + trunk, rendered independently so a second seed never
+  // visually implies it was fed by the first thread's harvest.
+  THREAD_META: {
+    core: { label: "$1,000 generator", seedAmount: 1000 },
+    musk: { label: "Musk-bucket seed",  seedAmount: 1080 },
   },
 
   // Active manual GTC limit ladder — all below market, speculative slices.

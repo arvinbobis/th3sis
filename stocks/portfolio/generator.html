@@ -94,6 +94,10 @@ const ACCENT = "var(--blue-soft)";
 const ASOF = PF_ASOF, LIVE = PF_LIVE, GEN_MULTIPLE = PF_STRAT.GEN_MULTIPLE;
 const TRIMMED = PF_STRAT.TRIMMED || {};
 const SEEDED  = PF_STRAT.SEEDED  || {};
+const THREAD_META = PF_STRAT.THREAD_META || { core: { label: "$1,000 generator", seedAmount: 1000 } };
+// per-thread ghost placeholders (dashed "next station" stubs) — core keeps the original
+// "next stock #1/#2" plan; other threads name their own real pending leg where known.
+const THREAD_GHOSTS = { core: ["next stock #1", "next stock #2"], musk: ["TSLA (pending)"] };
 
 const usd = (v, d=2) => (v<0?"-":"") + "$" + Math.abs(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
 const pct = (v, d=0) => (v>=0?"+":"") + v.toFixed(d) + "%";
@@ -112,11 +116,13 @@ function navigateToTicker(e, ticker) {
 }
 
 // ── derive house-money branches from the generator ledger ──────────────────────
+// thread ties a station to its own independent trunk — default "core" (the single
+// ASML→MU→… recycled-seed chain). A different thread is its own separate stake.
 const branches = Object.keys(TRIMMED).map(t => {
   const x = TRIMMED[t], live = LIVE[t] || {};
   const freeMV = (live.mv != null) ? live.mv : x.freeMV;        // current free-roll value
   return {
-    t, name: live.name || t, date: x.date,
+    t, name: live.name || t, date: x.date, thread: x.thread || "core",
     banked: x.realized, proceeds: x.proceeds, soldQty: x.soldQty, soldPx: x.soldPx,
     freeMV, freeUp: (live.up != null) ? live.up : null,
     mult: (live.px && live.avg) ? live.px/live.avg : null,
@@ -128,7 +134,7 @@ const branches = Object.keys(TRIMMED).map(t => {
 const seededStations = Object.keys(SEEDED).map(t => {
   const x = SEEDED[t], live = LIVE[t] || {};
   return {
-    seeded:true, t, name: live.name || t, date: x.date, from: x.from,
+    seeded:true, t, name: live.name || t, date: x.date, from: x.from, thread: x.thread || "core",
     planted: x.planted, fillPx: x.fillPx, fillQty: x.fillQty, note: x.note,
     mv: live.mv, up: live.up,
     mult: (live.px && live.avg) ? live.px/live.avg : null,
@@ -140,7 +146,13 @@ const totalBanked = branches.reduce((s,b)=>s+b.banked,0);
 const totalRiding = branches.reduce((s,b)=>s+b.freeMV,0);
 const totalFreeUp = branches.reduce((s,b)=>s+(b.freeUp||0),0);
 const latestProceeds = branches.length ? branches[branches.length-1].proceeds : 0;
-const activeSeed = seededStations.length ? seededStations[seededStations.length-1] : null;
+
+// one thread per distinct trunk — "core" always shows even if empty (the primary chain)
+const threadKeys = Array.from(new Set(["core", ...branches.map(b=>b.thread), ...seededStations.map(s=>s.thread)]));
+const activeSeedsByThread = threadKeys.map(k => {
+  const own = seededStations.filter(s=>s.thread===k);
+  return own.length ? own[own.length-1] : null;
+}).filter(Boolean);
 
 // ── Sankey "link" band: a filled bezier ribbon from (x0,y0) of thickness w0 to
 //    (x1,y1) of thickness w1. Ribbon THICKNESS encodes dollars. Used for the
@@ -174,8 +186,8 @@ function StatStrip() {
     { n: branches.length, l: "harvested ideas · root nodes", c: ACCENT },
     { n: usd(totalRiding,0), l: `house money riding · ${(totalFreeUp>=0?"+":"")}${usd(totalFreeUp,0)} unrealized`, c: GAIN },
     { n: usd(totalBanked,0), l: "capital banked · recovered to cash", c: GAIN },
-    activeSeed
-      ? { n: usd(activeSeed.mv!=null?activeSeed.mv:activeSeed.planted,0), l: `seed deployed → ${activeSeed.t} (${String(activeSeed.date).slice(5)})${activeSeed.mult?` · ${activeSeed.mult.toFixed(2)}× → ${GEN_MULTIPLE}×`:""}`, c: WARN }
+    activeSeedsByThread.length
+      ? { n: String(activeSeedsByThread.length), l: `seed${activeSeedsByThread.length>1?"s":""} growing → ${activeSeedsByThread.map(s=>s.t).join(" · ")}`, c: WARN }
       : { n: usd(latestProceeds,0), l: "seed recycling → next idea", c: WARN },
   ];
   return (
@@ -192,20 +204,21 @@ function StatStrip() {
   );
 }
 
-function SankeyFlow() {
+function SankeyFlow({ branchesForThread, seededForThread, seedAmount, ghostLabels }) {
   const VBW=960, VBH=384, base=266, canopyY=104, seedX=58;
   const nodeX0=212, nodeX1=806, NW=112, NH=54, edgeX=918;
   const S=0.021, wpx=d=>Math.max(8, Math.min(40, d*S));   // dollars → ribbon px
-  const IDEAL=1000, GHOST_RIDE=900;
+  const IDEAL=seedAmount, GHOST_RIDE=Math.round(seedAmount*0.9);
 
-  const real = branches.map(b=>({
+  const real = branchesForThread.map(b=>({
     real:true, ...b,
     origCost:(b.avg!=null && b.qty!=null && b.soldQty!=null) ? b.avg*(b.qty+b.soldQty) : b.proceeds,
   }));
-  const ghosts = seededStations.length
-    ? [{ghost:true,label:"next stock"}]
-    : [{ghost:true,label:"next stock #1"},{ghost:true,label:"next stock #2"}];
-  const stations = [...real, ...seededStations, ...ghosts];
+  const ghosts = seededForThread.length
+    ? (ghostLabels.length ? [{ghost:true,label:ghostLabels[0]}] : [])
+    : ghostLabels.map(label=>({ghost:true,label}));
+  const stations = [...real, ...seededForThread, ...ghosts];
+  if (!stations.length) return null;
   const n = stations.length;
   const X = i => n===1 ? Math.round((nodeX0+nodeX1)/2) : Math.round(nodeX0 + i*(nodeX1-nodeX0)/(n-1));
   const inW  = s => wpx(s.real ? s.origCost : s.seeded ? s.planted : IDEAL);
@@ -244,7 +257,7 @@ function SankeyFlow() {
 
       {/* seed source pill */}
       <rect x={seedX-46} y={base-17} width={94} height={34} rx={17} style={{ fill:"var(--inner-bg)", stroke:WARN, strokeOpacity:0.6 }} />
-      <text x={seedX+1} y={base-1} textAnchor="middle" style={{ fill:WARN, fontSize:12, fontWeight:700 }}>~$1,000</text>
+      <text x={seedX+1} y={base-1} textAnchor="middle" style={{ fill:WARN, fontSize:12, fontWeight:700 }}>~{usd(IDEAL,0)}</text>
       <text x={seedX+1} y={base+11} textAnchor="middle" style={{ fill:"var(--tx5)", fontSize:8, letterSpacing:"1.5px" }}>SEED</text>
 
       {/* recover labels above each real out-segment */}
@@ -283,7 +296,7 @@ function SankeyFlow() {
       {stations.map((s,i)=> s.seeded ? (
         <g key={"n"+i} data-nav-ticker={s.t} style={{cursor:"pointer"}}
            onClick={(e)=>navigateToTicker(e, s.t)}
-           onMouseEnter={(e)=>showTip(e, `${s.t} · ${s.name} — the seed lives here`, `Reseeded from ${s.from} ${s.date}: ${usd(s.planted,0)} planted (${s.fillQty} sh @ ${usd(s.fillPx)})${s.mv!=null?`, now worth ${usd(s.mv,0)}`:""}${s.mult?` (${s.mult.toFixed(2)}× avg cost)`:""}. Harvest at ${GEN_MULTIPLE}×${s.trigger?` (≈${usd(s.trigger,0)}/sh)`:""} AND thesis intact — then this node peels its own house-money branch and the seed moves on.`, WARN)} onMouseMove={moveTip} onMouseLeave={hideTip}>
+           onMouseEnter={(e)=>showTip(e, `${s.t} · ${s.name} — the seed lives here`, `${s.from ? `Reseeded from ${s.from} ${s.date}` : `Seeded ${s.date} — fresh capital, not a recycled harvest`}: ${usd(s.planted,0)} planted (${s.fillQty} sh @ ${usd(s.fillPx)})${s.mv!=null?`, now worth ${usd(s.mv,0)}`:""}${s.mult?` (${s.mult.toFixed(2)}× avg cost)`:""}. Harvest at ${GEN_MULTIPLE}×${s.trigger?` (≈${usd(s.trigger,0)}/sh)`:""} AND thesis intact — then this node peels its own house-money branch and the seed moves on.`, WARN)} onMouseMove={moveTip} onMouseLeave={hideTip}>
           <rect x={X(i)-NW/2} y={base-NH/2} width={NW} height={NH} rx={11} style={{ fill:"var(--panel-bg)", stroke:WARN }} />
           <text x={X(i)} y={base-7} textAnchor="middle" style={{ fill:"var(--tx1)", fontSize:19, fontWeight:600, fontFamily:FONT_DISPLAY }}>{s.t}</text>
           <text x={X(i)} y={base+9} textAnchor="middle" style={{ fill:"var(--tx4)", fontSize:8.5 }}>{s.mult?s.mult.toFixed(2)+"× · ":""}seeded {String(s.date).slice(5)}</text>
@@ -293,7 +306,7 @@ function SankeyFlow() {
         <g key={"n"+i}>
           <rect x={X(i)-NW/2} y={base-NH/2} width={NW} height={NH} rx={11} style={{ fill:"var(--inner-bg)", stroke:"var(--bd3)", strokeDasharray:"5 4" }} />
           <text x={X(i)} y={base-2} textAnchor="middle" style={{ fill:"var(--tx4)", fontSize:10.5, fontWeight:700 }}>{s.label}</text>
-          <text x={X(i)} y={base+14} textAnchor="middle" style={{ fill:"var(--tx5)", fontSize:9.5 }}>~$1,000 in</text>
+          <text x={X(i)} y={base+14} textAnchor="middle" style={{ fill:"var(--tx5)", fontSize:9.5 }}>~{usd(IDEAL,0)} in</text>
         </g>
       ) : (
         <g key={"n"+i} data-nav-ticker={s.t} style={{cursor:"pointer"}}
@@ -315,12 +328,30 @@ function SankeyFlow() {
 function SankeyPanel() {
   return (
     <Panel delay={.04}>
-      <Eyebrow color={ACCENT} note="ribbon width ∝ dollars · amber = recycled seed · green = house money">The flow — one recycled seed, a branch per harvest</Eyebrow>
-      <div style={{ width:"100%", overflowX:"auto" }}>
-        <div style={{ minWidth:660 }}><SankeyFlow/></div>
+      <Eyebrow color={ACCENT} note="ribbon width ∝ dollars · amber = recycled seed · green = house money">The flow — {threadKeys.length>1?"independent seed threads":"one recycled seed"}, a branch per harvest</Eyebrow>
+      <div style={{ display:"flex", flexDirection:"column", gap:22 }}>
+        {threadKeys.map(k => {
+          const meta = THREAD_META[k] || { label:k, seedAmount:1000 };
+          const branchesForThread = branches.filter(b=>b.thread===k);
+          const seededForThread = seededStations.filter(s=>s.thread===k);
+          if (!branchesForThread.length && !seededForThread.length && k!=="core") return null;
+          return (
+            <div key={k}>
+              <div style={{ fontSize:9.5, fontWeight:700, letterSpacing:"0.1em", color:"var(--tx4)", textTransform:"uppercase", marginBottom:6 }}>
+                {meta.label} <span style={{ color:"var(--tx6)", fontWeight:400, textTransform:"none", letterSpacing:"normal" }}>· ~{usd(meta.seedAmount,0)} stake</span>
+              </div>
+              <div style={{ width:"100%", overflowX:"auto" }}>
+                <div style={{ minWidth:660 }}>
+                  <SankeyFlow branchesForThread={branchesForThread} seededForThread={seededForThread}
+                    seedAmount={meta.seedAmount} ghostLabels={THREAD_GHOSTS[k] || ["next station"]} />
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
-      <div style={{ fontSize:9.5, color:"var(--tx6)", marginTop:6, lineHeight:1.6 }}>
-        The <b style={{color:WARN}}>amber trunk</b> is your ~$1,000 seed — recovered whole at each trim and replanted in the next stock. Every stock it passes through peels off a <b style={{color:GAIN}}>green house-money branch</b> that rises and keeps riding until its thesis breaks. Ribbon thickness scales with dollars. <b style={{color:"var(--tx3)"}}>ASML</b> is harvested; the seed now lives in <b style={{color:WARN}}>MU</b> (solid amber node — growing toward its {GEN_MULTIPLE}×); dashed stations are the plan. (The node is where the money <i>grows</i> — so out-flow &gt; in-flow; this isn't a conserved Sankey, it's a compounding one.)
+      <div style={{ fontSize:9.5, color:"var(--tx6)", marginTop:14, lineHeight:1.6 }}>
+        The <b style={{color:WARN}}>amber trunk</b> is a seed — recovered whole at each trim and replanted in the next stock along its <i>own</i> thread. Every stock it passes through peels off a <b style={{color:GAIN}}>green house-money branch</b> that rises and keeps riding until its thesis breaks. Ribbon thickness scales with dollars. In the <b>{THREAD_META.core?.label || "core"}</b> thread, <b style={{color:"var(--tx3)"}}>ASML</b> is harvested and the seed now lives in <b style={{color:WARN}}>MU</b>; the <b>{THREAD_META.musk?.label || "musk"}</b> thread is a separate, independently-sized stake (SPCX+TSLA correlated bet) that doesn't feed from or into the core chain — two trunks, not one chain, because the capital sources are genuinely different. Dashed stations are the plan, not a commitment. (The node is where the money <i>grows</i> — so out-flow &gt; in-flow; this isn't a conserved Sankey, it's a compounding one.)
       </div>
     </Panel>
   );
@@ -361,7 +392,7 @@ function App() {
             TH<span style={{color:ACCENT}}>3</span>SIS · GENERATOR
           </div>
           <div style={{ fontSize:9.5, color:"var(--tx5)", letterSpacing:"0.08em", marginTop:7 }}>
-            the "$1,000 generator" as a flow — one recycled seed threading idea→idea, a house-money branch per harvest · hover any node or ribbon for the why
+            the generator as a flow — {threadKeys.length>1?`${threadKeys.length} independent seed threads`:"one recycled seed"} threading idea→idea, a house-money branch per harvest · hover any node or ribbon for the why
           </div>
         </div>
         <div style={{ textAlign:"right" }}>
@@ -377,7 +408,7 @@ function App() {
       </div>
 
       <div style={{ marginTop:22, padding:"14px 18px", border:"1px dashed var(--bd2)", borderRadius:10, fontSize:9.5, color:"var(--tx5)", lineHeight:1.7 }}>
-        ⚠ <b style={{color:"var(--tx4)"}}>Not financial advice.</b> The flow is mechanically drawn from the generator ledger (<code>PF_STRAT.TRIMMED</code>) and a static IBKR snapshot as of {ASOF}. "House money" is a framing, not a guarantee — a free-rolling branch can still fall. Every harvest is thesis-gated; every reseed needs a fresh chokepoint + cushion.
+        ⚠ <b style={{color:"var(--tx4)"}}>Not financial advice.</b> The flow is mechanically drawn from the generator ledger (<code>PF_STRAT.TRIMMED</code> + <code>PF_STRAT.SEEDED</code>, grouped by <code>thread</code>) and a static IBKR snapshot as of {ASOF}. "House money" is a framing, not a guarantee — a free-rolling branch can still fall. Every harvest is thesis-gated; every reseed needs a fresh chokepoint + cushion.
       </div>
     </div>
   );
