@@ -3,7 +3,7 @@
 *A pre-flight checklist for your TH3SIS dashboard. Run it every quarter, right after Alphabet's earnings — even when nothing looks wrong. The whole point is to catch the quarter where the world quietly moved and your thesis didn't.*
 
 **Earnings calendar reminder:** Alphabet reports roughly late January / late April / late July / late October.
-**Next print: Q2 2026 — July 22, 2026 (after close).**
+**Next print: Q3 2026 — ~late October 2026 (after close, exact date not yet announced).**
 Do this within a week of each print, while the details are fresh.
 
 ---
@@ -146,7 +146,7 @@ This matters especially for Alphabet because the thesis contains several counter
 - Cloud at 63% growth from a company that was at 28% just a year ago (the re-rating speed surprised)
 - DOJ structural remedies being rejected despite a clear monopoly finding (this has not happened yet — if courts *do* impose structural remedies, it will be a much bigger surprise than expected)
 
-> **A caution worth re-reading every time:** The dashboard looks authoritative — the re-rating from $162 to $380 makes it look like the bull case has already "worked." But at $380, the stock is priced for continued Cloud growth and favorable antitrust outcomes. Neither is guaranteed. The bear case at $220–$265 is not far-fetched — it requires two things to go wrong simultaneously. Let the tool organize your thinking; never let it replace it.
+> **A caution worth re-reading every time:** The dashboard looks authoritative — Q2 2026's 82% Cloud growth makes it look like the bull case has already "worked." But the stock actually DROPPED ~7-8% on that print, on capex-guidance optics, landing at ~$319 — below even the base band. That gap between "the best Cloud quarter this thesis has seen" and "the stock fell anyway" is exactly why the bands stay wide and the case stays BASE, not BULL: one beat quarter doesn't settle whether the market believes the capex converts, and Search hasn't confirmed the second half of the bull case yet. Let the tool organize your thinking; never let it replace it.
 
 ---
 
@@ -172,8 +172,28 @@ WHAT SURPRISED ME THIS QUARTER:
 ────────────────────────────────────────────
 ```
 
-### Q2 2026 — (fill in after the July 22 report)
-*(key numbers to capture: Cloud growth %, total revenue vs. ~$108B estimate, Search growth %, Cloud operating margin, Cloud backlog vs. $462B, operating margin excl. gains, DOJ case updates)*
+### Q2 2026 — reported 2026-07-22, updated 2026-07-25
+```
+────────────────────────────────────────────
+QUARTER: Q2 2026            UPDATED ON: 2026-07-25
+Price at update: $319       Most-likely case: BASE (45%, was 55%)
+
+THESIS AUDIT (one line each):
+  Bear  — narrative still true? partially  bands moved? yes ($220-265 → $280-315)  why: Cloud/Search fundamentals don't support bear, but the market's capex-fear reaction + still-pending DOJ appeal keep a real bear tail alive; bands raised for the higher EPS base.
+  Base  — narrative still true? yes, widened  bands moved? yes ($395-435 → $370-415)  why: Cloud (82% growth, 35.5% margin, $514B backlog) individually cleared every bull threshold, but Search's 17% (down from 19%) keeps the base case's own AND-condition for a bull shift from firing. Bands nudged down modestly on real peer-group de-rating evidence (MSFT ~19.5-20x FY27, META ~18x FY27), not on GOOGL's own numbers.
+  Bull  — narrative still true? closer  bands moved? yes ($540-610 → $460-505)  why: needs Search to re-accelerate above 22% AND Cloud to hold 60%+ a second straight quarter — Cloud's leg is now real evidence, Search's leg hasn't fired yet.
+
+PROBABILITY shift this quarter: Cloud>60% AND backlog grew → +10 to Bull per the pre-committed rule (checklist Habit/Step D). No DOJ structural remedy imposed (no bear addition), Apple didn't renew explicitly (no bear subtraction). Net: Bear 20% (unchanged), Base 55%→45%, Bull 25%→35%.
+
+WHAT WOULD PROVE ME WRONG (for my favored case, BASE):
+  Cloud decelerates below 55% for two consecutive quarters (after this quarter's 82% high) — that would mean Q2 was one-quarter catch-up, not a structural step-change, and the base case's Cloud assumption breaks.
+
+WHAT SURPRISED ME THIS QUARTER:
+  Cloud individually beat EVERY bull-case threshold this thesis had set (growth, margin, backlog) — yet the stock dropped ~7-8% anyway, purely on the capex-guidance raise ($180-190B→$195-205B). The fundamentals said bull-leaning-base; the market's reaction said bear-multiple. That gap between the print and the price reaction is the real story of this quarter, not any single number.
+────────────────────────────────────────────
+```
+
+*Key numbers captured: Cloud +82% YoY ($24.8B, 35.5% op margin, $514B backlog, +$50B+ QoQ) — crushed the Q1 63% print and every bull threshold. Total revenue $119.8B vs ~$108B estimate (clear beat). Search +17% YoY to $63.3B (deceleration from Q1's +19%, lands in BASE band not BULL). Capex $44.9B in Q2 (up from $35.7B), FY2026 guide raised to $195-205B from $180-190B — the proximate cause of the stock's -7-8% reaction. DOJ US case: still on appeal to the D.C. Circuit, unresolved, oral arguments expected late 2026/early 2027 — no change. EU Android case: Google's final appeal REJECTED 2026-07-02, EUR4.1B fine now final — a real, concluded, but financially modest adverse outcome, separate from the bigger pending US risk. Peer read: MSFT (~19.5-20x FY27) and META (~18x FY27) forward multiples both came in lower than expected this same week — a live, sector-wide capex-fear de-rate that argues for a lower peer-anchored multiple than GOOGL's own recent history alone would suggest, not something specific to Alphabet.*
 
 ---
 

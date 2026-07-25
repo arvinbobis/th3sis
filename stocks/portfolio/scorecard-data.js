@@ -368,6 +368,15 @@ const PF_SCORECARD = [
     "bandHit": true
   },
   {
+    "t": "GOOGL",
+    "quarter": "Q2 2026",
+    "date": "2026-07",
+    "post": 320,
+    "landed": "bear→base",
+    "conf": "high",
+    "bandHit": true
+  },
+  {
     "t": "META",
     "quarter": "Q4 2024",
     "date": "2025-01",
@@ -768,6 +777,12 @@ const PF_PREDICTIONS = {
     "asOf": "2026-06-06",
     "case": "BASE",
     "note": "probability tail toward BEAR elevated"
+  },
+  "GOOGL": {
+    "quarter": "Q2 2026",
+    "asOf": "2026-07-25",
+    "case": "BASE",
+    "note": "45%, was 55%"
   },
   "MU": {
     "quarter": "Q3 FY2026",

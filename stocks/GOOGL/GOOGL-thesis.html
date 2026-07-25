@@ -76,12 +76,12 @@ function moveTip(e) {
 function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
 
 const SIGNAL_HELP = {
-  "Google Cloud Revenue Growth": "How fast Google Cloud (Alphabet's cloud business) is growing year-over-year. Cloud grew +63% in Q1 2026 — its fastest rate on record — driven by enterprise AI and data-analytics workloads. It now runs at a $80B annual revenue rate with a $462B backlog. Cloud is the single number that re-rated Alphabet from 'disrupted search monopoly' to 'AI infrastructure winner' — and the single number that would break that re-rating if it decelerates sharply.",
-  "Q2 Revenue vs ~$108B Estimate": "Analysts expect Alphabet to report about $108 billion in Q2 2026 sales. This checks whether the growth momentum from Q1 (22% revenue growth) is holding. A beat signals Cloud and Search are compounding together. A miss raises the question of whether AI competition is finally biting or whether cloud bookings are just timing shifts.",
-  "Search Revenue Growth (YoY %)": "How fast Google Search advertising revenue is growing. Search grew +19% to $60.4B in Q1 2026 — queries are at all-time highs and AI Overviews are monetizing at rates comparable to traditional search (ads appear in 25.5% of AI Overview responses, up from 5% a year ago). The existential question: can AI Overviews remain as monetizable as blue links, or will advertisers find click-through conversion falls as users get answers without clicking?",
-  "Operating Margin (ex. gains)": "Alphabet's true operating profitability after stripping out the large one-time investment gains that inflated Q1 2026 reported EPS ($2.35/share came from equity securities). With $180–190B in 2026 capex, the key question is whether the underlying operating margin is expanding (Cloud leverage + Search stability) or compressing (infrastructure cost) from the prior baseline.",
-  "Cloud Operating Margin": "Google Cloud's operating profit margin — how much of each dollar of cloud revenue becomes operating income. Cloud's margin reached 32.9% in Q1 2026, up sharply from near zero two years ago. Higher margin = the cloud investment is delivering returns. If the massive capex ramp compresses this, it raises questions about the unit economics of AI infrastructure.",
-  "DOJ Structural Remedy Risk": "Alphabet is fighting two antitrust cases simultaneously. (1) Search monopoly: DOJ + 35 states are appealing for structural remedies including forced Chrome or Android divestiture — these distribution channels deliver ~40% of Google's search queries. (2) AdTech: DOJ is pushing for forced AdX divestiture. Behavioral remedies (share data, end exclusive deals) would adjust margins but not break the flywheel. Structural remedies would be transformative. Court timelines extend into late 2026 and 2027.",
+  "Google Cloud Revenue Growth": "How fast Google Cloud (Alphabet's cloud business) is growing year-over-year. Cloud grew +82% in Q2 2026 — a step up from Q1's already-record +63% — to $24.8B in quarterly revenue, driven by enterprise AI/TPU demand. Backlog hit $514B (+$50B+ sequentially). This single number crushed every bull-case threshold this thesis had set — the real open question now is whether it holds anywhere near this pace next quarter, or was a one-time catch-up.",
+  "Q2 Revenue vs ~$108B Estimate": "Alphabet reported $119.8B in Q2 2026 revenue (+24% YoY), well above the ~$108B analyst estimate. Cloud and Search both grew, but the stock still dropped ~7-8% on the print because full-year capex guidance was raised from $180-190B to $195-205B — a live example of markets reacting to the cost of AI infrastructure spend before the payoff is fully priced in.",
+  "Search Revenue Growth (YoY %)": "How fast Google Search advertising revenue is growing. Search grew +17% to $63.3B in Q2 2026 — a deceleration from Q1's +19%, landing in this thesis's BASE band (14-18%), not the BULL band (22%+). Queries remain healthy and AI Overviews keep monetizing, but this is the one leg of the bull case that hasn't yet fired alongside Cloud's outperformance.",
+  "Operating Margin (ex. gains)": "Alphabet's operating margin was 34.0% in Q2 2026 (vs 36.1% in Q1), on $44.9B of capex (up from $35.7B in Q1) as full-year capex guidance was raised to $195-205B. The key question stays the same: is the spend converting into Cloud revenue/margin (it is, so far — see Cloud Operating Margin below) or is it outrunning the payoff?",
+  "Cloud Operating Margin": "Google Cloud's operating profit margin — how much of each dollar of cloud revenue becomes operating income. Cloud's margin reached ~35.5% in Q2 2026 (up from 32.9% in Q1), crossing this thesis's own bull-case threshold (above 35%). Higher margin at this scale is real evidence the AI infrastructure buildout is monetizing, not just costing — the opposite of what the stock's -7-8% reaction implied.",
+  "DOJ Structural Remedy Risk": "Alphabet is fighting antitrust on two fronts. US: DOJ + 35 states are appealing the September 2025 ruling (which rejected Chrome/Android structural divestiture, imposed behavioral remedies only) to the D.C. Circuit — oral arguments expected late 2026/early 2027, unresolved this quarter. EU: the EU's top court REJECTED Google's final appeal on the Android case 2026-07-02, finalizing a EUR4.1B fine — a real, concluded outcome, but a smaller and separate matter from the still-pending US structural-remedy risk.",
 };
 const TAG_HELP = {
   BEAT:  "doing better than expected — a good sign.",
@@ -129,7 +129,7 @@ function tipSvg(title, body, note, color, extraClass) {
    ╚══════════════════════════════════════════════════════════════════════════╝ */
 
 // 1 ── Date shown top-right
-const AS_OF_DATE = "2026-05-30";
+const AS_OF_DATE = "2026-07-25";
 
 // 10 ── Summer 2025 dislocation: AI-disruption fears sent stock to 52-week low
 const DISLOCATION_DATE       = "2025-07-15";  // approx. peak-fear trough
@@ -140,31 +140,31 @@ const REVERSION_PRECEDENT_DAYS = 270;         // ~9 months from trough to base r
 const CASES = {
   bear: {
     key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
-    target12: "$220 — $265",
-    op: "Two antitrust fronts reach worst-case outcomes: a DOJ appellate court imposes structural remedies severing Chrome or Android distribution (removing ~40% of Google's default search placement), and forced AdX divestiture breaks the publisher ad-server flywheel that generates premium CPMs. Simultaneously, AI Overviews plateau in ad monetization — advertisers find conversion lower than traditional links as users get answers without clicking — and query volume starts migrating to ChatGPT and Perplexity for higher-value informational research. Cloud decelerates to 30–35% as the initial AI land-rush passes and AWS/Azure reassert supply advantages. Multiple compresses to 22× on a regulatory-discount + earnings-miss combination.",
-    breaks: "DOJ loses the structural remedies appeal in both cases, AND Cloud sustains >50% growth for two more quarters — both together remove the core bear premise.",
-    requires01: "Cloud decelerates to sub-40%; search growth falls below 12% on competitive losses",
-    requires02: "Operating margin compresses as capex spends without proportionate revenue; DOJ structural remedy imposed",
+    target12: "$280 — $315",
+    op: "The Q2 2026 print itself wasn't the bear case — Cloud crushed every threshold this thesis had set. The bear case now rests on what comes NEXT: the market's -7–8% reaction to the capex guide raise ($180–190B → $195–205B) proves investors will punish Alphabet on cost optics even when Cloud is monetizing at a record pace, and if Search's deceleration (19%→17% YoY) continues into the low-teens while capex keeps climbing into 2027 (management's own guidance), the multiple stays compressed regardless of Cloud's growth. A DOJ appellate structural remedy (Chrome/Android divestiture, oral arguments expected late 2026/early 2027) remains the other live tail risk, now compounded by the EU's Android antitrust loss (final appeal rejected 2026-07-02, €4.1B fine) — a real, if financially modest, adverse antitrust outcome that already landed.",
+    breaks: "DOJ loses the structural remedies appeal, AND Cloud backlog keeps converting to revenue at pace for two more quarters (i.e., Q2's $514B backlog isn't a peak) — both together remove the core bear premise.",
+    requires01: "Search growth falls into single digits; Cloud backlog conversion stalls or backlog itself shrinks sequentially",
+    requires02: "Capex keeps rising into 2027 (as guided) without Cloud revenue/margin keeping pace — proving the spend isn't monetizing, just costing",
   },
   base: {
     key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
-    target12: "$395 — $435",
-    op: "Search proves it can grow alongside AI: queries at all-time highs, AI Overviews monetizing at near-parity with traditional search (ads in 25.5% of responses and growing), and no competitor yet demonstrating the ability to capture share of commercial-intent queries at scale. Cloud sustains 50%+ growth — decelerating from 63% but the $462B backlog (nearly doubled sequentially) provides 2–3 years of demand visibility. DOJ remedies land as behavioral: end exclusive distribution deals, share some search index data — adjusts cost structure but doesn't break the data flywheel. Capex is tolerated as 'investment' because Cloud's 32.9% margin already demonstrates the return.",
-    breaks: "Cloud decelerates below 40% for two consecutive quarters (bear shift), or Cloud sustains above 60% AND Search re-accelerates above 22% (bull shift). The base lane is narrower than it looks.",
-    requires01: "Cloud sustains 50%+; Q2 revenue beats guide midpoint; search holds above 15%",
-    requires02: "Cloud margin holds above 31%; capex cycle shows operating leverage emergence in guidance",
+    target12: "$370 — $415",
+    op: "Cloud individually already cleared the bull bar this quarter — 82% YoY growth, 35.5% operating margin, $514B backlog (+$50B+ sequentially) — but Search's deceleration to +17% YoY (from Q1's +19%) keeps the base case's own bull-shift condition (Cloud>60% AND Search>22%, together) from firing. This is the most likely read of Q2: an outstanding Cloud quarter, a solid-not-spectacular Search quarter, and a market reaction driven almost entirely by capex-guidance optics rather than the underlying monetization evidence — exactly CLAUDE.md's 'cost framing panics markets, payoff framing is the real question' pattern playing out live. Management calls the environment 'supply-constrained' (demand exceeding capacity) and expects capex to rise again in 2027 — a genuine signal of durable demand pull, not customers front-loading orders, though the backlog-conversion pace over the next few quarters is the real tell. DOJ US case remains at the behavioral-remedies-only trial outcome, appeal still pending — no change this quarter.",
+    breaks: "Cloud decelerates below 55% for two consecutive quarters (bear shift, after this quarter's 82% high), or Search re-accelerates above 22% while Cloud holds 60%+ (bull shift, confirming both legs fire together). The base lane widened this quarter, not narrowed — Cloud alone doesn't settle it.",
+    requires01: "Cloud holds 55%+ next quarter (deceleration from 82% is expected and fine); Search holds 15%+",
+    requires02: "Backlog keeps growing or holds flat (not shrinking); capex raise shows in guidance as tied to signed bookings, not speculative build",
   },
   bull: {
     key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
-    target12: "$540 — $610",
-    op: "Google Cloud becomes the enterprise AI platform of choice: Gemini models running on Google's own TPU infrastructure deliver lower latency and cost than NVIDIA GPU-rented competitors, and the $462B backlog is the start of a decade-long enterprise AI migration. Search re-accelerates above 22% as AI Mode shopping ads prove measurably more effective than static links — the closed-loop data advantage across Search, YouTube, Maps, and Shopping (Alphabet knows what you bought after seeing the ad) gives targeting precision no standalone model can match. DOJ appellate courts reject structural remedies; Apple continues paying $15–20B annually for default search. The market re-rates Alphabet from 'legacy search monopoly at 29×' to 'dual-compounder AI platform at 36×.'",
-    breaks: "Google Cloud loses market share to AWS/Azure despite growing — i.e., the AI cloud market grows faster than Alphabet's share, proving the 63% gain was catch-up not a structural win. Also: Apple drops Google as default search (observable now in court proceedings).",
-    requires01: "Cloud holds 60%+ for Q2; backlog approaches $500B; Search re-accelerates to 22%+",
-    requires02: "Cloud margin expands above 35% as TPU silicon scales and inference unit economics improve",
+    target12: "$460 — $505",
+    op: "Search re-accelerates above 22% — AI Mode shopping ads and AI Overviews prove measurably more effective than static links, closing the one gap Q2 left open — while Cloud holds 60%+ for a second consecutive quarter, confirming the 82% print was a structural step-change (TPU cost/latency advantage converting the $514B backlog into a multi-year enterprise AI migration) rather than a one-quarter anomaly. DOJ appellate courts reject structural remedies on the US case; the EU Android fine, now final, proves to be the ceiling on antitrust cost rather than the start of a bigger structural risk. The market re-rates Alphabet as both legs — Cloud AND Search — compound together, closing the gap to mega-cap AI-infrastructure peer multiples despite this quarter's sector-wide capex-fear de-rate.",
+    breaks: "Google Cloud's growth proves to be one-quarter catch-up, not structural — decelerates back below 55% next quarter despite the $514B backlog. Also: Search fails to re-accelerate, capping the bull case's second required leg.",
+    requires01: "Cloud holds 60%+ for a second straight quarter; Search re-accelerates to 22%+; backlog keeps growing past $514B",
+    requires02: "Cloud margin holds/expands above 35%; capex guide increases show up as revenue growth, not just cost, within 2-3 quarters",
   },
 };
 
-const NOW_PRICE = 380;
+const NOW_PRICE = 319;
 const HISTORY = [
   { q: "Q4 24", p: 202 },
   { q: "Q1 25", p: 177 },
@@ -172,49 +172,50 @@ const HISTORY = [
   { q: "Q3 25", p: 196 },
   { q: "Q4 25", p: 258 },
   { q: "Q1 26", p: 375 },
+  { q: "Q2 26", p: 320 },
   { q: "NOW",   p: NOW_PRICE },
 ];
-const PROJ_END = { bear: 220, base: 405, bull: 578 };
-const FUTURE_Q = ["Q2 26", "Q3 26", "Q4 26", "Q1 27"];
+const PROJ_END = { bear: 297, base: 392, bull: 482 };
+const FUTURE_Q = ["Q3 26", "Q4 26", "Q1 27", "Q2 27"];
 
 const SIGNALS = {
   bear: [
-    { name: "Google Cloud Revenue Growth",    unit: "% YoY", tag: "MISS",  next: "Q2 2026 (Jul 22)", val: "BEAR <40%",         guide: "Q1 +63%",         pos: 0.20 },
-    { name: "Q2 Revenue vs ~$108B Estimate",  unit: "$B",    tag: "MISS",  next: "Q2 2026 (Jul 22)", val: "BEAR <$106B",       guide: "EST. ~$108B",     pos: 0.18 },
-    { name: "Search Revenue Growth (YoY %)",  unit: "% YoY", tag: "MISS",  next: "Q2 2026 (Jul 22)", val: "BEAR <12%",         guide: "Q1 +19%",         pos: 0.22 },
+    { name: "Google Cloud Revenue Growth",    unit: "% YoY", tag: "MISS",  next: "Q3 2026 (~late Oct)", val: "BEAR <45%",         guide: "Q2 ACTUAL +82%",  pos: 0.20 },
+    { name: "Q2 Revenue vs ~$108B Estimate",  unit: "$B",    tag: "MISS",  next: "Q3 2026 (~late Oct)", val: "BEAR <$106B",       guide: "Q2 ACTUAL $119.8B", pos: 0.18 },
+    { name: "Search Revenue Growth (YoY %)",  unit: "% YoY", tag: "MISS",  next: "Q3 2026 (~late Oct)", val: "BEAR <12%",         guide: "Q2 ACTUAL +17%",  pos: 0.22 },
   ],
   base: [
-    { name: "Google Cloud Revenue Growth",    unit: "% YoY", tag: "MATCH", next: "Q2 2026 (Jul 22)", val: "BASE 50–55%",       guide: "Q1 +63%",         pos: 0.60 },
-    { name: "Q2 Revenue vs ~$108B Estimate",  unit: "$B",    tag: "BEAT",  next: "Q2 2026 (Jul 22)", val: "BASE $107–110B",    guide: "EST. ~$108B",     pos: 0.64 },
-    { name: "Search Revenue Growth (YoY %)",  unit: "% YoY", tag: "MATCH", next: "Q2 2026 (Jul 22)", val: "BASE 14–18%",       guide: "Q1 +19%",         pos: 0.58 },
+    { name: "Google Cloud Revenue Growth",    unit: "% YoY", tag: "BEAT",  next: "Q3 2026 (~late Oct)", val: "BASE 55–65%",       guide: "Q2 ACTUAL +82%",  pos: 0.60 },
+    { name: "Q2 Revenue vs ~$108B Estimate",  unit: "$B",    tag: "BEAT",  next: "Q3 2026 (~late Oct)", val: "BASE $107–110B",    guide: "Q2 ACTUAL $119.8B", pos: 0.64 },
+    { name: "Search Revenue Growth (YoY %)",  unit: "% YoY", tag: "MATCH", next: "Q3 2026 (~late Oct)", val: "BASE 14–18%",       guide: "Q2 ACTUAL +17%",  pos: 0.58 },
   ],
   bull: [
-    { name: "Google Cloud Revenue Growth",    unit: "% YoY", tag: "BEAT",  next: "Q2 2026 (Jul 22)", val: "BULL ≥60%",         guide: "Q1 +63%",         pos: 0.86 },
-    { name: "Q2 Revenue vs ~$108B Estimate",  unit: "$B",    tag: "BEAT",  next: "Q2 2026 (Jul 22)", val: "BULL ≥$112B",       guide: "EST. ~$108B",     pos: 0.88 },
-    { name: "Search Revenue Growth (YoY %)",  unit: "% YoY", tag: "BEAT",  next: "Q2 2026 (Jul 22)", val: "BULL ≥22%",         guide: "Q1 +19%",         pos: 0.83 },
+    { name: "Google Cloud Revenue Growth",    unit: "% YoY", tag: "BEAT",  next: "Q3 2026 (~late Oct)", val: "BULL ≥60%",         guide: "Q2 ACTUAL +82%",  pos: 0.86 },
+    { name: "Q2 Revenue vs ~$108B Estimate",  unit: "$B",    tag: "BEAT",  next: "Q3 2026 (~late Oct)", val: "BULL ≥$112B",       guide: "Q2 ACTUAL $119.8B", pos: 0.88 },
+    { name: "Search Revenue Growth (YoY %)",  unit: "% YoY", tag: "MATCH", next: "Q3 2026 (~late Oct)", val: "BULL ≥22%",         guide: "Q2 ACTUAL +17%",  pos: 0.83 },
   ],
 };
 const MARGIN = {
   bear: [
-    { name: "Cloud Operating Margin",       unit: "%",    tag: "MISS",  next: "Q2 2026 (Jul 22)",    pos: 0.22 },
+    { name: "Cloud Operating Margin",       unit: "%",    tag: "MISS",  next: "Q3 2026 (~late Oct)", pos: 0.22 },
     { name: "DOJ Structural Remedy Risk",   unit: "RISK", tag: "MISS",  next: "Open 2026–2027",      pos: 0.18 },
   ],
   base: [
-    { name: "Cloud Operating Margin",       unit: "%",    tag: "MATCH", next: "Q2 2026 (Jul 22)",    pos: 0.60 },
+    { name: "Cloud Operating Margin",       unit: "%",    tag: "BEAT",  next: "Q3 2026 (~late Oct)", pos: 0.60 },
     { name: "DOJ Structural Remedy Risk",   unit: "RISK", tag: "WATCH", next: "Open 2026–2027",      pos: 0.45 },
   ],
   bull: [
-    { name: "Cloud Operating Margin",       unit: "%",    tag: "BEAT",  next: "Q2 2026 (Jul 22)",    pos: 0.82 },
+    { name: "Cloud Operating Margin",       unit: "%",    tag: "BEAT",  next: "Q3 2026 (~late Oct)", pos: 0.82 },
     { name: "DOJ Structural Remedy Risk",   unit: "RISK", tag: "BEAT",  next: "Open 2026–2027",      pos: 0.78 },
   ],
 };
 
-// Google Cloud Revenue Growth Rate (%) — current Q1 2026 actual, then projections
-const KPI_HIST = 63;
+// Google Cloud Revenue Growth Rate (%) — Q2 2026 ACTUAL (82%, crushed every prior band), then projections
+const KPI_HIST = 82;
 const KPI_PROJ = {
-  bear: [50, 40, 35, 30],
-  base: [55, 50, 48, 45],
-  bull: [60, 62, 65, 68],
+  bear: [55, 45, 38, 32],
+  base: [65, 58, 52, 48],
+  bull: [75, 78, 72, 68],
 };
 
 // 9 ── TRACK RECORD. Append newest quarter to the END each cycle. Oldest auto-drops.
@@ -225,6 +226,7 @@ const TRACK_ALL = [
   { q: "Q3 2025", date: "2025-10", post: 196, reaction: "++", bear: [155, 195], base: [195, 245], bull: [245, 310], landed: "base",  conf: "high" },
   { q: "Q4 2025", date: "2026-02", post: 258, reaction: "++", bear: [200, 252], base: [252, 325], bull: [325, 418], landed: "base",  conf: "high" },
   { q: "Q1 2026", date: "2026-04", post: 375, reaction: "++", bear: [210, 268], base: [268, 350], bull: [350, 445], landed: "bull",  conf: "high" },
+  { q: "Q2 2026", date: "2026-07", post: 320, reaction: "−−", bear: [220, 265], base: [395, 435], bull: [540, 610], landed: "bear→base", conf: "high" },
 ];
 const TRACK_WINDOW    = 6;
 const TRACK           = TRACK_ALL.slice(-TRACK_WINDOW);
@@ -343,9 +345,9 @@ function tagColor(tag) {
 
 function Segmented({ active, setActive, small }) {
   const explain = {
-    bear: ["The pessimistic scenario", "Click to see what GOOGL looks like if things go wrong — DOJ wins structural antitrust remedies breaking up Google's distribution, Cloud decelerates sharply, and Search monetization erodes as AI competitors capture query share. Price would likely fall to the $220–265 range."],
-    base: ["The most-likely scenario", "Click for the steady-as-she-goes view — Cloud sustains 50%+ growth on $462B backlog, Search monetization proves resilient alongside AI, and DOJ remedies stay behavioral rather than structural. Price drifts toward $395–435."],
-    bull: ["The optimistic scenario", "Click for the upside — Cloud becomes the enterprise AI platform of choice via TPU silicon advantages, Search re-accelerates via AI Mode ads, DOJ loses structural remedies appeal. The market re-rates Alphabet from 29× to 36×. Price runs to $540–610."],
+    bear: ["The pessimistic scenario", "Click to see what GOOGL looks like if things go wrong — the market keeps punishing capex optics even as Cloud monetizes, Search growth keeps decelerating toward single digits, and DOJ wins structural antitrust remedies on the still-pending US appeal. Price would likely fall to the $280–315 range."],
+    base: ["The most-likely scenario", "Click for the steady-as-she-goes view — Cloud holds 55%+ growth on a $514B backlog (Q2 already printed 82%), Search holds mid-teens growth without re-accelerating, and DOJ's US case stays on appeal with no structural remedy. Price drifts toward $370–415."],
+    bull: ["The optimistic scenario", "Click for the upside — Cloud holds 60%+ for a second straight quarter confirming Q2's 82% wasn't one-off, Search re-accelerates above 22% via AI Mode ads, DOJ loses the structural remedies appeal. The market re-rates Alphabet toward mega-cap AI-infrastructure peer multiples. Price runs to $460–505."],
   };
   return (
     <div style={{ display: "flex", gap: 5 }}>
@@ -372,8 +374,8 @@ function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
   // Scale: 20% → 0%, 75% → 100%
   const h = Math.max(2, Math.min(96, ((val - 20) / 55) * 100));
   const tp = baseline
-    ? tip("Starting point (Q1 2026 actual)",
-        `This is the most recent real number: Google Cloud grew at +${val}% year-over-year in Q1 2026 — the fastest growth rate on record. The grey dot marks where we are now.`,
+    ? tip("Starting point (Q2 2026 actual)",
+        `This is the most recent real number: Google Cloud grew at +${val}% year-over-year in Q2 2026 — up from Q1's already-record +63%. The grey dot marks where we are now.`,
         "The bars to the right are forecasts of where Cloud growth goes next.", "#9aa4b8")
     : tip(`Forecast: ${label}`,
         `In this scenario, Google Cloud revenue is projected to grow at ${val}% year-over-year by ${label}. Taller bar = faster growth = more AI workloads choosing Google's cloud.`,
@@ -478,8 +480,8 @@ function ReversionClock() {
       </div>
       <div style={{ marginTop: 12, marginBottom: 4, fontSize: 9.5, color: "#5a6477" }}>PRICE RECOVERY · ${REVERSION_TROUGH} trough → ${REVERSION_BASEFLOOR} base floor</div>
       <div {...tip("How far the price has bounced back",
-          `The stock bottomed at $${REVERSION_TROUGH} during the AI-disruption fear selloff. The base floor is $${REVERSION_BASEFLOOR}. At $${NOW_PRICE}, the stock is already well above the base floor — recovery is complete.`,
-          "A full bar means the stock has cleared the base floor. It has.", "#9fb4ff")}
+          `The stock bottomed at $${REVERSION_TROUGH} during the AI-disruption fear selloff. The base floor is $${REVERSION_BASEFLOOR}. At $${NOW_PRICE}, the stock is ${NOW_PRICE >= REVERSION_BASEFLOOR ? "at or above the base floor — recovery is complete" : "back below the base floor again — the Q2 2026 capex-guidance reaction pulled it back down, not a fundamentals miss"}.`,
+          "A full bar means the stock has cleared the base floor.", "#9fb4ff")}
         style={{ position: "relative", height: 14, background: "#11161f", borderRadius: 7, overflow: "hidden", border: "1px solid #1c2230" }}>
         <div style={{ position: "absolute", left: 0, top: 0, bottom: 0, width: `${recPct}%`, background: "linear-gradient(90deg,#f1564b,#3fd07a)", borderRadius: 7 }} />
         <div style={{ position: "absolute", left: `${recPct}%`, top: "50%", width: 8, height: 8, borderRadius: "50%", background: "#9fb4ff", transform: "translate(-50%,-50%)", boxShadow: "0 0 8px #9fb4ff", pointerEvents: "none" }} />
@@ -490,7 +492,7 @@ function ReversionClock() {
         <span>${REVERSION_BASEFLOOR}</span>
       </div>
       <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
-        The summer 2025 AI-disruption dislocation took approximately <span style={{ color: "#e0a83b" }}>9 months</span> to fully reverse. We are <span style={{ color: "#fff", fontWeight: 700 }}>{elapsed} days in</span> and the stock has <span style={{ color: aheadOfPace ? "#3fd07a" : "#e0a83b", fontWeight: 700 }}>{aheadOfPace ? "already cleared the base floor" : "not yet cleared the base floor"}</span> at ${REVERSION_BASEFLOOR}. Re-rating is complete — Google Cloud's four-quarter acceleration from ~30% to 63% forced the market to abandon the 'AI disrupts Google' thesis. The question now is whether the stock can sustain current multiples or press into bull territory on July 22.
+        The summer 2025 AI-disruption dislocation took approximately <span style={{ color: "#e0a83b" }}>9 months</span> to fully reverse. We are <span style={{ color: "#fff", fontWeight: 700 }}>{elapsed} days in</span> and the stock has <span style={{ color: aheadOfPace ? "#3fd07a" : "#e0a83b", fontWeight: 700 }}>{aheadOfPace ? "already cleared the base floor" : "not yet cleared the base floor"}</span> at ${REVERSION_BASEFLOOR}. Re-rating is complete — Google Cloud's acceleration from ~30% to 82% (Q2 2026) forced the market to abandon the 'AI disrupts Google' thesis. The Q2 2026 print (Jul 22) pulled the stock back below the base floor on capex-guidance optics, not on the Cloud/Search fundamentals — the open question is whether it reconverges toward base as that reaction fades, or the capex concern proves more durable than a one-quarter overreaction.
       </div>
     </div>
   );
@@ -560,7 +562,7 @@ function TrackRecord() {
                 fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
                 {...tipSvg(isLast ? "Today" : `${t.q}: actual price`,
                   isLast
-                    ? `Alphabet is at ~$${t.post} now — well above base floor, sitting in the bull zone vs. Q1 2026 bands.`
+                    ? `Alphabet is at ~$${t.post} now — in the gap between the bear and base bands for Q2 2026, pulled down by the capex-guidance reaction despite Cloud individually beating every bull threshold.`
                     : `After ${t.q} earnings, Alphabet actually traded around $${t.post}. Compare this dot to the colored bars to see if the prediction was right.`,
                   null, isLast ? "#9fb4ff" : "#cdd5e3")} />
               {isLast && (
@@ -574,10 +576,9 @@ function TrackRecord() {
         <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
         <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
           Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits in the
-          <span style={{ color: "#3fd07a", fontWeight: 700 }}> bull zone</span> vs. Q1 2026 bands, reflecting a complete reversal of the 2025 bear thesis.
-          The stock spent <span style={{ color: "#f1564b" }}>three quarters in the bear band</span> (Q1–Q3 2025) as markets priced "AI disrupts Google's search monopoly" as the base scenario.
-          Then Google Cloud's acceleration from ~30% to <span style={{ color: "#3fd07a", fontWeight: 700 }}>63% growth</span> over four consecutive quarters forced a
-          <span style={{ color: "#3fd07a", fontWeight: 700 }}> complete re-rating</span>. The pattern: fundamentals were always stronger than the price suggested; the dislocation was a sentiment discount, not a fundamental one.
+          <span style={{ color: "#e0a83b", fontWeight: 700 }}> gap between the bear and base bands</span> for Q2 2026 — Cloud itself (82% growth, $514B backlog) individually cleared every bull threshold this thesis had set, but the stock still dropped on the capex-guidance raise.
+          The stock spent <span style={{ color: "#f1564b" }}>three quarters in the bear band</span> (Q1–Q3 2025) as markets priced "AI disrupts Google's search monopoly" as the base scenario, then
+          <span style={{ color: "#3fd07a", fontWeight: 700 }}> re-rated hard through Q1 2026</span> as Cloud accelerated from ~30% to 63%. Q2's 82% print extended that acceleration further, but this time the market's focus shifted from "does Cloud work" (settled) to "does the spend on it pay off fast enough" — a cost-framing question, not a fundamentals one.
         </div>
       </div>
       <ReversionClock />
@@ -653,22 +654,22 @@ function AlphabetThesis() {
                 <span style={{ color: "#5a6477", marginLeft: 8 }}>%  ·  HIGHER BETTER</span>
               </div>
               <div className="panel" key={active + "-kpi"} style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 120, padding: "12px 4px 0" }}>
-                <KpiCol label="Q1 26" val={KPI_HIST} baseline accentColor="#7b86a0" />
+                <KpiCol label="Q2 26" val={KPI_HIST} baseline accentColor="#7b86a0" />
                 {kpiVals.map((v, i) => <KpiCol key={i} label={FUTURE_Q[i]} val={v} accentColor={c.accent} delay={i * 0.08} />)}
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
                 <div>
                   <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THIS MEASURES</div>
-                  <div style={{ color: "#9aa4b8" }}>Google Cloud year-over-year revenue growth. Q1 2026 printed +63% — the fastest on record. Cloud backlog stands at $462B, nearly doubling sequentially, giving 2–3 years of demand visibility.</div>
+                  <div style={{ color: "#9aa4b8" }}>Google Cloud year-over-year revenue growth. Q2 2026 printed +82% — up from Q1's already-record +63%. Cloud backlog stands at $514B, up $50B+ sequentially, giving 2–3 years of demand visibility.</div>
                 </div>
                 <div>
                   <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THE <span style={{ color: c.accent }}>{c.label}</span> CASE REQUIRES</div>
                   <div style={{ color: c.accent }}>
                     {active === "bull"
-                      ? "Cloud holds near 60%+ as TPU infrastructure advantage attracts enterprise AI consolidation. Backlog approaches $500B by Q2."
+                      ? "Cloud holds 60%+ for a second straight quarter, confirming Q2's 82% wasn't one-off. Search re-accelerates above 22% alongside it."
                       : active === "base"
-                      ? "Cloud decelerates naturally toward 50% as the base grows — still exceptional growth, still justifying the current multiple."
-                      : "Cloud falls to 30–40%, exposing 63% as a one-quarter surge rather than a structural trend. Multiple collapses as the growth story breaks."}
+                      ? "Cloud decelerates naturally toward 55-65% as the base grows — still exceptional growth, still justifying the current multiple. Search holds mid-teens without re-accelerating."
+                      : "Cloud falls below 45%, exposing 82% as a one-quarter catch-up rather than a structural trend. Multiple stays compressed as the growth story breaks."}
                   </div>
                 </div>
               </div>
