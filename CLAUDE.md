@@ -240,8 +240,10 @@ GATE pages, applied to the stock dashboards.
   backfill. TSM migrated 2026-07-11 as the pilot; ASML migrated 2026-07-16 (its own next
   `/update-thesis`, prompted by the user noticing it didn't match TSM's format); MU migrated
   2026-07-19 (its own mid-quarter touch); MRVL migrated 2026-07-19 (same day, separate touch);
-  the remaining 8 stocks migrate at their own next `/update-thesis`, keeping their existing
-  inline-JSX build valid until then.
+  GOOGL migrated 2026-07-25 (a full rebuild, not a reformat — its pre-migration build predated
+  the PAST/CURRENT/FUTURE tab convention entirely; see the Legacy stocks note below for what
+  that meant in practice); the remaining 7 stocks migrate at their own next `/update-thesis`,
+  keeping their existing inline-JSX build valid until then.
 - **Self-containment loosens from "one file" to "one folder + shared engine + theme.css"** —
   already true in spirit (`theme.css` was always external); this just makes it explicit.
 
@@ -285,7 +287,7 @@ GATE pages, applied to the stock dashboards.
   migrated stock that's `node tools/verify-thesis.js <TICKER>`; "the JSX compiles" was never
   the bar.
 - **⚠ Legacy stocks** (built before June 2026, hardcoded hex in JSX — light mode won't render
-  correctly until each is refactored): ALAB, AMZN, AVGO, FICO, GOOGL, META, MSFT, MU,
+  correctly until each is refactored): ALAB, AMZN, AVGO, FICO, META, MSFT, MU,
   NVDA, TSM. AVGO was added to this list 2026-07-18 (a straight oversight — it was built in
   the same pre-June-2026 batch and carries the identical `#dd817a`/`#c59542`/`#66b278`
   palette as TSM/others, just never got listed; found because `verify-thesis` doesn't
@@ -299,8 +301,33 @@ GATE pages, applied to the stock dashboards.
   MRVL migrated 2026-07-19 and came off this list the same day for the identical reason —
   its pre-migration build already only used `#f1564b`/`#e0a83b`/`#3fd07a`/`#2f6dff` (verified:
   `grep -oE '#[0-9a-fA-F]{6}\b' stocks/mrvl/thesis-data.js` returns only those four hex codes).
-  Fix the palette at the stock's next quarterly touch after migration, not before — same per-touch
-  discipline as everything else here.
+  GOOGL migrated 2026-07-25 (a full rebuild, not a reformat — see below) and came off this
+  list the same day after one fix: its pre-migration build used the four permitted case-accent
+  colors but ALSO one extra tooltip-accent blue (`#46aad9`) outside the permitted set, swapped
+  to the permitted `#2f6dff` during the rebuild (verified: `grep -oE '#[0-9a-fA-F]{6}\b'
+  stocks/googl/thesis-data.js` returns only the four permitted hex codes). Fix the palette at
+  the stock's next quarterly touch after migration, not before — same per-touch discipline as
+  everything else here.
+- **GOOGL's migration was a full rebuild, not a mechanical reformat** — worth noting because
+  it's a different case from TSM/ASML/MRVL/MU. Those four already had the PAST/CURRENT/FUTURE
+  tab structure (10-year financials, DCF `VAL_CONFIG`, `PRICE_ZONES`) before their migrations;
+  GOOGL's pre-migration build (from the original May 2026 batch) predated that convention
+  entirely — a single-panel dashboard with no tabs, no `VAL_CONFIG`, no historical financials.
+  Since the shared engine requires all 21 globals from every stock's `thesis-data.js`
+  regardless of migration history, migrating GOOGL meant researching and writing that missing
+  content fresh (Wisesheets 10-Q/10-K facts for 4 years of revenue/margin/FCF/ROIC — capped at
+  4 fiscal years, not TSM's 10, by Wisesheets' free-tier 5-year history limit plus one missing
+  aligned price point; DCF inputs; named peer comps) rather than just moving existing prose
+  into the new file shape. A future not-yet-migrated stock with a similarly old, tab-less build
+  should expect the same larger scope, not the lighter TSM-style port.
+- **thesis-engine.jsx bugfix alongside the GOOGL migration (2026-07-25):** the PAST tab's
+  capex-verdict text assumed a stock's latest capex/revenue ratio is always below its own
+  historical peak (hardcoding "DOWN FROM X% PEAK") — true for TSM/ASML/MRVL/MU's data but false
+  for GOOGL, whose capex intensity is still climbing and was AT its window-high in the latest
+  year. Fixed to branch on `latestCapex < peakCapex` and recompiled
+  (`npx esbuild stocks/engine/thesis-engine.jsx --outfile=stocks/engine/thesis-engine.js
+  --target=es2019`); re-verified all six migrated stocks (TSM, ASML, MU, MRVL, SPGI, GOOGL)
+  since an engine change requires the full pass, not just the touched stock.
 
 ---
 

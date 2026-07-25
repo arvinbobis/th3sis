@@ -2227,7 +2227,7 @@ function PastTab() {
     : { label: "WATCH",    desc: `ROIC ${latestROIC}% · NEAR OR BELOW WACC`,          col: "#dd817a" };
 
   const capexStatus = latestCapex < 35 && latestFCF > PAST_FCF[nY - 2]
-    ? { label: "DISCIPLINED", desc: `${latestCapex}% CAPEX/REVENUE · DOWN FROM ${peakCapex}% PEAK`, col: "#66b278" }
+    ? { label: "DISCIPLINED", desc: latestCapex < peakCapex ? `${latestCapex}% CAPEX/REVENUE · DOWN FROM ${peakCapex}% PEAK` : `${latestCapex}% CAPEX/REVENUE · AT WINDOW HIGH, FCF STILL GROWING`, col: "#66b278" }
     : latestCapex < 45
     ? { label: "ELEVATED",    desc: `${latestCapex}% CAPEX/REVENUE · WATCH FCF`,                    col: "#c59542" }
     : { label: "AGGRESSIVE",  desc: `${latestCapex}% CAPEX/REVENUE · HIGH SPEND`,                   col: "#dd817a" };

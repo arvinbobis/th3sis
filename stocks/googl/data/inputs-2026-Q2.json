@@ -1,0 +1,30 @@
+{
+  "ticker": "GOOGL",
+  "asOf": "2026-07-25",
+  "quarter": "Q2 2026",
+  "inputs": {
+    "price": { "value": 319.74, "src": "Wisesheets EOD — 2026-07-24 close (day after the print)", "pulled": "2026-07-25" },
+    "price_pre_earnings": { "value": 342.09, "src": "Wisesheets EOD — 2026-07-22 close (report day, before the after-close reaction)", "pulled": "2026-07-25" },
+    "revenue_actual": { "value": 119796000000, "src": "SEC 10-Q via Wisesheets — accession 0001652044-26-000071", "pulled": "2026-07-25" },
+    "revenue_consensus_est": { "value": 108000000000, "src": "prior thesis config (own SIGNALS block, set at the 2026-05-30 touch)", "pulled": "2026-07-25" },
+    "eps_diluted_actual": { "value": 9.11, "src": "SEC 10-Q via Wisesheets — accession 0001652044-26-000071", "pulled": "2026-07-25" },
+    "operating_margin_actual": { "value": 0.3403, "src": "SEC 10-Q via Wisesheets — accession 0001652044-26-000071 (calculated)", "pulled": "2026-07-25" },
+    "capex_q2_actual": { "value": 44924000000, "src": "SEC 10-Q via Wisesheets — accession 0001652044-26-000071", "pulled": "2026-07-25" },
+    "cloud_revenue": { "value": 24800000000, "src": "web search — Alphabet Q2 2026 earnings release (Yahoo Finance/9to5google)", "pulled": "2026-07-25" },
+    "cloud_revenue_growth_yoy": { "value": 82, "src": "web search — Alphabet Q2 2026 earnings release", "pulled": "2026-07-25" },
+    "cloud_operating_margin": { "value": 35.5, "src": "web search — Alphabet Q2 2026 earnings release ($8.8B op income / $24.8B cloud revenue)", "pulled": "2026-07-25" },
+    "cloud_backlog": { "value": 514000000000, "src": "web search — Alphabet Q2 2026 earnings call (+$50B+ sequentially from Q1's ~$462B)", "pulled": "2026-07-25" },
+    "search_revenue_growth_yoy": { "value": 17, "src": "web search — Alphabet Q2 2026 earnings release (Search and other revenue +17% to $63.3B)", "pulled": "2026-07-25" },
+    "capex_fy2026_guide_new": { "value": "195-205B", "src": "web search — Alphabet Q2 2026 earnings call (raised from 180-190B)", "pulled": "2026-07-25" },
+    "fcf_q2_actual": { "value": -5900000000, "src": "web search — Alphabet Q2 2026 earnings coverage (Alphabet's first-ever negative quarterly FCF, on capex nearly doubling YoY)", "pulled": "2026-07-25" },
+    "fcf_ttm": { "value": 53000000000, "src": "web search — Alphabet Q2 2026 earnings coverage (trailing-twelve-month FCF still positive)", "pulled": "2026-07-25" },
+    "cash_and_securities": { "value": 240000000000, "src": "web search — Alphabet Q2 2026 earnings coverage", "pulled": "2026-07-25" },
+    "consensus_eps_fy2026": { "value": 14.32, "src": "web search — analyst consensus post-print", "pulled": "2026-07-25" },
+    "consensus_eps_fy2027": { "value": 14.85, "src": "web search — analyst consensus post-print (used as the NTM-ish metric driving price bands)", "pulled": "2026-07-25" },
+    "multiple_bear": { "value": 20, "src": "judgment — below-normal (antitrust/Search-deceleration fear), roughly the midpoint of a 19-21x band", "pulled": "2026-07-25" },
+    "multiple_base": { "value": 26.5, "src": "judgment — normal, roughly the midpoint of a 25-28x band", "pulled": "2026-07-25" },
+    "multiple_bull": { "value": 32.5, "src": "judgment — above-normal, roughly the midpoint of a 31-34x band; lowered from the prior 32-36x framing given the peer-wide de-rate below", "pulled": "2026-07-25" },
+    "multiple_peer_median": { "value": 20.7, "src": "web search — fwd P/E of MSFT (~19.5-20x FY27, GuruFocus/FinanceCharts), META (~18x FY27, MacroTrends), AMZN (~24.5-26x FY27, Seeking Alpha/Tikr). Named comps, median of the four including GOOGL's own ~21.5x.", "pulled": "2026-07-25" }
+  },
+  "notes": "Q2 2026 print (reported 2026-07-22, after close): total revenue $119.8B beat the prior ~$108B estimate handily; Cloud revenue $24.8B/+82% YoY and Cloud operating margin ~35.5% both individually exceed EVERY bull-case threshold this thesis had set (Cloud >=60%, margin >35%, backlog approaching $500B -- backlog actually hit $514B). Search grew +17% YoY, decelerating from Q1's +19% and landing in the BASE band (14-18%), not the bull band (>=22%) -- the base case's own stated bull-shift condition requires Cloud>60% AND Search>22% together, so by its own rule this does NOT yet trigger a full bull shift despite Cloud alone qualifying. The stock still dropped ~7-8% on the print (342.09 pre- to 319.74 post-) because full-year capex guidance was raised from $180-190B to $195-205B AND Alphabet posted its first-ever NEGATIVE quarterly FCF (-$5.9B) -- a live case of CLAUDE.md's cost-framing-panics-markets pattern, but a genuinely real (not purely optics) data point this time: TTM FCF is still ~$53B positive and cash/securities sit around $240B, so no liquidity concern, but the trend is the thing to watch. Pull-forward test: management described a 'supply-constrained environment' (demand exceeding capacity, not customers front-loading orders) and backlog GREW rather than shrank -- both point toward durable demand extension, not pull-forward, though the true test is whether Cloud revenue keeps converting backlog at pace AND FCF returns to positive over the next few quarters (the KPIs that would distinguish durable demand from pure cost overhang). Separately, the EU's top court rejected Google's final appeal on the Android antitrust case 2026-07-02, finalizing a EUR4.1B fine -- a real, concluded outcome, but a different and smaller matter than the still-pending US DOJ structural-remedies appeal (oral arguments expected late 2026/early 2027), which is unchanged this quarter. Multiple bands nudged down from the 22-25/28-31/32-36x framework set in May given real evidence the whole mega-cap AI-capex complex (MSFT, META, AMZN here) has been de-rating this same week on capex-fear -- named peer comps, not just GOOGL's own history."
+}
