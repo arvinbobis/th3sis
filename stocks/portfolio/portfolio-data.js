@@ -78,10 +78,20 @@
  * of this sync, the nearest catalyst of anything in the book. Live price $429.06 sits at the
  * bottom of the base band, well above the $400 floor — not a breach, just the name to watch
  * first. Flipped hasThesis true for SPGI in PF_RAW.
+ * 2026-07-25: price/PnL-only resync from live IBKR (net liq 34,774.18 → 34,364.74, cash
+ * unchanged at 4,284.59 — no new fills, no live orders). Broad drift, nothing thesis-
+ * breaking identified. Sharpest single move: MRVL -8.1% today to $192.29 — back BELOW its
+ * $195 re-entry floor again (was $208.25/above floor on 07-23, a ~2-day round trip through
+ * the line). Re-entry gate is still the ~2026-08-28 earnings; this is a floor-touch note,
+ * not a re-underwrite. AVGO also dipped back below its $390 floor ($381.43, was
+ * essentially-at-floor on 07-23). ASML still below its $1,900 floor, slightly worse
+ * ($1,755.39 vs $1,782.99). SPGI at $426.40 (was $429.06), still above its $400 floor, now
+ * 3 days from its Jul 28 earnings gate. DRAM had the largest single-day dollar swing in the
+ * book (-$92.25).
  * ─────────────────────────────────────────────────────────────────────────── */
 
-const PF_ASOF = "2026-07-23";
-const PF_ACCT = { netLiq: 34774.18, cash: 4284.59, dividends: 5.16, buyingPower: 4284.59 };
+const PF_ASOF = "2026-07-25";
+const PF_ACCT = { netLiq: 34364.74, cash: 4284.59, dividends: 5.16, buyingPower: 4284.59 };
 
 // ── Buy-alert pre-commitment (single source of truth for every armed ticker) ──
 // Previously hand-mirrored in three places: each thesis's own `const ALERT`,
@@ -121,36 +131,36 @@ const PF_THEMES = {
 // 2026-07-09 (later same day than that sync) — all closed positions per live IBKR
 // pull, see header note. ALAB and MRVL both had full built theses.
 const PF_RAW = [
-  ["AMZN","Amazon.com",           8.1653, 202.74,  238.14, 1944.48,  289.08, -54.79, "platforms",    true ],
-  ["ASML","ASML Holding",         0.5986, 730.61, 1782.99, 1067.30,  629.96, -11.30, "semis",        true ],
-  ["AVGO","Broadcom",             1.1432, 351.63,  390.50,  446.42,   44.44,  -7.21, "semis",        true ],
-  ["BKNG","Booking Holdings",    10.7000, 188.61,  177.31, 1897.22, -120.86,  -5.89, "diversifiers", false],
-  ["BN","Brookfield",            11.0450,  45.36,   41.93,  463.12,  -37.88,   1.33, "diversifiers", false],
-  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  281.80,  295.58,   -5.40,   0.00, "findata",      false],
-  ["CME","CME Group",             0.9659, 311.60,  250.06,  241.53,  -59.44,   0.79, "findata",      false],
-  ["DRAM","Roundhill Memory ETF",16.9247,  59.14,   57.37,  970.97,  -30.03,  -6.77, "semis",        false],
-  ["EFX","Equifax",               4.9299, 253.60,  170.45,  840.30, -409.94,   0.00, "findata",      false],
-  ["EQIX","Equinix",              0.0936,1078.41, 1028.74,   96.29,   -4.65,   0.00, "power",        false],
-  ["ETN","Eaton",                 0.2627, 384.38,  404.02,  106.14,    5.16,  -0.76, "power",        false],
-  ["FICO","Fair Isaac",           1.8783,1407.84, 1212.75, 2277.91, -366.44, -16.38, "findata",      true ],
-  ["GE","GE Aerospace",           2.7332, 295.44,  340.37,  930.30,  122.80,  -2.24, "power",        false],
-  ["GEV","GE Vernova",            0.9451,1060.05,  985.00,  930.92,  -70.93,  -0.03, "power",        false],
-  ["GOOG","Alphabet",             3.0338, 227.50,  323.90,  982.65,  292.45, -54.64, "platforms",    true ],
-  ["INTU","Intuit",               2.3960, 642.94,  289.00,  692.44, -848.03,  10.85, "platforms",    false],
-  ["MA","Mastercard",             5.2499, 532.50,  534.56, 2806.39,   10.79,  13.54, "payments",     false],
-  ["MBGL","Mobility Global",      5.0000,  21.19,   20.38,  101.90,   -4.05,   0.00, "findata",      false],
-  ["MCO","Moody's",               5.1545, 484.90,  485.59, 2502.97,    3.54, -21.19, "findata",      false],
-  ["META","Meta Platforms",       2.9644, 610.47,  612.19, 1814.78,    5.09, -44.41, "platforms",    true ],
-  ["MSFT","Microsoft",            5.8559, 434.43,  387.96, 2271.87, -272.11, -13.92, "platforms",    true ],
-  ["MU","Micron Technology",      1.0769, 883.91,  964.80, 1038.99,   87.11,   5.73, "semis",        true ],
-  ["NVDA","NVIDIA",               2.1852, 183.96,  209.37,  457.52,   55.53,  -5.88, "semis",        true ],
-  ["PWR","Quanta Services",       0.4109, 732.43,  637.94,  262.13,  -38.83,  -2.14, "power",        false],
-  ["QQQ","Invesco QQQ",           0.9735, 722.02,  696.18,  677.73,  -25.16,  -8.93, "index",        false],
-  ["QQQM","Invesco Nasdaq 100",   0.6868, 292.65,  286.63,  196.86,   -4.13,  -2.60, "index",        false],
-  ["SPCX","SpaceX (Space Exploration Technologies)", 9.0000, 120.11, 115.05, 1035.45, -45.55, -1.89, "diversifiers", false],
-  ["SPGI","S&P Global",           5.8357, 504.01,  429.06, 2503.87, -437.36,   0.00, "findata",      true ],
-  ["SPMO","Invesco S&P 500 Momentum", 1.3592, 147.87, 148.73, 202.15,  1.16,  -1.82, "index",        false],
-  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  416.20,  298.91,   -2.08,  -3.60, "semis",        true ],
+  ["AMZN","Amazon.com",           8.1653, 202.74,  231.55, 1890.68,  235.28, -17.23, "platforms",    true ],
+  ["ASML","ASML Holding",         0.5986, 730.61, 1755.39, 1050.78,  613.44, -28.50, "semis",        true ],
+  ["AVGO","Broadcom",             1.1432, 351.63,  381.43,  436.05,   34.07, -12.62, "semis",        true ],
+  ["BKNG","Booking Holdings",    10.7000, 188.61,  177.26, 1896.68, -121.39,  47.40, "diversifiers", false],
+  ["BN","Brookfield",            11.0450,  45.36,   41.67,  460.25,  -40.75,   5.08, "diversifiers", false],
+  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  285.07,  299.01,   -1.97,   0.22, "findata",      false],
+  ["CME","CME Group",             0.9659, 311.60,  255.37,  246.66,  -54.31,   1.01, "findata",      false],
+  ["DRAM","Roundhill Memory ETF",16.9247,  59.14,   52.85,  894.46, -106.54, -92.25, "semis",        false],
+  ["EFX","Equifax",               4.9299, 253.60,  172.54,  850.60, -399.64,  28.69, "findata",      false],
+  ["EQIX","Equinix",              0.0936,1078.41, 1084.24,  101.48,    0.55,   4.74, "power",        false],
+  ["ETN","Eaton",                 0.2627, 384.38,  404.07,  106.15,    5.17,  -2.91, "power",        false],
+  ["FICO","Fair Isaac",           1.8783,1407.84, 1237.37, 2324.15, -320.20,  58.57, "findata",      true ],
+  ["GE","GE Aerospace",           2.7332, 295.44,  354.30,  968.37,  160.87,  14.49, "power",        false],
+  ["GEV","GE Vernova",            0.9451,1060.05, 1014.75,  959.04,  -42.81, -15.54, "power",        false],
+  ["GOOG","Alphabet",             3.0338, 227.50,  318.60,  966.57,  276.37,   0.79, "platforms",    true ],
+  ["INTU","Intuit",               2.3960, 642.94,  295.25,  707.42, -833.06,  32.87, "platforms",    false],
+  ["MA","Mastercard",             5.2499, 532.50,  537.27, 2820.61,   25.02,  36.64, "payments",     false],
+  ["MBGL","Mobility Global",      5.0000,  21.19,   20.55,  102.75,   -3.20,  -0.75, "findata",      false],
+  ["MCO","Moody's",               5.1545, 484.90,  471.50, 2430.35,  -69.08,  -3.81, "findata",      false],
+  ["META","Meta Platforms",       2.9644, 610.47,  594.10, 1761.15,  -48.53, -35.57, "platforms",    true ],
+  ["MSFT","Microsoft",            5.8559, 434.43,  381.40, 2233.44, -310.54,  -1.05, "platforms",    true ],
+  ["MU","Micron Technology",      1.0769, 883.91,  910.77,  980.81,   28.93, -85.55, "semis",        true ],
+  ["NVDA","NVIDIA",               2.1852, 183.96,  206.80,  451.90,   49.91,  -4.28, "semis",        true ],
+  ["PWR","Quanta Services",       0.4109, 732.43,  625.84,  257.16,  -43.80, -11.49, "power",        false],
+  ["QQQ","Invesco QQQ",           0.9735, 722.02,  683.90,  665.78,  -37.11,  -7.85, "index",        false],
+  ["QQQM","Invesco Nasdaq 100",   0.6868, 292.65,  281.60,  193.41,   -7.58,  -2.32, "index",        false],
+  ["SPCX","SpaceX (Space Exploration Technologies)", 9.0000, 120.11, 113.45, 1021.01, -59.99, -43.15, "diversifiers", false],
+  ["SPGI","S&P Global",           5.8357, 504.01,  426.40, 2488.34, -452.88,  37.35, "findata",      true ],
+  ["SPMO","Invesco S&P 500 Momentum", 1.3592, 147.87, 146.53, 199.16,  -1.83,  -4.49, "index",        false],
+  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  402.20,  288.86,  -12.14,  -9.61, "semis",        true ],
 ];
 const PF_POS = PF_RAW.map(r => ({
   t:r[0], name:r[1], qty:r[2], avg:r[3], px:r[4], mv:r[5], up:r[6], day:r[7], theme:r[8], thesis:r[9],
@@ -215,13 +225,13 @@ const PF_STRAT = {
     // amount was decided this session (data/documentation update only, per instruction —
     // manual execution always, this is not a placed order).
     { t:"AVGO", limit:390,  cap:0,   size:"TBD — held, size not decided", musk:false, watch:false,
-      anchor:"HELD. Buy floor ($390, base-case floor) essentially retouched: $390.50 as of 2026-07-23 (was $369.99/-5.1% on 07-17, now back to roughly flat vs floor). VMware ARR REVIEW_GATE (2026-09-04) explicitly conditions any add — thesisIntact is still true, but that earnings print is the real re-test before sizing anything here. The Amazon RNG custom-networking WATCH item (added 2026-07-18) is still just a watch, not yet a kill-switch." },
+      anchor:"HELD. Buy floor ($390, base-case floor) breached again: $381.43 as of 2026-07-25 (was essentially flat vs floor on 07-23, -2.2% now). VMware ARR REVIEW_GATE (2026-09-04) explicitly conditions any add — thesisIntact is still true, but that earnings print is the real re-test before sizing anything here. The Amazon RNG custom-networking WATCH item (added 2026-07-18) is still just a watch, not yet a kill-switch." },
     { t:"ASML", limit:1900, cap:0,   size:"TBD — held/trimmed, size not decided", musk:false, watch:false,
-      anchor:"HELD (post-harvest, remainder rides as house money — see TRIMMED). Buy floor ($1,900, set 2026-07-16) still breached: $1,782.99 as of 2026-07-23 (-6.2%, was -8.0% on 07-17 — modest recovery, still below floor). This would be a fresh-capital add, not a re-buy of already-trimmed shares. No new thesis-breaking news identified this session — flagged as a data gap, not evaluated for whether the drop is warranted." },
+      anchor:"HELD (post-harvest, remainder rides as house money — see TRIMMED). Buy floor ($1,900, set 2026-07-16) still breached: $1,755.39 as of 2026-07-25 (-7.6%, slightly worse than -6.2% on 07-23). This would be a fresh-capital add, not a re-buy of already-trimmed shares. No new thesis-breaking news identified this session — flagged as a data gap, not evaluated for whether the drop is warranted." },
     { t:"MRVL", limit:195,  cap:0,   size:"TBD — NOT held, re-entry, size not decided", musk:false, watch:false,
-      anchor:"NOT HELD (sold 2026-07-09). Re-entry floor ($195) no longer breached as of 2026-07-23: $208.25, back above floor (was $188.68/-3.2% on 07-17). Full re-underwrite gate is still the ~2026-08-28 earnings (see REVIEW_GATES) — this row exists so the floor-touch itself isn't silently missed, not to imply the re-entry case has been re-verified either way." },
+      anchor:"NOT HELD (sold 2026-07-09). Re-entry floor ($195) breached again as of 2026-07-25: $192.29, down -8.1% in a single session (was $208.25/above floor on 07-23 — a ~2-day round trip through the line). Full re-underwrite gate is still the ~2026-08-28 earnings (see REVIEW_GATES) — this row exists so the floor-touch itself isn't silently missed, not to imply the re-entry case has been re-verified either way." },
     { t:"TSLA", limit:250,  cap:500, size:"$500",          musk:true,  watch:false,
-      anchor:"Not yet placed (SPCX filled 2026-07-20; this one still waits). /prescreen FAILED on cushion 2026-07-12 (~182–396× earnings depending on metric) — no valuation floor, sentiment/support anchor only. $250 = a real ~16% break below the observed 52wk low, not an arbitrary guess. Reported earnings 2026-07-22 — stock down -7.7% to $345.25 the next session (2026-07-23), consistent with an earnings reaction, but still far above the $250 limit and the FAIL verdict is unchanged; informational only, no action." },
+      anchor:"Not yet placed (SPCX filled 2026-07-20; this one still waits). /prescreen FAILED on cushion 2026-07-12 (~182–396× earnings depending on metric) — no valuation floor, sentiment/support anchor only. $250 = a real ~16% break below the observed 52wk low, not an arbitrary guess. Reported earnings 2026-07-22, dropped -7.7% the next session; continued drifting lower, $311.30 as of 2026-07-25 (-2.6% that day). Still far above the $250 limit and the FAIL verdict is unchanged; informational only, no action." },
     { t:"TDG",  limit:1150, cap:0,   size:"small",         musk:false, watch:true,
       anchor:"Watchlist only. Better-valued than GE but 5.9× leverage + rate risk. GE is likely enough for aerospace." },
   ],
@@ -233,7 +243,7 @@ const PF_STRAT = {
     { t:"ALAB", date:"2026-08-11", note:"NOT HELD (sold 2026-07-09) — this now gates the re-entry buyFloor ($300 in PF_ALERTS), not an add to an existing position. Leo CXL ramp is still the key variable to re-check before re-underwriting." },
     { t:"MRVL", date:"~2026-08-28", note:"NOT HELD (sold 2026-07-09) — gates the re-entry buyFloor ($195 in PF_ALERTS, its own base-case floor). Passive QQQ/QQQM exposure covers the gap until then." },
     { t:"MU",   date:"~2026-09-24", note:"Price fell ~15% since the 07-11 update ($979→~$880) in a mid-July memory-sector selloff (SK Hynix's own Q2 miss, CXMT headlines) — no new MU-specific bad news, thesis intact, base floor unchanged at $1,100. First PF_ALERTS entry for MU. Update 2026-07-19: price has drifted further to $844 (07-17 close) — now BELOW the $883.91 avg cost of the existing SEEDED position, not just below the $1,100 thesis floor. Already fully seeded (see PF_STRAT.SEEDED) — not added to LIMITS as a fresh-capital row; whether to add MORE below the existing seed's own cost basis is a judgment call, not a mechanical trigger (rule 4: don't add just because it dropped). Update 2026-07-23: price recovered to $964.80, unrealized flipped back positive." },
-    { t:"SPGI",  date:"2026-07-28", note:"HELD legacy position (pre-existing, not a generator seed), thesis built 2026-07-18 with base case $425–515 and buyFloor $400. Live at $429.06 as of 2026-07-23 — sits at the bottom of its own base band, well above the $400 floor, not breached. Nearest earnings catalyst of anything in the book (5 days out as of this sync) — this is also the reissued first ex-Mobility guide. Kill-switch: Ratings billed issuance growth turns negative before the guided Q4 2026 deceleration (confirming Q1's strength was pulled forward, not durable), or two straight quarters of continuing-ops organic cc revenue missing the 6-8% FY2026 guide." },
+    { t:"SPGI",  date:"2026-07-28", note:"HELD legacy position (pre-existing, not a generator seed), thesis built 2026-07-18 with base case $425–515 and buyFloor $400. Live at $426.40 as of 2026-07-25 (was $429.06 on 07-23) — sits at the bottom of its own base band, well above the $400 floor, not breached. Nearest earnings catalyst of anything in the book (3 days out as of this sync) — this is also the reissued first ex-Mobility guide. Kill-switch: Ratings billed issuance growth turns negative before the guided Q4 2026 deceleration (confirming Q1's strength was pulled forward, not durable), or two straight quarters of continuing-ops organic cc revenue missing the 6-8% FY2026 guide." },
   ],
 
   RULES: [
