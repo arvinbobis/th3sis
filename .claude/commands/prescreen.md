@@ -28,6 +28,21 @@ full `/thesis` data pull (no 6-quarter history, no full analyst consensus spread
   starting point rather than re-deriving from scratch, and note whether this prescreen is
   what its tripwire firing looks like.
 
+**Also check Scout's raw ticker-level signal** — `PF_RADAR` only covers cross-cutting
+themes already promoted to that file; it won't catch a candidate Scout has flagged directly
+that never became a theme row. Two lookups, both cheap:
+- Grep `~/Programs/grok-buy-side-scalper/reports/*.md` for the ticker over the last ~60 days
+  (wider than Step 5's 30-day crediting window — this is research input, not attribution).
+  Note which account(s) raised it, what they actually said, and how recently/repeatedly.
+- If `~/Programs/grok-buy-side-scalper/data/learning_state.json` has a `ticker_scores` entry
+  for this ticker, note its reward and mention count — a high, decayed-recent reward is a
+  quantified read on how hot this name already is in the accounts you trust most.
+Feed whatever you find directly into the gate, don't just log it as a footnote — it's the
+sharpest input to **Question 3 (already-priced-in)** below: if your highest-reward accounts
+have been flagging this for weeks, treat it as less contrarian, not as a green light on its
+own. Keep the specific findings (account, date, what was said) — Step 5 reuses this same
+lookup for crediting, no need to re-grep.
+
 ## Step 2 — Run the six-question gate
 Answer each explicitly, one line of reasoning per question:
 
@@ -65,11 +80,10 @@ One paragraph, no more: the verdict, the single deciding factor, and — if PASS
 next step is `/thesis $ARGUMENTS`.
 
 ## Step 5 — Credit Scout if this candidate originated there
-If the verdict is **PASS** (not PASS-WATCH or FAIL — only a real gate clear counts), check
-whether $ARGUMENTS traces back to a Scout report: grep
-`~/Programs/grok-buy-side-scalper/reports/*.md` for the ticker over the last ~30 days, or
-check if a `PF_RADAR` theme already named it. If it does, identify which account(s) most
-directly surfaced it, then run (from that repo):
+If the verdict is **PASS** (not PASS-WATCH or FAIL — only a real gate clear counts), use
+Step 1's Scout-signal lookup (no need to re-grep): did $ARGUMENTS actually trace back to a
+Scout report, or a `PF_RADAR` theme? If it did, identify which account most directly
+surfaced it, then run (from that repo):
 ```
 cd ~/Programs/grok-buy-side-scalper && python -m scalper.cli mark-conversion \
   --account <username, no @> --ticker $ARGUMENTS --outcome prescreen_pass \
