@@ -76,7 +76,7 @@ function moveTip(e) {
 function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
 
 const SIGNAL_HELP = {
-  "Scores Revenue Growth (YoY %)": "FICO's Scores segment is the royalty-fee business — every mortgage, auto loan, and credit card application that uses a FICO score generates a fee. FICO raised its per-score mortgage price from $0.60 to $10+ over five years, driving explosive growth (+60% last quarter). Now VantageScore is accepted by Freddie Mac and Fannie Mae. The question: do lenders substitute VantageScore for FICO (threatening pricing) or add it alongside FICO (neutral for volume)?",
+  "Scores Revenue Growth (YoY %)": "FICO's Scores segment is the royalty-fee business — every mortgage, auto loan, and credit card application that uses a FICO score generates a fee. FICO raised its per-score mortgage price from $0.60 to $10+ over five years, driving explosive growth that just decelerated from +60% to +41% YoY. VantageScore 4.0 is accepted by Freddie Mac and Fannie Mae, but only through a limited, approved-lenders-only rollout so far. The question: do lenders substitute VantageScore for FICO (threatening pricing) or add it alongside FICO (neutral for volume)?",
   "VantageScore Lender Adoption": "FHFA's approval of VantageScore 4.0 for GSE mortgages doesn't automatically make lenders switch. Mortgage underwriting systems are built around FICO. FHFA's 'bi-score' requirement (lenders must pull BOTH FICO 10T AND VantageScore 4.0) may actually increase FICO's volume short-term. This KPI tracks whether mortgage originators are actively substituting VantageScore for FICO in their decisions — the data comes from MBA surveys and FHFA reporting.",
   "Mortgage Origination Volume": "FICO earns a royalty fee per credit score pull. Mortgages generate the most pulls (typically 3 per application). Higher origination volume = more revenue at flat prices. Observable weekly via the MBA Mortgage Applications Index. Rate cuts or a housing recovery would boost this; a recession would hurt it.",
   "Software ARR Growth %": "FICO's Software segment (FICO Platform, decision management tools sold to banks) is the diversification story. Currently growing 10% Annual Recurring Revenue. If Scores pricing eventually erodes, Software needs to compensate. The bull case for FICO's long-term value requires Software to accelerate toward 20%+ ARR growth.",
@@ -117,7 +117,7 @@ function tipSvg(title, body, note, color, extraClass) {
    ╚══════════════════════════════════════════════════════════════════════════╝ */
 
 // 1 ── DATE shown top-right
-const AS_OF_DATE = "2026-05-29";
+const AS_OF_DATE = "2026-07-31";
 
 // 10 ── VantageScore / FHFA dislocation (July 2025). Update only if a new shock occurs.
 const DISLOCATION_DATE = "2025-07-08";  // FHFA approves VantageScore; FICO crashes ~35% in weeks
@@ -128,82 +128,84 @@ const REVERSION_PRECEDENT_DAYS = 365;   // benchmark: full year to assess recove
 const CASES = {
   bear: {
     key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
-    target12: "$450 — $750",
-    op: "Operational state: VantageScore's GSE acceptance proves structural — mortgage lenders gradually substitute the free-or-cheap alternative ($4.50/score from Equifax) for FICO ($10+), forcing FICO to roll back per-score pricing from $10+ to $3–5 to stay competitive. Scores revenue growth decelerates from +60% YoY to low single digits and eventually declines. The FTC investigation or Senator Hawley's scrutiny results in a negotiated rollback or Congressional pricing cap. Software's 10% ARR growth cannot compensate for the 91%-margin Scores implosion, and the market reprices FICO as a competitive software company.",
-    breaks: "Two consecutive Scores revenue growth quarters above 30% YoY after the bi-score requirement is fully live — that proves lenders aren't substituting VantageScore for FICO, only adding it, which kills the pricing erosion thesis.",
-    requires01: "VantageScore adoption data + FICO pricing rollback (observable now)",
-    requires02: "Scores revenue below 15% YoY + FTC action materializes",
+    target12: "$650 — $850",
+    op: "Operational state: VantageScore's GSE acceptance keeps widening — even though the bi-merge (both-scores) requirement remains postponed, FHFA/Fannie/Freddie keep approving individual lenders for VantageScore-only underwriting, and each approval is a lender FICO no longer gets a guaranteed pull from. Scores growth already decelerated sharply this quarter (60% → 41% YoY) before any real substitution has occurred — if that trend continues into single digits, or if the FTC/Hawley scrutiny turns into an actual pricing rule, FICO's per-score pricing power breaks for good. Software's ~10% ARR growth cannot offset a 91%-margin Scores slowdown, and the market reprices FICO as ordinary data/software rather than a toll booth.",
+    breaks: "Two consecutive quarters of Scores revenue growth reaccelerating back above 40% YoY, alongside evidence that the approved-lender VantageScore rollout stays capped at its initial cohort rather than widening — that would show this quarter's deceleration was a pricing-hike comp effect, not the start of real substitution.",
+    requires01: "VantageScore lender rollout widens beyond the initial approved-lender cohort (observable now via FHFA/MBA)",
+    requires02: "Scores growth falls below 15% YoY for two consecutive quarters",
   },
   base: {
     key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
-    target12: "$1,100 — $1,700",
-    op: "Operational state: the VantageScore GSE transition plays out slowly — lenders use the bi-score requirement as a compliance tool but retain FICO 10T as their primary underwriting model because it demonstrably outperforms. FICO moderates but does not reverse per-score price increases, keeping Scores growth at 20–35% YoY. Software ARR accelerates to 15–18% as FICO Platform matures. At 29x FY2026E non-GAAP $44 EPS, current price (~$1,278) is roughly base fair value — the earnings excellence is real, the multiple discount for competitive risk is appropriate.",
-    breaks: "Either Scores growth decelerates below 15% YoY for two consecutive quarters (bear), or lender VantageScore adoption proves near-zero and FICO resumes 50%+ Scores growth with a multiple re-expansion above 40x (bull).",
-    requires01: "VantageScore lender adoption stays below 20% (MBA/FHFA data)",
-    requires02: "Scores growth 25%+ YoY + no pricing legislation proposed",
+    target12: "$950 — $1,300",
+    op: "Operational state: the VantageScore transition is still moving slowly by design — FHFA is running a deliberately limited, approved-lenders-only rollout of VantageScore 4.0, and the bi-merge (both-scores) requirement that would force a head-to-head test has been postponed rather than implemented. FICO keeps most of its pricing power but growth normalizes off last year's extreme price-hike comps: Scores revenue decelerated from +60% to +41% YoY this quarter, and total revenue ($674M) plus the raised FY2026 guide (~$2.53B) both landed a shade below Street. The market's brutal -17% post-earnings reaction wasn't an earnings-quality problem — it was the multiple compressing further, to roughly 24–27x, now in line with the SPGI/MCO/VRSK/EFX peer median (~24x) rather than FICO's own richer history.",
+    breaks: "Either Scores growth decelerates below 15% YoY for two consecutive quarters (bear), or Scores growth reaccelerates above 40% YoY WITH the multiple actually re-expanding above 32x (bull) — this quarter delivered the first half of that bull condition (Scores hit 41%) but not the second (the multiple compressed instead of expanding), which is exactly why base remains the call.",
+    requires01: "VantageScore lender rollout stays limited to the initial approved cohort (FHFA/MBA data)",
+    requires02: "Scores growth trending 25–35% YoY + no pricing legislation proposed",
   },
   bull: {
     key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
-    target12: "$1,900 — $2,600",
-    op: "Operational state: VantageScore fails to displace FICO at the lender level despite GSE acceptance — the transition proves too operationally complex, FICO 10T's superior predictive performance keeps risk managers on FICO, and the bi-score requirement actually increases FICO's volume. EPS compounds 25–30% annually through FY2027–2028 as mortgage volumes recover in a lower-rate environment, the FTC investigation is quietly dropped, and Steve Eisman covers his short. The market re-rates FICO back toward 42–52x as the pricing-moat narrative is confirmed rather than destroyed.",
-    breaks: "Scores revenue growth decelerates below 20% YoY in any quarter after bi-score is fully live — that's the first quantitative proof that VantageScore is actually displacing FICO in lender decisions.",
-    requires01: "FICO 10T outperformance confirmed + VantageScore stalls in practice",
-    requires02: "Scores re-accelerates above 40% YoY + FTC investigation dropped",
+    target12: "$1,400 — $1,650",
+    op: "Operational state: VantageScore's approved-lender rollout stalls at a small cohort and never broadens, the postponed bi-merge requirement never forces a real head-to-head substitution test, and FICO 10T's predictive edge keeps risk managers on FICO even where VantageScore is technically available. Scores growth — which just printed 41% YoY even mid-deceleration — reaccelerates as mortgage volumes recover, the FTC investigation is quietly dropped, and the market finally rewards a strong print with multiple re-expansion (32x+) instead of compressing it further. This is the scenario Q3 FY2026 did NOT deliver: the KPI cleared the bull bar, but the multiple moved the wrong way.",
+    breaks: "Scores revenue growth decelerates back below 25% YoY in any quarter, OR the multiple keeps compressing even on a strong Scores print (exactly what happened this quarter) — either one says the market isn't buying the pricing-moat-intact story regardless of the headline number.",
+    requires01: "FICO 10T outperformance confirmed + VantageScore rollout stays confined to the initial approved-lender cohort",
+    requires02: "Scores re-accelerates above 40% YoY AND the multiple re-expands above 32x (both legs required — this quarter only cleared the first)",
   },
 };
 
-const NOW_PRICE = 1278;
+const NOW_PRICE = 1140;
 const HISTORY = [
-  { q: "Q1 25", p: 1960 }, { q: "Q2 25", p: 1880 },
-  { q: "Q3 25", p: 1050 }, { q: "Q4 25", p: 1020 },
-  { q: "Q1 26", p: 950  }, { q: "NOW",   p: NOW_PRICE },
+  { q: "Q2 25", p: 1880 }, { q: "Q3 25", p: 1050 },
+  { q: "Q4 25", p: 1020 }, { q: "Q1 26", p: 950  },
+  { q: "Q2 26", p: 1278 }, { q: "NOW",   p: NOW_PRICE },
 ];
-// Note: Q1–Q2 2025 prices are estimated near the ATH trajectory ($2,382 in Nov 2024).
+// Note: Q2 2025 price is estimated near the ATH trajectory ($2,382 in Nov 2024).
 // Q3 2025 crash occurred July 2025 on FHFA VantageScore approval. 52-week low: $870.01.
 // Q4 2025 and Q1 2026 prices are estimated from the continuing decline.
-// Q2 FY2026 earnings (Apr 29) provided partial recovery to current $1,278.
+// Q2 FY2026 earnings (Apr 29) provided partial recovery to $1,278.
+// Q3 FY2026 earnings (Jul 29): Scores +41% YoY (still strong, but decelerating from +60%), revenue
+// and guidance both landed a touch below Street — stock fell ~17% the next session to $1,140.
 
-const PROJ_END = { bear: 600, base: 1500, bull: 2100 };
-const FUTURE_Q = ["Q3 FY26", "Q4 FY26", "Q1 FY27", "Q2 FY27"];
+const PROJ_END = { bear: 750, base: 1125, bull: 1525 };
+const FUTURE_Q = ["Q4 FY26", "Q1 FY27", "Q2 FY27", "Q3 FY27"];
 
 const SIGNALS = {
   bear: [
-    { name: "Scores Revenue Growth (YoY %)", unit: "% YoY",  tag: "MISS",  next: "Jul 2026",  val: "BEAR <15%",             guide: "Q2 FY26: +60%",     pos: 0.17 },
-    { name: "VantageScore Lender Adoption",  unit: "EVENT",  tag: "MISS",  next: "Ongoing",   val: "BEAR >30% lenders switch", guide: "bi-score live",   pos: 0.20 },
+    { name: "Scores Revenue Growth (YoY %)", unit: "% YoY",  tag: "MISS",  next: "Nov 2026",  val: "BEAR <15%",             guide: "Q3 FY26: +41%",     pos: 0.17 },
+    { name: "VantageScore Lender Adoption",  unit: "EVENT",  tag: "MISS",  next: "Ongoing",   val: "BEAR >30% lenders switch", guide: "rollout widening",  pos: 0.20 },
     { name: "Mortgage Origination Volume",   unit: "INDEX",  tag: "MISS",  next: "Weekly",    val: "BEAR vol. declining",    guide: "MBA index",          pos: 0.22 },
   ],
   base: [
-    { name: "Scores Revenue Growth (YoY %)", unit: "% YoY",  tag: "MATCH", next: "Jul 2026",  val: "BASE 25–35%",            guide: "Q2 FY26: +60%",     pos: 0.56 },
-    { name: "VantageScore Lender Adoption",  unit: "EVENT",  tag: "WATCH", next: "Ongoing",   val: "BASE <20% switch",       guide: "bi-score live",     pos: 0.50 },
+    { name: "Scores Revenue Growth (YoY %)", unit: "% YoY",  tag: "MATCH", next: "Nov 2026",  val: "BASE 25–35%",            guide: "Q3 FY26: +41%",     pos: 0.56 },
+    { name: "VantageScore Lender Adoption",  unit: "EVENT",  tag: "WATCH", next: "Ongoing",   val: "BASE <20% switch",       guide: "limited rollout, bi-merge postponed", pos: 0.50 },
     { name: "Mortgage Origination Volume",   unit: "INDEX",  tag: "MATCH", next: "Weekly",    val: "BASE stable/recovering", guide: "MBA index",          pos: 0.55 },
   ],
   bull: [
-    { name: "Scores Revenue Growth (YoY %)", unit: "% YoY",  tag: "BEAT",  next: "Jul 2026",  val: "BULL >40%",              guide: "Q2 FY26: +60%",     pos: 0.86 },
-    { name: "VantageScore Lender Adoption",  unit: "EVENT",  tag: "BEAT",  next: "Ongoing",   val: "BULL near-zero switch",  guide: "bi-score live",     pos: 0.83 },
+    { name: "Scores Revenue Growth (YoY %)", unit: "% YoY",  tag: "BEAT",  next: "Nov 2026",  val: "BULL >40%",              guide: "Q3 FY26: +41%",     pos: 0.86 },
+    { name: "VantageScore Lender Adoption",  unit: "EVENT",  tag: "BEAT",  next: "Ongoing",   val: "BULL near-zero switch",  guide: "rollout capped",     pos: 0.83 },
     { name: "Mortgage Origination Volume",   unit: "INDEX",  tag: "BEAT",  next: "Weekly",    val: "BULL accelerating",      guide: "MBA index",          pos: 0.84 },
   ],
 };
 const MARGIN = {
   bear: [
-    { name: "Software ARR Growth %",       tag: "MISS",  next: "Jul 2026", pos: 0.20 },
+    { name: "Software ARR Growth %",       tag: "MISS",  next: "Nov 2026", pos: 0.20 },
     { name: "Reg / Pricing Investigation", tag: "MISS",  next: "Ongoing",  pos: 0.18 },
   ],
   base: [
-    { name: "Software ARR Growth %",       tag: "MATCH", next: "Jul 2026", pos: 0.55 },
+    { name: "Software ARR Growth %",       tag: "MATCH", next: "Nov 2026", pos: 0.55 },
     { name: "Reg / Pricing Investigation", tag: "WATCH", next: "Ongoing",  pos: 0.48 },
   ],
   bull: [
-    { name: "Software ARR Growth %",       tag: "BEAT",  next: "Jul 2026", pos: 0.83 },
+    { name: "Software ARR Growth %",       tag: "BEAT",  next: "Nov 2026", pos: 0.83 },
     { name: "Reg / Pricing Investigation", tag: "BEAT",  next: "Ongoing",  pos: 0.80 },
   ],
 };
 
-// 8 ── Scores Revenue YoY growth %: Q2 FY2026 actual (+60%), then 4-quarter projections per case
-const KPI_HIST = 60;
+// 8 ── Scores Revenue YoY growth %: Q3 FY2026 actual (+41%, down from +60% in Q2), then 4-quarter projections per case
+const KPI_HIST = 41;
 const KPI_PROJ = {
-  bear: [20, 10, 5, -5],
-  base: [35, 30, 25, 22],
-  bull: [48, 45, 42, 40],
+  bear: [22, 14, 8, 2],
+  base: [32, 28, 26, 24],
+  bull: [42, 44, 46, 48],
 };
 
 // 9 ── TRACK RECORD. Append ONE new entry each cycle. FICO fiscal quarter labels.
@@ -214,6 +216,7 @@ const TRACK_ALL = [
   { q: "Q4 FY25", date: "2025-11", post: 1020, reaction: "-",  bear: [700,950],   base: [1000,1400], bull: [1600,2100], landed: "base",      conf: "high" },
   { q: "Q1 FY26", date: "2026-01", post: 950,  reaction: "-",  bear: [680,920],   base: [980,1380],  bull: [1520,2000], landed: "bear",      conf: "high" },
   { q: "Q2 FY26", date: "2026-04", post: 1278, reaction: "+",  bear: [680,900],   base: [1000,1450], bull: [1600,2100], landed: "base",      conf: "high" },
+  { q: "Q3 FY26", date: "2026-07", post: 1140, reaction: "--", bear: [450,750],   base: [1100,1700], bull: [1900,2600], landed: "base",      conf: "high" },
 ];
 const TRACK_WINDOW = 6;
 const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
@@ -277,7 +280,7 @@ function FanChart({ c }) {
             stroke={i === nHist - 1 ? "#fff" : "#8a93a6"} strokeWidth="1.5"
             {...tipSvg(i === nHist - 1 ? "Where we are today" : d.q,
               i === nHist - 1
-                ? `FICO trades around $${NOW_PRICE} — down 46% from the $2,382 ATH despite record earnings. The entire decline is a multiple de-rating (from ~65x to 29x) on fears about VantageScore competition. Blue dot = today.`
+                ? `FICO trades around $${NOW_PRICE} — down ~52% from the $2,382 ATH despite Scores revenue still growing +41% YoY. The entire decline is a multiple de-rating (from ~65x to ~27x) on fears about VantageScore competition, and this quarter's -17% post-earnings drop was more of the same. Blue dot = today.`
                 : `Around the end of ${d.q}, FICO traded near $${d.p}. ${i <= 1 ? "(Estimated close.)" : ""}`,
               null, i === nHist - 1 ? "#9fb4ff" : "#cdd5e3")} />
           {i === nHist - 1 && <text x={histPts[i][0] - 6} y={histPts[i][1] - 12} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="end">NOW ${NOW_PRICE}</text>}
@@ -320,9 +323,9 @@ function tagColor(tag) {
 
 function Segmented({ active, setActive, small }) {
   const explain = {
-    bear: ["The pessimistic scenario", "Click to see what FICO looks like if things go wrong — VantageScore forces per-score price rollback from $10 to $3-5, Scores revenue craters, and the FTC caps pricing. Stock falls to $450-750 as the market prices FICO as commodity software."],
-    base: ["The most-likely scenario", "Click for the steady-execution view — VantageScore adoption is slow, FICO retains pricing power with moderated growth (20-35%), Software ARR accelerates. At 29x FY2026E $44 EPS, current price ($1,278) is roughly fair value. Price drifts toward $1,100-1,700."],
-    bull: ["The optimistic scenario", "Click to see the upside — VantageScore fails to displace FICO in practice, pricing holds or grows, EPS compounds 25-30%, and the market re-rates back toward 42-52x. Price could run to $1,900-2,600."],
+    bear: ["The pessimistic scenario", "Click to see what FICO looks like if things go wrong — VantageScore's approved-lender rollout widens, forcing a per-score price rollback from $10+ toward $3-5, Scores revenue craters below 15% YoY, and the FTC caps pricing. Stock falls to $650-850 as the market prices FICO as commodity software."],
+    base: ["The most-likely scenario", "Click for the steady-execution view — VantageScore's rollout stays limited to its initial approved-lender cohort, FICO retains most pricing power with growth normalizing to 25-35% YoY, Software ARR holds up. At ~24-27x FY2026E ~$43.5 EPS, current price (~$1,140) is roughly fair value. Price drifts toward $950-1,300."],
+    bull: ["The optimistic scenario", "Click to see the upside — VantageScore's rollout stalls and never broadens, pricing holds or grows, Scores reaccelerates above 40% YoY, and the market finally re-rates the multiple back above 32x instead of compressing it. Price could run to $1,400-1,650."],
   };
   return (
     <div style={{ display: "flex", gap: 5 }}>
@@ -347,7 +350,7 @@ function Segmented({ active, setActive, small }) {
 function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
   const h = ((val + 10) / 75) * 100;
   const tp = baseline
-    ? tip("Starting point (Q2 FY2026)", "FICO's Scores segment revenue grew +60% year-over-year in the most recent quarter, driven by aggressive price hikes plus recovering mortgage origination volumes. The bars to the right show where that growth rate is projected to go under each scenario.", "The grey dot = 'where we are now'. Everything right of it is a forecast.", "#9aa4b8")
+    ? tip("Starting point (Q3 FY2026)", "FICO's Scores segment revenue grew +41% year-over-year in the most recent quarter — still strong, but decelerating from +60% last quarter as price-hike comps normalize. The bars to the right show where that growth rate is projected to go under each scenario.", "The grey dot = 'where we are now'. Everything right of it is a forecast.", "#9aa4b8")
     : tip(`Forecast: ${label}`, `In this scenario, FICO's Scores segment revenue is projected to grow about ${val}% year-over-year by ${label}. ${val < 0 ? "A negative number means revenue is actually shrinking — the bear case." : "Higher = pricing power is holding."}`, "Switch BEAR/BASE/BULL up top to see how the forecast changes.", accentColor);
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
@@ -460,7 +463,7 @@ function ReversionClock() {
       </div>
       <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
         {aboveBase
-          ? <span>Price has re-entered the base zone from the July 2025 VantageScore shock ($870 trough). The critical next data: Q3 FY2026 earnings in <span style={{ color: "#e0a83b", fontWeight: 700 }}>late July 2026</span> — specifically <span style={{ color: "#fff", fontWeight: 700 }}>Scores revenue YoY growth</span>. If it holds above 25–30% after the bi-score requirement is live, the bear thesis is tracking slower than feared. Note: this dislocation is <span style={{ color: "#f1564b" }}>competitive, not cyclical</span> — the precedent recovery clock is less meaningful than for macro dislocations.</span>
+          ? <span>Price has re-entered the base zone from the July 2025 VantageScore shock ($870 trough), but Q3 FY2026 earnings (Jul 29) triggered a fresh -17% leg down on a revenue/guide miss even as Scores growth stayed strong. The critical next data: Q4 FY2026 earnings around <span style={{ color: "#e0a83b", fontWeight: 700 }}>November 2026</span> — specifically whether <span style={{ color: "#fff", fontWeight: 700 }}>Scores revenue YoY growth</span> stabilizes in the 25–35% base range or keeps decelerating toward the 15% bear floor. Note: this dislocation is <span style={{ color: "#f1564b" }}>competitive, not cyclical</span> — the precedent recovery clock is less meaningful than for macro dislocations.</span>
           : <span>FICO's 52-week low was $${REVERSION_TROUGH} on the VantageScore shock. <span style={{ color: "#fff", fontWeight: 700 }}>{elapsed} days in</span> and price has retraced <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{Math.round(recPct)}%</span> of the way back to the base zone.</span>}
       </div>
     </div>
@@ -529,7 +532,7 @@ function TrackRecord() {
                 fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
                 {...tipSvg(isLast ? "Today" : `${t.q}: actual price`,
                   isLast
-                    ? `FICO is at ~$${t.post} now. At 29x FY2026E $44 EPS, it is priced near its historical low multiple. Earnings are growing +60-70% YoY — the market believes the numbers but doesn't believe they'll persist at current prices.`
+                    ? `FICO is at ~$${t.post} now. At ~26-27x FY2026E ~$43.5 EPS, it is priced near its historical low multiple, now roughly in line with the peer median (~24x). Scores growth is still +41% YoY but decelerating from +60% — the market believes the numbers but not that this pace persists.`
                     : `After ${t.q} earnings, FICO traded near $${t.post}. Compare this dot to the colored bands to see if the prediction was right.`,
                   null, isLast ? "#9fb4ff" : "#cdd5e3")} />
               {isLast && <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">NOW ${t.post}</text>}
@@ -540,7 +543,7 @@ function TrackRecord() {
       <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
         <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
         <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
-          Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits in the <span style={{ color: "#e0a83b", fontWeight: 700 }}>lower-middle of the BASE band</span> — 29x FY2026E non-GAAP $43.88 EPS, historically cheap for FICO. Earnings are growing <span style={{ color: "#3fd07a", fontWeight: 700 }}>+60-70% YoY</span>; the stock is down <span style={{ color: "#f1564b", fontWeight: 700 }}>46% from ATH</span>. The entire divergence is a <span style={{ color: "#f1564b" }}>multiple de-rating</span> (from ~65x to 29x) on VantageScore competition fears. The Q3 FY25 FHFA shock (column 3) was genuinely unpredictable. The resolution path: late July Q3 FY2026 Scores revenue print either validates or disproves the near-term pricing erosion thesis.
+          Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits in the <span style={{ color: "#e0a83b", fontWeight: 700 }}>middle of the BASE band</span> — ~26-27x FY2026E non-GAAP ~$43.5 EPS, now roughly in line with the SPGI/MCO/VRSK/EFX peer median (~24x) rather than FICO's own richer history. Scores segment revenue is still growing <span style={{ color: "#3fd07a", fontWeight: 700 }}>+41% YoY</span> (down from +60% last quarter); the stock is down <span style={{ color: "#f1564b", fontWeight: 700 }}>~52% from ATH</span>. The entire divergence is a <span style={{ color: "#f1564b" }}>multiple de-rating</span> (from ~65x to ~27x) on VantageScore competition fears, and this quarter's -17% post-earnings drop was more of the same — a revenue/guide miss on an otherwise strong print, not a fundamental breakdown. The Q3 FY25 FHFA shock (column 3) was genuinely unpredictable. The resolution path: the Q4 FY2026 print (~Nov 2026) either shows Scores growth stabilizing in the base range or continuing to decelerate toward the bear floor.
         </div>
       </div>
       <ReversionClock />
@@ -572,7 +575,7 @@ function FICOThesis() {
             <span>{AS_OF_DATE}</span>
             <span style={{ color: "#cdd5e3" }}>NYSE:FICO</span>
             <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "#9aa4b8" }}>Fair Isaac Corp.</span>
-            <span {...tip("Today's share price", `One share of FICO costs about $${NOW_PRICE} — down 46% from the $2,382 ATH in November 2024, despite earnings growing +60-70% YoY. The entire decline is a multiple de-rating from ~65x to 29x on VantageScore competition fears.`, null, "#fff")}
+            <span {...tip("Today's share price", `One share of FICO costs about $${NOW_PRICE} — down ~52% from the $2,382 ATH in November 2024, despite Scores segment revenue still growing +41% YoY. The entire decline is a multiple de-rating from ~65x to ~27x on VantageScore competition fears.`, null, "#fff")}
               style={{ color: "#fff", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}.00</span>
           </div>
         </div>
@@ -599,20 +602,20 @@ function FICOThesis() {
             <div style={{ marginTop: 18, borderTop: "1px solid #161c28", paddingTop: 14 }}>
               <div style={{ fontSize: 11.5, letterSpacing: "0.16em", color: "#7b86a0", marginBottom: 4 }} {...tip(
                 "The moat signal",
-                "Scores revenue growth is the single number that tells you whether FICO's pricing power is intact or eroding. If VantageScore is actually displacing FICO at lenders, this number will decelerate first — before it shows up in total earnings. The current +60% YoY was driven by a combination of FICO's aggressive price hikes and recovering mortgage origination volume. Watch how it responds once the bi-score requirement is fully live.",
-                "Decelerating Scores growth = VantageScore working. Holding above 25% = moat intact.", "#9fb4ff")}>
+                "Scores revenue growth is the single number that tells you whether FICO's pricing power is intact or eroding. If VantageScore is actually displacing FICO at lenders, this number will decelerate first — before it shows up in total earnings. It just decelerated from +60% to +41% YoY this quarter, mostly a comp effect off last year's price-hike base rather than clear substitution evidence. Watch how it responds as the (still-postponed) bi-merge requirement's fate becomes clearer.",
+                "Decelerating Scores growth toward/below 15% = VantageScore working. Holding above 25% = moat intact.", "#9fb4ff")}>
                 <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>KPI · CORE</span>
                 Scores Segment Revenue Growth
                 <span style={{ color: "#5a6477", marginLeft: 8 }}>YoY %  ·  HIGHER BETTER</span>
               </div>
               <div className="panel" key={active + "-kpi"} style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 120, padding: "12px 4px 0" }}>
-                <KpiCol label="Q2 FY26" val={KPI_HIST} baseline accentColor="#7b86a0" />
+                <KpiCol label="Q3 FY26" val={KPI_HIST} baseline accentColor="#7b86a0" />
                 {kpiVals.map((v, i) => <KpiCol key={i} label={FUTURE_Q[i]} val={v} accentColor={c.accent} delay={i * 0.08} />)}
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
                 <div>
                   <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THIS MEASURES</div>
-                  <div style={{ color: "#9aa4b8" }}>Year-over-year revenue growth in FICO's Scores segment — the royalty-fee business that generates a payment every time a FICO score is pulled for a mortgage, auto loan, or credit card application. Currently running at +60% YoY from aggressive price hikes.</div>
+                  <div style={{ color: "#9aa4b8" }}>Year-over-year revenue growth in FICO's Scores segment — the royalty-fee business that generates a payment every time a FICO score is pulled for a mortgage, auto loan, or credit card application. Just decelerated to +41% YoY (from +60% last quarter) as price-hike comps normalize.</div>
                 </div>
                 <div>
                   <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THE <span style={{ color: c.accent }}>{c.label}</span> CASE REQUIRES</div>
@@ -656,9 +659,9 @@ function FICOThesis() {
             <div style={{ marginTop: 10, padding: "10px 12px", background: "#0a0d14", border: "1px solid #2a1a1a", borderRadius: 6 }}>
               <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 8 }}>RISK / REWARD AT ${NOW_PRICE}</div>
               {[
-                { label: "BEAR", color: "#f1564b", lo: 450,  hi: 750  },
-                { label: "BASE", color: "#e0a83b", lo: 1100, hi: 1700 },
-                { label: "BULL", color: "#3fd07a", lo: 1900, hi: 2600 },
+                { label: "BEAR", color: "#f1564b", lo: 650,  hi: 850  },
+                { label: "BASE", color: "#e0a83b", lo: 950,  hi: 1300 },
+                { label: "BULL", color: "#3fd07a", lo: 1400, hi: 1650 },
               ].map(({ label, color, lo, hi }) => {
                 const mid = Math.round((lo + hi) / 2);
                 const pct = Math.round(((mid - NOW_PRICE) / NOW_PRICE) * 100);
@@ -681,9 +684,9 @@ function FICOThesis() {
               })}
               <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #161c28", fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55 }}
                 {...tip("What this asymmetry means",
-                  `At $${NOW_PRICE}, FICO is down 46% from ATH despite earnings growing 60–70% YoY — the entire decline is multiple compression on VantageScore fear. The base case offers modest upside; the bull case (fear overblown, multiple recovers) is large; the bear (fear is right) means another ~−53%.`,
+                  `At $${NOW_PRICE}, FICO is down ~52% from ATH despite Scores still growing +41% YoY — the entire decline is multiple compression on VantageScore fear, and this quarter's -17% post-earnings drop was more of the same rather than a new fundamental problem. The base case is now roughly where the price already sits; the bull case (fear overblown, multiple re-expands) offers real upside; the bear (fear is right, pricing power breaks) means another ~−34%.`,
                   "Midpoints of ranges used. Always hold loosely.", "#9aa4b8")}>
-                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−53%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>+10%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+76%</span> — VantageScore tail is large; the <span style={{ color: "#3fd07a" }}>bull case offers real optionality</span> if the competitive threat proves overblown.
+                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−34%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>−1%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+34%</span> — the market already re-rated hard this quarter; the <span style={{ color: "#3fd07a" }}>bull case still offers real optionality</span> if Scores growth reaccelerates AND the multiple stops compressing.
               </div>
             </div>
           </div>
@@ -692,14 +695,14 @@ function FICOThesis() {
         {/* Observable vs. confirms bar */}
         <div style={{ padding: "10px 22px", borderTop: "1px solid #161c28", display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#4a5366" }}>
           <span>OBSERVABLE NOW: VantageScore lender adoption (MBA/FHFA data) · FTC/Hawley investigation · MBA weekly origination index · FICO pricing announcements</span>
-          <span>CONFIRMS LATE JULY 2026: Scores revenue YoY growth · Software ARR · full-year FY2026 guidance revision</span>
+          <span>CONFIRMS ~NOV 2026 (Q4 FY26): Scores revenue YoY growth trend · Software ARR · full-year FY2026 actuals vs. guide</span>
         </div>
 
         <TrackRecord />
       </div>
 
       <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "#3d4555", lineHeight: 1.5 }}>
-        Illustrative scenario framing built on current consensus &amp; estimates as of May 2026 — not a prediction and not financial advice. FICO FY ends September 30; Q2 FY2026 = Jan–Mar 2026. Q2 FY2026: revenue $692M (+39% YoY), non-GAAP EPS $12.50 (+60% YoY), Scores +60% YoY, GM Scores segment 91%. Full-year FY2026 guidance: revenue $2.45-2.60B, non-GAAP EPS $40.45. Consensus FY2026E EPS $43.88, FY2027E $55.45 (21 analysts). Forward P/E at $1,278: ~29x (historically cheap for FICO; ATH P/E was ~65x). VantageScore approved for GSE mortgages by FHFA; bi-score requirement (BOTH FICO 10T AND VantageScore 4.0) means lender adoption ≠ FICO replacement. Valuation ruler: forward P/E on non-GAAP EPS. Bear/bull gap is overwhelmingly multiple-driven: the earnings are real, the argument is what they're worth. Bear 35% / Base 45% / Bull 20%.
+        Illustrative scenario framing built on current consensus &amp; estimates as of July 31 2026 — not a prediction and not financial advice. FICO FY ends September 30; Q3 FY2026 = Apr–Jun 2026, reported 2026-07-29. Q3 FY2026: revenue $674.2M (+26% YoY, a slight miss vs. ~$679-692M Street), GAAP EPS $10.45 (+41% YoY), non-GAAP EPS $12.18 (beat $11.97 est., +42% YoY), Scores segment revenue $458.9M (+41% YoY, decelerating from +60% in Q2), Scores gross margin ~91%. Full-year FY2026 guidance raised to revenue ~$2.53B (~0.9% below Street) and non-GAAP EPS $42.43. Consensus FY2026E EPS ~$43.59 (Zacks/Yahoo, 20 analysts). Forward P/E at $1,140: ~26-27x — now roughly in line with the SPGI/MCO/VRSK/EFX peer median (~24x), down from ~29x last quarter and ~65x at the ATH. VantageScore 4.0 remains a limited, approved-lenders-only GSE rollout; the bi-merge requirement (BOTH FICO 10T AND VantageScore 4.0) that was expected Q4 2025 has been postponed, not implemented. Valuation ruler: forward P/E on non-GAAP EPS. Bear/bull gap is overwhelmingly multiple-driven: the earnings are real, the argument is what they're worth — and this quarter the market compressed the multiple further even as the core KPI (Scores growth) cleared the bull threshold. Bear 35% / Base 50% / Bull 15%.
       </div>
     </div>
   );

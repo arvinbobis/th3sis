@@ -2,7 +2,7 @@
 
 *A pre-flight checklist for your TH3SIS dashboard (`amzn-thesis.html`). Run it every quarter, right after Amazon's earnings — even when nothing looks wrong. The point is to catch the quarter where the world quietly moved and your thesis didn't.*
 
-**Earnings calendar:** Amazon reports roughly late Jan / late Apr / late Jul / late Oct. **Next: 2026-07-30 (Q2 2026), after close.** Do this within a week of each print, while it's fresh.
+**Earnings calendar:** Amazon reports roughly late Jan / late Apr / late Jul / late Oct. **Next: ~2026-10-29 (Q3 2026, estimated — not yet confirmed by Amazon IR), after close.** Do this within a week of each print, while it's fresh.
 
 > ⚠️ Everything here is an estimate, not advice. The dashboard's polish can make a guess feel like a fact — it isn't. When in doubt, widen the bands and lower confidence.
 
@@ -65,10 +65,10 @@ This is **`CASES`** in the edit block. For BEAR, then BASE, then BULL, answer fo
 ### Amazon-specific traps to re-read every quarter
 - **"AWS sells out instantly" ≠ a cushion.** Strong demand *explains* the $200B capex; only AWS **revenue + margin results** justify it. Judge the spend by monetization, not size. Don't let a great quarter talk you into adding at a rich price.
 - **The depreciation lag.** $200B of capex becomes years of depreciation. A demand digestion (à la 2022 cloud optimization) landing on top of all that new D&A is the real bear — watch AWS margin and FCF together, not just the growth rate.
-- **GAAP EPS is dirty.** Anthropic mark-to-market gains inflate net income (Q1 2026 had a $16.8B pre-tax gain ≈ $1.23 of the $2.78 EPS). Always back it out.
+- **GAAP EPS is dirty.** Anthropic mark-to-market gains inflate net income (Q1 2026 had a $16.8B pre-tax gain ≈ $1.23 of the $2.78 EPS; Q2 2026 had a much larger $53.4B pre-tax gain, most of the jump to $5.75 EPS / $62.6B net income). Always back it out — use operating income (+43% YoY in Q2) for the clean read, not GAAP net income.
 
 ### Generator check (the capital-allocation layer — see `STRATEGY.md`)
-- [ ] **Distance to 2× trim trigger.** Trigger ≈ 2 × your avg cost (~$203 → **~$405**). At ~$232 that's bull-case territory (~3–5 yrs out). Record current price ÷ avg cost; the dashboard's generator note assumes ~$203 basis — update if you add/trim.
+- [ ] **Distance to 2× trim trigger.** Trigger ≈ 2 × your avg cost (~$203 → **~$405**). At ~$254 post-Q2-beat that's still bull-case territory (~1.25× cost). Record current price ÷ avg cost; the dashboard's generator note assumes ~$203 basis — update if you add/trim.
 - [ ] **Re-confirm the read:** AMZN is a **steady compounder, not a fast generator seed.** The thesis being real does NOT mean add more — gate any add on **chokepoint (AWS) + valuation cushion**, and never add at highs without a cushion. The next fresh ~$1,000 likely belongs elsewhere unless AMZN dislocates hard.
 
 ---
@@ -113,8 +113,30 @@ WHAT SURPRISED ME THIS QUARTER:
 ────────────────────────────────────────────
 ```
 
-### Q2 2026 — (fill in after the July 30 report)
-*(your first live entry goes here)*
+### Q2 2026 — filled in 2026-07-31
+```
+────────────────────────────────────────────
+QUARTER: Q2  2026          UPDATED ON: 2026-07-31
+Price at update: $254 (post-beat, ~+8-10% after-hours off $235.50 pre-print close)   Most-likely case: BASE, tilting toward BULL
+AWS growth %: +37% (fastest in 18 quarters, vs 31% consensus)   AWS op margin: ~39.4%   Consol. margin: 13.7% (new record)
+Capex (FY guide): $220B (raised from $200B, cited higher memory costs)   FCF (TTM): −$7.6B (from +$18.2B a year ago)   Ad growth: +26%
+Price ÷ avg cost: ~254/202.74 ≈ 1.25×  (trim trigger 2× ≈ $405, still bull-case territory)
+
+THESIS AUDIT (one line each):
+  Bear  — narrative still true? Partially — the FCF/capex-digestion risk is realer than ever (FCF got worse, not better), but the AWS-deceleration half of the bear case took a big hit this quarter.  bands moved? YES, up ($170-200 → $195-225)  why: even a bad AWS quarter now starts from a much higher growth base (37%→low-20s is still a bigger number than 28%→20% was)
+  Base  — narrative still true? YES, and partly proven — AWS growth confirmed hard, margins hit new records even as capex guide rose.  bands moved? YES, up ($260-295 → $280-320)  why: growth half of the story de-risked; multiple deserves to sit a bit higher, capped by FCF still not turning
+  Bull  — narrative still true? Half-proven — the AWS-reacceleration leg landed emphatically (37% blew past the old 32% bull ceiling), but the FCF-inflection leg moved the WRONG way (more negative, not less). Two-legged case is now one leg confirmed, one leg denied.  bands moved? YES, up ($360-420 → $390-450)  why: the confirmed leg pulls the ceiling up even though the case isn't fully validated yet
+
+PROBABILITY shift this quarter: Shifted UP within the range — from "BASE, watching for either break" toward "BASE, tilting BULL on growth, capped by FCF." Not a full flip to BULL because BULL's own stated requirement (FCF inflects positive) moved further away, not closer, even as the other requirement (AWS growth) was blown through.
+FTC ad-suit status: Still unresolved — FTC reportedly preparing a complaint as of mid/late June 2026 but had not filed as of the July 30 print; the broader 2023 e-commerce monopoly case has a trial slated for October 2026. Narrative unchanged from last quarter: a live, pending risk, not a realized one.
+
+WHAT WOULD PROVE ME WRONG (favored case — BASE/tilting-BULL):
+  Two quarters running of AWS growth rolling back below ~25% AND free cash flow (TTM) still not showing signs of inflecting despite AWS strength — that combination would mean the capex is a genuine drag, not a delayed payoff, and would flip the read back toward BEAR regardless of how good any single quarter's growth print looks.
+
+WHAT SURPRISED ME THIS QUARTER:
+  The two halves of the bull case decoupled instead of moving together. Expected AWS growth and FCF trajectory to broadly correlate (strong demand -> capacity fills -> cash eventually follows); instead AWS growth SURGED (37%, best in 18 quarters) while FCF got WORSE, not better, and management raised capex guidance AGAIN mid-cycle (to $220B, citing memory costs — an input-cost story, not just a demand story). That's a new wrinkle: part of the capex escalation this quarter is COST-driven (memory prices), not just conviction-driven, which is a different risk than the thesis originally framed.
+────────────────────────────────────────────
+```
 
 ---
 

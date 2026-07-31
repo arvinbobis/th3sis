@@ -135,8 +135,37 @@ WHAT SURPRISED ME THIS QUARTER:
 ────────────────────────────────────────────
 ```
 
-### Q3 FY2026 — (fill in after the ~late July 2026 report)
-*(your first live entry goes here)*
+### Q3 FY2026
+```
+────────────────────────────────────────────
+QUARTER: Q3 FY26          UPDATED ON: 2026-07-31
+FICO price at update: $1,140   Most-likely case: BASE
+Consensus FY2026E EPS: ~$43.5 non-GAAP   FY2027E: (not re-derived this touch)   Forward P/E: ~26-27x
+
+THESIS AUDIT (one line each):
+  Bear  — narrative still true? YES, still live  bands moved? YES ($450-750 -> $650-850)  why: EPS base moved up on the raised FY2026 guide even as the bear narrative (VantageScore rollout widening) stayed qualitatively the same — no lender substitution evidence yet, just the multiple math shifting
+  Base  — narrative still true? YES, confirmed  bands moved? YES ($1,100-1,700 -> $950-1,300)  why: multiple compressed further (29x->24-27x, now at the SPGI/MCO/VRSK/EFX peer median ~24x rather than FICO's own richer history) even though the EPS input didn't break down
+  Bull  — narrative still true? YES, still open  bands moved? YES ($1,900-2,600 -> $1,400-1,650)  why: same multiple-compression effect as base — the bull case now requires a MUCH bigger re-rating (32x+) from today's compressed multiple than it did last quarter
+
+PROBABILITY shift this quarter: BASE stays most-likely (44% before FTC/mortgage judgment). Bear case stayed roughly as likely as before — Scores decelerating from +60% to +41% is the first real deceleration data point but is one quarter, not the two-consecutive-quarter kill-switch threshold.
+
+KEY NUMBERS REFRESHED:
+  Scores revenue YoY growth: 41%  (was 60%)  →  MATCH (still inside 25-35%...86% zone technically BEAT-adjacent at 41%, tagged MATCH/BEAT boundary case — cleared the BULL >40% bar on the KPI alone)
+  Software ARR growth: ~10% (unchanged, still MATCH/MISS boundary)
+  Total revenue: $674M vs guidance  →  MISS (landed a shade below Street; FY2026 guide raised to ~$2.53B regardless)
+  Full-year FY2026 EPS guidance: ~$43.5 non-GAAP
+  VantageScore lender adoption: FHFA running a deliberately limited, approved-lenders-only VantageScore 4.0 rollout; the bi-merge (both-scores) requirement that would force a real head-to-head test remains postponed, not implemented
+  MBA Mortgage Applications Index trend: not re-pulled this touch (no material change flagged)
+  FTC/Hawley investigation status: unchanged, still open/unresolved, no new charges or bill
+  FICO pricing action (any new hike or rollback?): none disclosed this quarter
+
+WHAT WOULD PROVE ME WRONG (for the base case):
+  Scores growth decelerating below 15% YoY for two consecutive quarters (bear), or Scores reaccelerating above 40% YoY WITH the multiple actually re-expanding above 32x (bull) — this quarter delivered the Scores-growth half of the bull condition (41% > 40%) but not the multiple-expansion half (it compressed to 24-27x instead), which is exactly why BASE remains the call rather than a shift to BULL.
+
+WHAT SURPRISED ME THIS QUARTER:
+  The KPI (Scores growth) actually cleared the bull threshold (>40%) for the first time, but the stock still dropped -17% and the multiple compressed further rather than expanding — a case where the market rewarded the print's revenue/guide miss over its Scores-growth strength, decoupling "did the KPI beat" from "did the stock react like a beat."
+────────────────────────────────────────────
+```
 
 ---
 

@@ -71,11 +71,11 @@ function moveTip(e) {
 function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
 
 const SIGNAL_HELP = {
-  "Azure Growth vs 39–40% Guide": "Azure is Microsoft's cloud business — the data centers, AI compute, and software services it rents to companies and developers. Q3 FY2026 grew 40% year-over-year, beating its own guidance of 35–36%. Q4 is guided at 39–40% again. Azure is the vehicle through which Microsoft monetizes its $190B annual AI capex. Each percentage point of Azure growth is roughly $1.2–1.4B in additional annual revenue.",
-  "Copilot Paid Seat Growth": "Copilot is Microsoft's AI assistant for Word, Excel, Teams, and other apps. It costs $30/month per user on top of Microsoft 365. Q3 FY2026 had 20 million paid seats — up 33% sequentially from 15 million — out of ~400 million total M365 users (5% penetration). Each additional 10 million seats is roughly $3.6B/year of new revenue. This is the clearest signal of enterprise willingness to pay for AI productivity.",
-  "AI Business ARR": "The annualized revenue from all AI-specific products combined — Copilot, Azure AI services, GitHub Copilot, etc. — expressed as an annual run rate. Q3 was $37 billion, growing 123% year-over-year. This is the broadest measure of how fast Microsoft's AI investment is turning into revenue. The bear case: at $190B capex, can $37B ARR scale fast enough to justify the spend?",
-  "Operating Margin": "Out of every dollar of revenue, how much Microsoft keeps as operating profit after all costs. Q3 FY2026 was approximately 47% — very high for a company this size. The bear case is that rising depreciation from the $190B capex compresses this to 40–43%. The bull case: AI revenue grows faster than the depreciation headwind, keeping or expanding margins.",
-  "CapEx / Revenue Ratio": "How much Microsoft spends building AI infrastructure (data centers, Nvidia chips, networking) compared to total revenue. At $190B annual capex on ~$340B revenue, the ratio is ~56%. Amazon peaked at ~25% during its AWS buildout. The key question: is this ratio shrinking over time as revenue grows faster than spending? Shrinking = the investment is paying off; rising = the capex is outrunning the monetization.",
+  "Azure Growth vs 45% Guide": "Azure is Microsoft's cloud business — the data centers, AI compute, and software services it rents to companies and developers. Q4 FY2026 grew 43% year-over-year, accelerating from Q3's 40% and blowing past the 39–40% guide. Azure crossed $100B in full-year revenue for the first time. Management guided Q1 FY2027 to ~45% growth in constant currency. Each percentage point of Azure growth is roughly $1.3–1.5B in additional annual revenue at this scale.",
+  "Copilot Paid Seat Growth": "Copilot is Microsoft's AI assistant for Word, Excel, Teams, and other apps. It costs $30/month per user on top of Microsoft 365. Q4 FY2026 had 30 million+ paid seats — net adds more than doubled sequentially from Q3's 20 million. Each additional 10 million seats is roughly $3.6B/year of new revenue. This is the clearest signal of enterprise willingness to pay for AI productivity.",
+  "AI Business ARR": "The annualized revenue from all AI-specific products combined — Copilot, Azure AI services, GitHub Copilot, etc. — expressed as an annual run rate. The last disclosed figure was $37 billion (Q3 FY2026, +123% YoY); Microsoft did not re-state an updated AI ARR number on the Q4 call, so this is carried forward as the last known data point pending an update. The bear case: at $255–260B FY2027 capex, can AI ARR scale fast enough to justify the spend?",
+  "Operating Margin": "Out of every dollar of revenue, how much Microsoft keeps as operating profit after all costs. Q4 FY2026 came in at approximately 45% (down modestly from Q3's ~47%). Management guided FY2027 operating margin down 'less than one point' — helped by a useful-life accounting change (data center/office depreciable life extended from 15 to 25 years starting FY2027) that reduces near-term depreciation expense.",
+  "CapEx / Revenue Ratio": "How much Microsoft spends building AI infrastructure (data centers, Nvidia chips, networking) compared to total revenue. FY2027 capex guidance jumped to $255–260B (up sharply from FY2026's $190B) against a likely ~$390–400B FY2027 revenue — pushing the ratio from ~56% toward ~65%. Amazon peaked at ~25% during its AWS buildout. The key question: is this ratio shrinking over time as revenue grows faster than spending? Shrinking = the investment is paying off; rising = the capex is outrunning the monetization — and this quarter it rose sharply even as the KPIs beat.",
 };
 const TAG_HELP = {
   BEAT: "doing better than expected — a good sign.",
@@ -111,7 +111,7 @@ function tipSvg(title, body, note, color, extraClass) {
    ╚══════════════════════════════════════════════════════════════════════════╝ */
 
 // 1 ── DATE
-const AS_OF_DATE = "2026-06-03";
+const AS_OF_DATE = "2026-07-31";
 
 // 10 ── Apr 29 capex-driven selloff (stock fell from ~$538 ATH to $424 trough)
 const DISLOCATION_DATE = "2026-04-29";
@@ -122,97 +122,97 @@ const REVERSION_PRECEDENT_DAYS = 90;
 const CASES = {
   bear: {
     key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
-    target12: "$310 — $395",
-    op: "The $190B annual capex plan proves harder to monetize than the $37B AI ARR run rate suggests. Azure decelerates to 25–28% by H2 FY2027 as enterprise AI workloads plateau and open-source models erode Azure AI's pricing premium. Copilot paid seat growth stalls at 25–28M as enterprises report unclear ROI and resist the $30/month premium. Rising depreciation from the capex cycle compresses operating margins toward 40–43%, and the market re-prices MSFT from a premium software platform toward a capex-heavy infrastructure company.",
-    breaks: "Azure sustains ≥38% in Q4 AND Copilot reaches 28M+ seats — two data points proving monetization is tracking above bear trajectory.",
-    requires01: "Azure misses 39% Q4 guide; Copilot seat growth stalls",
-    requires02: "Operating margin guides below 44%; CapEx/Rev ratio rising",
+    target12: "$325 — $400",
+    op: "The 'Azure decelerates' bear case broke this quarter — growth accelerated to 43% and guided to ~45%. The bear case that survives is different: FY2027 capex more than doubles down at $255–260B (up from $190B), pushing the capex/revenue ratio from ~56% toward ~65%, and free cash flow already fell to $19.6B in Q4 on the ramp. The risk is no longer 'does the growth show up' — it's that growth keeps showing up on paper while cash conversion keeps compressing, and the market eventually re-prices MSFT on FCF rather than headline growth. A slowdown from today's 43–45% Azure growth to the low-30s by mid-FY2027, paired with margin compression beyond the guided 'less than one point,' would validate this case.",
+    breaks: "Azure sustains ≥42% AND free cash flow re-accelerates (FCF holding near ~30%+ of revenue) for two consecutive quarters — proof the $255–260B capex is converting to cash, not just to growth optics.",
+    requires01: "Azure decelerates below 36% in Q1 FY27; Copilot seat growth stalls below 32M",
+    requires02: "FCF/revenue keeps falling; capex/revenue ratio exceeds 65% with no plateau in sight",
   },
   base: {
     key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
-    target12: "$460 — $560",
-    op: "Azure holds 38–40% growth through FY2027 as enterprise AI workloads graduate from pilot to production. Copilot reaches 40–50M paid seats — a still-modest 10–12% of M365 base, but sufficient to demonstrate enterprise willingness to pay at scale. AI ARR scales from $37B to $60B+. Operating margins hold near 45% as revenue growth outpaces the depreciation headwind from $190B capex. The stock re-rates from 'capex concern' framing back to 'compounding platform' as consecutive prints confirm the AI spend is returning revenue.",
-    breaks: "Azure decelerates below 35% in any quarter — that single data point signals the AI tailwind is fading faster than the capex assumed.",
-    requires01: "Azure meets 39–40% Q4 guide; Copilot seats 25–30M",
-    requires02: "Operating margin ≥45%; AI ARR tracking toward $60B+",
+    target12: "$475 — $565",
+    op: "Q4 FY2026 validated the base case's central bet: Azure accelerated to 43% (not decelerated), Copilot paid seats more than doubled sequentially to 30M+, and revenue beat consensus by ~$2.4B. Management guided Q1 FY2027 Azure to ~45% and total revenue to $89.85–90.95B (+16–17%). The new central risk is the FY2027 capex step-up to $255–260B — it doesn't disprove the monetization story, but it resets how much revenue growth is needed to keep the capex/revenue ratio from ballooning further. A useful-life accounting change (depreciable life 15→25 years) softens the near-term margin hit. The stock's +15.5% single-day reaction shows the market is willing to fund this for now, but the base case requires Azure and Copilot to keep confirming every quarter, not just this one.",
+    breaks: "Azure decelerates below 36% in any of the next two quarters, OR the capex/revenue ratio keeps rising with no FCF stabilization by Q2 FY2027 — either signals the spend is outrunning the payoff again.",
+    requires01: "Azure holds 41–46% through Q1–Q2 FY27; Copilot seats reach 34–40M",
+    requires02: "Operating margin holds within the guided 'less than one point' decline; FCF stabilizes as a share of revenue",
   },
   bull: {
     key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
-    target12: "$620 — $720",
-    op: "Azure reaccelerates above 42% as Copilot agents — autonomous AI workflows embedded in enterprise systems — create a new category of billable Azure compute beyond per-seat pricing. Copilot reaches 80M+ paid seats as measurable productivity data compels enterprise holdouts to upgrade. AI ARR scales from $37B to $80B+ within 12 months. Microsoft's vertical AI stack (infrastructure + application + agent) proves the most defensible enterprise AI layer, and the market re-rates from ~22× to 28–30× FY2027 EPS — similar to AVGO's platform re-rating.",
-    breaks: "Enterprise Copilot renewal data shows downgrades or opt-outs at scale — that kills the agent-monetization narrative even if seat counts hold.",
-    requires01: "Azure beats 41%+; Copilot seats ≥32M with acceleration",
-    requires02: "Margin expansion as AI monetization outpaces capex D&A",
+    target12: "$650 — $760",
+    op: "Azure crossed $100B in annualized revenue for the first time and guided to ~45% growth next quarter — already at or above what the prior bull case required (≥42%). Copilot's seat net-adds more than doubled sequentially, the clearest signal yet that AI productivity tools are moving from pilot to default deployment. In this scenario, Copilot agent-workflow monetization becomes visible as a distinct revenue line beyond per-seat pricing, AI ARR reaccelerates well past the last-disclosed $37B, and the market decides the $255–260B FY2027 capex is being deployed into genuine capacity-constrained demand rather than speculative build-out — re-rating MSFT toward 28–30× FY2027 EPS the way AVGO re-rated on its own platform story.",
+    breaks: "Enterprise Copilot renewal data shows downgrades or usage plateaus even as headline seat counts grow — proof the seat number is outrunning actual utilization.",
+    requires01: "Azure beats 48%+ with capacity-constraint commentary (demand > supply); Copilot seats accelerate past 42M",
+    requires02: "AI ARR re-disclosed and tracking toward $55B+; margin expansion despite the capex ramp",
   },
 };
 
 // 2 ── Current price
-const NOW_PRICE = 441;
+const NOW_PRICE = 451;
 
 // 3 ── Historical price line (approximate quarter-end close; MSFT FY ends Jun 30)
 const HISTORY = [
-  { q: "Q3 FY25", p: 385 },
   { q: "Q4 FY25", p: 452 },
   { q: "Q1 FY26", p: 478 },
   { q: "Q2 FY26", p: 513 },
+  { q: "Q3 FY26", p: 441 },
   { q: "NOW",     p: NOW_PRICE },
 ];
 
 // 6 ── Price targets
-const PROJ_END = { bear: 352, base: 510, bull: 670 };
+const PROJ_END = { bear: 362, base: 520, bull: 705 };
 
 // 4 ── Forward quarter labels
-const FUTURE_Q = ["Q4 FY26", "Q1 FY27", "Q2 FY27", "Q3 FY27"];
+const FUTURE_Q = ["Q1 FY27", "Q2 FY27", "Q3 FY27", "Q4 FY27"];
 
 // 7 ── Signal bars (pos: 0=far bear, 1=far bull)
 const SIGNALS = {
   bear: [
-    { name: "Azure Growth vs 39–40% Guide", unit: "% YoY", tag: "MISS",  next: "Jul 28 2026", val: "BEAR ≤37%",       guide: "GUIDE 39–40%",      pos: 0.22 },
-    { name: "Copilot Paid Seat Growth",      unit: "M seats", tag: "MISS",  next: "Jul 28 2026", val: "BEAR <22M",       guide: "Q3 20M (+33% seq)", pos: 0.20 },
-    { name: "AI Business ARR",               unit: "$B ARR",  tag: "MISS",  next: "Jul 28 2026", val: "BEAR <$42B ARR", guide: "Q3 $37B (+123%)",   pos: 0.22 },
+    { name: "Azure Growth vs 45% Guide", unit: "% YoY", tag: "MISS",  next: "~late Oct 2026 (Q1 FY27)", val: "BEAR ≤34%",      guide: "Q4 43% (accel, guides ~45%)", pos: 0.18 },
+    { name: "Copilot Paid Seat Growth",      unit: "M seats", tag: "MISS",  next: "~late Oct 2026 (Q1 FY27)", val: "BEAR <32M",       guide: "Q4 30M+ (2× seq)",  pos: 0.20 },
+    { name: "AI Business ARR",               unit: "$B ARR",  tag: "MISS",  next: "~late Oct 2026 (Q1 FY27)", val: "BEAR <$40B ARR", guide: "Q3 $37B (+123%, not updated Q4)", pos: 0.20 },
   ],
   base: [
-    { name: "Azure Growth vs 39–40% Guide", unit: "% YoY", tag: "MATCH", next: "Jul 28 2026", val: "BASE 39–41%",      guide: "GUIDE 39–40%",      pos: 0.58 },
-    { name: "Copilot Paid Seat Growth",      unit: "M seats", tag: "BEAT",  next: "Jul 28 2026", val: "BASE 25–30M",     guide: "Q3 20M (+33% seq)", pos: 0.60 },
-    { name: "AI Business ARR",               unit: "$B ARR",  tag: "MATCH", next: "Jul 28 2026", val: "BASE ~$47B ARR", guide: "Q3 $37B (+123%)",   pos: 0.58 },
+    { name: "Azure Growth vs 45% Guide", unit: "% YoY", tag: "MATCH", next: "~late Oct 2026 (Q1 FY27)", val: "BASE 41–46%",     guide: "Q4 43% (accel, guides ~45%)", pos: 0.58 },
+    { name: "Copilot Paid Seat Growth",      unit: "M seats", tag: "BEAT",  next: "~late Oct 2026 (Q1 FY27)", val: "BASE 34–40M",     guide: "Q4 30M+ (2× seq)",  pos: 0.58 },
+    { name: "AI Business ARR",               unit: "$B ARR",  tag: "MATCH", next: "~late Oct 2026 (Q1 FY27)", val: "BASE ~$45B ARR", guide: "Q3 $37B (+123%, not updated Q4)", pos: 0.56 },
   ],
   bull: [
-    { name: "Azure Growth vs 39–40% Guide", unit: "% YoY", tag: "BEAT",  next: "Jul 28 2026", val: "BULL ≥42%",        guide: "GUIDE 39–40%",      pos: 0.86 },
-    { name: "Copilot Paid Seat Growth",      unit: "M seats", tag: "BEAT",  next: "Jul 28 2026", val: "BULL ≥32M",       guide: "Q3 20M (+33% seq)", pos: 0.88 },
-    { name: "AI Business ARR",               unit: "$B ARR",  tag: "BEAT",  next: "Jul 28 2026", val: "BULL >$55B ARR", guide: "Q3 $37B (+123%)",   pos: 0.88 },
+    { name: "Azure Growth vs 45% Guide", unit: "% YoY", tag: "BEAT",  next: "~late Oct 2026 (Q1 FY27)", val: "BULL ≥48%",       guide: "Q4 43% (accel, guides ~45%)", pos: 0.88 },
+    { name: "Copilot Paid Seat Growth",      unit: "M seats", tag: "BEAT",  next: "~late Oct 2026 (Q1 FY27)", val: "BULL ≥42M",       guide: "Q4 30M+ (2× seq)",  pos: 0.88 },
+    { name: "AI Business ARR",               unit: "$B ARR",  tag: "BEAT",  next: "~late Oct 2026 (Q1 FY27)", val: "BULL >$52B ARR", guide: "Q3 $37B (+123%, not updated Q4)", pos: 0.86 },
   ],
 };
 const MARGIN = {
   bear: [
-    { name: "Operating Margin",      tag: "MISS",  next: "Jul 28 2026", pos: 0.22 },
-    { name: "CapEx / Revenue Ratio", tag: "MISS",  next: "Jul 28 2026", pos: 0.18 },
+    { name: "Operating Margin",      tag: "MISS",  next: "~late Oct 2026 (Q1 FY27)", pos: 0.20 },
+    { name: "CapEx / Revenue Ratio", tag: "MISS",  next: "~late Oct 2026 (Q1 FY27)", pos: 0.14 },
   ],
   base: [
-    { name: "Operating Margin",      tag: "MATCH", next: "Jul 28 2026", pos: 0.57 },
-    { name: "CapEx / Revenue Ratio", tag: "MATCH", next: "Jul 28 2026", pos: 0.52 },
+    { name: "Operating Margin",      tag: "MATCH", next: "~late Oct 2026 (Q1 FY27)", pos: 0.55 },
+    { name: "CapEx / Revenue Ratio", tag: "MATCH", next: "~late Oct 2026 (Q1 FY27)", pos: 0.48 },
   ],
   bull: [
-    { name: "Operating Margin",      tag: "BEAT",  next: "Jul 28 2026", pos: 0.83 },
-    { name: "CapEx / Revenue Ratio", tag: "BEAT",  next: "Jul 28 2026", pos: 0.80 },
+    { name: "Operating Margin",      tag: "BEAT",  next: "~late Oct 2026 (Q1 FY27)", pos: 0.82 },
+    { name: "CapEx / Revenue Ratio", tag: "BEAT",  next: "~late Oct 2026 (Q1 FY27)", pos: 0.78 },
   ],
 };
 
 // 8 ── KPI chart: Azure + other cloud services growth (% YoY)
-const KPI_HIST = 40;   // Q3 FY2026 actual
+const KPI_HIST = 43;   // Q4 FY2026 actual
 const KPI_PROJ = {
-  bear: [38, 30, 25, 22],
-  base: [40, 37, 35, 33],
-  bull: [42, 44, 45, 47],
+  bear: [36, 33, 31, 29],
+  base: [44, 42, 41, 40],
+  bull: [47, 48, 49, 50],
 };
 
 // 9 ── TRACK RECORD. Append newest to end; dashboard keeps last 6.
 const TRACK_ALL = [
-  { q: "Q2 FY25", date: "2025-01", post: 418, reaction: "+",  bear: [300,360], base: [378,458], bull: [478,565], landed: "base→bull", conf: "med"  },
   { q: "Q3 FY25", date: "2025-04", post: 388, reaction: "-",  bear: [295,355], base: [372,452], bull: [472,562], landed: "bear→base", conf: "med"  },
   { q: "Q4 FY25", date: "2025-07", post: 455, reaction: "++", bear: [322,382], base: [412,492], bull: [512,602], landed: "base→bull", conf: "high" },
   { q: "Q1 FY26", date: "2025-10", post: 535, reaction: "++", bear: [348,415], base: [445,525], bull: [548,640], landed: "bull",      conf: "high" },
   { q: "Q2 FY26", date: "2026-01", post: 510, reaction: "+",  bear: [358,428], base: [458,540], bull: [565,660], landed: "base→bull", conf: "high" },
   { q: "Q3 FY26", date: "2026-04", post: 441, reaction: "-",  bear: [342,410], base: [452,532], bull: [558,652], landed: "bear→base", conf: "high" },
+  { q: "Q4 FY26", date: "2026-07", post: 451, reaction: "++", bear: [310,395], base: [460,560], bull: [620,720], landed: "bear→base", conf: "high" },
 ];
 const TRACK_WINDOW = 6;
 const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
@@ -267,7 +267,7 @@ function FanChart({ c }) {
         "Wider = more uncertainty further out.", c.accent, "fan-band")} />
       <path d={midPath} fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="6 5" className="fan-mid" style={{ filter: "url(#softglow)" }} />
       <path d={histPath} fill="none" stroke="#cdd5e3" strokeWidth="2" {...tipSvg(
-        "Price history", "MSFT's actual share price over the past year. The stock peaked at $538 in October 2025 (Q1 FY2026 ATH), then sold off ~20% as the $190B annual capex plan was revealed on April 29, 2026. The current price ($441) sits below that peak, creating base-case upside not visible in most of this portfolio.",
+        "Price history", "MSFT's actual share price over the past year. The stock peaked at $538 in October 2025 (Q1 FY2026 ATH), sold off to a $424 trough after the April 29, 2026 capex reveal, drifted into the low-$380s ahead of Q4 earnings, then jumped 15.5% on July 30, 2026 after Q4 FY2026 results beat across the board (Azure 43%, Copilot seats doubled to 30M+). At $451, the stock is still ~16% below its ATH even after the beat — likely because the FY2027 capex guide jumped to $255–260B in the same release.",
         "This part already happened — it's real, not a forecast.", "#cdd5e3", "hist-line")} />
       {HISTORY.map((d, i) => (
         <g key={i}>
@@ -276,7 +276,7 @@ function FanChart({ c }) {
             stroke={i === nHist - 1 ? "#fff" : "#8a93a6"} strokeWidth="1.5"
             {...tipSvg(i === nHist - 1 ? "Where we are today" : d.q,
               i === nHist - 1
-                ? `MSFT trades at $${NOW_PRICE} — about 20% below its $538 all-time high. Q3 FY2026 beat estimates but the $190B capex plan announced April 29 triggered a selloff. Q4 FY2026 earnings on July 28.`
+                ? `MSFT trades at $${NOW_PRICE} — about 16% below its $538 all-time high, even after jumping 15.5% on the July 29 Q4 FY2026 beat (Azure 43%, Copilot 30M+ seats). Next earnings: Q1 FY2027, ~late October 2026.`
                 : `At the end of ${d.q}, MSFT was around $${d.p}. ${d.q === "Q1 FY26" ? "The stock hit an all-time high of $538 on October 28 after Q1 FY2026 beat estimates and Copilot adoption data showed strong momentum." : ""}`,
               null, i === nHist - 1 ? "#9fb4ff" : "#cdd5e3")} />
           {i === nHist - 1 && <text x={histPts[i][0] - 6} y={histPts[i][1] - 12} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="end">NOW ${NOW_PRICE}</text>}
@@ -287,7 +287,7 @@ function FanChart({ c }) {
           <rect x={x - 4} y={y - 4} width="8" height="8" transform={`rotate(45 ${x} ${y})`}
             fill="#0a0d14" stroke={c.accent} strokeWidth="1.6"
             {...tipSvg(`Forecast: ${FUTURE_Q[i]}`,
-              `A milestone on the most-likely price path for the ${c.label} scenario. ${i === 0 ? "Q4 FY2026 results arrive July 28 — the next confirmation of whether the $190B capex is monetizing." : "Each diamond is roughly one quarter further into the future."}`,
+              `A milestone on the most-likely price path for the ${c.label} scenario. ${i === 0 ? "Q1 FY2027 results arrive ~late October 2026 — the next confirmation of whether the escalated $255–260B FY2027 capex is monetizing at the pace Q4 suggested." : "Each diamond is roughly one quarter further into the future."}`,
               "Hover the shaded cone for the uncertainty range.", c.accent)} />
           <text x={x} y={y - 12} fill={c.accent} fontSize="10.5" fontFamily={FONT_MONO} textAnchor="middle">{FUTURE_Q[i]}</text>
         </g>
@@ -321,9 +321,9 @@ function tagColor(tag) {
 // ── Segmented Control ──────────────────────────────────────────────────────
 function Segmented({ active, setActive, small }) {
   const explain = {
-    bear: ["The pessimistic scenario", "Click to see MSFT if the $190B capex fails to monetize — Azure growth decelerates to 25–28%, Copilot seat growth stalls, and margins compress. The stock re-rates to capex-heavy infrastructure multiples. Price lands in the $310–395 range."],
-    base: ["The most-likely scenario", "Click for the base view — Azure holds 39–40% growth, Copilot reaches 40–50M seats, and the AI ARR scales to $60B+. The stock recovers from its capex-selloff to $460–560. This is the best base-case asymmetry in the portfolio — $441 is below fair value in this scenario."],
-    bull: ["The optimistic scenario", "Click for the upside — Azure reaccelerates above 42%, Copilot agents unlock a new monetization layer, and the market re-rates MSFT to 28–30× FY2027 EPS. Price reaches $620–720."],
+    bear: ["The pessimistic scenario", "Click to see MSFT if the FY2027 $255–260B capex outruns its payoff — free cash flow keeps compressing even as Azure/Copilot headline growth looks fine on paper, and the market re-prices toward capex-heavy infrastructure multiples. Price lands in the $325–400 range."],
+    base: ["The most-likely scenario", "Click for the base view — Q4 already confirmed Azure at 43% (guiding ~45%) and Copilot seats doubling to 30M+. The base case requires that to keep holding while the FY2027 capex ramp doesn't blow out free cash flow. Fair value $475–565 — the stock's +15.5% Q4 pop already captured some of this, but not all of it."],
+    bull: ["The optimistic scenario", "Click for the upside — Azure sustains 48%+, Copilot agent workflows create a new billable compute category, and the market re-rates MSFT to 28–30× FY2027 EPS on proof the $255–260B capex is capacity-constrained demand, not speculative build. Price reaches $650–760."],
   };
   return (
     <div style={{ display: "flex", gap: 5 }}>
@@ -351,8 +351,8 @@ const KPI_MIN = 18, KPI_MAX = 52;
 function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
   const h = Math.max(4, Math.min(92, ((val - KPI_MIN) / (KPI_MAX - KPI_MIN)) * 100));
   const tp = baseline
-    ? tip("Starting point (Q3 FY26)", `This is the most recent real number: Azure grew ${val}% year-over-year — above the 35–36% guidance. The bars to the right are scenario forecasts for where growth goes next.`, "The grey dot = 'where we are now'.", "#9aa4b8")
-    : tip(`Forecast: ${label}`, `In this scenario, Azure year-over-year growth is ${val}% by ${label}. For reference: AWS has been growing at ~17% and Google Cloud at ~28%. Azure at ${val}% would be ${val > 38 ? "exceptional" : val > 30 ? "strong" : "decelerating"} relative to cloud peers.`, "Switch BEAR/BASE/BULL up top to see how scenarios diverge.", accentColor);
+    ? tip("Starting point (Q4 FY26)", `This is the most recent real number: Azure grew ${val}% year-over-year in Q4 FY2026 — accelerating from Q3's 40% and blowing past the 39–40% guide. Management guided ~45% for Q1 FY2027. The bars to the right are scenario forecasts for where growth goes next.`, "The grey dot = 'where we are now'.", "#9aa4b8")
+    : tip(`Forecast: ${label}`, `In this scenario, Azure year-over-year growth is ${val}% by ${label}. Azure at ${val}% would be ${val > 44 ? "exceptional" : val > 36 ? "strong" : "a real deceleration from today's pace"} relative to where it's been trending — Azure is already growing far faster than AWS or Google Cloud.`, "Switch BEAR/BASE/BULL up top to see how scenarios diverge.", accentColor);
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
       <div style={{ fontSize: 11, color: accentColor, fontWeight: 700, marginBottom: 4 }}>{val}%</div>
@@ -461,7 +461,7 @@ function ReversionClock() {
         <span>${trough}</span><span style={{ color: "#9fb4ff" }}>${now} now · {Math.round(recPct)}% of the way back</span><span>${baseFloor}</span>
       </div>
       <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
-        The April 29 capex-driven selloff is <span style={{ color: "#e0a83b", fontWeight: 700 }}>35 days old</span> and price has recovered <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{Math.round(recPct)}%</span> of the trough-to-base gap. Prior MSFT dislocations on capex/AI fears resolved within <span style={{ color: "#e0a83b" }}>60–90 days</span> once subsequent earnings confirmed monetization. The <span style={{ color: "#3fd07a", fontWeight: 700 }}>July 28</span> Q4 FY2026 print is the <span style={{ color: "#fff" }}>key confirmation gate</span> — if Azure holds ≥39%, the reversion completes.
+        The April 29 capex-driven selloff is <span style={{ color: "#e0a83b", fontWeight: 700 }}>{elapsed} days old</span> — right at the edge of the ~60–90 day reversion precedent — and price has recovered <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{Math.round(recPct)}%</span> of the trough-to-base gap. The <span style={{ color: "#3fd07a", fontWeight: 700 }}>July 29</span> Q4 FY2026 print — the confirmation gate this thesis was watching — delivered decisively: Azure hit <span style={{ color: "#fff" }}>43%</span> (guiding ~45%) and Copilot seats doubled to 30M+, both clearing the old bear-vs-base threshold. Yet even after jumping 15.5%, the stock still sits below the $480 base-floor anchor — the FY2027 capex guide jumping to <span style={{ color: "#fff" }}>$255–260B</span> in the same release is the likely reason the market hasn't fully re-rated the print into a clean reversion.
       </div>
     </div>
   );
@@ -527,8 +527,8 @@ function TrackRecord() {
           return (
             <g key={t.q} style={{ animation: `pop .4s cubic-bezier(.2,1.4,.4,1) ${0.3 + i * 0.08}s both` }}>
               <circle cx={x(i)} cy={y(t.post)} r={isLast ? 6 : 4} fill={isLast ? "#2f6dff" : "#0a0d14"} stroke="#fff" strokeWidth={isLast ? 2 : 1.5}
-                {...tipSvg(isLast ? "Now (post Q3 FY26)" : `${t.q}: actual price`,
-                  isLast ? `After Q3 FY2026 earnings (Apr 29), MSFT traded around $${t.post}. The earnings beat — but the $190B capex announcement sent the stock down from pre-earnings ~$445 to $424, recovering to $${t.post} since. Q4 results on July 28.`
+                {...tipSvg(isLast ? "Now (post Q4 FY26)" : `${t.q}: actual price`,
+                  isLast ? `After Q4 FY2026 earnings (Jul 29), MSFT surged 15.5% to $${t.post} on an across-the-board beat: Azure accelerated to 43% (guiding ~45% for Q1 FY27), Copilot seats doubled sequentially to 30M+, and revenue beat by ~$2.4B. The catch: FY2027 capex guidance jumped to $255–260B, up from $190B — the market's next test.`
                     : `After ${t.q} earnings, MSFT actually traded around $${t.post}.`,
                   null, isLast ? "#9fb4ff" : "#cdd5e3")} />
               {isLast && <text x={x(i)} y={y(t.post) - 14} fill="#9fb4ff" fontSize="11" fontFamily={FONT_MONO} textAnchor="middle" fontWeight="700">NOW ${t.post}</text>}
@@ -539,7 +539,7 @@ function TrackRecord() {
       <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
         <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
         <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
-          Tracked <span style={{ color: "#3fd07a", fontWeight: 700 }}>base-or-better in {hits} of {TRACK.length} quarters</span>. The Q1 FY2026 bull landing ($535 ATH) was driven by Copilot seat momentum and Azure acceleration. The Q3 FY2026 capex shock pulled the price back into the <span style={{ color: "#e0a83b" }}>bear-to-base transition zone</span> — the business fundamentals were strong (Azure +40%, EPS $4.27 beat), but the $190B capex number reset investor expectations. Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits below the base band of Q3 FY2026 ($452–532), creating genuine upside in the base case if Q4 confirms the monetization trajectory on <span style={{ color: "#e0a83b", fontWeight: 700 }}>July 28</span>.
+          Tracked <span style={{ color: "#3fd07a", fontWeight: 700 }}>base-or-better in {hits} of {TRACK.length} quarters</span>. The Q1 FY2026 bull landing ($535 ATH) was driven by Copilot seat momentum and Azure acceleration. The Q3 FY2026 capex shock pulled the price back into the bear-to-base transition zone despite strong fundamentals (Azure +40%, EPS $4.27 beat). The Q4 FY2026 print on July 29 answered that question decisively: Azure accelerated further to <span style={{ color: "#3fd07a", fontWeight: 700 }}>43%</span> (guiding ~45%), Copilot seats doubled to 30M+, and the stock jumped 15.5% — but landed at <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span>, just <span style={{ color: "#e0a83b" }}>under the old base band floor ($460)</span>, because the FY2027 capex guide jumped in the same release to $255–260B (from $190B). Both the monetization KPIs and the capex risk got bigger this quarter — the bands have been revised up on both sides accordingly.
         </div>
       </div>
       <ReversionClock />
@@ -573,7 +573,7 @@ function MsftThesis() {
             <span style={{ color: "#cdd5e3" }}>NASDAQ:MSFT</span>
             <span style={{ fontFamily: FONT_DISPLAY, fontStyle: "italic", color: "#9aa4b8" }}>Microsoft Corporation</span>
             <span {...tip("Today's share price",
-              `One share of MSFT costs $${NOW_PRICE} — about 20% below its $538 all-time high set October 28, 2025. The capex selloff has created real base-case upside: if Azure holds 39–40% and Copilot keeps growing, fair value is $460–560.`,
+              `One share of MSFT costs $${NOW_PRICE} — about 16% below its $538 all-time high set October 28, 2025, even after the stock jumped 15.5% on the July 29 Q4 FY2026 beat. If Azure holds near its ~45% Q1 FY27 guide and Copilot keeps adding seats, base-case fair value is $475–565.`,
               null, "#fff")}
               style={{ color: "#fff", fontWeight: 700, fontSize: 15, cursor: "help" }}>${NOW_PRICE}.00</span>
           </div>
@@ -601,8 +601,8 @@ function MsftThesis() {
             <div style={{ marginTop: 18, borderTop: "1px solid #161c28", paddingTop: 14 }}>
               <div style={{ fontSize: 11.5, letterSpacing: "0.16em", color: "#7b86a0", marginBottom: 4 }}
                 {...tip("The most important single number",
-                  "Azure year-over-year growth is the best single measure of whether Microsoft's $190B AI capex is translating into revenue. At 40% in Q3 (above the 35–36% guide), Azure is growing faster than Google Cloud and far faster than AWS. The bear case requires this to decelerate sharply; the bull case requires it to hold or accelerate.",
-                  "Each 1% of Azure growth = roughly $1.3B of additional annual revenue.", "#9fb4ff")}>
+                  "Azure year-over-year growth is the best single measure of whether Microsoft's AI capex is translating into revenue. At 43% in Q4 (accelerating from Q3's 40%, guiding ~45% for Q1 FY27), Azure decisively broke the deceleration thesis this quarter. The bear case now rests on free cash flow, not growth, as the real constraint.",
+                  "Each 1% of Azure growth = roughly $1.3–1.5B of additional annual revenue at this scale.", "#9fb4ff")}>
                 <span style={{ background: "#161c28", padding: "2px 6px", borderRadius: 3, color: "#cdd5e3", marginRight: 8 }}>KPI · K01</span>
                 Azure + Other Cloud Growth
                 <span style={{ color: "#5a6477", marginLeft: 8 }}>% YoY  ·  HIGHER BETTER</span>
@@ -614,16 +614,16 @@ function MsftThesis() {
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
                 <div>
                   <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THIS MEASURES</div>
-                  <div style={{ color: "#9aa4b8" }}>Year-over-year growth of Azure cloud services — the primary monetization vehicle for the $190B AI capex. Q4 FY2026 is guided at 39–40%. A beat would be the strongest possible base-to-bull signal.</div>
+                  <div style={{ color: "#9aa4b8" }}>Year-over-year growth of Azure cloud services — the primary monetization vehicle for the FY2027 $255–260B AI capex. Azure hit 43% in Q4 (accelerating), and management guided ~45% for Q1 FY2027. Azure crossed $100B in annualized revenue for the first time this fiscal year.</div>
                 </div>
                 <div>
                   <div style={{ color: "#5a6477", letterSpacing: "0.12em", marginBottom: 3 }}>WHAT THE <span style={{ color: c.accent }}>{c.label}</span> CASE REQUIRES</div>
                   <div style={{ color: c.accent }}>
                     {active === "bull"
-                      ? "Azure reaccelerates above 42% as Copilot agents drive a new category of compute consumption, and the market re-rates MSFT toward 28–30× FY2027 EPS."
+                      ? "Azure sustains 48%+ as Copilot agent workflows drive a new category of compute consumption, and the market re-rates MSFT toward 28–30× FY2027 EPS."
                       : active === "base"
-                      ? "Azure holds 39–40% growth through FY2027, confirming the AI tailwind is durable. Each quarter at 39%+ validates that the $190B capex is earning a return."
-                      : "Azure decelerates sharply to 25–28%, signaling that enterprise AI workloads are plateauing and the open-source alternatives are eroding pricing power."}
+                      ? "Azure holds 41–46% growth through FY2027, confirming the acceleration seen in Q4 is durable, not a one-quarter pop. Each quarter at 41%+ validates the FY2027 capex step-up is earning a return."
+                      : "Azure decelerates back below 36%, or free cash flow keeps compressing even as headline growth holds — signaling the $255–260B FY2027 capex is outrunning what the business can convert to cash."}
                   </div>
                 </div>
               </div>
@@ -659,10 +659,10 @@ function MsftThesis() {
             <div style={{ marginTop: 14, padding: "10px 12px", background: "#0a0d14", border: "1px solid #161c28", borderRadius: 6 }}>
               <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 4 }}>VALUATION RULER</div>
               <div {...tip("How we price this stock",
-                "Forward P/E on non-GAAP EPS. At $441 and FY2027E ~$20.50: ~22× — reasonable, not cheap. MSFT historically traded 25–32× when the market saw it as a 'compounding platform.' The question: does $190B capex earn that premium back, or does the market re-rate toward 18–20× 'infrastructure company'?",
-                "Bear: $17.50 × 19× = $332. Base: $20.50 × 25× = $512. Bull: $24 × 29× = $696. The multiple is the argument here as much as the EPS.", "#9aa4b8")}
+                "Forward P/E on non-GAAP EPS. At $451 and FY2027E ~$21.50: ~21× — still below MSFT's own 'compounding platform' historical range of 25–32×, even after the beat. Named peer forward P/E (GOOGL/META/AMZN) is ~22× median, so this quarter's move was earnings-driven, not a group re-rating. The question: does the FY2027 capex jump to $255–260B (up from $190B) earn a platform premium, or does rising capex intensity (~65% of revenue) cap the multiple at an infrastructure discount?",
+                "Bear: $18.75 × 19× = $356. Base: $21.50 × 24× = $516. Bull: $25 × 28× = $700. The multiple is still the argument here as much as the EPS.", "#9aa4b8")}
                 style={{ fontSize: 11, color: "#9aa4b8", lineHeight: 1.5 }}>
-                Forward non-GAAP EPS × P/E. Bear: ~$17.50 × 19× = $332. Base: ~$20.50 × 25× = $512. Bull: ~$24 × 29× = $696. At $441: ~22× FY2027E — purgatory between platform premium and infrastructure discount.
+                Forward non-GAAP EPS × P/E. Bear: ~$18.75 × 19× = $356. Base: ~$21.50 × 24× = $516. Bull: ~$25 × 28× = $700. At $451: ~21× FY2027E — still below its own historical platform range even after the beat; peer median (GOOGL/META/AMZN) ~22× confirms this move was earnings-driven, not a group re-rate.
               </div>
             </div>
 
@@ -670,9 +670,9 @@ function MsftThesis() {
             <div style={{ marginTop: 10, padding: "10px 12px", background: "#0a0d14", border: "1px solid #2a1a1a", borderRadius: 6 }}>
               <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 8 }}>RISK / REWARD AT ${NOW_PRICE}</div>
               {[
-                { label: "BEAR", color: "#f1564b", lo: 310, hi: 395 },
-                { label: "BASE", color: "#e0a83b", lo: 460, hi: 560 },
-                { label: "BULL", color: "#3fd07a", lo: 620, hi: 720 },
+                { label: "BEAR", color: "#f1564b", lo: 325, hi: 400 },
+                { label: "BASE", color: "#e0a83b", lo: 475, hi: 565 },
+                { label: "BULL", color: "#3fd07a", lo: 650, hi: 760 },
               ].map(({ label, color, lo, hi }) => {
                 const mid = Math.round((lo + hi) / 2);
                 const pct = Math.round(((mid - NOW_PRICE) / NOW_PRICE) * 100);
@@ -695,9 +695,9 @@ function MsftThesis() {
               })}
               <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #161c28", fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55 }}
                 {...tip("What this asymmetry means",
-                  `At $${NOW_PRICE}, MSFT has the best risk/reward in this portfolio after META. The 20% pullback from ATH means the bear case is mild (~−20%), the base earns real upside (+16%), and the bull is large (+52%). The capex selloff has created an entry point not available at the $538 ATH.`,
-                  "Bear is muted because MSFT's quality floor limits downside even in disappointment. But don't ignore it — $190B capex is a real risk.", "#9aa4b8")}>
-                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−20%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>+16%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+52%</span> — <span style={{ color: "#3fd07a" }}>best asymmetry after META.</span> Capex selloff created a real entry point; base case has genuine upside.
+                  `At $${NOW_PRICE}, MSFT's risk/reward improved after the Q4 beat, but the FY2027 capex jump to $255–260B keeps the bear case alive. Bear ≈ −19% (mild — quality floor limits downside), Base ≈ +15% (the print already validated much of this, some room left), Bull ≈ +56% (requires the capex bet to keep paying off at an accelerating pace).`,
+                  "Bear is muted because MSFT's quality floor limits downside even in disappointment. But the FY2027 capex ramp to $255–260B is now the single biggest swing factor — bigger than it was even during the April selloff.", "#9aa4b8")}>
+                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−19%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>+15%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+56%</span> — the Q4 beat improved the setup, but the FY2027 capex guide ($255–260B, up from $190B) keeps this a genuine two-sided bet.
               </div>
             </div>
           </div>
@@ -705,15 +705,15 @@ function MsftThesis() {
 
         {/* ── Footer ── */}
         <div style={{ padding: "10px 22px", borderTop: "1px solid #161c28", display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#4a5366" }}>
-          <span>OBSERVABLE NOW: Copilot NPS surveys · enterprise AI contract news · open-source model adoption · Azure capacity announcements</span>
-          <span>CONFIRMS JUL 28: Azure growth vs 39–40% · Copilot seat count · AI ARR · Q1 FY27 guidance · operating margin</span>
+          <span>OBSERVABLE NOW: Copilot NPS surveys · enterprise AI contract news · open-source model adoption · Azure capacity announcements · FCF trend</span>
+          <span>CONFIRMS ~LATE OCT 2026 (Q1 FY27): Azure growth vs ~45% guide · Copilot seat count · AI ARR update · Q2 FY27 guidance · FCF trend</span>
         </div>
 
         <TrackRecord />
       </div>
 
       <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "#3d4555", lineHeight: 1.5 }}>
-        Illustrative scenario framing built on public consensus &amp; estimates as of June 2026 — not a prediction and not financial advice. Valuation ruler: forward non-GAAP P/E. Microsoft fiscal year ends June 30. $190B calendar-2026 capex plan announced April 29, 2026 — the capex ROI timeline is the central uncertainty. Q4 FY2026 earnings: July 28, 2026.
+        Illustrative scenario framing built on public consensus &amp; estimates as of July 2026 — not a prediction and not financial advice. Valuation ruler: forward non-GAAP P/E. Microsoft fiscal year ends June 30. Q4 FY2026 results (reported July 29, 2026): revenue $90.0B beat, Azure accelerated to 43% (guiding ~45%), FY2027 capex guided to $255–260B (up from $190B) — the capex ROI timeline remains the central uncertainty despite the beat. Next earnings: Q1 FY2027, ~late October 2026.
       </div>
     </div>
   );

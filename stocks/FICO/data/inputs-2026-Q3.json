@@ -1,0 +1,21 @@
+{
+  "ticker": "FICO",
+  "asOf": "2026-07-31",
+  "quarter": "Q3 FY2026",
+  "inputs": {
+    "price": { "value": 1139.54, "src": "Wisesheets live snapshot (EOD 2026-07-30 close, essentially unchanged into 07-31)", "pulled": "2026-07-31" },
+    "revenue_q3fy26": { "value": 674188000, "src": "SEC 10-Q via Wisesheets — accession 0000814547-26-000030", "pulled": "2026-07-31" },
+    "eps_diluted_gaap_q3fy26": { "value": 10.45, "src": "SEC 10-Q via Wisesheets — accession 0000814547-26-000030", "pulled": "2026-07-31" },
+    "eps_adjusted_nonGAAP_q3fy26": { "value": 12.18, "src": "web search — Fair Isaac 8-K press release, beat consensus $11.97", "pulled": "2026-07-31" },
+    "scores_segment_revenue_q3fy26": { "value": 458900000, "src": "web search — Fair Isaac Q3 FY2026 earnings release (Scores +41% YoY, B2B +49%)", "pulled": "2026-07-31" },
+    "scores_segment_revenue_q2fy26": { "value": 475000000, "src": "web search — Fair Isaac Q2 FY2026 earnings release/slides (Scores +60% YoY, B2B +72%, mortgage +127%)", "pulled": "2026-07-31" },
+    "fy26_guidance_revenue": { "value": 2530000000, "src": "web search — Fair Isaac Q3 FY2026 earnings release, raised full-year guide (~0.9% below Street ~$2.55-2.56B)", "pulled": "2026-07-31" },
+    "fy26_guidance_eps_nonGAAP": { "value": 42.43, "src": "web search — Fair Isaac Q3 FY2026 earnings release, raised full-year non-GAAP EPS guide", "pulled": "2026-07-31" },
+    "consensus_eps_fy26": { "value": 43.59, "src": "web search — analyst consensus (Zacks/Yahoo Finance), current FY2026 (Sept FYE)", "pulled": "2026-07-31" },
+    "multiple_bear": { "value": 16, "src": "judgment — below peer median, scared multiple reflecting continued deceleration/regulatory overhang", "pulled": "2026-07-31" },
+    "multiple_base": { "value": 24, "src": "judgment — anchored to peer-group median forward P/E (~24x), roughly where FICO itself now trades (~27x) after this quarter's compression", "pulled": "2026-07-31" },
+    "multiple_bull": { "value": 33, "src": "judgment — partial re-rate toward FICO's own multi-year average, capped well below the pre-crash 60x+ peak", "pulled": "2026-07-31" },
+    "multiple_peer_median": { "value": 24, "src": "web search — fwd P/E median of EFX (~17.6x), SPGI (~20.6x), MCO (~26.8-30.3x, using ~28.5x), VRSK (~24-30x, using ~27x); sorted [17.6, 20.6, 27, 28.5], median (20.6+27)/2 ≈ 23.8", "pulled": "2026-07-31" }
+  },
+  "notes": "Q3 FY2026 (reported after close 2026-07-29): Scores segment revenue +41% YoY ($459M, B2B +49% on higher mortgage origination score pricing) — still comfortably above the bear kill-switch floor (15% YoY) and the base range (25-35%), technically clearing the bull threshold (>40%) on this one KPI. But total revenue ($674.2M, +26% YoY) missed Street (~$679-692M) and FY26 guidance, while raised, came in ~0.9% below consensus. GAAP EPS $10.45 (+41% YoY) and non-GAAP EPS $12.18 (beat $11.97 est, +42% YoY) both strong. Stock initially popped ~+9% intraday then reversed hard, closing -16.5% the next session ($1,373.08 -> $1,139.54) — a continuation of the multiple-compression story, not an earnings-quality problem. Scores growth itself decelerated meaningfully quarter over quarter (60% in Q2 FY26 -> 41% in Q3 FY26), which is likely what the market is extrapolating forward despite still-strong absolute levels. Separately, the FHFA/VantageScore bi-merge requirement that the original thesis's SIGNALS block referenced as a near-term catalyst ('bi-score live') has NOT gone live — it was expected Q4 2025 and has been postponed indefinitely to align with the broader (still-limited, approved-lenders-only) VantageScore 4.0 GSE rollout. That is a modest net positive for the bear kill-switch (no forcing function yet), but it also means the bull kill-switch's second leg (multiple re-expansion above 40x) is nowhere close — FICO's own forward multiple compressed further, to roughly 27x (using guide EPS) from ~29x last quarter, moving AWAY from the bull re-rating trigger even as the Scores KPI itself touched bull territory. That divergence is itself the story: the market no longer rewards a strong Scores print with multiple relief while the pricing/regulatory overhang is unresolved."
+}

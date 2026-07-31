@@ -1,0 +1,28 @@
+{
+  "ticker": "META",
+  "asOf": "2026-07-31",
+  "quarter": "Q3 FY2026",
+  "inputs": {
+    "price": { "value": 539.03, "src": "EOD close via Wisesheets", "pulled": "2026-07-31" },
+    "q2_2026_revenue": { "value": 60800000000, "src": "SEC 8-K / press release via web search (Meta Q2 2026 results, reported 2026-07-29)", "pulled": "2026-07-31" },
+    "q2_2026_eps_diluted_gaap": { "value": 6.18, "src": "web search — Meta Q2 2026 press release (GAAP diluted EPS, missed $7.22 consensus by 14.4%)", "pulled": "2026-07-31" },
+    "q2_2026_eps_diluted_prior_q": { "value": 10.44, "src": "SEC 10-Q via Wisesheets — accession 0001628280-26-028526 (Q1 FY2026)", "pulled": "2026-07-31" },
+    "q2_2026_legal_charge": { "value": 2400000000, "src": "web search — Meta Q2 2026 earnings call/press release", "pulled": "2026-07-31" },
+    "q2_2026_severance_charge": { "value": 1180000000, "src": "web search — Meta Q2 2026 earnings call (May 2026 layoffs)", "pulled": "2026-07-31" },
+    "q2_2026_operating_margin_gaap": { "value": 0.31, "src": "web search — Meta Q2 2026 press release (down from 43% YoY)", "pulled": "2026-07-31" },
+    "q2_2026_capex_guide_fy26": { "value": "130-145B", "src": "web search — Meta Q2 2026 earnings call (raised from $125-145B, low end raised)", "pulled": "2026-07-31" },
+    "q2_2026_fcf": { "value": 784000000, "src": "web search — Meta Q2 2026 press release/earnings coverage (down sharply YoY on AI capex)", "pulled": "2026-07-31" },
+    "q3_2026_revenue_guide": { "value": "61-64B", "src": "web search — Meta Q2 2026 earnings call guidance", "pulled": "2026-07-31" },
+    "consensus_eps_ntm": { "value": 33.50, "src": "web search — implied from reported forward P/E 16.13x at $539.03 (financecharts.com) and 2026 consensus EPS $32.81 (simplywall.st)", "pulled": "2026-07-31" },
+    "multiple_bear": { "value": 14, "src": "judgment — below current post-print trading multiple (16.1x), reflecting persistent capex/FCF concern if unresolved", "pulled": "2026-07-31" },
+    "multiple_base": { "value": 19, "src": "judgment — modest normalization above the panic low, still well below Meta's own pre-de-rating historical average (~22-26x)", "pulled": "2026-07-31" },
+    "multiple_bull": { "value": 24, "src": "judgment — approaching but below peer median, would require quantified AI-monetization proof", "pulled": "2026-07-31" },
+    "multiple_peer_median": { "value": 26.11, "src": "web search — fwd P/E median of GOOGL (26.11), MSFT (19.53), AMZN (27.61), named comps — median is GOOGL", "pulled": "2026-07-31" },
+    "analyst_price_targets_post_print": {
+      "value": "UBS $715 (was $766) · TD Cowen $750 (was $800) · DA Davidson $700 (was $850) · Cantor Fitzgerald $680 (was $770) · Evercore ISI $820 (was $930)",
+      "src": "web search — post-earnings analyst note roundup",
+      "pulled": "2026-07-31"
+    }
+  },
+  "notes": "This touch closes out PF_STRAT.REVIEW_GATES' 'not yet audited' flag for META's 2026-07-29 print. Revenue beat (+28% YoY, $60.8B vs $60.29B consensus, ad price +12% YoY, impressions +14% YoY) but GAAP EPS missed badly ($6.18 vs $7.22, -14.4%) almost entirely on two one-time items: $2.4B legal charges + $1.18B severance (CFO said op income ex-charges was +9% YoY). The genuinely new, non-one-time part of the story: FY26 capex floor raised to $130-145B (low end raised, a locked-in commitment) while quarterly FCF collapsed to ~$0.8B. Stock fell ~9% over two sessions despite the revenue beat. Original kill-switch ('demand quality degrades into a true bear lane, OR AI monetization breaks out') did not technically fire either direction — demand held up, AI monetization stayed unquantified — but price still re-rated hard on the capex/FCF axis the original kill-switch didn't fully anticipate. Bands lowered across all three cases (multiple regime de-rated a full turn or two) but analyst 12-month price targets (avg ~$733, still Buy/Outperform-rated) cluster in the new base-to-bull range, well above the current $539 price -- the dislocation thesis persists but its cause has shifted from pure capex-fear sentiment to a partly real capex-vs-FCF tension. EU DMA: no new ruling this quarter, still an open Commission review of Meta's updated compliance model, appeal from July 2025 still pending."
+}

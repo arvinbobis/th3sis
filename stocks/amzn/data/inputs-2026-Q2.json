@@ -1,0 +1,30 @@
+{
+  "ticker": "AMZN",
+  "asOf": "2026-07-31",
+  "quarter": "Q2 FY2026",
+  "inputs": {
+    "price":                { "value": 254.00, "src": "Wisesheets EOD 2026-07-30 close $235.50 + web-reported after-hours move of ~+8-10% on the earnings beat (no confirmed regular-session print yet for 2026-07-31 at time of writing)", "pulled": "2026-07-31" },
+    "price_preearnings_close": { "value": 235.50, "src": "Wisesheets EOD close 2026-07-30 (pre-report, reported after close)", "pulled": "2026-07-31" },
+    "revenue_q2_2026":       { "value": 200600000000, "src": "web search — Amazon Q2 2026 shareholder letter / press release via CNBC, Yahoo Finance", "pulled": "2026-07-31" },
+    "revenue_q2_2026_sec":   { "value": 181519000000, "src": "SEC 10-Q via Wisesheets — accession 0001018724-26-000014 (this is Q1 FY2026, filed 2026-04-30; Q2 10-Q not yet on Wisesheets at pull time, Q2 figures sourced from press release/web instead)", "pulled": "2026-07-31" },
+    "aws_revenue_q2_2026":   { "value": 42200000000, "src": "web search — Amazon Q2 2026 earnings coverage (Shacknews, Yahoo Finance, Deadline)", "pulled": "2026-07-31" },
+    "aws_growth_yoy_q2_2026": { "value": 0.37, "src": "web search — Amazon Q2 2026 earnings coverage; fastest AWS growth in 18 quarters, vs 31% consensus", "pulled": "2026-07-31" },
+    "aws_op_margin_q2_2026": { "value": 0.394, "src": "web search — AWS operating income $16.6B / revenue $42.2B, Amazon Q2 2026 release", "pulled": "2026-07-31" },
+    "consolidated_op_income_q2_2026": { "value": 27500000000, "src": "web search — Amazon Q2 2026 press release, op income +43% YoY", "pulled": "2026-07-31" },
+    "consolidated_op_margin_q2_2026": { "value": 0.137, "src": "calculated — $27.5B / $200.6B, new record vs Q1 2026's 13.1%", "pulled": "2026-07-31" },
+    "net_income_q2_2026":    { "value": 62600000000, "src": "web search — Amazon Q2 2026 press release; GAAP EPS $5.75", "pulled": "2026-07-31" },
+    "anthropic_gain_pretax": { "value": 53400000000, "src": "web search — Cryptopolitan/Variety coverage citing Amazon's Q2 2026 10-Q non-operating other income line; distorts GAAP net income/EPS, must be backed out for clean comps", "pulled": "2026-07-31" },
+    "ad_revenue_growth_q2_2026": { "value": 0.26, "src": "web search — Amazon Q2 2026 release, ad revenue $19.8B", "pulled": "2026-07-31" },
+    "fcf_ttm_q2_2026":       { "value": -7600000000, "src": "web search — Investing.com Amazon Q2 2026 earnings slides coverage; swung from +$18.2B TTM a year earlier", "pulled": "2026-07-31" },
+    "capex_fy2026_guide":    { "value": 220000000000, "src": "web search — Andy Jassy Q2 2026 earnings call commentary, raised from prior $200B guide, cited higher memory costs + AI/cloud infra buildout", "pulled": "2026-07-31" },
+    "q3_2026_revenue_guide": { "value": "197B-202B", "src": "web search — Amazon Q2 2026 shareholder letter / press release guidance", "pulled": "2026-07-31" },
+    "consensus_eps_fy2026":  { "value": 6.72, "src": "web search — post-print analyst consensus aggregation (fullratio.com / stockanalysis.com); GAAP-inclusive, likely still lifted by the Anthropic mark — treat as directional only", "pulled": "2026-07-31" },
+    "consensus_pe_fy2027":   { "value": 24, "src": "web search — stockanalysis.com consensus forecast, implied ~$317 2027 target price", "pulled": "2026-07-31" },
+    "avg_analyst_target":    { "value": 313.07, "src": "web search — S&P Global poll of 64 analysts, post-print", "pulled": "2026-07-31" },
+    "multiple_bear":         { "value": 26, "src": "judgment — below-normal forward multiple; scared-market read on capex/FCF risk even after this beat", "pulled": "2026-07-31" },
+    "multiple_base":         { "value": 34, "src": "judgment — normal-for-regime forward multiple, mega-cap-AI-compounder premium consistent with pre-print analyst target trajectory", "pulled": "2026-07-31" },
+    "multiple_bull":         { "value": 42, "src": "judgment — above-normal, excited-market multiple if AWS re-acceleration + FCF inflection both confirm", "pulled": "2026-07-31" },
+    "multiple_peer_median":  { "value": 32, "src": "web search — approx. fwd P/E median of MSFT, GOOGL, META (named comps, hyperscaler/mega-cap-AI-capex peer set), post-Q2-2026-earnings-season", "pulled": "2026-07-31" }
+  },
+  "notes": "Q2 FY2026 print is the review-gate quarter (PF_STRAT.REVIEW_GATES). Headline beat is real and broad: AWS +37% YoY (fastest in 18 quarters, vs 31% consensus) blows through the OLD bull-case KPI ceiling (32%); ad growth +26% also clears the old bull threshold; consolidated op margin hit a new record 13.7% even while absorbing a raised capex guide. But the thesis's own bull condition has two legs, and they diverged this quarter: AWS re-acceleration confirmed hard, while FCF (TTM) got WORSE, not better (-$7.6B vs +$18.2B a year ago), and full-year capex guide was raised again to $220B from $200B (cited: higher memory costs + AI/cloud infra). This is the exact pull-forward/monetization tension CLAUDE.md flags: capacity selling out explains the capex, but only AWS revenue+margin, not just growth, justifies it — and margin did hold, so this reads as a genuine monetization data point, not just a threat-justified spend. GAAP net income ($62.6B, EPS $5.75) is heavily inflated by a $53.4B pretax Anthropic mark-to-market gain (non-operating) — clean/operating comparison should use the $27.5B op income (+43% YoY) instead. FTC ad-suit still unresolved (prepared but not filed as of late June 2026; broader 2023 monopoly case trial slated Oct 2026) — narrative unchanged, still a live pending risk, not yet a realized one."
+}

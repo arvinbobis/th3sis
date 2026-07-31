@@ -85,13 +85,13 @@ function hideTip() { if (tipEl) tipEl.classList.remove("on"); }
 
 // Plain-language explanations for each KPI / signal name
 const SIGNAL_HELP = {
-  "Ad Price-per-Ad Trend": "How much advertisers pay for each ad, compared to a year ago. If it keeps rising, it means businesses find Meta's ads valuable — a sign the core money-machine is healthy. Right now it's growing about +12% a year.",
-  "Revenue vs $58–61B Guide": "Meta told investors to expect $58–61 billion in sales next quarter. This checks whether they actually hit that target. Beating it = strong demand; missing it = warning sign.",
-  "EU DMA Compliance Risk": "Europe has a strict digital law (the DMA). Meta already lost the big fight — it was fined €200m in 2025 and changed its ad model in January 2026. The live risk now: if the EU decides that new model STILL doesn't comply, Meta faces fines of up to 5% of daily global sales. There's no fixed ruling date — it's an open review running through 2026. Europe is about a quarter of Meta's ad money, so it matters.",
-  "Operating Margin": "Out of every dollar of sales, how much is left as profit after running costs. Meta's is about 41% — very high. If it drops, it means costs (like AI spending) are eating into profits.",
-  "Subscription Revenue Disclosure": "Meta recently started charging for ad-free apps and a paid AI assistant. This watches whether they reveal real money coming in from subscriptions — a brand-new income stream beyond ads.",
-  "Adjusted Operating Margin": "Same idea as profit margin — how much of each sales dollar becomes profit — adjusted to strip out one-off items. Higher is healthier.",
-  "Capex Guidance Trajectory": "'Capex' = how much Meta plans to spend building AI data centers. The number keeps climbing ($125–145 billion for 2026). Investors get nervous when it rises without obvious payoff.",
+  "Ad Price-per-Ad Trend": "How much advertisers pay for each ad, compared to a year ago. If it keeps rising, it means businesses find Meta's ads valuable — a sign the core money-machine is healthy. Q2 2026 actual: +12% YoY, matching Q1's pace — steady, not accelerating or decelerating.",
+  "Revenue vs $61–64B Guide": "Meta told investors to expect $61–64 billion in sales for Q3 2026. This checks whether they actually hit that target. Beating it = strong demand; missing it = warning sign. (Q2 2026 came in at $60.8B, near the top of its own $58–61B guide.)",
+  "EU DMA Compliance Risk": "Europe has a strict digital law (the DMA). Meta already lost the big fight — it was fined €200m in 2025 and changed its ad model in January 2026. The live risk now: if the EU decides that new model STILL doesn't comply, Meta faces fines of up to 5% of daily global sales. Meta appealed the original decision (filed July 2025) and the Commission is still reviewing the updated model — no new ruling landed this quarter. Europe is about a quarter of Meta's ad money, so it matters.",
+  "Operating Margin": "Out of every dollar of sales, how much is left as profit after running costs, on a GAAP (unadjusted) basis. Q2 2026 actual: 31%, down sharply from 43% a year ago — but almost all of that drop was two one-time items ($2.4B in legal charges + $1.18B in severance from May layoffs), not an operating deterioration. See 'Adjusted Operating Margin' for the ex-charges view.",
+  "Subscription Revenue Disclosure": "Meta recently started charging for ad-free apps and a paid AI assistant. This watches whether they reveal real money coming in from subscriptions — a brand-new income stream beyond ads. Still not broken out as its own disclosed line as of Q2 2026.",
+  "Adjusted Operating Margin": "Same idea as profit margin — how much of each sales dollar becomes profit — adjusted to strip out one-off items. Management said Q2 2026 operating income, excluding the legal and severance charges, was actually about 9% HIGHER than a year ago — the underlying business held up better than the GAAP headline suggests.",
+  "Capex Guidance Trajectory": "'Capex' = how much Meta plans to spend building AI data centers. Q2 2026 raised the FY2026 range to $130–145 billion (from $125–145B) — raising the LOW end, which is effectively a promise that spending won't come in light. Quarterly free cash flow has correspondingly collapsed toward ~$0.8B. Investors get nervous when it rises without obvious payoff.",
 };
 const TAG_HELP = {
   BEAT: "doing better than expected — a good sign.",
@@ -142,83 +142,89 @@ function tipSvg(title, body, note, color, extraClass) {
    ╚══════════════════════════════════════════════════════════════════════════╝ */
 
 // 1 ── DATE shown top-right of the dashboard
-const AS_OF_DATE = "2026-05-28";
+const AS_OF_DATE = "2026-07-31";
 
 // 10 ── Most recent capex/earnings "shock" date (drives the Reversion Clock).
 //        Only change this if a NEW dislocation happens.
-const DISLOCATION_DATE = "2026-04-29";
-const REVERSION_TROUGH = 520;   // the low the stock hit after that shock
-const REVERSION_BASEFLOOR = 700; // bottom of your current BASE band
-const REVERSION_PRECEDENT_DAYS = 91; // how long the last recovery took
+//        UPDATED 2026-07-31: this IS a new dislocation — Q2 2026 earnings (reported
+//        2026-07-29) triggered a fresh ~9% two-day drop, distinct in character from the
+//        prior two: GAAP EPS missed by 14% on $2.4B legal charges + $1.18B severance
+//        (one-time, and CFO says ex-charges op income was +9% YoY), BUT the FY26 capex
+//        floor was also raised to $130-145B (from $125-145B) while FCF collapsed toward
+//        ~$0.8B this quarter — that second piece is a genuine, not sentiment-only, shift.
+const DISLOCATION_DATE = "2026-07-29";
+const REVERSION_TROUGH = 539;   // the low the stock hit after this shock (as of 2026-07-30 close)
+const REVERSION_BASEFLOOR = 600; // bottom of the current BASE band
+const REVERSION_PRECEDENT_DAYS = 91; // how long the Q3-2025 recovery took (still the best precedent on file)
 
 const CASES = {
   bear: {
     key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
-    target12: "$480 — $560",
-    op: "Operational state: ad growth decelerates, the capex bill keeps climbing without proven ROI, a regulatory hit lands in the EU, and Reality Labs losses start to look structural rather than strategic.",
-    breaks: "Demand proves durable, the ad engine keeps accelerating, the DMA compliance review stays benign, and capex ROI shows up in the numbers.",
+    target12: "$460 — $560",
+    op: "Operational state: ad demand itself is NOT decelerating (Q2 26 rev +28% YoY, ad price +12%, impressions +14%) — the bear case now runs through capital allocation, not demand. Meta just raised the FY26 capex floor to $130-145B while quarterly FCF collapsed to ~$0.8B, and management's answers on AI-spend ROI stay directional rather than quantified. If a future quarter adds genuine ad-side deceleration on top of that capex commitment, this becomes about the core engine, not just spending discipline.",
+    breaks: "Ad demand keeps compounding, FCF stabilizes/re-expands as capex growth slows, the DMA compliance review stays benign, and capex ROI starts showing up as a disclosed, quantified number rather than commentary.",
     requires01: "ad / guide quality deteriorates",
-    requires02: "earnings quality pressured by capex + RL drag",
+    requires02: "capex-to-FCF gap widens further without monetization proof",
   },
   base: {
     key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
-    target12: "$700 — $800",
-    op: "Operational state: the Family of Apps stays a cash machine, AI ad tools do real work on conversion, margins hold near 41%, and the market tolerates the capex as long as ad ROI keeps showing up.",
-    breaks: "Either demand quality degrades into a true bear lane, or AI monetization breaks out and forces a re-rating higher.",
-    requires01: "solid delivery against guide with intact margins",
-    requires02: "margin durability holds despite capex ramp",
+    target12: "$600 — $700",
+    op: "Operational state: the Family of Apps is still a cash machine on the top line (28% rev growth, record engagement), AI ad tools keep doing real conversion work (ad price +12% YoY), but GAAP margin compressed to 31% (from 43%) on one-time legal/severance charges and the market's patience for capex-without-quantified-ROI has visibly thinned — the Q2 print beat revenue and still fell ~9%. The multiple regime has re-rated down a turn or two across the board versus six months ago.",
+    breaks: "Either ad demand quality genuinely degrades (not just a GAAP-noise quarter), or AI monetization becomes explicit and quantifiable (a disclosed AI-attributed revenue line, not just directional commentary) and forces a re-rating higher.",
+    requires01: "solid delivery against guide with intact ADJUSTED margins",
+    requires02: "FCF stabilizes even as capex commitment stays elevated",
   },
   bull: {
     key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
-    target12: "$900 — $1015",
-    op: "Operational state: AI shifts from cost center to monetization engine, the new subscription stack scales, business-messaging revenue inflects, and the market reframes capex as proof of a durable ad-ranking moat.",
-    breaks: "AI monetization stalls, subscriptions fail to scale, ad pricing rolls over, or another capex raise resets sentiment.",
-    requires01: "clean ad reacceleration + monetization proof",
-    requires02: "margin expansion as AI leverage compounds",
+    target12: "$730 — $870",
+    op: "Operational state: AI shifts from cost center to monetization engine with a disclosed, quantified revenue line — not Zuckerberg's 'that's a very technical question' answers — the new subscription stack scales, business-messaging revenue inflects, and the market reframes the raised $130-145B capex floor as proof of a durable ad-ranking moat rather than a risk to free cash flow.",
+    breaks: "AI monetization stalls or stays unquantified, subscriptions fail to scale, ad pricing rolls over, or FCF keeps compressing without a visible floor.",
+    requires01: "clean ad reacceleration + explicit monetization proof",
+    requires02: "margin/FCF recovery as AI leverage compounds despite capex",
   },
 };
 
-const NOW_PRICE = 612;
+const NOW_PRICE = 539;
 const HISTORY = [
-  { q: "Q1 25", p: 615 }, { q: "Q2 25", p: 720 }, { q: "Q3 25", p: 760 },
-  { q: "Q4 25", p: 700 }, { q: "Q1 26", p: 520 }, { q: "NOW", p: NOW_PRICE },
+  { q: "Q2 25", p: 720 }, { q: "Q3 25", p: 760 }, { q: "Q4 25", p: 700 },
+  { q: "Q1 26", p: 520 }, { q: "Q2 26", p: 539 }, { q: "NOW", p: NOW_PRICE },
 ];
-const PROJ_END = { bear: 520, base: 750, bull: 957 };
-const FUTURE_Q = ["Q2 26", "Q3 26", "Q4 26", "Q1 27"];
+const PROJ_END = { bear: 510, base: 650, bull: 800 };
+const FUTURE_Q = ["Q3 26", "Q4 26", "Q1 27", "Q2 27"];
 
 const SIGNALS = {
   bear: [
-    { name: "Ad Price-per-Ad Trend", unit: "% YoY", tag: "MISS", next: "Q2 2026", val: "BEAR +4% to +7%", guide: "Q1 +12%", pos: 0.22 },
-    { name: "Revenue vs $58–61B Guide", unit: "$B", tag: "MISS", next: "Q2 2026", val: "BEAR ≤ $58B", guide: "GUIDE $58–61B", pos: 0.18 },
+    { name: "Ad Price-per-Ad Trend", unit: "% YoY", tag: "MATCH", next: "Q3 2026", val: "BEAR +4% to +7%", guide: "Q2 +12%", pos: 0.22 },
+    { name: "Revenue vs $61–64B Guide", unit: "$B", tag: "WATCH", next: "Q3 2026", val: "BEAR ≤ $61B", guide: "GUIDE $61–64B", pos: 0.18 },
     { name: "EU DMA Compliance Risk", unit: "REV", tag: "WATCH", next: "Open 2026", val: "BEAR −EU rev impact", guide: "~25% ad rev", pos: 0.3 },
   ],
   base: [
-    { name: "Ad Price-per-Ad Trend", unit: "% YoY", tag: "MATCH", next: "Q2 2026", val: "BASE +9% to +12%", guide: "Q1 +12%", pos: 0.55 },
-    { name: "Revenue vs $58–61B Guide", unit: "$B", tag: "BEAT", next: "Q2 2026", val: "BASE $59–60B", guide: "GUIDE $58–61B", pos: 0.6 },
-    { name: "Operating Margin", unit: "%", tag: "MATCH", next: "Q2 2026", val: "BASE ≈ 41%", guide: "Q1 41%", pos: 0.58 },
+    { name: "Ad Price-per-Ad Trend", unit: "% YoY", tag: "MATCH", next: "Q3 2026", val: "BASE +9% to +12%", guide: "Q2 +12%", pos: 0.58 },
+    { name: "Revenue vs $61–64B Guide", unit: "$B", tag: "WATCH", next: "Q3 2026", val: "BASE $62–63B", guide: "GUIDE $61–64B", pos: 0.55 },
+    { name: "Operating Margin", unit: "%", tag: "MISS", next: "Q3 2026", val: "Q2 ACTUAL 31% (GAAP)", guide: "Q1 41% / expected ~41%", pos: 0.22 },
   ],
   bull: [
-    { name: "Ad Price-per-Ad Trend", unit: "% YoY", tag: "BEAT", next: "Q2 2026", val: "BULL +13%+", guide: "Q1 +12%", pos: 0.82 },
-    { name: "Revenue vs $58–61B Guide", unit: "$B", tag: "BEAT", next: "Q2 2026", val: "BULL ≥ $61B", guide: "GUIDE $58–61B", pos: 0.86 },
-    { name: "Subscription Revenue Disclosure", unit: "NEW", tag: "BEAT", next: "Q2 2026", val: "BULL explicit ramp", guide: "new in Q2", pos: 0.8 },
+    { name: "Ad Price-per-Ad Trend", unit: "% YoY", tag: "MATCH", next: "Q3 2026", val: "BULL +13%+", guide: "Q2 +12%", pos: 0.6 },
+    { name: "Revenue vs $61–64B Guide", unit: "$B", tag: "WATCH", next: "Q3 2026", val: "BULL ≥ $64B", guide: "GUIDE $61–64B", pos: 0.86 },
+    { name: "Subscription Revenue Disclosure", unit: "NEW", tag: "WATCH", next: "Q3 2026", val: "BULL explicit ramp", guide: "still not broken out", pos: 0.55 },
   ],
 };
 const MARGIN = {
   bear: [
-    { name: "Adjusted Operating Margin", tag: "MISS", next: "Q2 2026", pos: 0.2 },
-    { name: "Capex Guidance Trajectory", tag: "MISS", next: "Q2 2026", pos: 0.15 },
+    { name: "Adjusted Operating Margin", tag: "MATCH", next: "Q3 2026", pos: 0.45 },
+    { name: "Capex Guidance Trajectory", tag: "MISS", next: "Q3 2026", pos: 0.12 },
   ],
   base: [
-    { name: "Adjusted Operating Margin", tag: "MATCH", next: "Q2 2026", pos: 0.55 },
-    { name: "Capex Guidance Trajectory", tag: "MATCH", next: "Q2 2026", pos: 0.52 },
+    { name: "Adjusted Operating Margin", tag: "BEAT", next: "Q3 2026", pos: 0.62 },
+    { name: "Capex Guidance Trajectory", tag: "MISS", next: "Q3 2026", pos: 0.2 },
   ],
   bull: [
-    { name: "Adjusted Operating Margin", tag: "BEAT", next: "Q2 2026", pos: 0.8 },
-    { name: "Capex Guidance Trajectory", tag: "BEAT", next: "Q2 2026", pos: 0.78 },
+    { name: "Adjusted Operating Margin", tag: "BEAT", next: "Q3 2026", pos: 0.7 },
+    { name: "Capex Guidance Trajectory", tag: "WATCH", next: "Q3 2026", pos: 0.3 },
   ],
 };
-const KPI_HIST = 38;
-const KPI_PROJ = { bear: [38, 37, 37, 38], base: [42, 45, 48, 51], bull: [48, 55, 62, 68] };
+const KPI_HIST = 40;
+const KPI_PROJ = { bear: [39, 38, 38, 39], base: [43, 46, 49, 52], bull: [48, 55, 61, 67] };
 
 // 9 ── TRACK RECORD. Add the newest quarter to the END of this list each cycle.
 //       The dashboard automatically keeps only the most recent 6 (fixed window),
@@ -231,12 +237,13 @@ const TRACK_ALL = [
   { q: "Q3 2025", date: "2025-10", post: 635, reaction: "−−", bear: [560, 640], base: [720, 820], bull: [880, 980], landed: "bear", conf: "high" },
   { q: "Q4 2025", date: "2026-01", post: 715, reaction: "+", bear: [560, 630], base: [700, 800], bull: [880, 980], landed: "base", conf: "high" },
   { q: "Q1 2026", date: "2026-04", post: 612, reaction: "−", bear: [510, 560], base: [700, 800], bull: [900, 1015], landed: "bear", conf: "high" },
+  { q: "Q2 2026", date: "2026-07", post: 539, reaction: "−−", bear: [480, 560], base: [700, 800], bull: [900, 1015], landed: "bear", conf: "high" },
 ];
 const TRACK_WINDOW = 6; // fixed window — always show this many most-recent quarters
 const TRACK = TRACK_ALL.slice(-TRACK_WINDOW);
-const TRACK_PRICE_MIN = 440, TRACK_PRICE_MAX = 1040;
+const TRACK_PRICE_MIN = 400, TRACK_PRICE_MAX = 1040;
 
-const PRICE_MIN = 440, PRICE_MAX = 1040;
+const PRICE_MIN = 380, PRICE_MAX = 900;
 const CH_W = 760, CH_H = 420, PAD_L = 8, PAD_R = 56, PAD_T = 18, PAD_B = 34;
 const plotW = CH_W - PAD_L - PAD_R, plotH = CH_H - PAD_T - PAD_B;
 const yOf = (p) => PAD_T + (1 - (p - PRICE_MIN) / (PRICE_MAX - PRICE_MIN)) * plotH;
@@ -260,7 +267,7 @@ function FanChart({ c }) {
     lower.slice().reverse().map(([x, y]) => `L ${x} ${y}`).join(" ") + " Z";
   const midPath = `M ${nowX} ${nowY} ` + mid.map(([x, y]) => `L ${x} ${y}`).join(" ");
   const histPath = "M " + histPts.map(([x, y]) => `${x} ${y}`).join(" L ");
-  const gridP = [1000, 900, 800, 700, 600, 500];
+  const gridP = [900, 800, 700, 600, 500, 400];
 
   return (
     <svg viewBox={`0 0 ${CH_W} ${CH_H}`} style={{ width: "100%", height: "auto", display: "block" }}>
@@ -283,7 +290,7 @@ function FanChart({ c }) {
         "Wider = more uncertainty.", c.accent, "fan-band")} />
       <path d={midPath} fill="none" stroke={c.accent} strokeWidth="2" strokeDasharray="6 5" className="fan-mid" style={{ filter: "url(#softglow)" }} />
       <path d={histPath} fill="none" stroke="#cdd5e3" strokeWidth="2" {...tipSvg(
-        "Price history", "The solid white line is META's actual share price over the past year and a bit. You can see the big drop in early 2026 — that was the market reacting to Meta announcing it would spend even more on AI.",
+        "Price history", "The solid white line is META's actual share price over the past year and a bit. You can see two big drops — early 2026 (capex-fear selloff) and late July 2026 (Q2 earnings: revenue beat but a GAAP EPS miss on one-time charges, plus a raised capex floor and collapsing free cash flow).",
         "This part already happened — it's real, not a forecast.", "#cdd5e3", "hist-line")} />
       {HISTORY.map((d, i) => (
         <g key={i}>
@@ -329,9 +336,9 @@ function tagColor(tag) {
 
 function Segmented({ active, setActive, small }) {
   const explain = {
-    bear: ["The pessimistic scenario", "Click to see what META looks like if things go wrong — ad sales slow down, the huge AI spending doesn't pay off, and regulators in Europe take a bite. The price would likely fall to the $480–560 range."],
-    base: ["The most-likely scenario", "Click for the 'steady as she goes' view — the business keeps growing at a healthy pace, spending stays under control, and AI slowly proves its worth. Price drifts up toward $700–800."],
-    bull: ["The optimistic scenario", "Click to see the upside — AI massively boosts ad prices, new subscriptions take off, and the market falls in love with the stock again. Price could run to $900–1,015."],
+    bear: ["The pessimistic scenario", "Click to see what META looks like if the capex-vs-cash-flow squeeze keeps tightening without ad demand offsetting it — free cash flow stays near zero, the multiple stays depressed, and regulators in Europe take a bite. The price would likely settle in the $460–560 range."],
+    base: ["The most-likely scenario", "Click for the 'steady as she goes' view — ad demand keeps compounding at a healthy pace, GAAP margin recovers now that the one-time legal/severance charges roll off, but the market keeps a lower multiple on the stock until AI capex shows quantified payoff. Price drifts toward $600–700."],
+    bull: ["The optimistic scenario", "Click to see the upside — AI monetization becomes an explicit, disclosed revenue line, free cash flow re-expands even with elevated capex, and the market re-rates the multiple back toward peers. Price could run to $730–870."],
   };
   return (
     <div style={{ display: "flex", gap: 5 }}>
@@ -356,7 +363,7 @@ function Segmented({ active, setActive, small }) {
 function KpiCol({ label, val, accentColor, baseline, delay = 0 }) {
   const h = ((val - 30) / 45) * 100;
   const tp = baseline
-    ? tip("Starting point (Q1 2026)", "This is the most recent real number: about 38% of Meta's new ad revenue is helped by its AI tools. The bars to the right are forecasts of where it goes next.", "The grey dot = 'where we are now'.", "#9aa4b8")
+    ? tip("Starting point (Q2 2026)", "This is a directional estimate (Meta doesn't disclose an exact figure): roughly 40% of Meta's new ad revenue is helped by its AI ranking/conversion tools, based on the pace of ad-price and impression growth this quarter. The bars to the right are forecasts of where it goes next.", "The grey dot = 'where we are now'.", "#9aa4b8")
     : tip(`Forecast: ${label}`, `In this scenario, AI-assisted ads are projected to make up about ${val}% of new ad revenue by ${label}. Taller bar = AI is contributing more, which is good for Meta.`, "Switch BEAR/BASE/BULL up top to see how the forecast changes.", accentColor);
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} {...tp}>
@@ -464,7 +471,7 @@ function ReversionClock() {
         <span>${REVERSION_TROUGH}</span><span style={{ color: "#9fb4ff" }}>${NOW_PRICE} now · {Math.round(recPct)}% of the way back</span><span>${REVERSION_BASEFLOOR}</span>
       </div>
       <div style={{ fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55, marginTop: 10 }}>
-        Last dislocation took <span style={{ color: "#e0a83b" }}>~3 months</span> report-to-base-reversion. We're <span style={{ color: "#fff", fontWeight: 700 }}>{elapsed} days in</span> and price has retraced <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{Math.round(recPct)}%</span> of the trough-to-base gap — <span style={{ color: recPct >= pct ? "#3fd07a" : "#e0a83b", fontWeight: 700 }}>{recPct >= pct ? "tracking ahead of" : "tracking behind"}</span> the Q3-2025 pace. The reversion window into the July 29 print is the watch zone.
+        The Q3-2025 precedent took <span style={{ color: "#e0a83b" }}>~3 months</span> report-to-base-reversion (a sentiment-only dislocation). We're <span style={{ color: "#fff", fontWeight: 700 }}>{elapsed} days</span> past the Q2 2026 print and price has retraced <span style={{ color: "#9fb4ff", fontWeight: 700 }}>{Math.round(recPct)}%</span> of the trough-to-base gap — <span style={{ color: recPct >= pct ? "#3fd07a" : "#e0a83b", fontWeight: 700 }}>{recPct >= pct ? "tracking ahead of" : "tracking behind"}</span> the Q3-2025 pace. Caveat: this dislocation has a real capex-vs-FCF component the prior two didn't, so a full reversion is less assured — the Oct 28 2026 (Q3 2026) print is the next real test.
       </div>
     </div>
   );
@@ -539,15 +546,17 @@ function TrackRecord() {
       <div style={{ marginTop: 12, padding: "10px 12px", background: "#0a0e15", border: "1px solid #161c28", borderRadius: 8 }}>
         <div style={{ fontSize: 10.5, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 6 }}>READ-OUT</div>
         <div style={{ fontSize: 12, color: "#bcc6d8", lineHeight: 1.6 }}>
-          Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits <span style={{ color: "#f1564b", fontWeight: 700 }}>in the upper BEAR band</span>, while the Q1 2026 business printed
-          <span style={{ color: "#e0a83b", fontWeight: 700 }}> base-to-bull</span> fundamentals (33% rev growth, ad price +12%, margin 41%).
-          The two prior capex-driven <span style={{ color: "#f1564b" }}>dislocations</span> (Q3 2025, Q1 2026) both saw price fall into the bear band on revenue beats — and the Q3 one
-          <span style={{ color: "#3fd07a", fontWeight: 700 }}> reverted to base within one quarter</span>. Same configuration now: base business, near-bear price.
+          Current price <span style={{ color: "#9fb4ff", fontWeight: 700 }}>${NOW_PRICE}</span> sits <span style={{ color: "#f1564b", fontWeight: 700 }}>inside the BEAR band</span>, while the Q2 2026 business itself printed
+          <span style={{ color: "#e0a83b", fontWeight: 700 }}> base-to-bull</span> demand (28% rev growth, ad price +12%, impressions +14%) alongside a genuinely
+          <span style={{ color: "#f1564b", fontWeight: 700 }}> weaker capital-allocation picture</span> (GAAP margin 31% vs 43% a year ago, capex floor raised to $130–145B, FCF ~$0.8B this quarter).
+          The two prior capex-driven <span style={{ color: "#f1564b" }}>dislocations</span> (Q3 2025, Q1 2026) were largely sentiment — this third one (Q2 2026) is a mix: part one-time GAAP noise
+          (legal + severance charges), part a real tightening of the capex-vs-FCF trade-off. Street analysts cut price targets (UBS $715, TD Cowen $750, Evercore $820) but kept Buy/Outperform ratings —
+          their post-print base case still clusters well above where the stock is trading, which is the asymmetry this dashboard is built to surface.
         </div>
       </div>
       <ReversionClock />
       <div style={{ fontSize: 9.5, color: "#3d4555", marginTop: 8, lineHeight: 1.5 }}>
-        ⚠ Bands are reconstructed now (anchored to each date's forward EPS &amp; multiple regime), not archived in real time — treat levels as directional, especially "lower-conf" quarters. Reversion pattern rests on n=2 dislocations; not a strategy, a tell. Pattern breaks if a future dislocation coincides with genuine ad deceleration rather than capex fear.
+        ⚠ Bands are reconstructed now (anchored to each date's forward EPS &amp; multiple regime), not archived in real time — treat levels as directional, especially "lower-conf" quarters. Reversion pattern now rests on n=3 dislocations, and unlike the first two this one has a real (not purely sentiment) component — capex commitment vs. FCF, not just capex fear. Don't assume automatic reversion this time; watch Q3 FCF and capex trajectory, not just price action.
       </div>
     </div>
   );
@@ -600,7 +609,7 @@ function MetaThesis() {
                 <span style={{ color: "#5a6477", marginLeft: 8 }}>%  ·  HIGHER BETTER</span>
               </div>
               <div className="panel" key={active + "-kpi"} style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 120, padding: "12px 4px 0" }}>
-                <KpiCol label="Q1 26" val={KPI_HIST} baseline accentColor="#7b86a0" />
+                <KpiCol label="Q2 26" val={KPI_HIST} baseline accentColor="#7b86a0" />
                 {kpiVals.map((v, i) => <KpiCol key={i} label={FUTURE_Q[i]} val={v} accentColor={c.accent} delay={i * 0.08} />)}
               </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginTop: 12, fontSize: 11, lineHeight: 1.5 }}>
@@ -640,9 +649,9 @@ function MetaThesis() {
             <div style={{ marginTop: 10, padding: "10px 12px", background: "#0a0d14", border: "1px solid #2a1a1a", borderRadius: 6 }}>
               <div style={{ fontSize: 10, letterSpacing: "0.12em", color: "#5a6477", marginBottom: 8 }}>RISK / REWARD AT ${NOW_PRICE}</div>
               {[
-                { label: "BEAR", color: "#f1564b", lo: 480, hi: 560  },
-                { label: "BASE", color: "#e0a83b", lo: 700, hi: 800  },
-                { label: "BULL", color: "#3fd07a", lo: 900, hi: 1015 },
+                { label: "BEAR", color: "#f1564b", lo: 460, hi: 560  },
+                { label: "BASE", color: "#e0a83b", lo: 600, hi: 700  },
+                { label: "BULL", color: "#3fd07a", lo: 730, hi: 870  },
               ].map(({ label, color, lo, hi }) => {
                 const mid = Math.round((lo + hi) / 2);
                 const pct = Math.round(((mid - NOW_PRICE) / NOW_PRICE) * 100);
@@ -665,21 +674,21 @@ function MetaThesis() {
               })}
               <div style={{ marginTop: 8, paddingTop: 8, borderTop: "1px solid #161c28", fontSize: 10.5, color: "#9aa4b8", lineHeight: 1.55 }}
                 {...tip("What this asymmetry means",
-                  `At $${NOW_PRICE}, META sits in the bear band despite printing base/bull fundamentals — a classic dislocation setup. The bear is limited (~−15%), the base is real upside (+23%), and the bull adds further. Favorable risk/reward vs. most names in this set.`,
+                  `At $${NOW_PRICE}, META sits inside the bear band even though ad demand printed base/bull fundamentals — the multiple regime re-rated down on the capex/FCF story, not on demand. The bear is modest from here (~−5%), the base is real upside (+21%), and the bull adds meaningfully further (+48%). Note the bands themselves are lower than six months ago — this is a re-rating, not just a dip.`,
                   "Midpoints of ranges used. Always hold loosely.", "#9aa4b8")}>
-                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−15%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>+23%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+57%</span> — <span style={{ color: "#3fd07a" }}>favorable asymmetry</span>: limited downside, decent base upside. Current price in bear band despite base/bull fundamentals.
+                Bear ≈ <span style={{ color: "#f1564b", fontWeight: 700 }}>−5%</span> · Base ≈ <span style={{ color: "#e0a83b", fontWeight: 700 }}>+21%</span> · Bull ≈ <span style={{ color: "#3fd07a", fontWeight: 700 }}>+48%</span> — <span style={{ color: "#3fd07a" }}>favorable asymmetry</span> at current price, but on a genuinely lower band structure than the prior quarter. Current price sits inside the bear band despite base/bull demand fundamentals.
               </div>
             </div>
           </div>
         </div>
         <div style={{ padding: "10px 22px", borderTop: "1px solid #161c28", display: "flex", justifyContent: "space-between", fontSize: 10.5, color: "#4a5366" }}>
-          <span>OBSERVABLE NOW: ad-pricing indices · app-store / engagement data · EU DMA compliance review · subscription adoption</span>
-          <span>CONFIRMS JULY 29: revenue vs guide · margin · capex trajectory · AI ad-perf %</span>
+          <span>OBSERVABLE NOW: ad-pricing indices · app-store / engagement data · EU DMA compliance review · subscription adoption · analyst price-target revisions</span>
+          <span>CONFIRMS OCT 28: revenue vs $61–64B guide · GAAP vs adjusted margin · FCF trajectory · capex pacing vs $130–145B floor</span>
         </div>
         <TrackRecord />
       </div>
       <div style={{ maxWidth: 1280, margin: "12px auto 0", fontSize: 10.5, color: "#3d4555", lineHeight: 1.5 }}>
-        Illustrative scenario framing built on current consensus &amp; estimates as of May 2026 — not a prediction and not financial advice. Price ranges are scenario mid-bands; KPI markers are positional, not literal. Data inputs will move with every print between now and the July 29 2026 earnings release.
+        Illustrative scenario framing built on current consensus &amp; estimates as of July 31 2026 — not a prediction and not financial advice. Price ranges are scenario mid-bands; KPI markers are positional, not literal. Data inputs will move with every print between now and the ~October 28 2026 (Q3 2026) earnings release.
       </div>
     </div>
   );

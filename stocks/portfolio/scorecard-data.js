@@ -81,15 +81,6 @@ const PF_SCORECARD = [
   },
   {
     "t": "AMZN",
-    "quarter": "Q4 2024",
-    "date": "2025-02",
-    "post": 212,
-    "landed": "bear",
-    "conf": "med",
-    "bandHit": true
-  },
-  {
-    "t": "AMZN",
     "quarter": "Q1 2025",
     "date": "2025-05",
     "post": 192,
@@ -130,6 +121,15 @@ const PF_SCORECARD = [
     "date": "2026-04",
     "post": 232,
     "landed": "bear→base",
+    "conf": "high",
+    "bandHit": true
+  },
+  {
+    "t": "AMZN",
+    "quarter": "Q2 2026",
+    "date": "2026-07",
+    "post": 254,
+    "landed": "base→bull",
     "conf": "high",
     "bandHit": true
   },
@@ -314,6 +314,15 @@ const PF_SCORECARD = [
     "bandHit": true
   },
   {
+    "t": "FICO",
+    "quarter": "Q3 FY26",
+    "date": "2026-07",
+    "post": 1140,
+    "landed": "base",
+    "conf": "high",
+    "bandHit": true
+  },
+  {
     "t": "GOOGL",
     "quarter": "Q4 2024",
     "date": "2025-02",
@@ -431,6 +440,15 @@ const PF_SCORECARD = [
     "bandHit": true
   },
   {
+    "t": "META",
+    "quarter": "Q2 2026",
+    "date": "2026-07",
+    "post": 539,
+    "landed": "bear",
+    "conf": "high",
+    "bandHit": true
+  },
+  {
     "t": "MRVL",
     "quarter": "Q4 FY25",
     "date": "2025-02",
@@ -486,15 +504,6 @@ const PF_SCORECARD = [
   },
   {
     "t": "MSFT",
-    "quarter": "Q2 FY25",
-    "date": "2025-01",
-    "post": 418,
-    "landed": "base→bull",
-    "conf": "med",
-    "bandHit": true
-  },
-  {
-    "t": "MSFT",
     "quarter": "Q3 FY25",
     "date": "2025-04",
     "post": 388,
@@ -534,6 +543,15 @@ const PF_SCORECARD = [
     "quarter": "Q3 FY26",
     "date": "2026-04",
     "post": 441,
+    "landed": "bear→base",
+    "conf": "high",
+    "bandHit": true
+  },
+  {
+    "t": "MSFT",
+    "quarter": "Q4 FY26",
+    "date": "2026-07",
+    "post": 451,
     "landed": "bear→base",
     "conf": "high",
     "bandHit": true
@@ -766,6 +784,12 @@ const PF_SCORECARD = [
 ];
 
 const PF_PREDICTIONS = {
+  "AMZN": {
+    "quarter": "Q2 2026",
+    "asOf": "2026-07-31",
+    "case": "BASE, tilting toward BULL",
+    "note": ""
+  },
   "ASML": {
     "quarter": "Q2 2026",
     "asOf": "2026-07-16",
@@ -778,11 +802,29 @@ const PF_PREDICTIONS = {
     "case": "BASE",
     "note": "probability tail toward BEAR elevated"
   },
+  "FICO": {
+    "quarter": "Q3 FY26",
+    "asOf": "2026-07-31",
+    "case": "BASE",
+    "note": ""
+  },
   "GOOGL": {
     "quarter": "Q2 2026",
     "asOf": "2026-07-25",
     "case": "BASE",
     "note": "45%, was 55%"
+  },
+  "META": {
+    "quarter": "Q2 2026",
+    "asOf": "2026-07-31",
+    "case": "BASE",
+    "note": "bear-leaning, band structure lowered"
+  },
+  "MSFT": {
+    "quarter": "Q4 FY2026",
+    "asOf": "2026-07-31",
+    "case": "BASE-to-BULL",
+    "note": ""
   },
   "MU": {
     "quarter": "Q3 FY2026",
