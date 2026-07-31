@@ -63,3 +63,19 @@ State one of:
 ## Step 4 — Close
 One paragraph, no more: the verdict, the single deciding factor, and — if PASS — that the
 next step is `/thesis $ARGUMENTS`.
+
+## Step 5 — Credit Scout if this candidate originated there
+If the verdict is **PASS** (not PASS-WATCH or FAIL — only a real gate clear counts), check
+whether $ARGUMENTS traces back to a Scout report: grep
+`~/Programs/grok-buy-side-scalper/reports/*.md` for the ticker over the last ~30 days, or
+check if a `PF_RADAR` theme already named it. If it does, identify which account(s) most
+directly surfaced it, then run (from that repo):
+```
+cd ~/Programs/grok-buy-side-scalper && python -m scalper.cli mark-conversion \
+  --account <username, no @> --ticker $ARGUMENTS --outcome prescreen_pass \
+  --date <YYYY-MM-DD of the originating report> --note "<one line: what they flagged>"
+```
+This is the strongest reward signal in Scout's RL loop (weighted above every other
+feedback type) — only fire it on a genuine PASS with a real, findable origin, never
+speculatively. If $ARGUMENTS doesn't trace back to Scout (self-directed research, a peer
+comp, etc.), skip this step silently — don't fabricate an account to credit.

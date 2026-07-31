@@ -90,6 +90,18 @@ inline-HTML checks. Fix anything it fails on — this also catches the case wher
 PF_ALERTS in `portfolio-data.js` (if this stock's buy floor or thesisIntact flag changed)
 fell out of sync with the local/data-file fallback ALERT block.
 
-## Step 7 — Close
+## Step 7 — Credit Scout if this update closed a radar gap
+Check `PF_RADAR.THEMES` in `stocks/portfolio/portfolio-data.js` for any row naming
+`$ARGUMENTS` in `holdings` with `coverage: "thesis-gap"` whose `evidence` field traces to a
+Scout report. If Step 3's audit just added that risk as a real kill-switch/KPI trigger in
+this thesis (closing the gap — see the `/radar` skill's own step 3), credit the account: run
+```
+cd ~/Programs/grok-buy-side-scalper && python -m scalper.cli mark-conversion \
+  --account <username, no @> --ticker $ARGUMENTS --outcome update_thesis \
+  --date <YYYY-MM-DD of the originating report> --note "<one line: which radar row closed>"
+```
+Skip silently if nothing closed this touch, or the row's evidence didn't come from Scout.
+
+## Step 8 — Close
 Summarize what changed, the new most-probable case, and the key KPI to watch next. Remind:
 estimates, not advice; widen bands when uncertain.

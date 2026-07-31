@@ -116,6 +116,18 @@ sub-second schema check you can run after every edit. Before closing out, run th
 `/verify-thesis $ARGUMENTS` — it runs that same lint automatically plus a headless Playwright
 render in both themes. Fix anything it fails on before moving to Step 7.
 
-## Step 7 — Close
+## Step 7 — Credit Scout if this build originated there
+A full `/thesis` build is the strongest possible confirmation a Scout-surfaced idea was
+right — stronger than a prescreen PASS. If `$ARGUMENTS` traces back to a Scout report (this
+was likely already checked at its `/prescreen` step, if one ran first — otherwise grep
+`~/Programs/grok-buy-side-scalper/reports/*.md` for the ticker over the last ~30 days), run:
+```
+cd ~/Programs/grok-buy-side-scalper && python -m scalper.cli mark-conversion \
+  --account <username, no @> --ticker $ARGUMENTS --outcome thesis_built \
+  --date <YYYY-MM-DD of the originating report> --note "<one line: what they flagged>"
+```
+Skip silently if there's no real, findable Scout origin — don't fabricate an account credit.
+
+## Step 8 — Close
 State plainly: the most-probable case, the single most important KPI to watch next, and
 a reminder that everything is an estimate, not advice.
