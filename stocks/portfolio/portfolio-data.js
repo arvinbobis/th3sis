@@ -88,10 +88,40 @@
  * ($1,755.39 vs $1,782.99). SPGI at $426.40 (was $429.06), still above its $400 floor, now
  * 3 days from its Jul 28 earnings gate. DRAM had the largest single-day dollar swing in the
  * book (-$92.25).
+ * 2026-07-28: full resync from live IBKR (net liq 34,364.74 → 34,687.95, cash 4,284.59 →
+ * 4,285.49). No new fills, no live orders — pure price/PnL drift over the weekend gap
+ * (07-25 was Friday). Sharpest move: ASML -6.4% today to $1,644.00 (was $1,755.39 on
+ * 07-25) — now -13.5% below its $1,900 floor, its worst read yet, no fresh thesis-breaking
+ * news identified. MRVL (not held) fell further to $186.94, extending below its $195
+ * re-entry floor (was $192.29 on 07-25). TSLA (not held) drifted to $307.69, still far
+ * above the $250 limit, FAIL verdict unchanged. AVGO essentially flat at $381.50 (was
+ * $381.43), still below its $390 floor. MU down another -4.9% to $878.66, still below both
+ * its $1,100 thesis floor and its own $883.91 avg cost. TSM held steady at $396.30, still
+ * comfortably above its $375 floor. SPGI at $439.05, up from $426.40 on 07-25 — this is the
+ * PRE-earnings price; SPGI reports after close today (2026-07-28), the nearest REVIEW_GATES
+ * catalyst in the book, so this print is not yet the post-earnings re-test. Verified with a
+ * headless render pass across all 6 portfolio pages, no errors.
+ * 2026-07-30/31: THE ROTATION — user is deliberately building toward the 70% core target
+ * (TARGET_CORE_PCT below) by trimming the small legacy findata/power satellites, not by
+ * adding fresh capital. Per live IBKR trades (DAYS_7): 2026-07-28 bought SOXX (2.0122 sh,
+ * $999.96, avg $497.45 — a new semis-satellite ETF, not core); 2026-07-30 fully exited CBOE
+ * (1.0489 sh @ ~$305, +$18.26 realized), ETN (0.2627 sh @ $384.21, -$1.05 realized), EQIX
+ * (0.0936 sh @ $1,064.05, -$2.34 realized), MBGL (5 sh @ $21.03, -$1.80 realized), and MCO
+ * (5.1545 sh @ ~$480.80, -$21.60 realized net across both fills) — all five dropped from
+ * PF_RAW — then rotated the proceeds into more QQQM (+2.8644 sh @ ~$279.27, $799.97) and
+ * SPMO (+5.639 sh @ ~$141.86, $799.99). CORE_TICKERS unchanged (QQQ/QQQM/SPMO); SOXX is a
+ * satellite (semis theme), not core, despite being an ETF. Flipped CBOE and MCO to
+ * held:false in PF_PRESCREEN (both keep their FAIL verdicts, now historical); pulled CBOE
+ * out of the kalshi PF_RADAR holdings (CME remains, still held) and EQIX out of the
+ * ny-dc-moratorium holdings (now holdings:[], nothing left in that row's book). Full
+ * resync from live IBKR: net liq 34,687.95 → 35,145.46, cash 4,285.49 → 4,782.30 (the
+ * ETF buys were smaller than the five combined sells, hence cash went up net). This
+ * snapshot pulled live 2026-07-31 reflects Friday 07-30/Thursday 07-28 fills plus the
+ * intervening price drift — dated to the pull, not the trade date.
  * ─────────────────────────────────────────────────────────────────────────── */
 
-const PF_ASOF = "2026-07-25";
-const PF_ACCT = { netLiq: 34364.74, cash: 4284.59, dividends: 5.16, buyingPower: 4284.59 };
+const PF_ASOF = "2026-07-31";
+const PF_ACCT = { netLiq: 35145.46, cash: 4782.30, dividends: 5.35, buyingPower: 4782.30 };
 
 // ── Buy-alert pre-commitment (single source of truth for every armed ticker) ──
 // Previously hand-mirrored in three places: each thesis's own `const ALERT`,
@@ -129,38 +159,36 @@ const PF_THEMES = {
 // ticker, name, qty, avgCost, lastPx, mktVal, unrealPnl, dayPnl, theme, hasThesis
 // AXP, MSCI, and V dropped 2026-07-07; ALAB, ANET, ARM, LRCX, and MRVL dropped
 // 2026-07-09 (later same day than that sync) — all closed positions per live IBKR
-// pull, see header note. ALAB and MRVL both had full built theses.
+// pull, see header note. ALAB and MRVL both had full built theses. CBOE, ETN, EQIX,
+// MBGL, and MCO dropped 2026-07-30 — rotated into QQQM/SPMO (and SOXX added 2026-07-28)
+// per THE ROTATION, see header note.
 const PF_RAW = [
-  ["AMZN","Amazon.com",           8.1653, 202.74,  231.55, 1890.68,  235.28, -17.23, "platforms",    true ],
-  ["ASML","ASML Holding",         0.5986, 730.61, 1755.39, 1050.78,  613.44, -28.50, "semis",        true ],
-  ["AVGO","Broadcom",             1.1432, 351.63,  381.43,  436.05,   34.07, -12.62, "semis",        true ],
-  ["BKNG","Booking Holdings",    10.7000, 188.61,  177.26, 1896.68, -121.39,  47.40, "diversifiers", false],
-  ["BN","Brookfield",            11.0450,  45.36,   41.67,  460.25,  -40.75,   5.08, "diversifiers", false],
-  ["CBOE","Cboe Global Markets",  1.0489, 286.95,  285.07,  299.01,   -1.97,   0.22, "findata",      false],
-  ["CME","CME Group",             0.9659, 311.60,  255.37,  246.66,  -54.31,   1.01, "findata",      false],
-  ["DRAM","Roundhill Memory ETF",16.9247,  59.14,   52.85,  894.46, -106.54, -92.25, "semis",        false],
-  ["EFX","Equifax",               4.9299, 253.60,  172.54,  850.60, -399.64,  28.69, "findata",      false],
-  ["EQIX","Equinix",              0.0936,1078.41, 1084.24,  101.48,    0.55,   4.74, "power",        false],
-  ["ETN","Eaton",                 0.2627, 384.38,  404.07,  106.15,    5.17,  -2.91, "power",        false],
-  ["FICO","Fair Isaac",           1.8783,1407.84, 1237.37, 2324.15, -320.20,  58.57, "findata",      true ],
-  ["GE","GE Aerospace",           2.7332, 295.44,  354.30,  968.37,  160.87,  14.49, "power",        false],
-  ["GEV","GE Vernova",            0.9451,1060.05, 1014.75,  959.04,  -42.81, -15.54, "power",        false],
-  ["GOOG","Alphabet",             3.0338, 227.50,  318.60,  966.57,  276.37,   0.79, "platforms",    true ],
-  ["INTU","Intuit",               2.3960, 642.94,  295.25,  707.42, -833.06,  32.87, "platforms",    false],
-  ["MA","Mastercard",             5.2499, 532.50,  537.27, 2820.61,   25.02,  36.64, "payments",     false],
-  ["MBGL","Mobility Global",      5.0000,  21.19,   20.55,  102.75,   -3.20,  -0.75, "findata",      false],
-  ["MCO","Moody's",               5.1545, 484.90,  471.50, 2430.35,  -69.08,  -3.81, "findata",      false],
-  ["META","Meta Platforms",       2.9644, 610.47,  594.10, 1761.15,  -48.53, -35.57, "platforms",    true ],
-  ["MSFT","Microsoft",            5.8559, 434.43,  381.40, 2233.44, -310.54,  -1.05, "platforms",    true ],
-  ["MU","Micron Technology",      1.0769, 883.91,  910.77,  980.81,   28.93, -85.55, "semis",        true ],
-  ["NVDA","NVIDIA",               2.1852, 183.96,  206.80,  451.90,   49.91,  -4.28, "semis",        true ],
-  ["PWR","Quanta Services",       0.4109, 732.43,  625.84,  257.16,  -43.80, -11.49, "power",        false],
-  ["QQQ","Invesco QQQ",           0.9735, 722.02,  683.90,  665.78,  -37.11,  -7.85, "index",        false],
-  ["QQQM","Invesco Nasdaq 100",   0.6868, 292.65,  281.60,  193.41,   -7.58,  -2.32, "index",        false],
-  ["SPCX","SpaceX (Space Exploration Technologies)", 9.0000, 120.11, 113.45, 1021.01, -59.99, -43.15, "diversifiers", false],
-  ["SPGI","S&P Global",           5.8357, 504.01,  426.40, 2488.34, -452.88,  37.35, "findata",      true ],
-  ["SPMO","Invesco S&P 500 Momentum", 1.3592, 147.87, 146.53, 199.16,  -1.83,  -4.49, "index",        false],
-  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  402.20,  288.86,  -12.14,  -9.61, "semis",        true ],
+  ["AMZN","Amazon.com",           8.1653, 202.74,  258.79, 2113.10,  457.69, 190.17, "platforms",    true ],
+  ["ASML","ASML Holding",         0.5986, 730.61, 1673.99, 1002.05,  564.71,  13.50, "semis",        true ],
+  ["AVGO","Broadcom",             1.1432, 351.63,  390.24,  446.12,   44.14,   2.74, "semis",        true ],
+  ["BKNG","Booking Holdings",    10.7000, 188.61,  193.55, 2070.99,   52.91,   3.32, "diversifiers", false],
+  ["BN","Brookfield",            11.0450,  45.36,   42.08,  464.77,  -36.22,   0.55, "diversifiers", false],
+  ["CME","CME Group",             0.9659, 311.60,  267.00,  257.90,  -43.08,  -0.21, "findata",      false],
+  ["DRAM","Roundhill Memory ETF",16.9247,  59.14,   53.62,  907.50,  -93.49,  21.66, "semis",        false],
+  ["EFX","Equifax",               4.9299, 253.60,  176.13,  868.30, -381.94,   0.00, "findata",      false],
+  ["FICO","Fair Isaac",           1.8783,1407.84, 1135.00, 2131.87, -512.48,  -8.53, "findata",      true ],
+  ["GE","GE Aerospace",           2.7332, 295.44,  355.96,  972.91,  165.41,   2.51, "power",        false],
+  ["GEV","GE Vernova",            0.9451,1060.05,  996.23,  941.54,  -60.31,  13.47, "power",        false],
+  ["GOOG","Alphabet",             3.0338, 227.50,  340.27, 1032.31,  342.12,  19.99, "platforms",    true ],
+  ["INTU","Intuit",               2.3960, 642.94,  314.92,  754.55, -785.93,  -1.39, "platforms",    false],
+  ["MA","Mastercard",             5.2499, 532.50,  576.00, 3023.94,  228.35,  -7.09, "payments",     false],
+  ["META","Meta Platforms",       2.9644, 610.47,  545.66, 1617.55, -192.13,  19.65, "platforms",    true ],
+  ["MSFT","Microsoft",            5.8559, 434.43,  447.30, 2619.34,   75.37, -22.25, "platforms",    true ],
+  ["MU","Micron Technology",      1.0769, 883.91,  897.50,  966.52,   14.64,  24.60, "semis",        true ],
+  ["NVDA","NVIDIA",               2.1852, 183.96,  197.67,  431.95,   29.96,   5.75, "semis",        true ],
+  ["PWR","Quanta Services",       0.4109, 732.43,  657.00,  269.96,  -31.00,  -0.40, "power",        false],
+  ["QQQ","Invesco QQQ",           0.9735, 722.02,  689.48,  671.21,  -31.68,   5.77, "index",        false],
+  ["QQQM","Invesco Nasdaq 100",   3.5512, 282.15,  283.84, 1007.97,    6.01,   8.84, "index",        false],
+  ["SOXX","iShares Semiconductor ETF", 2.0122, 497.45,  516.20, 1038.70,   37.73,  23.48, "semis",        false],
+  ["SPCX","SpaceX (Space Exploration Technologies)", 9.0000, 120.11, 113.10, 1017.90, -63.10,   8.10, "diversifiers", false],
+  ["SPGI","S&P Global",           5.8357, 504.01,  415.00, 2421.82, -519.41,   0.00, "findata",      true ],
+  ["SPMO","Invesco S&P 500 Momentum", 6.9982, 143.18,  145.67, 1019.43,   17.44,  15.75, "index",        false],
+  ["TSM","Taiwan Semiconductor",  0.7182, 419.10,  413.56,  297.02,   -3.98,   7.36, "semis",        true ],
 ];
 const PF_POS = PF_RAW.map(r => ({
   t:r[0], name:r[1], qty:r[2], avg:r[3], px:r[4], mv:r[5], up:r[6], day:r[7], theme:r[8], thesis:r[9],
@@ -225,13 +253,13 @@ const PF_STRAT = {
     // amount was decided this session (data/documentation update only, per instruction —
     // manual execution always, this is not a placed order).
     { t:"AVGO", limit:390,  cap:0,   size:"TBD — held, size not decided", musk:false, watch:false,
-      anchor:"HELD. Buy floor ($390, base-case floor) breached again: $381.43 as of 2026-07-25 (was essentially flat vs floor on 07-23, -2.2% now). VMware ARR REVIEW_GATE (2026-09-04) explicitly conditions any add — thesisIntact is still true, but that earnings print is the real re-test before sizing anything here. The Amazon RNG custom-networking WATCH item (added 2026-07-18) is still just a watch, not yet a kill-switch." },
+      anchor:"HELD. Buy floor ($390, base-case floor) still breached: $381.50 as of 2026-07-28, essentially flat vs $381.43 on 07-25. VMware ARR REVIEW_GATE (2026-09-04) explicitly conditions any add — thesisIntact is still true, but that earnings print is the real re-test before sizing anything here. The Amazon RNG custom-networking WATCH item (added 2026-07-18) is still just a watch, not yet a kill-switch." },
     { t:"ASML", limit:1900, cap:0,   size:"TBD — held/trimmed, size not decided", musk:false, watch:false,
-      anchor:"HELD (post-harvest, remainder rides as house money — see TRIMMED). Buy floor ($1,900, set 2026-07-16) still breached: $1,755.39 as of 2026-07-25 (-7.6%, slightly worse than -6.2% on 07-23). This would be a fresh-capital add, not a re-buy of already-trimmed shares. No new thesis-breaking news identified this session — flagged as a data gap, not evaluated for whether the drop is warranted." },
+      anchor:"HELD (post-harvest, remainder rides as house money — see TRIMMED). Buy floor ($1,900, set 2026-07-16) still breached, and worse: $1,644.00 as of 2026-07-28 (-13.5%, down from -7.6%/$1,755.39 on 07-25 — the sharpest single-day move in the book this sync). This would be a fresh-capital add, not a re-buy of already-trimmed shares. No new thesis-breaking news identified this session — flagged as a data gap, not evaluated for whether the drop is warranted." },
     { t:"MRVL", limit:195,  cap:0,   size:"TBD — NOT held, re-entry, size not decided", musk:false, watch:false,
-      anchor:"NOT HELD (sold 2026-07-09). Re-entry floor ($195) breached again as of 2026-07-25: $192.29, down -8.1% in a single session (was $208.25/above floor on 07-23 — a ~2-day round trip through the line). Full re-underwrite gate is still the ~2026-08-28 earnings (see REVIEW_GATES) — this row exists so the floor-touch itself isn't silently missed, not to imply the re-entry case has been re-verified either way." },
+      anchor:"NOT HELD (sold 2026-07-09). Re-entry floor ($195) still breached as of 2026-07-28: $186.94, extending below the line (was $192.29 on 07-25). Full re-underwrite gate is still the ~2026-08-28 earnings (see REVIEW_GATES) — this row exists so the floor-touch itself isn't silently missed, not to imply the re-entry case has been re-verified either way." },
     { t:"TSLA", limit:250,  cap:500, size:"$500",          musk:true,  watch:false,
-      anchor:"Not yet placed (SPCX filled 2026-07-20; this one still waits). /prescreen FAILED on cushion 2026-07-12 (~182–396× earnings depending on metric) — no valuation floor, sentiment/support anchor only. $250 = a real ~16% break below the observed 52wk low, not an arbitrary guess. Reported earnings 2026-07-22, dropped -7.7% the next session; continued drifting lower, $311.30 as of 2026-07-25 (-2.6% that day). Still far above the $250 limit and the FAIL verdict is unchanged; informational only, no action." },
+      anchor:"Not yet placed (SPCX filled 2026-07-20; this one still waits). /prescreen FAILED on cushion 2026-07-12 (~182–396× earnings depending on metric) — no valuation floor, sentiment/support anchor only. $250 = a real ~16% break below the observed 52wk low, not an arbitrary guess. Reported earnings 2026-07-22, dropped -7.7% the next session; continued drifting lower, $307.69 as of 2026-07-28. Still far above the $250 limit and the FAIL verdict is unchanged; informational only, no action." },
     { t:"TDG",  limit:1150, cap:0,   size:"small",         musk:false, watch:true,
       anchor:"Watchlist only. Better-valued than GE but 5.9× leverage + rate risk. GE is likely enough for aerospace." },
   ],
@@ -243,7 +271,7 @@ const PF_STRAT = {
     { t:"ALAB", date:"2026-08-11", note:"NOT HELD (sold 2026-07-09) — this now gates the re-entry buyFloor ($300 in PF_ALERTS), not an add to an existing position. Leo CXL ramp is still the key variable to re-check before re-underwriting." },
     { t:"MRVL", date:"~2026-08-28", note:"NOT HELD (sold 2026-07-09) — gates the re-entry buyFloor ($195 in PF_ALERTS, its own base-case floor). Passive QQQ/QQQM exposure covers the gap until then. Update 2026-07-25: multiple reports (unconfirmed by either company) say Amazon moved Trainium3/Trainium4 design work to Taiwan's Alchip Technologies after Marvell lost the design bakeoff on execution/timeline — Marvell likely keeps the interconnect/switching/storage work regardless. This is real evidence of exactly the shape of MRVL's own stated kill-switch (\"a competitor winning 3+ of the 18 XPU design sockets before production ramp\") — one data point toward that threshold, not the threshold itself. Also today's -8.1% MRVL move (see FOLIO 07-25 sync) is mostly a broad memory/semis-sector selloff (SK Hynix -7.1%, Samsung -8%, SanDisk -8.6%, Kioxia/Tokyo Electron/Advantest all down on AI-capex + memory-cost spillover fears), not isolated to this news — hard to cleanly separate the two in one day's move. Raises the bar for the re-entry re-underwrite at the ~08-28 earnings: confirm whether this is 1-of-18 or the start of a real erosion pattern." },
     { t:"MU",   date:"~2026-09-24", note:"Price fell ~15% since the 07-11 update ($979→~$880) in a mid-July memory-sector selloff (SK Hynix's own Q2 miss, CXMT headlines) — no new MU-specific bad news, thesis intact, base floor unchanged at $1,100. First PF_ALERTS entry for MU. Update 2026-07-19: price has drifted further to $844 (07-17 close) — now BELOW the $883.91 avg cost of the existing SEEDED position, not just below the $1,100 thesis floor. Already fully seeded (see PF_STRAT.SEEDED) — not added to LIMITS as a fresh-capital row; whether to add MORE below the existing seed's own cost basis is a judgment call, not a mechanical trigger (rule 4: don't add just because it dropped). Update 2026-07-23: price recovered to $964.80, unrealized flipped back positive. Update 2026-07-25: price back down to $910.77 in a broad two-day AI-memory/semis selloff (SK Hynix -7.1%, Samsung -8%, SanDisk -8.6%, Kioxia/Tokyo Electron/Advantest also down; South Korea's Kospi -5.7%) — but the proximate trigger this time is reported RISING memory prices squeezing OEM margins (Apple reportedly raised product prices to offset memory costs), not the oversupply/competition fear from the 07-16 selloff. Worth flagging as genuinely two-sided for a producer like MU: tight supply and pricing power are normally the bull case, not the bear case — this reads more like profit-taking on a strong pricing backdrop than new negative information. No thesis-breaking evidence identified; still a data point to watch, not a re-underwrite trigger." },
-    { t:"SPGI",  date:"2026-07-28", note:"HELD legacy position (pre-existing, not a generator seed), thesis built 2026-07-18 with base case $425–515 and buyFloor $400. Live at $426.40 as of 2026-07-25 (was $429.06 on 07-23) — sits at the bottom of its own base band, well above the $400 floor, not breached. Nearest earnings catalyst of anything in the book (3 days out as of this sync) — this is also the reissued first ex-Mobility guide. Kill-switch: Ratings billed issuance growth turns negative before the guided Q4 2026 deceleration (confirming Q1's strength was pulled forward, not durable), or two straight quarters of continuing-ops organic cc revenue missing the 6-8% FY2026 guide." },
+    { t:"SPGI",  date:"2026-07-28", note:"HELD legacy position (pre-existing, not a generator seed), thesis built 2026-07-18 with base case $425–515 and buyFloor $400. Live at $439.05 as of 2026-07-28 (was $426.40 on 07-25) — PRE-earnings price, still sitting in the base band, well above the $400 floor, not breached. Reports after close TODAY, the reissued first ex-Mobility guide — not yet audited against the print. Kill-switch: Ratings billed issuance growth turns negative before the guided Q4 2026 deceleration (confirming Q1's strength was pulled forward, not durable), or two straight quarters of continuing-ops organic cc revenue missing the 6-8% FY2026 guide." },
     { t:"GOOGL", date:"~2026-10-27", note:"HELD (as GOOG, Class C — thesis built against GOOGL Class A, same company). Q2 2026 already reported 2026-07-22 and fully rolled into the thesis 2026-07-25: Cloud individually beat every bull-case threshold (82% growth, 35.5% margin, $514B backlog), but Search decelerated to 17% (base-band, not bull) so the base case's own AND-condition for a bull shift didn't fire. Stock dropped ~7-8% on the print anyway, on a capex-guidance raise ($180-190B→$195-205B), landing at $319 — in the gap between the bear ($280-315) and base ($370-415) bands. Most-probable case stays BASE (45%, was 55%; Bull rose to 35% on the Cloud beat per the thesis's own pre-committed probability rule). Kill-switch for BASE: Cloud decelerates below 55% for two consecutive quarters." },
     // Five rows added 2026-07-25 alongside the GOOGL update-thesis touch: none of these had a
     // REVIEW_GATES entry before, on a page whose whole point is "the real thesis re-tests" —
@@ -310,10 +338,10 @@ const PF_PRESCREEN = [
     chokepoint:"Ratings duopoly (NRSRO status) — a genuine regulatory bottleneck.",
     cushion:"Fwd P/E ~20.8 vs its own 5-yr avg ~29.3 — a real discount to its own history.",
     note:"Mobility spinoff (7/1/26) simplifies the story further. Full /thesis built 2026-07-18 — see PF_ALERTS.SPGI and stocks/spgi/." },
-  { t:"MCO",   verdict:"FAIL",  date:"2026-07-03", held:true, bucket:null,
+  { t:"MCO",   verdict:"FAIL",  date:"2026-07-03", held:false, bucket:null,
     chokepoint:"Same NRSRO ratings duopoly as SPGI.",
     cushion:"Fwd P/E ~26.8, ~63% above the Capital Markets industry median — no margin of safety.",
-    note:"Redundant with SPGI — don't add fresh capital here." },
+    note:"Redundant with SPGI — don't add fresh capital here. Fully sold 2026-07-30 as part of the rotation into core ETFs (THE ROTATION, see header note) — this FAIL verdict is now historical, not an active hold." },
   { t:"EFX",   verdict:"WATCH", date:"2026-07-03", held:true, bucket:null,
     chokepoint:"The Work Number — a genuinely hard-to-replicate scale asset.",
     cushion:"Fwd P/E ~19–20x — only fair.",
@@ -326,10 +354,10 @@ const PF_PRESCREEN = [
     chokepoint:"Deepest liquidity/clearing network of the exchange group — a genuine network-effect moat.",
     cushion:"Fwd P/E ~22–25 (“fairly valued”); the ~9% Kalshi/perpetual-futures selloff adds real cushion.",
     note:"Kill-switch is trackable: outcome of CME's CFTC lawsuit and whether Kalshi captures institutional (not just retail) volume." },
-  { t:"CBOE",  verdict:"FAIL",  date:"2026-07-03", held:true, bucket:null,
+  { t:"CBOE",  verdict:"FAIL",  date:"2026-07-03", held:false, bucket:null,
     chokepoint:"SPX/VIX options ecosystem — real, but narrower and analysts flag it as most exposed to Kalshi.",
     cushion:"Still ~7% above one fair-value estimate even after a 25% drawdown.",
-    note:"Redundant with CME — same risk bucket, weaker/more concentrated moat." },
+    note:"Redundant with CME — same risk bucket, weaker/more concentrated moat. Fully sold 2026-07-30 as part of the rotation into core ETFs (THE ROTATION, see header note) — this FAIL verdict is now historical, not an active hold." },
   { t:"INTU",  verdict:"PASS",  date:"2026-07-03", held:true, bucket:null,
     chokepoint:"TurboTax/QuickBooks data depth + tax-code complexity + switching costs.",
     cushion:"Down 38% YTD — a real re-rating already happened (fwd P/E ~20x vs ~16x sector avg).",
@@ -383,8 +411,8 @@ const PF_RADAR = {
       evidence:"GATE prescreen (2026-07-03) already names this as live and genuinely two-sided — stablecoin checkout threatens the 2–3% card fee model that is V/MA's entire moat.",
       tripwire:"A top-10 US retailer offers a stablecoin checkout discount, or V/MA disclose stablecoin volume cannibalization in a 10-Q." },
     { id:"kalshi", label:"Prediction markets vs. regulated exchanges", direction:"threatens",
-      holdings:["CME","CBOE"], coverage:"prescreen-only",
-      evidence:"CME's own GATE prescreen note already names this kill-switch. CBOE failed prescreen partly because analysts flag it as 'most at risk' of the group.",
+      holdings:["CME"], coverage:"prescreen-only",
+      evidence:"CME's own GATE prescreen note already names this kill-switch. CBOE failed prescreen partly because analysts flag it as 'most at risk' of the group — CBOE itself fully sold 2026-07-30 as part of the rotation into core ETFs, so this row's holding exposure is now CME only; the theme and CBOE's prescreen history stay on file for context.",
       tripwire:"CME's CFTC lawsuit resolves against CME, or Kalshi discloses institutional (not just retail) volume crossing a material share of exchange volume." },
     { id:"ai-eats-software", label:"AI commoditizing software incumbents", direction:"threatens",
       holdings:["INTU"], coverage:"prescreen-only",
@@ -406,10 +434,10 @@ const PF_RADAR = {
       tripwire:"RKLB (or a pure-play successor) re-rates down 30%+ from current levels without a fundamental deterioration — re-run /prescreen; a real cushion may finally exist.",
       note:"Nothing held — RKLB FAILED /prescreen 2026-07-03 on cushion. Tracked purely as a re-entry watch item, not a current exposure. Narrative got louder (both bull and skeptic) this window without RKLB's price actually re-rating down — tripwire not close to firing." },
     { id:"ny-dc-moratorium", label:"State-level data-center siting bans (NY 50MW+ pause)", direction:"threatens",
-      holdings:["EQIX"], coverage:"n/a",
+      holdings:[], coverage:"n/a",
       evidence:"Gov. Hochul's EO (reported 2026-07-14/15) imposes a first-of-its-kind statewide moratorium on discretionary permitting for 50MW+ data centers (~1yr GEIS process); street digests cite ~$10B of NY-pipeline projects paused, though existing/already-approved sites are largely excluded. Same window, Virginia separately denied a 2,000-acre DC campus (2026-07-14) while entitled/zoned land nearby kept trading (TA Realty, Sterling) — the pattern is capital redirecting to already-entitled, non-coastal sites (Ohio/Utah/Texas — the same geography Blackstone just backed with a $5.34B BTM-gas JV, 2026-07-15) rather than a demand kill. Loeb (2026-07-15) called the NY move the 'stupidest since AOC/Amazon Queens.'",
       tripwire:"A second state (beyond NY) enacts a comparable discretionary-permitting pause for large-load data centers, or NY's moratorium is extended/expanded past its ~1yr GEIS window instead of lapsing.",
-      note:"EQIX is a small existing satellite position (~$98 notional) with no thesis and no PF_PRESCREEN entry on file — coverage is 'n/a' because there's no thesis to audit for a gap, not because the theme doesn't apply. This row exists to watch entitled-vs-coastal siting bifurcation generally; META/MSFT/AMZN/GOOGL have diffuse secondary exposure (they lease/site DCs too) but at their scale a single state's pause is immaterial — not added as holdings here to avoid diluting the row's actual point." },
+      note:"EQIX was a small satellite position (~$98 notional) with no thesis and no PF_PRESCREEN entry on file — fully sold 2026-07-30 as part of the rotation into core ETFs, so holdings is now empty here. Coverage stays 'n/a' — this row exists to watch entitled-vs-coastal siting bifurcation generally; META/MSFT/AMZN/GOOGL have diffuse secondary exposure (they lease/site DCs too) but at their scale a single state's pause is immaterial — not added as holdings here to avoid diluting the row's actual point." },
     { id:"custom-hyperscaler-networking", label:"Hyperscalers building custom network fabric instead of buying merchant switch silicon", direction:"threatens",
       holdings:["AVGO"], coverage:"thesis-gap",
       evidence:"SemiAnalysis (2026-07-14/15): Amazon's Resilient Network Graphs (RNG) — a random-graph topology + passive optical shuffle boxes + 'Spraypoint' multipath — is 'the first network based on random graphs concept deployed at scale' and claims up to 45% cost savings vs. fat-tree topologies at similar oversubscription. This is AWS substituting owned network-engineering IP for merchant switch silicon at the topology level, not just a chip-design-win story (c.f. the already-tracked packaging-multivendor row, which is about advanced packaging, not networking).",
