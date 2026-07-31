@@ -144,7 +144,15 @@ const PF_ALERTS = {
   ASML: { buyFloor: 1900, thesisIntact: true, asOf: "2026-07-16", nextEarnings: "2026-10-14" },
   MU:   { buyFloor: 1100, thesisIntact: true, asOf: "2026-07-16", nextEarnings: "~2026-09-24" },
   SPGI: { buyFloor: 400, thesisIntact: true, asOf: "2026-07-18", nextEarnings: "2026-07-28" },
+  MSFT: { buyFloor: 475, thesisIntact: true, asOf: "2026-07-31", nextEarnings: "~2026-10-28" },
+  META: { buyFloor: 600, thesisIntact: true, asOf: "2026-07-31", nextEarnings: "~2026-10-28" },
+  FICO: { buyFloor: 950, thesisIntact: true, asOf: "2026-07-31", nextEarnings: "~2026-10-late" },
+  AMZN: { buyFloor: 280, thesisIntact: true, asOf: "2026-07-31", nextEarnings: "~2026-10-29" },
 };
+// MSFT/META/FICO/AMZN added 2026-08-01: all four got fresh price bands via /update-thesis
+// 2026-07-31 (post Q4 FY26/Q2 2026/Q3 FY26/Q2 2026 earnings respectively) but PF_ALERTS —
+// the documented single source of truth for buy-alert floors — never got a matching entry.
+// buyFloor = each thesis's own new base-case floor, same convention as every other row.
 
 const PF_THEMES = {
   semis:        { label: "AI Semis & Hardware",        short: "Semis",      blurb: "The picks-and-shovels of the AI build-out — chips, fab tools, networking silicon." },
