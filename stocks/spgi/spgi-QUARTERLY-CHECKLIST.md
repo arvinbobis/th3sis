@@ -188,6 +188,57 @@ WHAT SURPRISED ME THIS QUARTER:
 ────────────────────────────────────────────
 ```
 
+### Update — 2026-08-01 (Q2 FY2026, reported 2026-07-28)
+```
+────────────────────────────────────────────
+QUARTER: Q2 2026                          UPDATED ON: 2026-08-01
+SPGI price at update: $411.93   Most-likely case: BASE (55%), Bear 25%, Bull 20%
+Consensus NTM EPS at update (continuing ops): $17.63 (FY26 guide midpoint)   Forward P/E: ~23.4x
+
+THESIS AUDIT (one line each):
+  Bear  — narrative REWRITTEN. The original Ratings-pull-forward risk did NOT
+          confirm (issuance accelerated +14%→+25%); real drag is Energy/Iran-conflict
+          and Market Intelligence AI-contract sales-cycle delays — new KPIs. Bands
+          rebased to $315-370 on the lower EPS anchor.
+  Base  — narrative REWRITTEN. Revenue beat, Ratings/Indices guides RAISED, but
+          FY26 adjusted EPS guide ($17.63 mid) landed below prior Street. Reads as
+          contained, not a broken thesis. Bands: $425-515 -> $405-495.
+  Bull  — narrative REWRITTEN. Ratings acceleration + raised guides argue the core
+          story strengthened; bull now hinges on Energy/MI stabilizing, not on
+          Ratings avoiding pull-forward (that's already looking like a non-issue).
+          Bands: $555-630 -> $530-600.
+
+PROBABILITY shift this quarter: unchanged (Base 55% / Bear 25% / Bull 20%) — the
+mix of risks shifted (pull-forward risk down, Energy/MI risk up) more than the
+net probability did.
+
+KEY NUMBERS REFRESHED:
+  Q2 2026 continuing-ops revenue: $3.678B (pro forma ex-Mobility, +11% YoY) → BEAT
+  Ratings billed issuance growth: +25% YoY (Q2 2026, up from +14% Q1) → BEAT, guide raised 4-7%→5-8%
+  Indices division growth: +20% YoY (Q2 2026), 13th straight record quarter → BEAT, guide raised 10-12%→12-14%
+  FY2026 adjusted EPS guide: $17.50-17.75 (mid $17.63) vs prior Street ~$18.37-18.98 → MISS
+  Energy segment growth: +2-3% YoY, pressured by Iran-conflict sanctions/GTS renewals → WATCH (new KPI)
+  Market Intelligence growth: +6% YoY, elongated AI-contract sales cycles → WATCH (new KPI)
+  Next quarter guide: Q3 2026 earnings ~Oct 29, 2026
+  NRSRO / regulatory status: Unchanged — no new reform signal found
+
+WHAT WOULD PROVE ME WRONG (for my favored case, BASE):
+  The Energy/Market Intelligence weakness spreading into Ratings or Indices margins
+  (not staying contained to those two segments), or Ratings issuance decelerating
+  sharply from its current +25% pace, or two straight quarters missing the 6-8%
+  organic cc revenue guide.
+
+WHAT SURPRISED ME THIS QUARTER:
+  That the stock sold off on an "EPS miss" while the metric this thesis was actually
+  built to watch (Ratings issuance / pull-forward) went the OPPOSITE direction —
+  accelerating, with both Ratings and Indices guides raised the same day. The real
+  story was two segments (Energy, Market Intelligence) this thesis hadn't previously
+  tracked as KPIs. A reminder that a kill-switch aimed at last quarter's risk can miss
+  this quarter's actual one — worth re-asking "what's the real risk NOW" every touch,
+  not just re-checking the same named risk.
+────────────────────────────────────────────
+```
+
 ---
 
 ## SPGI-specific signals reference
@@ -196,12 +247,12 @@ These are the signals that most move the SPGI story, in priority order:
 
 | # | KPI | Why it matters | Where to find it |
 |---|-----|---------------|-----------------|
-| 1 | **Ratings billed issuance growth vs. the guided deceleration path** | The single biggest swing factor and the direct test of the pull-forward flag management itself raised on the Q1 2026 call. +14% YoY in Q1 2026, guided to decelerate through the year and turn negative in Q4 2026. | Earnings release, management commentary |
-| 2 | **Continuing-ops (ex-Mobility) revenue vs. the 6-8% organic cc guide** | The headline growth number now that Mobility is gone — first real ex-Mobility guide due Jul 28, 2026. | Earnings release |
-| 3 | **Indices division growth** | The highest-margin, most durable-moat segment — a direct toll on passive-investing AUM growth, largely decoupled from the bond-issuance cycle that drives Ratings. +17% YoY in Q1 2026. | Earnings release, segment detail |
-| 4 | **Refinancing / new-issue bond market activity** | The macro driver behind Ratings issuance — management itself named a downturn here as "the biggest current risk." | Bond market data, Fed rate-cut expectations |
-| 5 | **NRSRO / ratings-duopoly regulatory status** | The chokepoint itself. No acute threat as of this build, but a genuine regulatory reform or credible new entrant would be the single fastest way this thesis breaks, independent of any quarterly number. | Regulatory filings, financial media |
-| 6 | **Buyback pace** | $1.0B repurchased in Q1 2026 alone — funds EPS growth independent of revenue and is a tell on management's own confidence in forward cash generation. | Earnings release, cash flow statement |
+| 1 | **Energy & Market Intelligence stabilization** *(new priority as of 2026-08-01)* | The actual source of the Q2 2026 EPS-guide miss — Iran-conflict/sanctions pressure on Energy's Global Trading Services renewals, and elongated AI-contract sales cycles in Market Intelligence. Whether these stabilize (base/bull) or spread into Ratings/Indices (bear) is now the central open question. | Earnings release, segment detail, management commentary |
+| 2 | **Ratings billed issuance growth vs. the guided path** | Accelerated to +25% in Q2 2026 (from +14% Q1) — the original pull-forward risk has NOT materialized; guide raised to 5-8% FY26. Still worth watching for the eventual guided deceleration. | Earnings release, management commentary |
+| 3 | **Continuing-ops (ex-Mobility) revenue vs. the 6-8% organic cc guide** | The headline growth number — reaffirmed at the company level Jul 28, 2026 despite the EPS-guide miss. | Earnings release |
+| 4 | **Indices division growth** | The highest-margin, most durable-moat segment — 13th consecutive record quarter, +20% YoY in Q2 2026, guide raised to 12-14%. | Earnings release, segment detail |
+| 5 | **NRSRO / ratings-duopoly regulatory status** | The chokepoint itself. No acute threat as of this touch, but a genuine regulatory reform or credible new entrant would be the single fastest way this thesis breaks, independent of any quarterly number. | Regulatory filings, financial media |
+| 6 | **Buyback pace** | 2026 target raised to $7B+ — funds EPS growth independent of revenue and is a tell on management's own confidence in forward cash generation even as Energy/MI soften. | Earnings release, cash flow statement |
 
 ---
 

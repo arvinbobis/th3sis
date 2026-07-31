@@ -666,15 +666,6 @@ const PF_SCORECARD = [
   },
   {
     "t": "SPGI",
-    "quarter": "Q4 2024",
-    "date": "2025-02",
-    "post": 540,
-    "landed": "bull",
-    "conf": "low",
-    "bandHit": true
-  },
-  {
-    "t": "SPGI",
     "quarter": "Q1 2025",
     "date": "2025-04",
     "post": 492,
@@ -715,6 +706,15 @@ const PF_SCORECARD = [
     "date": "2026-04",
     "post": 433,
     "landed": "base",
+    "conf": "high",
+    "bandHit": true
+  },
+  {
+    "t": "SPGI",
+    "quarter": "Q2 2026",
+    "date": "2026-07",
+    "post": 424,
+    "landed": "base(low)",
     "conf": "high",
     "bandHit": true
   },
@@ -831,6 +831,12 @@ const PF_PREDICTIONS = {
     "asOf": "2026-07-11",
     "case": "BASE, tracking toward BULL on fundamentals",
     "note": ""
+  },
+  "SPGI": {
+    "quarter": "Q2 2026",
+    "asOf": "2026-08-01",
+    "case": "BASE",
+    "note": "55%"
   },
   "TSM": {
     "quarter": "Q2 2026",
