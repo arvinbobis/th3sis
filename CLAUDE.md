@@ -244,8 +244,11 @@ GATE pages, applied to the stock dashboards.
   the PAST/CURRENT/FUTURE tab convention entirely; see the Legacy stocks note below for what
   that meant in practice); ALAB migrated 2026-08-01 (structural migration, not a numbers
   refresh — see the Legacy stocks note below for the palette fix and the copy-paste-residue
-  cleanup it also required); the remaining 6 stocks migrate at their own next `/update-thesis`,
-  keeping their existing inline-JSX build valid until then.
+  cleanup it also required); AVGO migrated 2026-08-01, same day, separate touch (structural
+  migration, not a numbers refresh — its custom `FIN_METRICS` "Explorer" dataset, unused by
+  the shared engine, was dropped rather than ported, the same call TSM's own migration made;
+  see the Legacy stocks note below for the palette fix); the remaining stocks migrate at their
+  own next `/update-thesis`, keeping their existing inline-JSX build valid until then.
 - **Self-containment loosens from "one file" to "one folder + shared engine + theme.css"** —
   already true in spirit (`theme.css` was always external); this just makes it explicit.
 
@@ -289,7 +292,7 @@ GATE pages, applied to the stock dashboards.
   migrated stock that's `node tools/verify-thesis.js <TICKER>`; "the JSX compiles" was never
   the bar.
 - **⚠ Legacy stocks** (built before June 2026, hardcoded hex in JSX — light mode won't render
-  correctly until each is refactored): AMZN, AVGO, FICO, META, MSFT, MU,
+  correctly until each is refactored): AMZN, FICO, META, MSFT, MU,
   NVDA, TSM. AVGO was added to this list 2026-07-18 (a straight oversight — it was built in
   the same pre-June-2026 batch and carries the identical `#dd817a`/`#c59542`/`#66b278`
   palette as TSM/others, just never got listed; found because `verify-thesis` doesn't
@@ -309,10 +312,19 @@ GATE pages, applied to the stock dashboards.
   to the permitted `#2f6dff` during the rebuild (verified: `grep -oE '#[0-9a-fA-F]{6}\b'
   stocks/googl/thesis-data.js` returns only the four permitted hex codes). ALAB migrated
   2026-08-01 and came off this list the same day after a fix: its pre-migration build used
-  `#dd817a`/`#c59542`/`#66b278`/`#46aad9` (the same non-permitted variant palette TSM/AVGO
-  carry) throughout `CASES` accents, signal-bar colors, and chips — swapped to the permitted
+  `#dd817a`/`#c59542`/`#66b278`/`#46aad9` (the same non-permitted variant palette TSM carries)
+  throughout `CASES` accents, signal-bar colors, and chips — swapped to the permitted
   `#f1564b`/`#e0a83b`/`#3fd07a`/`#2f6dff` during the migration (verified: `grep -oE
   '#[0-9a-fA-F]{6}\b' stocks/alab/thesis-data.js` returns only the four permitted hex codes).
+  AVGO migrated 2026-08-01, same day as ALAB, and came off this list the same day after an
+  explicit user decision to conform AVGO to the standard four rather than the reverse: its
+  pre-migration build used the identical `#dd817a`/`#c59542`/`#66b278`/`#46aad9` variant
+  palette, swapped to `#f1564b`/`#e0a83b`/`#3fd07a`/`#2f6dff` throughout `CASES` accents,
+  `PRICE_ZONES`, and `TEXT.future.chips` during the migration (verified: `grep -oE
+  '#[0-9a-fA-F]{6}\b' stocks/avgo/thesis-data.js` returns only the four permitted hex codes).
+  Its custom `FIN_METRICS`/`FIN_LABELS` "Explorer" dataset — unused by the shared engine, same
+  as every other migrated stock — was dropped rather than ported; the real capex/revenue data
+  it contained was preserved in `PAST_CAPEX_REV`, computed from the same filed figures.
   Fix the palette at the stock's next quarterly touch after migration, not before — same
   per-touch discipline as everything else here.
 - **ALAB's migration (2026-08-01) also fixed real copy-paste residue**, distinct from the
