@@ -1,0 +1,26 @@
+{
+  "ticker": "CEG",
+  "asOf": "2026-08-01",
+  "quarter": "Q1 2026 (initial thesis build, not a quarterly refresh)",
+  "inputs": {
+    "price":                 { "value": 262.75, "src": "Wisesheets EOD (close 2026-07-31)", "pulled": "2026-08-01" },
+    "consensus_eps_ntm":     { "value": 12.25,  "src": "judgment — blend of company 2026 adjusted operating EPS guide midpoint ($11.00-12.00) and early-2027 growth trajectory implied by quarterly consensus (Q1 2027 ~$2.69, Q2 2027 +18% YoY per web search)", "pulled": "2026-08-01" },
+    "eps_2026_guide_lo":     { "value": 11.00,  "src": "company guidance — reaffirmed Q1 2026 earnings call (May 11, 2026)", "pulled": "2026-08-01" },
+    "eps_2026_guide_hi":     { "value": 12.00,  "src": "company guidance — reaffirmed Q1 2026 earnings call (May 11, 2026)", "pulled": "2026-08-01" },
+    "eps_2025_actual_adj":   { "value": 9.39,   "src": "company Q4/FY2025 earnings release (Feb 24, 2026), full-year adjusted operating EPS", "pulled": "2026-08-01" },
+    "eps_2025_actual_gaap":  { "value": 7.40,   "src": "SEC 10-K via Wisesheets — accession 0001868275-26-000032 (FY2025 GAAP diluted EPS)", "pulled": "2026-08-01" },
+    "eps_q1_2026_actual_adj":{ "value": 2.74,   "src": "company Q1 2026 earnings release (May 11, 2026), adjusted operating EPS, +28% YoY", "pulled": "2026-08-01" },
+    "multiple_bear":         { "value": 18,     "src": "judgment — below CEG's own 4-year normal band, PJM/FERC policy-risk discount scenario", "pulled": "2026-08-01" },
+    "multiple_base":         { "value": 25,     "src": "judgment — midpoint of CEG's own 23-28x recent-history normal band", "pulled": "2026-08-01" },
+    "multiple_bull":         { "value": 32,     "src": "judgment — approaching the ~35x forward multiple briefly touched near the Oct 2025 all-time high", "pulled": "2026-08-01" },
+    "multiple_current_ntm":  { "value": 21.5,   "src": "calculated — $262.75 price / $12.25 NTM EPS", "pulled": "2026-08-01" },
+    "multiple_peer_median":  { "value": 15.9,   "src": "web search — forward P/E of VST (~15.9x), TLN (~14.8x), NRG (~17.2x), DUK (~19.1x TTM); median of the two closest deregulated-IPP comps (VST/TLN) used as the tightest peer anchor — CEG trades at a meaningful premium to this median, reflecting its larger/purer nuclear-scale chokepoint position", "pulled": "2026-08-01" },
+    "risk_free_10y":         { "value": 4.69,   "src": "web search — 10Y US Treasury yield, Jul 31, 2026 close", "pulled": "2026-08-01" },
+    "pjm_2028_29_clear_mw":  { "value": 18875,  "src": "web search / PJM Inside Lines — CEG's cleared capacity, 2028/29 Base Residual Auction (15,700 MW nuclear + 3,175 MW fossil/other)", "pulled": "2026-08-01" },
+    "pjm_2028_29_clear_price": { "value": 325,  "src": "web search / PJM Inside Lines — FERC-approved price cap, cleared for the entire PJM footprint, 2028/29 Base Residual Auction", "pulled": "2026-08-01" },
+    "pjm_2028_29_est_revenue_b": { "value": 2.2, "src": "web search / PJM Inside Lines — estimated CEG revenue for the 2028/29 capacity delivery year", "pulled": "2026-08-01" },
+    "calpine_deal_size_b":   { "value": 22,     "src": "web search — Constellation-Calpine acquisition, closed Jan 7, 2026 (50M newly issued CEG shares + $4.5B cash)", "pulled": "2026-08-01" },
+    "shares_outstanding_b":  { "value": 0.357,  "src": "web search — ~357M shares outstanding, post-Calpine issuance, late Jul 2026", "pulled": "2026-08-01" }
+  },
+  "notes": "First /thesis build for CEG. The core tension this quarter: fundamentals (Q1 2026 beat, reaffirmed full-year guide, both the 2026/27 AND 2028/29 PJM capacity auctions already cleared at/near the $325/MW-day cap) have DIVERGED from price (down ~36% from the Oct 2025 ATH of $412, hitting a fresh 52-week low of $228.63 on Jul 1, 2026). The proximate cause of the July selloff was a Citi price-target cut (to $297 from $348) explicitly citing a PJM reliability-reform MEETING, not a confirmed rule change or a company-specific miss — this is a live, unresolved policy-risk repricing, not a closed dislocation, which is why the bear case here carries a higher starting probability weight (20%) than a typical earnings-driven bear case in this dashboard series. Valuation ruler chosen: adjusted operating EPS x forward P/E (NOT GAAP EPS, which is heavily distorted by mark-to-market hedge accounting — GAAP diluted EPS fell from $11.89 in 2024 to $7.40 in 2025 despite adjusted operating EPS growing from a smaller 2022-23 base to $9.39). CEG's own trading history is short (spun off from Exelon Feb 2022), so THE PAST tab covers only 4 fiscal years (2022-2025) and the reverse-DCF/multiple-band judgment has less full-cycle precedent to lean on than a longer-listed peer like TSM."
+}
