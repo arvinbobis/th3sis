@@ -1,0 +1,19 @@
+{
+  "ticker": "NOW",
+  "asOf": "2026-08-01",
+  "quarter": "Q3 FY2026",
+  "inputs": {
+    "price":              { "value": 111.23, "src": "Wisesheets EOD (2026-07-31 close)", "pulled": "2026-08-01" },
+    "consensus_eps_ntm":  { "value": 4.45,  "src": "judgment — blended NTM from stockanalysis.com FY26 non-GAAP consensus $4.07 + FY27 $5.01 (5/12 remaining FY26 + 7/12 FY27, weighted by ServiceNow's ~41%/59% H1/H2 EPS split)", "pulled": "2026-08-01" },
+    "eps_fy26_consensus": { "value": 4.07, "src": "web search — stockanalysis.com analyst consensus (non-GAAP)", "pulled": "2026-08-01" },
+    "eps_fy27_consensus": { "value": 5.01, "src": "web search — stockanalysis.com analyst consensus (non-GAAP)", "pulled": "2026-08-01" },
+    "eps_q2fy26_actual":  { "value": 0.90, "src": "SEC 8-K / ServiceNow newsroom — Q2 2026 non-GAAP diluted EPS (vs $0.81 Q2 2025)", "pulled": "2026-08-01" },
+    "subscription_rev_q2fy26": { "value": 3877000000, "src": "ServiceNow Q2 2026 press release — subscription revenue, +24.5% YoY", "pulled": "2026-08-01" },
+    "multiple_bear":      { "value": 19.5,  "src": "judgment — below-normal NTM P/E band (18-21x), reflecting the still-live 'AI eats SaaS seats' derate risk", "pulled": "2026-08-01" },
+    "multiple_base":      { "value": 26.5,  "src": "judgment — normal NTM P/E band (23-30x) for a ~20-24% grower with expanding margins post-derate", "pulled": "2026-08-01" },
+    "multiple_bull":      { "value": 37.5,  "src": "judgment — above-normal NTM P/E band (33-42x), still well below the 2023-2024 ~60-90x EV/EBITDA-implied peak regime, i.e. a partial not full re-rating", "pulled": "2026-08-01" },
+    "multiple_peer_median": { "value": 20.8, "src": "web search — stockanalysis.com forward P/E: CRM 13.2x, WDAY 14.4x, SNOW 138.7x, NOW 27.4x (median of named comps CRM/WDAY/SNOW ex-NOW = 14.4x; median including NOW = 20.8x)", "pulled": "2026-08-01" },
+    "ntm_10y_treasury":   { "value": 4.65, "src": "web search — US 10Y Treasury yield, late Jul 2026", "pulled": "2026-08-01" }
+  },
+  "notes": "Q2 FY26 (reported 2026-07-22) was a clean beat-and-raise: subscription revenue +24.5% YoY, AI ACV crossed $1B (agentic deployments up 9x in nine months), renewal rate held at 98%, cRPO +21% YoY, FY26 subscription guide raised to $15.76-15.78B. Stock initially sold off to $95.46 same day ('sell the news' on an already-battered name) then rallied to $115.76 by 2026-07-29, settling $111.23 — a genuine relief rally, not a fade, the first one of this derate cycle. This build sits at the tail end of an 18-month 'AI eats SaaS seats' selloff: NOW fell from an intraday/monthly ATH of $234.08 (2025-01-28, also a beat-and-raise day) to a trough of $83.00 (2026-04-10), a -64.5% drawdown, before a choppy, twice-tested recovery. The multiple compression is real (own-history NTM P/E fell from an elevated 2023-2024 regime toward today's ~25x) and the peer group shows a wide split: CRM/WDAY have derated further (13-14x) while SNOW still trades rich (139x) despite weaker margins — NOW sits in between, cheaper than its own recent history but not the cheapest name in the group. The crux open question, per CLAUDE.md's pull-forward-test analog: is AI ACV genuinely incremental (a new monetization layer on top of the existing workflow franchise) or is it relabeling/cannibalizing seat-based ARR that would have grown anyway? Q2's cRPO growth (21%, not decelerating) argues against pure cannibalization, but this is exactly the number to watch each quarter — see the bear case kill-switch."
+}

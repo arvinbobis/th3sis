@@ -149,10 +149,17 @@ const PF_ALERTS = {
   FICO: { buyFloor: 950, thesisIntact: true, asOf: "2026-07-31", nextEarnings: "~2026-10-late" },
   AMZN: { buyFloor: 280, thesisIntact: true, asOf: "2026-07-31", nextEarnings: "~2026-10-29" },
   CEG:  { buyFloor: 315, thesisIntact: true, asOf: "2026-08-01", nextEarnings: "2026-08-06", held: false },
+  NOW:  { buyFloor: 102, thesisIntact: true, asOf: "2026-08-01", nextEarnings: "~2026-10-28", held: false },
 };
 // CEG added 2026-08-01: first /thesis build for Constellation Energy (buyFloor 315 = its
 // own base-case floor). Scout-originated (UtilityDive, PJM capacity-scarcity theme paired
 // with VST, ~10 reports 07-15 through 07-24); prescreen PASSED same day. Not yet held.
+// NOW added 2026-08-01: first /thesis build for ServiceNow (buyFloor 102 = its own
+// base-case floor). Prescreen PASSED same day on an independently-derived case that
+// directly CONTRADICTS Scout's bearish "AI agents eat SaaS seats" framing for this name
+// (Q2 FY26 beat-and-raise: subscription rev +24.5% YoY, AI ACV past $1B, 98% renewal) —
+// no Scout credit given, see stocks/now/now-QUARTERLY-CHECKLIST.md and the prescreen note
+// above. Not yet held.
 // MSFT/META/FICO/AMZN added 2026-08-01: all four got fresh price bands via /update-thesis
 // 2026-07-31 (post Q4 FY26/Q2 2026/Q3 FY26/Q2 2026 earnings respectively) but PF_ALERTS —
 // the documented single source of truth for buy-alert floors — never got a matching entry.
