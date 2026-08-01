@@ -247,8 +247,13 @@ GATE pages, applied to the stock dashboards.
   cleanup it also required); AVGO migrated 2026-08-01, same day, separate touch (structural
   migration, not a numbers refresh — its custom `FIN_METRICS` "Explorer" dataset, unused by
   the shared engine, was dropped rather than ported, the same call TSM's own migration made;
-  see the Legacy stocks note below for the palette fix); the remaining stocks migrate at their
-  own next `/update-thesis`, keeping their existing inline-JSX build valid until then.
+  see the Legacy stocks note below for the palette fix); NVDA migrated 2026-08-01, same day,
+  a separate touch — also a genuinely uppercase legacy folder (`stocks/NVDA/`), fixed to
+  lowercase `stocks/nvda/` as part of the same migration (see the "What we build" section's
+  lowercase-paths rule); its pre-migration build also predated the PAST/CURRENT/FUTURE tab
+  convention, the same larger GOOGL-style scope (see the note below); the remaining stocks
+  migrate at their own next `/update-thesis`, keeping their existing inline-JSX build valid
+  until then.
 - **Self-containment loosens from "one file" to "one folder + shared engine + theme.css"** —
   already true in spirit (`theme.css` was always external); this just makes it explicit.
 
@@ -293,7 +298,7 @@ GATE pages, applied to the stock dashboards.
   the bar.
 - **⚠ Legacy stocks** (built before June 2026, hardcoded hex in JSX — light mode won't render
   correctly until each is refactored): AMZN, FICO, META, MSFT, MU,
-  NVDA, TSM. AVGO was added to this list 2026-07-18 (a straight oversight — it was built in
+  TSM. AVGO was added to this list 2026-07-18 (a straight oversight — it was built in
   the same pre-June-2026 batch and carries the identical `#dd817a`/`#c59542`/`#66b278`
   palette as TSM/others, just never got listed; found because `verify-thesis` doesn't
   exempt undocumented stocks and a mid-cycle AVGO touch that day surfaced the gap). This
@@ -327,6 +332,13 @@ GATE pages, applied to the stock dashboards.
   it contained was preserved in `PAST_CAPEX_REV`, computed from the same filed figures.
   Fix the palette at the stock's next quarterly touch after migration, not before — same
   per-touch discipline as everything else here.
+  NVDA migrated 2026-08-01 (separate touch, same day) and came off this list the same day
+  for the identical already-compliant reason as ASML/MRVL — its pre-migration build already
+  used only `#f1564b`/`#e0a83b`/`#3fd07a`/`#2f6dff` throughout `CASES` accents and the
+  reversion-clock marker, with no non-permitted variant palette to fix (verified: `grep -oE
+  '#[0-9a-fA-F]{6}\b' stocks/nvda/thesis-data.js` returns only the four permitted hex codes —
+  the pre-migration file's extensive hex usage was all engine-chrome background/text color
+  that the migration itself removes, not semantic accents that needed a swap).
 - **ALAB's migration (2026-08-01) also fixed real copy-paste residue**, distinct from the
   known-and-already-fixed `AvgoThesis()` function-name bug found by the 2026-07-03 machine
   audit. Line-by-line review of the pre-migration `alab-thesis.html` found several hardcoded
@@ -366,6 +378,31 @@ GATE pages, applied to the stock dashboards.
   (`npx esbuild stocks/engine/thesis-engine.jsx --outfile=stocks/engine/thesis-engine.js
   --target=es2019`); re-verified all six migrated stocks (TSM, ASML, MU, MRVL, SPGI, GOOGL)
   since an engine change requires the full pass, not just the touched stock.
+- **NVDA's migration (2026-08-01) swapped its hero KPI metric, not just its file shape.**
+  The pre-migration build used non-GAAP gross margin (%) as the big KPI bar chart; the
+  shared engine's "price-implied full-year revenue" card on THE CURRENT tab (`fyRevBase =
+  KPI_HIST + KPI_PROJ.base[0..2]`, checked against `VAL_CONFIG.prior_fy_rev_b`) only produces
+  a meaningful number if `KPI_HIST`/`KPI_PROJ` are quarterly revenue in $B — the same
+  convention every other migrated stock uses (TSM/ASML/MU/MRVL total revenue, GOOGL Cloud
+  growth %). Summing gross-margin percentages through that formula would have produced a
+  nonsensical "revenue" figure. Fixed by making Total Revenue the hero KPI (Q1 FY2027 actual
+  $81.6B, scenario-projected forward) — gross margin itself wasn't dropped, it's still fully
+  tracked as a `MARGIN` signal row exactly as before, and this also better matches the
+  pre-migration checklist's own stated #1-priority KPI ("data center revenue run rate ... if
+  this plateaus, everything stalls") than gross margin did. A future not-yet-migrated stock
+  whose legacy build chose a non-revenue hero KPI should expect the same swap.
+- **NVDA also surfaced a `THESIS_HISTORY` / `lint-thesis-data.js` mismatch worth knowing
+  before the next migration hits it:** this file's own line above says "a new stock starts
+  with `THESIS_HISTORY = []`", but `lint-thesis-data.js`'s `checkThesisHistory` treats a
+  present-but-empty array as malformed (fails) and only accepts `undefined` (soft warning) or
+  a non-empty, well-formed array. Every stock migrated before NVDA happened to pair its
+  migration with an in-flight CASES rewrite, so `THESIS_HISTORY` always shipped with a real
+  first entry (the outgoing vintage) and never hit this edge. NVDA's migration was a pure
+  structural port with no CASES rewrite, so there was no outgoing vintage to archive — the
+  lint's actual behavior is followed here: `THESIS_HISTORY` is left undefined (commented,
+  not declared) until NVDA's own next `/update-thesis` gives it a real first entry. Treat the
+  lint as authoritative over the `= []` wording above for this exact situation; the wording
+  should probably be reconciled at some point, but that's a documentation fix, not urgent.
 
 ---
 

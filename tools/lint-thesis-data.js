@@ -21,7 +21,7 @@ const ROOT = path.join(__dirname, "..");
 // Same legacy exemption list as verify-thesis.js — a migrated stock still inherits
 // its pre-migration hex debt until a deliberate palette refactor, tracked separately.
 const LEGACY_HEX_TICKERS = new Set([
-  "AMZN", "FICO", "META", "MSFT", "MU", "NVDA", "TSM",
+  "FICO", "META", "MSFT", "MU", "TSM",
 ]);
 const ALLOWED_SEMANTIC_HEX = new Set(["#f1564b", "#e0a83b", "#3fd07a", "#2f6dff"]);
 

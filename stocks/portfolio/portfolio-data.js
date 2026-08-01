@@ -150,6 +150,7 @@ const PF_ALERTS = {
   AMZN: { buyFloor: 280, thesisIntact: true, asOf: "2026-07-31", nextEarnings: "~2026-10-29" },
   CEG:  { buyFloor: 315, thesisIntact: true, asOf: "2026-08-01", nextEarnings: "2026-08-06", held: false },
   NOW:  { buyFloor: 102, thesisIntact: true, asOf: "2026-08-01", nextEarnings: "~2026-10-28", held: false },
+  NVDA: { buyFloor: 200, thesisIntact: true, asOf: "2026-05-29", nextEarnings: "2026-08-26" },
 };
 // CEG added 2026-08-01: first /thesis build for Constellation Energy (buyFloor 315 = its
 // own base-case floor). Scout-originated (UtilityDive, PJM capacity-scarcity theme paired
@@ -164,6 +165,11 @@ const PF_ALERTS = {
 // 2026-07-31 (post Q4 FY26/Q2 2026/Q3 FY26/Q2 2026 earnings respectively) but PF_ALERTS —
 // the documented single source of truth for buy-alert floors — never got a matching entry.
 // buyFloor = each thesis's own new base-case floor, same convention as every other row.
+// NVDA added 2026-08-01: engine-split migration (stocks/NVDA/ -> stocks/nvda/), not a
+// numbers refresh — CASES/price bands are unchanged from the pre-migration 2026-05-29 build,
+// so buyFloor uses that build's own base-case floor ($200) and asOf stays 2026-05-29 to
+// match. HELD (see PF_RAW). Next earnings 2026-08-26 is NVDA's own /update-thesis trigger,
+// where AS_OF_DATE/CASES/this row's asOf all move forward together for the first time.
 
 const PF_THEMES = {
   semis:        { label: "AI Semis & Hardware",        short: "Semis",      blurb: "The picks-and-shovels of the AI build-out — chips, fab tools, networking silicon." },
