@@ -242,7 +242,9 @@ GATE pages, applied to the stock dashboards.
   2026-07-19 (its own mid-quarter touch); MRVL migrated 2026-07-19 (same day, separate touch);
   GOOGL migrated 2026-07-25 (a full rebuild, not a reformat — its pre-migration build predated
   the PAST/CURRENT/FUTURE tab convention entirely; see the Legacy stocks note below for what
-  that meant in practice); the remaining 7 stocks migrate at their own next `/update-thesis`,
+  that meant in practice); ALAB migrated 2026-08-01 (structural migration, not a numbers
+  refresh — see the Legacy stocks note below for the palette fix and the copy-paste-residue
+  cleanup it also required); the remaining 6 stocks migrate at their own next `/update-thesis`,
   keeping their existing inline-JSX build valid until then.
 - **Self-containment loosens from "one file" to "one folder + shared engine + theme.css"** —
   already true in spirit (`theme.css` was always external); this just makes it explicit.
@@ -287,7 +289,7 @@ GATE pages, applied to the stock dashboards.
   migrated stock that's `node tools/verify-thesis.js <TICKER>`; "the JSX compiles" was never
   the bar.
 - **⚠ Legacy stocks** (built before June 2026, hardcoded hex in JSX — light mode won't render
-  correctly until each is refactored): ALAB, AMZN, AVGO, FICO, META, MSFT, MU,
+  correctly until each is refactored): AMZN, AVGO, FICO, META, MSFT, MU,
   NVDA, TSM. AVGO was added to this list 2026-07-18 (a straight oversight — it was built in
   the same pre-June-2026 batch and carries the identical `#dd817a`/`#c59542`/`#66b278`
   palette as TSM/others, just never got listed; found because `verify-thesis` doesn't
@@ -305,9 +307,33 @@ GATE pages, applied to the stock dashboards.
   list the same day after one fix: its pre-migration build used the four permitted case-accent
   colors but ALSO one extra tooltip-accent blue (`#46aad9`) outside the permitted set, swapped
   to the permitted `#2f6dff` during the rebuild (verified: `grep -oE '#[0-9a-fA-F]{6}\b'
-  stocks/googl/thesis-data.js` returns only the four permitted hex codes). Fix the palette at
-  the stock's next quarterly touch after migration, not before — same per-touch discipline as
-  everything else here.
+  stocks/googl/thesis-data.js` returns only the four permitted hex codes). ALAB migrated
+  2026-08-01 and came off this list the same day after a fix: its pre-migration build used
+  `#dd817a`/`#c59542`/`#66b278`/`#46aad9` (the same non-permitted variant palette TSM/AVGO
+  carry) throughout `CASES` accents, signal-bar colors, and chips — swapped to the permitted
+  `#f1564b`/`#e0a83b`/`#3fd07a`/`#2f6dff` during the migration (verified: `grep -oE
+  '#[0-9a-fA-F]{6}\b' stocks/alab/thesis-data.js` returns only the four permitted hex codes).
+  Fix the palette at the stock's next quarterly touch after migration, not before — same
+  per-touch discipline as everything else here.
+- **ALAB's migration (2026-08-01) also fixed real copy-paste residue**, distinct from the
+  known-and-already-fixed `AvgoThesis()` function-name bug found by the 2026-07-03 machine
+  audit. Line-by-line review of the pre-migration `alab-thesis.html` found several hardcoded
+  prose blocks — the `ReversionClock` narrative, the `TrackRecord` read-out, and three spots
+  in `THE FUTURE` tab (the downside kill-switch, the mood-panel banner, the capital-panel
+  regret trigger, and the bottom summary chips) — that still described a different company's
+  AI-semiconductor-revenue story (a "$16B AI revenue guide," a "$100B FY2027 AI revenue
+  target," "6 XPU partners," a "10:1 split," "Q2 FY2026 earnings on June 3") at a dollar scale
+  ALAB (quarterly revenue ~$300M) could never produce — almost certainly the same AVGO-batch
+  residue the 2026-07-03 audit warned might exist elsewhere in the file, just never re-audited
+  at the line level until this migration. All of `CASES`, `SIGNALS`, `VAL_CONFIG`,
+  `THESIS_ITEMS`, `PRICE_ZONES`, and the entire `THE PAST` tab's real financial data (Wisesheets
+  export, cross-checked against SEC filings) were independently verified clean — the residue was
+  isolated to prose the audit hadn't reached. Rewritten from real ALAB facts (Q1 FY2026 print,
+  Q2 FY2026 guide, the Mar 2025 AI-sector-selloff dislocation) rather than ported forward. The
+  separate FIN_METRICS "Explorer" dataset flagged by the same 2026-07-03 audit (35 metrics,
+  since re-populated with real ALAB financials by 2026-07-07, ahead of this migration) is now
+  moot for the migrated build: the shared engine has no Explorer tab at all (TSM's own
+  migration already dropped it), so that dataset simply isn't part of `thesis-data.js`.
 - **GOOGL's migration was a full rebuild, not a mechanical reformat** — worth noting because
   it's a different case from TSM/ASML/MRVL/MU. Those four already had the PAST/CURRENT/FUTURE
   tab structure (10-year financials, DCF `VAL_CONFIG`, `PRICE_ZONES`) before their migrations;
