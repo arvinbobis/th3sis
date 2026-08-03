@@ -46,6 +46,7 @@
       "Bash(node tools/verify-thesis.js *)",
       "Bash(node tools/build-scorecard.js)",
       "Bash(npm run verify -- *)",
+      "Bash(node --check *)",
       "Bash(npx esbuild stocks/engine/thesis-engine.jsx --outfile=stocks/engine/thesis-engine.js --target=es2019)",
       "Bash(awk *)",
       "Bash(mkdir -p *)",
