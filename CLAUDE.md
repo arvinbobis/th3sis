@@ -251,9 +251,14 @@ GATE pages, applied to the stock dashboards.
   a separate touch — also a genuinely uppercase legacy folder (`stocks/NVDA/`), fixed to
   lowercase `stocks/nvda/` as part of the same migration (see the "What we build" section's
   lowercase-paths rule); its pre-migration build also predated the PAST/CURRENT/FUTURE tab
-  convention, the same larger GOOGL-style scope (see the note below); the remaining stocks
-  migrate at their own next `/update-thesis`, keeping their existing inline-JSX build valid
-  until then.
+  convention, the same larger GOOGL-style scope (see the note below); AMZN migrated
+  2026-07-31, a structural migration only — it was updated for Q2 2026 earnings the same
+  session just before the migration (bands bear $195–225 / base $280–320 / bull $390–450,
+  most-probable case BASE tilting toward BULL), and this migration ported that content
+  losslessly into `thesis-data.js` rather than re-deriving it (see the Legacy stocks note
+  below — AMZN's pre-migration palette was already compliant, no fix needed); the remaining
+  stocks migrate at their own next `/update-thesis`, keeping their existing inline-JSX build
+  valid until then.
 - **Self-containment loosens from "one file" to "one folder + shared engine + theme.css"** —
   already true in spirit (`theme.css` was always external); this just makes it explicit.
 
@@ -297,7 +302,7 @@ GATE pages, applied to the stock dashboards.
   migrated stock that's `node tools/verify-thesis.js <TICKER>`; "the JSX compiles" was never
   the bar.
 - **⚠ Legacy stocks** (built before June 2026, hardcoded hex in JSX — light mode won't render
-  correctly until each is refactored): AMZN, FICO, META, MSFT, MU,
+  correctly until each is refactored): FICO, META, MSFT, MU,
   TSM. AVGO was added to this list 2026-07-18 (a straight oversight — it was built in
   the same pre-June-2026 batch and carries the identical `#dd817a`/`#c59542`/`#66b278`
   palette as TSM/others, just never got listed; found because `verify-thesis` doesn't
@@ -339,6 +344,33 @@ GATE pages, applied to the stock dashboards.
   '#[0-9a-fA-F]{6}\b' stocks/nvda/thesis-data.js` returns only the four permitted hex codes —
   the pre-migration file's extensive hex usage was all engine-chrome background/text color
   that the migration itself removes, not semantic accents that needed a swap).
+  AMZN migrated 2026-07-31 and came off this list the same day for the identical
+  already-compliant reason as ASML/MRVL/NVDA — its pre-migration build already used only
+  `#f1564b`/`#e0a83b`/`#3fd07a`/`var(--blue-soft)` throughout `CASES` accents, with no
+  non-permitted variant palette to fix (verified: `grep -oE '#[0-9a-fA-F]{6}\b'
+  stocks/amzn/thesis-data.js` returns only the four permitted hex codes). Like GOOGL, AMZN's
+  pre-migration build (original May 2026 batch) predated the PAST/CURRENT/FUTURE tab
+  convention entirely — a single-panel dashboard with no `VAL_CONFIG`, no historical
+  financials, no `PRICE_ZONES` — so this migration also required the larger GOOGL-style
+  scope: 4 fiscal years (2022–2025, the same Wisesheets free-tier cap as GOOGL) of
+  revenue/gross-margin/FCF/ROIC/EV-EBITDA sourced fresh via Wisesheets (SEC-cited), 47
+  months of price history for the PAST tab chart and drawdown series, DCF/valuation inputs,
+  and named peer comps (MSFT, GOOGL, META, WMT) — all newly written, not ported, since the
+  pre-migration file had none of it. The CASES/SIGNALS/MARGIN/TRACK_ALL/HISTORY content that
+  DID already exist (from the same-day Q2 2026 `/update-thesis` touch just before this
+  migration) was ported losslessly, per the explicit instruction for this migration not to
+  be a numbers refresh.
+- **AMZN's migration also shipped with one real bug, caught by `verify-thesis` rather than
+  by inspection:** `thesis-data.js` had an extra `const NOW_PRICE = FALLBACK_PRICE;` line —
+  every other migrated stock only ever defines `FALLBACK_PRICE` and lets the engine's own
+  `let NOW_PRICE = FALLBACK_PRICE` (in `thesis-engine.jsx`) own that name. Because both files
+  load as classic (non-module) scripts sharing one global lexical scope, the second `const`
+  declaration collided with the engine's `let` and threw `Identifier 'NOW_PRICE' has already
+  been declared` on page load — the fan chart never rendered in either theme. Fixed by
+  deleting the redundant declaration and pointing `HISTORY`'s `NOW` entry straight at
+  `FALLBACK_PRICE`, matching TSM/NVDA/GOOGL's convention; `verify-thesis AMZN` passes clean
+  after the fix. Worth checking for in any future migration that hand-adapts an older file's
+  `NOW_PRICE`-style local variable instead of starting from the `FALLBACK_PRICE` convention.
 - **ALAB's migration (2026-08-01) also fixed real copy-paste residue**, distinct from the
   known-and-already-fixed `AvgoThesis()` function-name bug found by the 2026-07-03 machine
   audit. Line-by-line review of the pre-migration `alab-thesis.html` found several hardcoded
