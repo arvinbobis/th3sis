@@ -114,6 +114,23 @@ const k   = (v) => "$" + (v/1000).toFixed(1) + "k";
 const pct = (v, d=1) => (v>=0?"+":"") + v.toFixed(d) + "%";
 const pc  = (v) => v>=0 ? GAIN : LOSS;
 
+// ── staleness check (data auto-resyncs weekdays ~21:30 UTC via a scheduled cloud
+//    routine — this just tells you, on load, whether that actually landed) ────
+function daysSince(dateStr) {
+  const then = new Date(dateStr + "T00:00:00");
+  const now = new Date();
+  return Math.floor((now - then) / 86400000);
+}
+function staleness(asOf) {
+  const d = daysSince(asOf);
+  if (d <= 1) return { label: "LIVE", color: GAIN, d,
+    note: `Data pulled ${d === 0 ? "today" : "yesterday"} from live IBKR positions via the daily automated resync (weekdays ~21:30 UTC, after market close).` };
+  if (d <= 3) return { label: `${d}D OLD`, color: WARN, d,
+    note: `${d} days since the last resync. Likely just a weekend/holiday gap (the routine only runs weekdays) — not necessarily broken, but worth a glance if today's a weekday.` };
+  return { label: `${d}D STALE`, color: LOSS, d,
+    note: `${d} days since the last resync — longer than a normal weekend gap. The daily automated routine may have failed; check https://claude.ai/code/routines or ask for a manual resync.` };
+}
+
 // ── tooltip engine ──────────────────────────────────────────────────────────
 let tipEl = null;
 function tip() { if(!tipEl){ tipEl=document.createElement("div"); tipEl.id="tip-box"; document.body.appendChild(tipEl);} return tipEl; }
@@ -557,6 +574,7 @@ function DisciplineStrip() {
 // ═══════════════════════════════════════════════════════════════════════════
 function App() {
   const s = useStats();
+  const stale = useMemo(() => staleness(ASOF), []);
   const [showDaily, setShowDaily] = useState(false);
   return (
     <div style={{ width:"100%", maxWidth:1180, margin:"0 auto", padding:"26px 22px 60px", fontFamily:FONT_MONO }}>
@@ -580,7 +598,15 @@ function App() {
           </button>
           <div style={{ textAlign:"right" }}>
             <div style={{ fontSize:9, color:"var(--tx5)", letterSpacing:"0.14em" }}>AS OF</div>
-            <div style={{ fontSize:12, color:"var(--tx2)", fontWeight:700 }}>{ASOF}</div>
+            <Tip title="DATA FRESHNESS" body={stale.note} color={stale.color}>
+              <div style={{ display:"flex", alignItems:"center", gap:7, justifyContent:"flex-end" }}>
+                <div style={{ fontSize:12, color:"var(--tx2)", fontWeight:700 }}>{ASOF}</div>
+                <span style={{ fontSize:8.5, fontWeight:700, letterSpacing:"0.08em", color:stale.color,
+                                border:`1px solid ${stale.color}55`, borderRadius:10, padding:"2px 7px", whiteSpace:"nowrap" }}>
+                  {stale.label}
+                </span>
+              </div>
+            </Tip>
           </div>
         </div>
       </div>
