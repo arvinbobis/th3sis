@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TH3SIS · FOLIO BARE</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Spectral:ital,wght@0,400;0,600;1,500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="../theme.css" />
+<style>
+  html, body { margin: 0; padding: 0; background: var(--page-bg); }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--tx2);
+    display: flex;
+    justify-content: safe center;
+    align-items: safe center;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  .wrap {
+    width: 100%;
+    max-width: 920px;
+    background: var(--wrap-bg);
+    border: 1px solid var(--wrap-bd);
+    border-radius: 18px;
+    box-shadow: var(--wrap-shadow);
+    padding: 36px 40px 44px;
+  }
+  .badge {
+    display: inline-block;
+    font-size: 9.5px;
+    letter-spacing: .14em;
+    color: var(--tx5);
+    border: 1px solid var(--bd2);
+    background: var(--tag-bg);
+    border-radius: 20px;
+    padding: 3px 10px;
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-family: Georgia, 'Spectral', serif;
+    font-size: 26px;
+    letter-spacing: .04em;
+    color: var(--title);
+    margin: 0 0 4px;
+  }
+  h1 .accent { color: var(--blue-soft); }
+  .sub {
+    font-size: 11.5px;
+    color: var(--tx4);
+    margin-bottom: 28px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--bd);
+  }
+  h2 {
+    font-size: 10.5px;
+    letter-spacing: .16em;
+    color: var(--tx5);
+    text-transform: uppercase;
+    margin: 34px 0 12px;
+  }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .kpi {
+    background: var(--panel-bg);
+    border: 1px solid var(--bd);
+    border-radius: 12px;
+    padding: 14px 16px;
+  }
+  .kpi .lbl { font-size: 9.5px; letter-spacing: .1em; color: var(--tx5); text-transform: uppercase; margin-bottom: 8px; }
+  .kpi .val { font-size: 19px; color: var(--tx1); font-weight: 700; }
+  .kpi .sub2 { font-size: 10px; color: var(--tx6); margin-top: 4px; }
+
+  .compare {
+    background: var(--panel-bg);
+    border: 1px solid var(--bd);
+    border-radius: 12px;
+    padding: 20px 22px;
+  }
+  .bar-row { margin-bottom: 16px; }
+  .bar-label { display: flex; justify-content: space-between; font-size: 11px; color: var(--tx3); margin-bottom: 5px; }
+  .bar-label b { color: var(--tx1); font-size: 13px; }
+  .bar-track { height: 10px; background: var(--deep-bg); border-radius: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 6px; }
+  .fill-deposit { background: var(--tx5); }
+  .fill-nlv { background: #3fd07a; }
+  .gain-strip {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--bd);
+  }
+  .gain-strip .g-lbl { font-size: 10.5px; color: var(--tx5); letter-spacing: .08em; }
+  .gain-strip .g-val { font-size: 20px; font-weight: 700; }
+  .gain-strip .g-pct { font-size: 12px; margin-left: 8px; }
+
+  .note {
+    margin-top: 22px;
+    font-size: 10.5px;
+    line-height: 1.6;
+    color: var(--tx5);
+    border-left: 2px solid var(--bd2);
+    padding: 4px 0 4px 12px;
+  }
+  .note b { color: var(--tx3); }
+
+  .chart-card {
+    background: var(--panel-bg);
+    border: 1px solid var(--bd);
+    border-radius: 12px;
+    padding: 20px 22px 14px;
+  }
+  .legend {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 14px;
+    font-size: 10.5px;
+    color: var(--tx3);
+  }
+  .legend .sw {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    margin-right: 6px;
+    vertical-align: middle;
+  }
+  #chart-svg { width: 100%; height: auto; display: block; overflow: visible; }
+  #chart-svg text { font-family: 'JetBrains Mono', monospace; }
+  .bar-val { font-size: 9.5px; fill: var(--tx3); }
+  .bar-date { font-size: 9.5px; fill: var(--tx5); }
+  .gridline { stroke: var(--bd); stroke-width: 1; }
+  .gridtick { font-size: 9px; fill: var(--tx6); }
+
+  .footer {
+    margin-top: 30px;
+    padding-top: 16px;
+    border-top: 1px solid var(--bd);
+    font-size: 9.5px;
+    letter-spacing: .06em;
+    color: var(--tx7);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 640px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .wrap { padding: 26px 20px 32px; }
+    .footer { flex-direction: column; gap: 4px; }
+  }
+</style>
+</head>
+<body>
+<script>
+// Theme sync with parent index.html shell
+window.addEventListener('message', function(e) {
+  if (e.data && e.data.type === 'th3sis-theme') {
+    document.documentElement.classList.toggle('light', !!e.data.light);
+    localStorage.setItem('th3sis_theme', e.data.light ? 'light' : 'dark');
+  }
+});
+(function() {
+  if (localStorage.getItem('th3sis_theme') !== 'dark') {
+    document.documentElement.classList.add('light');
+  }
+})();
+</script>
+<script src="folio-data.js"></script>
+<div class="wrap">
+  <div class="badge">FOLIO · AUTO-REFRESHED DAILY</div>
+  <h1>FOLIO <span class="accent">BARE</span></h1>
+  <div class="sub" id="sub-line">Account — as of —</div>
+
+  <h2>Snapshot</h2>
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="lbl">Total Deposited</div>
+      <div class="val" id="k-deposited">—</div>
+      <div class="sub2" id="k-deposited-sub">all-time (manual, not auto-refreshed)</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Net Liquidation Value</div>
+      <div class="val" id="k-nlv">—</div>
+      <div class="sub2">total portfolio value today</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Cash</div>
+      <div class="val" id="k-cash">—</div>
+      <div class="sub2">uninvested, available funds</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Invested Positions</div>
+      <div class="val" id="k-invested">—</div>
+      <div class="sub2">market value of open positions</div>
+    </div>
+  </div>
+
+  <h2>Deposited vs. Current Value</h2>
+  <div class="compare">
+    <div class="bar-row">
+      <div class="bar-label"><span>Total Deposited</span><b id="c-deposited">—</b></div>
+      <div class="bar-track"><div class="bar-fill fill-deposit" id="bar-deposited"></div></div>
+    </div>
+    <div class="bar-row" style="margin-bottom:0">
+      <div class="bar-label"><span>Net Liquidation Value</span><b id="c-nlv">—</b></div>
+      <div class="bar-track"><div class="bar-fill fill-nlv" id="bar-nlv"></div></div>
+    </div>
+    <div class="gain-strip">
+      <div class="g-lbl">TOTAL GAIN</div>
+      <div><span class="g-val" id="g-val">—</span><span class="g-pct" id="g-pct"></span></div>
+    </div>
+  </div>
+
+  <h2>Deposited vs. Portfolio Value Over Time</h2>
+  <div class="chart-card">
+    <div class="legend">
+      <span><span class="sw" style="background:var(--tx5)"></span>Total Deposited</span>
+      <span><span class="sw" style="background:#3fd07a"></span>Net Liquidation Value</span>
+    </div>
+    <svg id="chart-svg" viewBox="0 0 880 260" preserveAspectRatio="xMinYMin meet"></svg>
+  </div>
+  <div class="note">
+    <b>Reading this chart:</b> one grouped pair per trading day. 2026-08-12 through 08-17 are
+    a one-time backfill from IBKR's own NAV history; 2026-08-18 onward is the daily scheduled
+    pull, one new pair added each weekday. The deposited bar stays flat across dates until the
+    manual figure above is next updated — it isn't pulled daily the way NLV is.
+  </div>
+
+  <div class="note">
+    <b>What "bare" means:</b> this page shows only what IBKR's account API returns directly
+    (net liquidation value, cash, position market value, unrealized P&amp;L) — refreshed once
+    a day by a scheduled pull, no browser fetch, no client-side caching logic needed. It
+    deliberately omits XIRR, TWR, and the deposit/cost-basis reconciliation that
+    <a href="folio2.html" style="color:var(--blue-soft)">FOLIO 2</a> has — those need either
+    full transaction history or a manual dashboard read, not just an account-summary pull.
+  </div>
+
+  <div class="footer">
+    <span id="f-data">DATA: IBKR account pull</span>
+    <span>NOT FINANCIAL ADVICE</span>
+  </div>
+</div>
+<script>
+(function() {
+  const d = FOLIO_BARE;
+  const latest = d.history[d.history.length - 1];
+  const usd = (n, dec) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: dec ?? 2, maximumFractionDigits: dec ?? 2 });
+  const usdCompact = (n) => '$' + (Math.abs(n) >= 1000 ? (n / 1000).toFixed(1) + 'k' : n.toFixed(0));
+
+  document.getElementById('sub-line').textContent = 'Account ' + d.account + ' — as of ' + latest.date;
+  document.getElementById('k-deposited').textContent = usd(d.deposited);
+  document.getElementById('k-deposited-sub').textContent = 'all-time — manual, last confirmed ' + d.depositedAsOf;
+  document.getElementById('k-nlv').textContent = usd(latest.nlv);
+  document.getElementById('k-cash').textContent = usd(latest.cash);
+  document.getElementById('k-invested').textContent = usd(latest.investedValue);
+
+  document.getElementById('c-deposited').textContent = usd(d.deposited);
+  document.getElementById('c-nlv').textContent = usd(latest.nlv);
+
+  const maxV = Math.max(d.deposited, latest.nlv);
+  document.getElementById('bar-deposited').style.width = (100 * d.deposited / maxV).toFixed(1) + '%';
+  document.getElementById('bar-nlv').style.width = (100 * latest.nlv / maxV).toFixed(1) + '%';
+
+  const gain = latest.nlv - d.deposited;
+  const gainPct = 100 * gain / d.deposited;
+  const gEl = document.getElementById('g-val');
+  const gPctEl = document.getElementById('g-pct');
+  const color = gain >= 0 ? '#3fd07a' : '#f1564b';
+  gEl.style.color = color;
+  gPctEl.style.color = color;
+  gEl.textContent = (gain >= 0 ? '+' : '−') + usd(Math.abs(gain));
+  gPctEl.textContent = '(' + (gainPct >= 0 ? '+' : '−') + Math.abs(gainPct).toFixed(1) + '% on capital contributed)';
+
+  document.getElementById('f-data').textContent = 'DATA: IBKR live account pull, auto-refreshed ' + latest.date;
+
+  // Grouped vertical bar chart: Total Deposited vs Net Liquidation Value, one pair per history entry.
+  (function renderChart() {
+    const svg = document.getElementById('chart-svg');
+    const W = 880, H = 260;
+    const padL = 44, padR = 10, padT = 16, padB = 30;
+    const plotW = W - padL - padR, plotH = H - padT - padB;
+
+    const points = d.history.map(h => ({ date: h.date, deposited: d.deposited, nlv: h.nlv }));
+    const maxVal = Math.max(...points.map(p => Math.max(p.deposited, p.nlv))) * 1.15;
+
+    // Nice gridline step (4 steps)
+    const rawStep = maxVal / 4;
+    const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    const niceStep = Math.ceil(rawStep / mag) * mag;
+    const gridTop = niceStep * 4;
+    const yScale = (v) => padT + plotH * (1 - v / gridTop);
+
+    let svgHtml = '';
+
+    // Gridlines + ticks
+    for (let i = 0; i <= 4; i++) {
+      const v = niceStep * i;
+      const y = yScale(v);
+      svgHtml += `<line class="gridline" x1="${padL}" y1="${y}" x2="${W - padR}" y2="${y}" />`;
+      svgHtml += `<text class="gridtick" x="${padL - 6}" y="${y + 3}" text-anchor="end">${usdCompact(v)}</text>`;
+    }
+
+    // Groups
+    const groupW = plotW / points.length;
+    const barW = Math.min(24, groupW * 0.28);
+    const barGap = 4;
+
+    points.forEach((p, i) => {
+      const cx = padL + groupW * (i + 0.5);
+      const x1 = cx - barGap / 2 - barW;
+      const x2 = cx + barGap / 2;
+
+      const yDep = yScale(p.deposited);
+      const yNlv = yScale(p.nlv);
+      const baseline = yScale(0);
+
+      svgHtml += `<rect x="${x1}" y="${yDep}" width="${barW}" height="${baseline - yDep}" rx="4" fill="var(--tx5)" />`;
+      svgHtml += `<text class="bar-val" x="${x1 + barW / 2}" y="${yDep - 6}" text-anchor="middle">${usdCompact(p.deposited)}</text>`;
+
+      svgHtml += `<rect x="${x2}" y="${yNlv}" width="${barW}" height="${baseline - yNlv}" rx="4" fill="#3fd07a" />`;
+      svgHtml += `<text class="bar-val" x="${x2 + barW / 2}" y="${yNlv - 6}" text-anchor="middle">${usdCompact(p.nlv)}</text>`;
+
+      svgHtml += `<text class="bar-date" x="${cx}" y="${H - padB + 16}" text-anchor="middle">${p.date}</text>`;
+    });
+
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = svgHtml;
+  })();
+})();
+</script>
+</body>
+</html>
