@@ -7,3 +7,7 @@ tools/.verify-output/
 # Excel lock files
 ~$*.xlsx
 ~$*.xls
+
+# Live brokerage exports — real account transaction data, never belongs in a
+# public repo. folio2.html reads this off disk locally; it must stay untracked.
+*.TRANSACTIONS.*.csv

@@ -301,9 +301,9 @@ GATE pages, applied to the stock dashboards.
 - After writing, run the tiered verify (see Engine split above) before delivering — for a
   migrated stock that's `node tools/verify-thesis.js <TICKER>`; "the JSX compiles" was never
   the bar.
-- **⚠ Legacy stocks** (built before June 2026, hardcoded hex in JSX — light mode won't render
-  correctly until each is refactored): FICO, META, MSFT, MU,
-  TSM. AVGO was added to this list 2026-07-18 (a straight oversight — it was built in
+- **⚠ Legacy stocks list — now empty (closed out 2026-08-17).** Historically: stocks built
+  before June 2026 with hardcoded hex in JSX (light mode wouldn't render correctly until
+  refactored). AVGO was added to this list 2026-07-18 (a straight oversight — it was built in
   the same pre-June-2026 batch and carries the identical `#dd817a`/`#c59542`/`#66b278`
   palette as TSM/others, just never got listed; found because `verify-thesis` doesn't
   exempt undocumented stocks and a mid-cycle AVGO touch that day surfaced the gap). This
@@ -435,6 +435,35 @@ GATE pages, applied to the stock dashboards.
   not declared) until NVDA's own next `/update-thesis` gives it a real first entry. Treat the
   lint as authoritative over the `= []` wording above for this exact situation; the wording
   should probably be reconciled at some point, but that's a documentation fix, not urgent.
+- FICO migrated 2026-08-xx (full rebuild, real price-history correction) and came off the
+  legacy-hex list the same day for the identical already-compliant reason as ASML/MRVL/NVDA/
+  AMZN — its build already used only `#f1564b`/`#e0a83b`/`#3fd07a`/`#2f6dff` (verified: `grep
+  -oE '#[0-9a-fA-F]{3,6}\b' stocks/fico/thesis-data.js` returns only the four permitted hex
+  codes). META and MSFT both migrated the same session (folders lowercased to `meta`/`msft`,
+  `thesis-data.js` split out, HTML shells thinned to the shared-engine pattern) and both came
+  off the legacy-hex list too for the same reason (verified with the identical grep against
+  each `thesis-data.js`). That session's `stocks/index.html` registry edits initially missed
+  two entries — MSFT's path was left pointing at the pre-rename `MSFT/MSFT-thesis.html`, and
+  FICO's (migrated in an earlier, separate commit) was still `FICO/FICO-thesis.html` — both
+  silently 404 under GitHub Pages' case-sensitive filesystem despite the folders already being
+  lowercase on disk; caught and fixed by re-auditing every `REGISTRY` entry's path against the
+  actual folder casing, not just the two stocks touched that session. Worth treating
+  `stocks/index.html`'s registry as part of every migration's own verification, not just
+  `lint-thesis-data`/`verify-thesis` (which only check the migrated stock's own folder and
+  have no visibility into the shared index file).
+- MU and TSM (the last two names on the legacy-hex list) had their palettes fixed 2026-08-17,
+  closing the list out to empty. Both were already engine-split-migrated; the outstanding work
+  was purely the hex swap. TSM's `thesis-data.js` had the full `#dd817a`/`#c59542`/`#66b278`/
+  `#46aad9` variant palette throughout `CASES` accents, `PRICE_ZONES`, capex/drawdown chart
+  annotations, and inline `style="color:#..."` spans in narrative HTML strings — all swapped to
+  `#f1564b`/`#e0a83b`/`#3fd07a`/`#2f6dff` via a scripted `sed` pass, then verified with `grep
+  -oE '#[0-9a-fA-F]{3,6}\b' stocks/tsm/thesis-data.js`. MU's case was smaller: it already used
+  the four permitted colors almost everywhere, but two inline-HTML spans (an amber `#c59542`
+  in the reversion-clock footer, a green `#66b278` in the FY26 revenue card) were leftover
+  non-permitted hex and were hand-fixed to `#e0a83b`/`#3fd07a`. `LEGACY_HEX_TICKERS` in both
+  `tools/lint-thesis-data.js` and `tools/verify-thesis.js` is now an empty set — the exemption
+  branch is dead code kept in place so a future stock can be added to it again if one is ever
+  found, without needing to re-derive the branch logic.
 
 ---
 

@@ -13,9 +13,9 @@ There are **two layers** to every update. Most people only do Layer 1 and slowly
 - **Layer 1 — Refresh the numbers.** Mechanical. ~15 minutes. Plug in what happened.
 - **Layer 2 — Audit the thesis.** Judgment. ~30 minutes. Ask whether the three cases themselves still make sense, or whether reality has overtaken them.
 
-Open `META-thesis.html` in a text editor. Everything you edit lives in the block at the top marked **"EDIT EVERYTHING IN THIS BLOCK EACH QUARTER."** The numbers below it redraw themselves.
+Open `thesis-data.js` in a text editor — as of the 2026-08-04 engine-split migration, this file (not `meta-thesis.html`) is where ALL per-quarter content lives, per the shared-engine convention documented in CLAUDE.md. `meta-thesis.html` is now a thin ~60-line shell that just loads `thesis-data.js` then the shared `../engine/thesis-engine.js` — don't edit it. After editing, run `node tools/lint-thesis-data.js META` for a fast schema check, then `node tools/verify-thesis.js META` before calling the update done.
 
-*(Note: as of 2026-07-31, META is still on the legacy inline-JSX build — not yet migrated to the `thesis-data.js` engine-split format other stocks use. Migration is optional future work, not part of a routine numbers refresh.)*
+*(Note: the hero KPI on THE CURRENT tab is now Total Revenue ($B quarterly), swapped from the pre-migration build's "AI-Monetized Share of Incremental Ad Revenue %" — the shared engine's price-implied-full-year-revenue card only works if `KPI_HIST`/`KPI_PROJ` are revenue in $B, the same fix NVDA's migration required. AI-monetization itself is still tracked via the SIGNALS panel and CASES narratives, just not as the hero chart.)*
 
 ---
 

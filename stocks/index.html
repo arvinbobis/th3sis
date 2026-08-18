@@ -214,6 +214,11 @@
       <span class="chip-ticker">FOLIO</span>
       <span class="chip-name">positions &amp; allocation</span>
     </button>
+    <button id="folio2-chip" class="chip pinned">
+      <span class="chip-dot quiet">◇</span>
+      <span class="chip-ticker">FOLIO2</span>
+      <span class="chip-name">account return · scratch build</span>
+    </button>
     <button id="actions-chip" class="chip pinned">
       <span class="chip-dot quiet">▸</span>
       <span class="chip-ticker">ACTIONS</span>
@@ -275,11 +280,11 @@ const REGISTRY = {
   ASML:  { path: "asml/asml-thesis.html",   name: "ASML Holding" },
   AVGO:  { path: "avgo/avgo-thesis.html",   name: "Broadcom Inc." },
   CEG:   { path: "ceg/ceg-thesis.html",     name: "Constellation Energy" },
-  FICO:  { path: "FICO/FICO-thesis.html",   name: "Fair Isaac" },
+  FICO:  { path: "fico/fico-thesis.html",   name: "Fair Isaac" },
   GOOGL: { path: "googl/googl-thesis.html", name: "Alphabet" },
-  META:  { path: "META/META-thesis.html",   name: "Meta Platforms" },
+  META:  { path: "meta/meta-thesis.html",   name: "Meta Platforms" },
   MRVL:  { path: "mrvl/mrvl-thesis.html",  name: "Marvell Technology" },
-  MSFT:  { path: "MSFT/MSFT-thesis.html",  name: "Microsoft" },
+  MSFT:  { path: "msft/msft-thesis.html",  name: "Microsoft" },
   MU:    { path: "mu/mu-thesis.html",       name: "Micron Technology" },
   NOW:   { path: "now/now-thesis.html",     name: "ServiceNow" },
   NVDA:  { path: "nvda/nvda-thesis.html",   name: "NVIDIA" },
@@ -304,6 +309,7 @@ const loading    = document.getElementById('loading');
 const loadingTxt = document.getElementById('loading-text');
 const themeBtn   = document.getElementById('theme-btn');
 const portfolioChip = document.getElementById('portfolio-chip');
+const folio2Chip     = document.getElementById('folio2-chip');
 const actionsChip   = document.getElementById('actions-chip');
 const generatorChip = document.getElementById('generator-chip');
 const strategyChip  = document.getElementById('strategy-chip');
@@ -456,6 +462,7 @@ function setActiveChip(el) {
 // This gives every view a shareable URL and a working back/forward button for free.
 const PAGE_ROUTES = {
   folio:   { chip: portfolioChip,   path: 'portfolio/positions.html',    label: 'LOADING PORTFOLIO…' },
+  folio2:  { chip: folio2Chip,      path: 'portfolio/folio2.html',       label: 'LOADING FOLIO 2…' },
   actions: { chip: actionsChip,     path: 'portfolio/action-items.html', label: 'LOADING ACTION ITEMS…' },
   tree:    { chip: generatorChip,   path: 'portfolio/generator.html',    label: 'GROWING THE TREE…' },
   gate:    { chip: strategyChip,    path: 'portfolio/strategy.html',     label: 'LOADING THE GATE…' },
@@ -512,6 +519,7 @@ window.addEventListener('message', (e) => {
 });
 
 portfolioChip.addEventListener('click', () => navigate('folio'));
+folio2Chip.addEventListener('click', () => navigate('folio2'));
 actionsChip.addEventListener('click', () => navigate('actions'));
 generatorChip.addEventListener('click', () => navigate('tree'));
 strategyChip.addEventListener('click', () => navigate('gate'));

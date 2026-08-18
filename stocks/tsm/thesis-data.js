@@ -29,7 +29,7 @@ const REVERSION_PRECEDENT_DAYS = 282;
 
 const CASES = {
   bear: {
-    key: "bear", label: "BEAR", accent: "#dd817a", glow: "rgba(241,86,75,0.45)",
+    key: "bear", label: "BEAR", accent: "#f1564b", glow: "rgba(241,86,75,0.45)",
     target12: "$265 — $335",
     op: "Q2 2026 was a genuine beat on every disclosed line (revenue $40.2B beat the $39.0–40.2B guide's own high end, GM 67.7% beat 65.5–67.5%, EPS $4.31 beat ~$3.80 consensus) and management raised FY26 capex to $60–64B and USD revenue growth guide to 'slightly above 40%' — yet the stock fell from a $477.57 pre-print high to an estimated ~$407 post-print, a real 'sell the news' round-trip. The bear case is no longer about the AI/HPC ramp stalling — it's about whether Q3's much steeper $44.6–45.8B guide (+11–14% QoQ) is now priced for perfection after two straight beat-and-raise quarters, or whether cross-strait/export-control friction (Taiwan's own proposed review of advanced-chip exports remains a live 2026 wrinkle even as TSM pledges another $100B into US fabs) resurfaces as the real tail risk. A quieter structural risk this thesis has under-covered: Google's TPU ('Humufish') shifting some advanced-packaging work from TSMC's CoWoS to Intel's competing EMIB-T process (first flagged Jul 1) is the first hard evidence a hyperscaler will route AI-accelerator packaging outside TSMC — still a single data point, not a trend, but the CoWoS moat has real competitive testing now that it didn't have a quarter ago.",
     breaks: "A hyperscaler (Microsoft, Google, Meta, Amazon) publicly signals a multi-quarter AI capex pause, a new export-control/tariff action materially restricts TSM's advanced-node shipments, or a SECOND hyperscaler discloses a real (non-pilot) advanced-packaging design win outside TSMC's CoWoS — confirming Google's TPU/Intel EMIB-T shift as a trend rather than a one-off.",
@@ -37,7 +37,7 @@ const CASES = {
     requires02: "N2 (2nm) volume ramp slips from its current 3% wafer-revenue base, cross-strait/export-control risk escalates materially, or a second hyperscaler follows Google's Intel-EMIB-T packaging shift (watch, not yet triggered)",
   },
   base: {
-    key: "base", label: "BASE", accent: "#c59542", glow: "rgba(224,168,59,0.40)",
+    key: "base", label: "BASE", accent: "#e0a83b", glow: "rgba(224,168,59,0.40)",
     target12: "$375 — $490",
     op: "Q2 2026 beat across the board (revenue $40.2B/+33.7% YoY, GM 67.7%, OM 60.3%, EPS $4.31) and management guided Q3 to a steep $44.6–45.8B / 65.0–67.0% GM, raising FY26 capex to $60–64B and USD revenue growth to 'slightly above 40%.' Despite that, the ADR pulled back from its $477.57 pre-print high to an estimated ~$407 — the forward multiple actually COMPRESSED (from ~28x pre-print toward ~22x now) because the consensus EPS estimate rose faster than the price fell. That's a healthier setup than the prior quarter's all-time-high entry point, not a worse one: TSM remains the only foundry shipping leading-edge AI accelerators at scale, N2 is now a real (if small, ~3% of wafer revenue) contributor, and the new $100B US investment pledge (total $265B) extends the political-goodwill moat. Most likely path: Q3 lands in the raised guide and the stock re-tests its prior highs on earnings growth rather than needing further multiple expansion.",
     breaks: "Management cuts full-year 2026 capex or revenue guidance, signaling the AI/HPC buildout is decelerating faster than expected — the opposite of what just happened.",
@@ -45,7 +45,7 @@ const CASES = {
     requires02: "N2 ramp and CoWoS capacity expansion stay on the disclosed schedule; no new export-control escalation",
   },
   bull: {
-    key: "bull", label: "BULL", accent: "#66b278", glow: "rgba(63,208,122,0.45)",
+    key: "bull", label: "BULL", accent: "#3fd07a", glow: "rgba(63,208,122,0.45)",
     target12: "$565 — $640",
     op: "The AI/HPC buildout accelerated again this quarter, not decelerated: FY26 capex guide raised to $60–64B (from $52–56B), USD revenue growth guide raised to 'slightly above 40%' (from '>30%'), and TSM committed another $100B to US fabs (total $265B, four more Arizona plants at 2nm-and-below). HPC now makes up 66% of revenue (+20% QoQ) and N2 has crossed into real production (3% of wafer revenue in its first reporting quarter). Sell-side price targets moved decisively higher post-print — Goldman Sachs to $600 ADR (from $550), one analyst to $590 (from $490) — even as the stock itself pulled back, which is exactly the kind of gap between fundamentals and price action that closes fast if Q3 beats its own raised guide. A de-escalation in cross-strait tension would remove the largest tail-risk discount still embedded in the multiple.",
     breaks: "Q3 2026 revenue or margin misses the raised guidance, confirming the beat-and-raise pattern was a peak rather than a trend — or cross-strait/export-control risk escalates instead of resolving.",
@@ -216,9 +216,9 @@ const THESIS_ITEMS = [
   { key: "crossStraitRisk",  label: "No new export-control or tariff escalation", note: "Cross-strait and trade-policy risk is the wildcard" },
 ];
 const PRICE_ZONES = [
-  { label: "BEAR",    lo: 265, hi: 335, mid: 300, color: "#dd817a", action: "Exit / reduce if thesis also breaking" },
-  { label: "BASE",    lo: 375, hi: 490, mid: 433, color: "#c59542", action: "Small add OK if thesis intact" },
-  { label: "BULL",    lo: 565, hi: 640, mid: 603, color: "#66b278", action: "Let it ride — don't chase" },
+  { label: "BEAR",    lo: 265, hi: 335, mid: 300, color: "#f1564b", action: "Exit / reduce if thesis also breaking" },
+  { label: "BASE",    lo: 375, hi: 490, mid: 433, color: "#e0a83b", action: "Small add OK if thesis intact" },
+  { label: "BULL",    lo: 565, hi: 640, mid: 603, color: "#3fd07a", action: "Let it ride — don't chase" },
 ];
 
 // ── Chart geometry / axis ranges (per-stock: depends on price scale) ─────────
@@ -265,14 +265,14 @@ const TEXT = {
     header: "REVERSION CLOCK · APR 2025 TARIFF DISLOCATION",
     timeTip: "In April 2025, the 'Liberation Day' tariff announcement triggered a broad market selloff and chip-sector panic over potential semiconductor tariffs and cross-strait risk. TSM (ADR) fell to a multi-year low near $141. This bar shows how far along we are in the recovery cycle vs. the time it took to reclaim the base floor.",
     priceTip: (trough, baseFloor, now) => `Stock bottomed near $${trough} after the April 2025 tariff-panic selloff and needed to reach $${baseFloor} to re-enter the base band. At $${now} it has shot well past the base floor — the AI/HPC ramp overpowered the tariff fear.`,
-    footerHtml: (baseFloor, precedentDays, now) => `The April 2025 tariff panic was a macro/policy shock, not a business miss — fundamentals stayed intact through it. Price reclaimed the $${baseFloor} base floor well within the ${precedentDays}-day precedent window and has continued to new all-time highs at $${now} on the AI/HPC ramp. The next dislocation risk to watch is a new tariff/export-control action or a cross-strait escalation — not a repeat of this one, but the same playbook would apply: <span style="color:#c59542;font-weight:700">has the thesis actually broken, or is this fear?</span>`,
+    footerHtml: (baseFloor, precedentDays, now) => `The April 2025 tariff panic was a macro/policy shock, not a business miss — fundamentals stayed intact through it. Price reclaimed the $${baseFloor} base floor well within the ${precedentDays}-day precedent window and has continued to new all-time highs at $${now} on the AI/HPC ramp. The next dislocation risk to watch is a new tariff/export-control action or a cross-strait escalation — not a repeat of this one, but the same playbook would apply: <span style="color:#e0a83b;font-weight:700">has the thesis actually broken, or is this fear?</span>`,
   },
 
   // track record
   track: {
     lastDot: (post, nowPx) => `After Q2 2026 earnings (Jul 16), TSM (ADR) traded around $${post} — landing just under the OLD base band's floor ($415) even though revenue, margin, and EPS all beat guide, because the stock had already pulled back hard from its $477.57 pre-print high. Price sits at $${nowPx} today. Next dot: Q3 2026 earnings (~Oct 15, 2026).`,
     pastDot: (q, post) => `After ${q} earnings, TSM (ADR) actually traded around $${post}. Compare this dot to the colored bars behind it to see if the predicted range was right.`,
-    readoutHtml: (hits, n, nowPx) => `Price has tracked <span style="color:#66b278;font-weight:700">base-or-better in ${hits} of ${n} quarters</span> since Q1 2025. Q2 2026 is the most interesting recent case: revenue beat guide's own high end ($40.2B, +33.7% YoY), gross margin beat (67.7%), EPS beat ($4.31) — yet the stock landed just BELOW the old base floor at $${nowPx}, a genuine "sell the news" pullback from a $477.57 pre-print high, not a business miss. FY26 capex guide was raised to $60–64B and revenue growth guide to "slightly above 40%" the same call. Next directional catalyst: <span style="color:#c59542;font-weight:700">Q3 2026 earnings (~Oct 15, 2026)</span> — revenue and gross margin vs. the newly-raised $44.6–45.8B / 65.0–67.0% guide.`,
+    readoutHtml: (hits, n, nowPx) => `Price has tracked <span style="color:#3fd07a;font-weight:700">base-or-better in ${hits} of ${n} quarters</span> since Q1 2025. Q2 2026 is the most interesting recent case: revenue beat guide's own high end ($40.2B, +33.7% YoY), gross margin beat (67.7%), EPS beat ($4.31) — yet the stock landed just BELOW the old base floor at $${nowPx}, a genuine "sell the news" pullback from a $477.57 pre-print high, not a business miss. FY26 capex guide was raised to $60–64B and revenue growth guide to "slightly above 40%" the same call. Next directional catalyst: <span style="color:#e0a83b;font-weight:700">Q3 2026 earnings (~Oct 15, 2026)</span> — revenue and gross margin vs. the newly-raised $44.6–45.8B / 65.0–67.0% guide.`,
     footnote: "⚠ Bands are reconstructed now, anchored to each date's forward EPS & multiple regime — not archived in real time. Treat levels as directional, especially \"lower-conf\" quarters. ADR price reflects 5 ordinary shares per ADR. Revenue and fab capacity are concentrated in Taiwan — treat all bands as wider than they appear given cross-strait/export-control tail risk.",
   },
 
@@ -284,7 +284,7 @@ const TEXT = {
       intact: "All key signals tracking as expected. The AI/HPC ramp and N2 node transition thesis remains intact — Q2 2026 beat on every disclosed line, even though the stock itself pulled back.",
     },
     panelTipStory: "Checks whether the original reasons to own TSM are playing out. Counts signals from the Q2 2026 print and Q3 2026 guide — revenue, gross margin, cross-strait risk, N2 ramp. 0–1 miss = thesis intact. 2 misses = watch. 3+ = exit. Click to see KPI bars and kill-switch.",
-    watchChipHtml: `🔑 WATCH: Q3 2026 rev vs <span style="color:#c59542;font-weight:700">$44.6–45.8B</span> guide · ~Oct 15, 2026`,
+    watchChipHtml: `🔑 WATCH: Q3 2026 rev vs <span style="color:#e0a83b;font-weight:700">$44.6–45.8B</span> guide · ~Oct 15, 2026`,
     exitChipHtml: `⚠ EXIT IF: rev/GM miss guide <span style="font-weight:700">2 straight quarters</span>, or cross-strait risk escalates`,
     verdictBody: {
       broken:     (px) => `TSM at $${px}: kill-switch criteria met. Price position is irrelevant — signals say the AI/HPC ramp thesis is no longer playing out. The question is not whether to add; it is how much to reduce.`,
@@ -316,7 +316,7 @@ const TEXT = {
       high: "High bar — requires near-perfect execution with no cross-strait or export-control disruption.",
     },
     fy26CardTip: (fy26) => `Adding Q1+Q2 2026 actuals to the base-case Q3–Q4 2026 projections gives a full-year run rate of roughly $${fy26}B, up from $122.2B in 2025 — comfortably inside management's own raised "slightly above 40%" USD revenue growth guide. That's what the base case — and roughly today's price — already assumes. The bull case requires the N2 ramp to push meaningfully above this.`,
-    fy26CardHtml: (fy26, growthPct) => `Q1+Q2 2026 actuals plus base-case Q3–Q4 projections sum to roughly <span style="color:var(--blue-soft);font-weight:700">$${fy26}B</span> for full-year 2026 — the growth path today's price already assumes. 2025 actual revenue was <span style="color:#66b278">$122.2B</span>, so this implies <em>~${growthPct}%</em> YoY growth.`,
+    fy26CardHtml: (fy26, growthPct) => `Q1+Q2 2026 actuals plus base-case Q3–Q4 projections sum to roughly <span style="color:var(--blue-soft);font-weight:700">$${fy26}B</span> for full-year 2026 — the growth path today's price already assumes. 2025 actual revenue was <span style="color:#3fd07a">$122.2B</span>, so this implies <em>~${growthPct}%</em> YoY growth.`,
     peerCommentary: (currentPE) => `At ${currentPE}× NTM P/E, TSM trades at a discount to AVGO and a steep discount to NVDA despite sitting at the center of the same AI buildout — the market still prices foundry manufacturing below fabless design and GPU monopoly. ASML, the other irreplaceable chokepoint in the chain, re-rated sharply on its own Q2 2026 beat-and-raise (now ~50x forward EPS) — a reminder that TSM's own multiple compressing on a beat this quarter is a market-mood divergence between two AI chokepoints, not a shared read on the cycle.`,
   },
 
@@ -340,12 +340,12 @@ const TEXT = {
     peBarTipSuffix: "TSM has clean GAAP earnings and low debt, so unlike some AI-semi peers there's no amortization distortion to strip out — this P/E is the real number.",
     deepValueZoneNote: "Historically cheap. Rare — last seen at the 2022 rate-shock bottom. Exceptional entry if thesis is intact.",
     dislocPrecedent: (baseFloor) => `Historical precedent: the April 2025 tariff-panic dislocation resolved within the 282-day base-reversion window when the fundamentals stayed intact. Base floor: $${baseFloor}.`,
-    regretHtml: (currentPE) => `Q3 2026 revenue and margin <strong style="color:#66b278">materially beat the $44.6–45.8B / 65.0–67.0% guide</strong> AND full-year revenue or capex guidance is raised a SECOND time. That would confirm the Q2 2026 beat-and-raise was the start of a trend, not a peak, re-rate the stock from ~${currentPE}× toward the bull zone, and close today's entry window.`,
+    regretHtml: (currentPE) => `Q3 2026 revenue and margin <strong style="color:#3fd07a">materially beat the $44.6–45.8B / 65.0–67.0% guide</strong> AND full-year revenue or capex guidance is raised a SECOND time. That would confirm the Q2 2026 beat-and-raise was the start of a trend, not a peak, re-rate the stock from ~${currentPE}× toward the bull zone, and close today's entry window.`,
     regretTip: "Charlie Munger's inversion: instead of asking 'why should I buy?', ask 'what would I have to believe happened, in hindsight, to wish I had bought more?' If Q3 2026 beats the newly-raised guide and full-year revenue/capex guidance gets raised again, today's entry window will close fast. You will not get a second chance at this multiple if the bull case materialises. This question is not about FOMO — it is about sizing correctly for your conviction.",
     chips: [
-      { label: "KILL-SWITCH: 2 STRAIGHT GUIDE MISSES → EXIT", col: "#dd817a" },
-      { label: "REGRET IF: Q3 BEATS + FY GUIDE RAISED AGAIN", col: "#66b278" },
-      { label: "NEXT CHECK: ~OCT 15, 2026 EARNINGS",          col: "#46aad9" },
+      { label: "KILL-SWITCH: 2 STRAIGHT GUIDE MISSES → EXIT", col: "#f1564b" },
+      { label: "REGRET IF: Q3 BEATS + FY GUIDE RAISED AGAIN", col: "#3fd07a" },
+      { label: "NEXT CHECK: ~OCT 15, 2026 EARNINGS",          col: "#2f6dff" },
     ],
     signalFootnote: (ntmEps) => `P/E uses GAAP NTM EPS $${ntmEps} — TSM has no meaningful intangible amortization to strip out, unlike fabless peers carrying large acquisition goodwill.`,
   },
@@ -359,9 +359,9 @@ const TEXT = {
       mood: (evNow, evAvg) => `EV/EBITDA vs its own 10-year average tells you whether the market is paying a premium or discount for this business. Not a buy/sell signal on its own — context matters (growth rate, interest rates, sector rotation). Current EV/EBITDA of ${evNow}× sits above the 10Y average of ~${evAvg}× — the market is pricing in the AI buildout continuing on schedule.`,
     },
     stats: [
-      { html: `Revenue <span style="color:#66b278;font-weight:700">$29B → $122B</span> (10Y)`, tipTitle: "Revenue (10-year)", tipBody: "TSM grew annual revenue from $29.3B (2016) to $122.2B (2025) — a ~17% CAGR, almost entirely organic with no transformative M&A. Growth tracks the world's compute buildout: smartphones and PCs through 2021, then AI/HPC accelerators from 2023 on." },
-      { html: `FCF <span style="color:#66b278;font-weight:700">$6.4B → $34.8B</span> (10Y)`, tipTitle: "Free Cash Flow (10-year)", tipBody: "FCF grew from $6.4B (2016) to a record $34.8B (2025) — more than 5× in 10 years, even after funding the most capital-intensive buildout in the company's history. This is the clearest evidence the AI capex cycle is being monetized, not just spent." },
-      { html: `Price <span style="color:#66b278;font-weight:700">+1,426%</span> (Jul 2016 → now)`, tipTitle: "Total price return (10-year)", tipBody: "From $27.78 (Jul 2016, ADR) to $423.93 today = +1,426%. Unlike many AI-cycle winners, this compounding came almost entirely from organic earnings growth and multiple re-rating — not acquisitions. Past returns are anchored to a foundry-leadership position and an AI buildout pace that may not repeat." },
+      { html: `Revenue <span style="color:#3fd07a;font-weight:700">$29B → $122B</span> (10Y)`, tipTitle: "Revenue (10-year)", tipBody: "TSM grew annual revenue from $29.3B (2016) to $122.2B (2025) — a ~17% CAGR, almost entirely organic with no transformative M&A. Growth tracks the world's compute buildout: smartphones and PCs through 2021, then AI/HPC accelerators from 2023 on." },
+      { html: `FCF <span style="color:#3fd07a;font-weight:700">$6.4B → $34.8B</span> (10Y)`, tipTitle: "Free Cash Flow (10-year)", tipBody: "FCF grew from $6.4B (2016) to a record $34.8B (2025) — more than 5× in 10 years, even after funding the most capital-intensive buildout in the company's history. This is the clearest evidence the AI capex cycle is being monetized, not just spent." },
+      { html: `Price <span style="color:#3fd07a;font-weight:700">+1,426%</span> (Jul 2016 → now)`, tipTitle: "Total price return (10-year)", tipBody: "From $27.78 (Jul 2016, ADR) to $423.93 today = +1,426%. Unlike many AI-cycle winners, this compounding came almost entirely from organic earnings growth and multiple re-rating — not acquisitions. Past returns are anchored to a foundry-leadership position and an AI buildout pace that may not repeat." },
     ],
     verdictBody: "TSM has compounded revenue at ~17% annually for 10 years almost entirely through organic growth — no transformative acquisitions, unlike many semiconductor peers. Gross margins held a 46–60% band through two real cyclical downturns (2019, 2022), FCF grew more than 5×, and ROIC never dropped below ~17% even at the trough. The business has earned the right to a premium multiple — the open question is whether the current AI-cycle multiple survives the next downturn, not whether the foundry franchise itself is durable.",
     banners: {
@@ -373,7 +373,7 @@ const TEXT = {
     revAnnotationsHtml: `<span>2023: <span style="color:var(--tx3)">$69.4B</span> (phone/PC correction)</span><span>2025: <span style="color:var(--tx3)">$122.2B</span> (AI/HPC ramp)</span>`,
     roicNote: "Green >15% · Amber 5–15% · Red <5% — TSM has stayed green every year on record",
     fcfYieldNote: "Declining yield = stock re-rating higher (not declining FCF). FCF itself grew ~5.4× over the decade.",
-    capexAnnotationsHtml: `<span>2021: <span style="color:#dd817a">53.5%</span> (3nm/5nm buildout)</span><span>2024: <span style="color:#66b278">33.3%</span> (AI revenue catches up)</span><span>2025: <span style="color:#66b278">33.4%</span> (holding, not re-accelerating)</span>`,
+    capexAnnotationsHtml: `<span>2021: <span style="color:#f1564b">53.5%</span> (3nm/5nm buildout)</span><span>2024: <span style="color:#3fd07a">33.3%</span> (AI revenue catches up)</span><span>2025: <span style="color:#3fd07a">33.4%</span> (holding, not re-accelerating)</span>`,
     footnotes: {
       durability: "TSM's growth is organic — there is no acquisition playbook to adjust for. The 2018–2019 margin compression (48% → 46%) reflects a 7nm ramp absorbing yield costs alongside a smartphone-cycle slowdown. 2022's revenue peak ($75.9B) was followed by a real ~9% YoY contraction in 2023 as post-COVID PC/smartphone inventory unwound — the closest thing to a bear case realized in this data. 2024–2025 mark the AI/HPC re-acceleration: revenue +36% in 2025 alone, with gross margin recovering to a 10-year high of 59.9%.",
       value: "ROIC has stayed in a 17–25% band for 10 straight years, including the 2022–2023 downturn — there is no acquisition-integration dip to explain away, because there's no acquisition. FCF yield compression from 4.4% (2016) to 2.7% (2025) reflects the stock's multiple expanding faster than its cash flow, not cash flow deteriorating — FCF itself hit a record $34.8B in 2025. The open question for THE FUTURE tab is whether today's multiple is paying for AI demand that's already arrived, or demand still to come.",
@@ -384,6 +384,6 @@ const TEXT = {
     priceChartSub: "$ per ADR (1 ADR = 5 ordinary shares) · dashed lines = key events",
     priceNowTip: (px, isATH) => `$${px} — where TSM (ADR) trades today, ${isATH ? "also the highest monthly close in this 10-year window" : "off the all-time high"}. The chart shows organic compounding with sharp drawdowns during the 2018–19 smartphone-cycle slowdown and the 2022 chip-cycle trough (−51%), then a sustained AI/HPC-driven re-rating from 2023 on.`,
     ddTip: (minDD) => `${minDD}% — the deepest drop from a prior all-time high in the 10-year window. This occurred during the Oct 2022 chip-cycle trough (smartphone/PC inventory correction, pre-AI). TSM recovered and went on to make new highs as the AI/HPC cycle took over. Drawdown charts help you visualize what holding through a bad period actually felt like.`,
-    ddAnnotationsHtml: `<span>Max drawdown: <span style="color:#dd817a">−51.1%</span> (Oct 2022, chip-cycle trough)</span><span>Current: <span style="color:#66b278">0.0%</span> from ATH — today IS the high</span>`,
+    ddAnnotationsHtml: `<span>Max drawdown: <span style="color:#f1564b">−51.1%</span> (Oct 2022, chip-cycle trough)</span><span>Current: <span style="color:#3fd07a">0.0%</span> from ATH — today IS the high</span>`,
   },
 };
