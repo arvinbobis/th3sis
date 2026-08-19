@@ -1,0 +1,14 @@
+{
+  "ticker": "SNDK",
+  "asOf": "2026-08-20",
+  "quarter": "FQ1 FY2027 (reports Nov 5, 2026)",
+  "inputs": {
+    "price":              { "value": 1568.87, "src": "Wisesheets EOD (SEC filer) — 2026-08-19 close", "pulled": "2026-08-20" },
+    "consensus_eps_ntm":  { "value": 205,     "src": "web search — analyst consensus, FY2027; reported range $201.57 (stockanalysis.com) to $214.73, wide $131.25-$314.64 spread across 23 analysts", "pulled": "2026-08-20" },
+    "multiple_bear":      { "value": 6,       "src": "judgment — trough-to-bear-high band midpoint (5-7x), below normal (scared)", "pulled": "2026-08-20" },
+    "multiple_base":      { "value": 10.5,    "src": "judgment — normal band midpoint (9-12x), 5yr history N/A (stock only public since Feb 2025)", "pulled": "2026-08-20" },
+    "multiple_bull":      { "value": 15.75,   "src": "judgment — bull band midpoint (14-17.5x), above normal (excited)", "pulled": "2026-08-20" },
+    "multiple_peer_median": { "value": 14.85, "src": "web search — median fwd P/E of MU (6.0x), WDC (22.0x), STX (22.0x), SNDK itself (7.7x) — named comps, no US-tradable ticker found for Kioxia (~8x, Japan-listed 285A.T) or SK Hynix (Korea-listed 000660.KS)", "pulled": "2026-08-20" }
+  },
+  "notes": "SNDK is an unusually extreme regime this quarter: trailing GAAP P/E ~24x (TTM diluted EPS $73.47) despite a 43x 12-month price move, because NAND-flash gross margin exploded from 7.1% (FY2023 trough) to 84.6% (FQ4 FY26) on a genuine industry-wide NAND supply shortage (AI-datacenter demand meeting underinvested 2023-24-era capacity). Forward P/E on FY2027 consensus is only ~7.7x at the current price — cheaper than every named peer except MU. This is squarely earnings-driven, not multiple-driven: the multiple has stayed structurally low (single-digit to low-teens) throughout the entire rally. Two live, unresolved risks worth carrying forward: (1) the pull-forward question — NAND-Research's own March/May 2026 updates explicitly describe 'panic buying' and downstream 'inventory buildup' in NAND specifically, which is genuinely in tension with the $93.9B/10-agreement supply backlog's multi-year visibility; no order-to-shipment or buyer-inventory-days metric was found to resolve this cleanly, so the backlog-cancellation KPI is the named tell. (2) The market already tested the bear case once: SNDK round-tripped from $2,335 (Jun 25, 2026 near-high) to $1,015 (Jul 29 low) on a 'memory supply-glut fear' scare that also hit STX/WDC/SK Hynix (Aug 3, -5% to -11%), before partly recovering to today's $1,568.87 — this dislocation is still unresolved (price has not yet reclaimed the $1,850 base floor) as of this snapshot."
+}
