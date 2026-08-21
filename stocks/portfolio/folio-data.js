@@ -43,5 +43,12 @@ const FOLIO_BARE = {
       investedValue: 31425.96,
       unrealizedPnl: 641.43,
     },
+    {
+      date: "2026-08-21",
+      nlv: 36263.27,
+      cash: 5076.98,
+      investedValue: 31182.56,
+      unrealizedPnl: 398.03,
+    },
   ],
 };
